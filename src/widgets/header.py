@@ -28,7 +28,7 @@
 
 from gi.repository import Gtk
 
-from src.define import APP_TITLE
+from src.define import APP_TITLE, APP_SUBTITLE
 
 
 class Header(Gtk.HeaderBar):
@@ -40,12 +40,14 @@ class Header(Gtk.HeaderBar):
         self.document_mode_active = False
 
         self.set_title(APP_TITLE)
+        self.set_subtitle(APP_SUBTITLE)
         self.set_has_subtitle(True)
         self.set_show_close_button(True)
 
         self.back_button = Gtk.Button.new_with_label('Documents')
         self.back_button.get_style_context().add_class('back-button')
         self.back_button.set_visible(False)
+        self.back_button.set_can_focus(False)
 
         self.export_button = Gtk.Button.new_from_icon_name('document-export', Gtk.IconSize.LARGE_TOOLBAR)
         self.export_button.set_visible(False)
@@ -59,7 +61,11 @@ class Header(Gtk.HeaderBar):
         # self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
 
-    def toggle_document_mode(self):
+    def toggle_document_mode(self) -> None:
+        """Toggle document-related actions and global app actions
+
+        :return: None
+        """
         self.document_mode_active = not self.document_mode_active
 
         self.back_button.set_visible(self.document_mode_active)

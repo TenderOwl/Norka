@@ -23,26 +23,34 @@
 #
 # Except as contained in this notice, the name(s) of the above copyright
 # holders shall not be used in advertising or otherwise to promote the sale,
-# use or other dealings in this Software without prior written
+# election-box-aluse or other dealings in this Software without prior written
 # authorization.
 
-
 import os
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
+
+from src.services.storage import storage
 
 
 class DocumentGrid(Gtk.Grid):
     __gtype_name__ = 'DocumentGrid'
 
+    __gsignals__ = {
+        'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+    }
+
     def __init__(self):
         super().__init__()
 
-        self.model = Gtk.ListStore(Pixbuf, str, str)
+        self.model = Gtk.ListStore(Pixbuf, str, str, int)
 
         self.view = Gtk.IconView.new_with_model(self.model)
         self.view.set_pixbuf_column(0)
         self.view.set_text_column(1)
+        self.view.set_item_width(80)
+
+        self.view.connect('show', self.reload_items)
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_hexpand(True)
@@ -51,11 +59,8 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
-        for item in os.listdir('.'):
-            if os.path.isdir(item):
-                icon_name = 'folder'
-            else:
-                icon_name = 'text-x-generic'
-
-            icon = Gtk.IconTheme.get_default().load_icon(icon_name, 64, 0)
-            self.model.append([icon, os.path.basename(item), os.path.abspath(item)])
+    def reload_items(self, widget):
+        self.model.clear()
+        for document in storage.all():
+            icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
+            self.model.append([icon, document.title, document.content, document._id])

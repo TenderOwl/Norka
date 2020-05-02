@@ -26,12 +26,13 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-from gi.repository import Gtk, Granite, GLib, Gio
+from gi.repository import Gtk, Gio
 
 from src.widgets.document_grid import DocumentGrid
-from src.widgets.document_room import DocumentRoom
 from src.widgets.editor import Editor
 from src.widgets.header import Header
+from src.widgets.welcome import Welcome
+from .services.storage import storage
 
 
 class NorkaWindow(Gtk.ApplicationWindow):
@@ -40,56 +41,86 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_size(830, 520)
+        self.set_default_size(786, 520)
 
         self.header = Header()
         self.header.back_button.connect('clicked', self.icon_list_activated)
         self.set_titlebar(self.header)
         self.header.show()
 
-        self.documents_room = DocumentRoom()
-        self.documents_room.connect('document-create', self.document_create)
+        self.welcome_grid = Welcome()
+        self.welcome_grid.connect('activated', self.welcome_activated)
+
+        self.document_grid = DocumentGrid()
+        self.document_grid.connect('document-create', self.document_create)
+        self.document_grid.view.connect('item-activated', self.icon_activated)
+
+        self.editor = Editor()
 
         self.screens = Gtk.Stack()
         self.screens.set_transition_duration(400)
         self.screens.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-        self.screens.add_named(self.documents_room, 'document_room')
-        self.screens.add_named(Editor(), 'editor')
-        self.screens.show_all()
 
-        # self.document_grid.view.connect('item-activated', self.icon_activated)
+        self.screens.add_named(self.welcome_grid, 'welcome-grid')
+        self.screens.add_named(self.document_grid, 'document-grid')
+        self.screens.add_named(self.editor, 'editor-grid')
+
+        self.screens.show_all()
 
         self.add(self.screens)
 
-    # def init_actions(self):
-    #     items = [{
-    #         'name': 'document.create', 'callback': lambda x: print, 'accel': '<Control>n'
-    #     }]
-    #
-    #     for item in items:
-    #         action = self.make_action(**item)
-    #         self.add_action(action)
-    #
+        self.init_actions()
+
+        # If here's at least one document in storage
+        # then show documents grid
+        if storage.count() > 0:
+            self.screens.set_visible_child_name('document-grid')
+
+    def init_actions(self):
+        items = [{
+            'group': '',
+            'name': 'create',
+            'callback': lambda x: print,
+            'accel': '<Control>n'
+        }]
+
+        document_actions = Gio.SimpleActionGroup()
+        create_document = Gio.SimpleAction(name="create")
+        create_document.connect('activate', self.document_create)
+        self.get_application().set_accels_for_action('document.create', ('<Control>n',))
+        document_actions.add_action(create_document)
+
+        self.insert_action_group('document', document_actions)
+
+        # self.add_action_entries()
+
     # def make_action(self, name, callback=None, accel=None) -> Gio.SimpleAction:
     #     action = Gio.SimpleAction.new(name, None)
     #     action.connect('activate', callback)
     #     return action
-    #
-    def icon_list_activated(self, button):
-        self.screens.set_visible_child_name('document_room')
-        self.header.toggle_document_mode()
-    #
-    # def icon_activated(self, icon_view, path):
-    #     model_iter = self.document_grid.model.get_iter(path)
-    #     filepath = self.document_grid.model.get_value(model_iter, 2)
-    #     print(filepath)
-    #
-    #     editor = self.screens.get_child_by_name('editor')
-    #     editor.load_document(file_path=filepath)
-    #     self.screens.set_visible_child_name('editor')
-    #
-    #     self.header.toggle_document_mode()
 
-    def document_create(self, sender, index):
-        self.screens.set_visible_child_name('editor')
+    def icon_list_activated(self, button):
+        self.screens.set_visible_child_name('document-grid')
+        self.editor.unload_document()
+        self.document_grid.reload_items(self)
+        self.header.toggle_document_mode()
+
+    def welcome_activated(self, sender: Welcome, index: int):
+        if index == 0:
+            self.document_create(sender, index)
+
+    def icon_activated(self, icon_view, path):
+        model_iter = self.document_grid.model.get_iter(path)
+        doc_id = self.document_grid.model.get_value(model_iter, 3)
+        print(f'Activated Document.Id {doc_id}')
+
+        editor = self.screens.get_child_by_name('editor-grid')
+        editor.load_document(doc_id)
+        self.screens.set_visible_child_name('editor-grid')
+
+        self.header.toggle_document_mode()
+
+    def document_create(self, sender=None, index=None):
+        self.editor.create_document()
+        self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()

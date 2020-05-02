@@ -2,3 +2,6 @@
 .vscode
 
 build-aux
+
+*.pyc
+__pycache__

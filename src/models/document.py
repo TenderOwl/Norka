@@ -1,4 +1,4 @@
-# main.py
+# document.py
 #
 # Copyright 2020 Andrey Maksimov
 #
@@ -23,42 +23,37 @@
 #
 # Except as contained in this notice, the name(s) of the above copyright
 # holders shall not be used in advertising or otherwise to promote the sale,
-# use or other dealings in this Software without prior written
+# election-box-aluse or other dealings in this Software without prior written
 # authorization.
 
-import sys
-import gi
 
-from src.define import APP_ID
-from src.services.storage import storage
+class Document(object):
+    __slots__ = ('_id', 'title', 'content', 'archived')
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
+    _id: int
+    title: str
+    content: str
+    archived: bool
 
-from gi.repository import Gtk, Gio
+    def __init__(self, title: str, content: str = '', _id: int = None, archived=False):
+        self._id = _id
+        self.title = title
+        self.content = content
+        self.archived = archived
 
-from .window import NorkaWindow
+    @classmethod
+    def new_with_row(cls, row: list):
+        """Create :class:`Document` instance from sqlite row
 
+        :param row: row with data from sqlite storage
+        :type row: list
+        """
+        return cls(
+            _id=row[0],
+            title=row[1],
+            content=row[2],
+            archived=row[3]
+        )
 
-class Application(Gtk.Application):
-    __gtype_name__ = 'NorkaApplication'
-
-    def __init__(self):
-        super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
-
-        try:
-            storage.init()
-        except Exception as e:
-            sys.exit(e)
-
-    def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = NorkaWindow(application=self)
-        win.present()
-
-
-if __name__ == '__main__':
-    app = Application()
-    app.run(sys.argv)
+    def __repr__(self) -> str:
+        return f"{self._id}: {self.title}"

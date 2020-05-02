@@ -1,4 +1,4 @@
-# main.py
+# welcome.py
 #
 # Copyright 2020 Andrey Maksimov
 #
@@ -26,39 +26,17 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-import sys
-import gi
+from gi.repository import Gtk, Granite, GObject
 
-from src.define import APP_ID
-from src.services.storage import storage
-
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-
-from gi.repository import Gtk, Gio
-
-from .window import NorkaWindow
+from src.widgets.document_grid import DocumentGrid
 
 
-class Application(Gtk.Application):
-    __gtype_name__ = 'NorkaApplication'
+class Welcome(Granite.WidgetsWelcome):
+    __gtype_name__ = 'NorkaWelcome'
 
     def __init__(self):
-        super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
-
-        try:
-            storage.init()
-        except Exception as e:
-            sys.exit(e)
-
-    def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = NorkaWindow(application=self)
-        win.present()
-
-
-if __name__ == '__main__':
-    app = Application()
-    app.run(sys.argv)
+        super().__init__()
+        self.set_title('No documents yet')
+        self.set_subtitle('Create one and start writing')
+        self.append('document-new', 'New document', 'Create empty document')
+        self.get_button_from_index(0).set_can_focus(False)
