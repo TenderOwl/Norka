@@ -38,21 +38,27 @@ from src.models.document import Document
 
 class Storage(object):
     def __init__(self):
-        self.file_path = os.path.join(GLib.get_user_config_dir(), APP_TITLE, 'storage.db')
+        self.base_path = os.path.join(GLib.get_user_config_dir(), APP_TITLE)
+        self.file_path = os.path.join(self.base_path, 'storage.db')
+        self.conn = None
+
+    def init(self):
+        if not os.path.exists(self.base_path):
+            os.mkdir(self.base_path)
+            print(f'Storage folder created at {self.base_path}')
+
         print(f'Storage located at {self.file_path}')
 
         self.conn = sqlite3.connect(self.file_path)
 
-    def init(self):
-
         self.conn.execute("""
-            CREATE TABLE IF NOT EXISTS `documents` (
-                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                `title` TEXT NOT NULL,
-                `content` TEXT,
-                `archived` INTEGER NOT NULL DEFAULT 0 
-            )
-        """)
+                CREATE TABLE IF NOT EXISTS `documents` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                    `title` TEXT NOT NULL,
+                    `content` TEXT,
+                    `archived` INTEGER NOT NULL DEFAULT 0 
+                )
+            """)
 
     def count(self, with_archived: bool = False) -> int:
         cursor = self.conn.cursor()
@@ -105,7 +111,6 @@ class Storage(object):
         return True
 
     def update(self, doc_id: int, data: dict) -> bool:
-
         fields = {field: value for field, value in data.items() if value}
 
         query = f"UPDATE documents SET {','.join(f'{key}=?' for key in fields.keys())} WHERE id=?"
