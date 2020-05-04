@@ -52,11 +52,20 @@ class Application(Gtk.Application):
         except Exception as e:
             sys.exit(e)
 
+        action = Gio.SimpleAction.new("quit", None)
+        action.connect("activate", self.on_quit)
+        self.add_action(action)
+        self.set_accels_for_action('app.quit', ('<Control>q',))
+
     def do_activate(self):
         win = self.props.active_window
         if not win:
             win = NorkaWindow(application=self)
         win.present()
+
+    def on_quit(self, action, param):
+        self.props.active_window.on_delete_event()
+        self.quit()
 
 
 if __name__ == '__main__':

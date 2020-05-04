@@ -100,6 +100,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
     #     action.connect('activate', callback)
     #     return action
 
+    def on_delete_event(self):
+        if self.editor.document:
+            try:
+                self.editor.save_document()
+                print(f'Document "{self.editor.document.title}" saved')
+            except Exception as e:
+                print(e)
+        else:
+            print('Nothing to save')
+
     def icon_list_activated(self, button):
         self.screens.set_visible_child_name('document-grid')
         self.editor.unload_document()
