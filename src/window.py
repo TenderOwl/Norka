@@ -44,6 +44,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.set_default_size(786, 520)
 
         self.header = Header()
+        self.header.add_button.connect('clicked', self.document_create)
         self.header.back_button.connect('clicked', self.icon_list_activated)
         self.set_titlebar(self.header)
         self.header.show()
@@ -104,6 +105,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.editor.unload_document()
         self.document_grid.reload_items(self)
         self.header.toggle_document_mode()
+        self.header.update_title()
 
     def welcome_activated(self, sender: Welcome, index: int):
         if index == 0:
@@ -119,6 +121,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.screens.set_visible_child_name('editor-grid')
 
         self.header.toggle_document_mode()
+        self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
 
     def document_create(self, sender=None, index=None):
         self.editor.create_document()

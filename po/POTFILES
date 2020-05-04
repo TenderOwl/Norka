@@ -1,6 +1,6 @@
-data/com.github.tender-owl.norka.desktop.in
-data/com.github.tender-owl.norka.appdata.xml.in
-data/com.github.tender-owl.norka.gschema.xml
+data/com.github.tenderowl.norka.desktop.in
+data/com.github.tenderowl.norka.appdata.xml.in
+data/com.github.tenderowl.norka.gschema.xml
 src/main.py
 src/window.py
 

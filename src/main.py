@@ -37,7 +37,7 @@ gi.require_version('Granite', '1.0')
 
 from gi.repository import Gtk, Gio
 
-from .window import NorkaWindow
+from src.window import NorkaWindow
 
 
 class Application(Gtk.Application):

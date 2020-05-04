@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Granite
 
 from src.define import APP_TITLE, APP_SUBTITLE
 
@@ -44,12 +44,19 @@ class Header(Gtk.HeaderBar):
         self.set_has_subtitle(True)
         self.set_show_close_button(True)
 
+        self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
+        self.add_button.set_visible(True)
+        self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n', ), 'Create new document'))
+        self.add_button.set_action_name('document.create')
+
         self.back_button = Gtk.Button.new_with_label('Documents')
         self.back_button.get_style_context().add_class('back-button')
+        self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>w', ), 'Return to documents list'))
         self.back_button.set_visible(False)
         self.back_button.set_can_focus(False)
 
         self.export_button = Gtk.Button.new_from_icon_name('document-export', Gtk.IconSize.LARGE_TOOLBAR)
+        self.export_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>e', ), 'Export document to file'))
         self.export_button.set_visible(False)
 
         self.menu_button = Gtk.MenuButton()
@@ -58,6 +65,7 @@ class Header(Gtk.HeaderBar):
         self.menu_button.set_visible(True)
 
         self.pack_start(self.back_button)
+        self.pack_start(self.add_button)
         # self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
 
@@ -70,3 +78,7 @@ class Header(Gtk.HeaderBar):
 
         self.back_button.set_visible(self.document_mode_active)
         self.export_button.set_visible(self.document_mode_active)
+        self.add_button.set_visible(not self.document_mode_active)
+
+    def update_title(self, title: str = None) -> None:
+        self.set_title(title or APP_TITLE)

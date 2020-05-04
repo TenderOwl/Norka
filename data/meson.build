@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-  input: 'com.github.tender-owl.norka.desktop.in',
-  output: 'com.github.tender-owl.norka.desktop',
+  input: 'com.github.tenderowl.norka.desktop.in',
+  output: 'com.github.tenderowl.norka.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -15,8 +15,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'com.github.tender-owl.norka.appdata.xml.in',
-  output: 'com.github.tender-owl.norka.appdata.xml',
+  input: 'com.github.tenderowl.norka.appdata.xml.in',
+  output: 'com.github.tenderowl.norka.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -29,7 +29,7 @@ if appstream_util.found()
   )
 endif
 
-install_data('com.github.tender-owl.norka.gschema.xml',
+install_data('com.github.tenderowl.norka.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

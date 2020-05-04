@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="norka">
-	<schema id="com.github.tender-owl.norka" path="/com/github/tender-owl/norka/">
+	<schema id="com.github.tenderowl.norka" path="/com/github/tenderowl/norka/">
 	</schema>
 </schemalist>

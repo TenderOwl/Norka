@@ -27,10 +27,11 @@
 # authorization.
 
 import os
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from src.services.storage import storage
+from src.widgets.rename_popover import RenamePopover
 
 
 class DocumentGrid(Gtk.Grid):
@@ -45,12 +46,15 @@ class DocumentGrid(Gtk.Grid):
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int)
 
-        self.view = Gtk.IconView.new_with_model(self.model)
+        self.view = Gtk.IconView()
+        self.view.set_model(self.model)
         self.view.set_pixbuf_column(0)
         self.view.set_text_column(1)
         self.view.set_item_width(80)
+        self.view.set_activate_on_single_click(True)
 
         self.view.connect('show', self.reload_items)
+        self.view.connect('button-press-event', self.key_pressed)
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_hexpand(True)
@@ -64,3 +68,21 @@ class DocumentGrid(Gtk.Grid):
         for document in storage.all():
             icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             self.model.append([icon, document.title, document.content, document._id])
+
+    def rename_item(self, widget) -> bool:
+        print(f'Rename item')
+        return True
+
+    def key_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
+        if event.type == Gdk.EventType.BUTTON_PRESS and \
+                event.button == Gdk.BUTTON_SECONDARY:
+
+            path = self.view.get_path_at_pos(event.x, event.y)
+            if not path:
+                return
+
+            self.view.select_path(path)
+            item_title = self.model.get_value(self.model.get_iter(path), 1)
+            popover = RenamePopover(widget, item_title)
+            popover.show_all()
+            popover.popup()

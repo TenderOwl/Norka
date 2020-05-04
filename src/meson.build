@@ -29,6 +29,7 @@ norka_sources = [
   '__init__.py',
   'main.py',
   'window.py',
+  'define.py',
 ]
 
 install_data(norka_sources, install_dir: moduledir)
