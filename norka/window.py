@@ -28,10 +28,10 @@
 
 from gi.repository import Gtk, Gio
 
-from src.widgets.document_grid import DocumentGrid
-from src.widgets.editor import Editor
-from src.widgets.header import Header
-from src.widgets.welcome import Welcome
+from norka.widgets.document_grid import DocumentGrid
+from norka.widgets.editor import Editor
+from norka.widgets.header import Header
+from norka.widgets.welcome import Welcome
 from .services.storage import storage
 
 

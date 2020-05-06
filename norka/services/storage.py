@@ -32,8 +32,8 @@ import sqlite3
 
 from gi.repository import GLib, Gio
 
-from src.define import APP_TITLE
-from src.models.document import Document
+from norka.define import APP_TITLE
+from norka.models.document import Document
 
 
 class Storage(object):

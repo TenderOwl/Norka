@@ -28,7 +28,7 @@
 
 from gi.repository import Gtk, Granite
 
-from src.define import APP_TITLE, APP_SUBTITLE
+from norka.define import APP_TITLE, APP_SUBTITLE
 
 
 class Header(Gtk.HeaderBar):

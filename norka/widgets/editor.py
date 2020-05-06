@@ -28,8 +28,8 @@
 
 import gi
 
-from src.models.document import Document
-from src.services.storage import storage
+from norka.models.document import Document
+from norka.services.storage import storage
 
 gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GtkSource

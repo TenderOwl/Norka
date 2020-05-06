@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Norka
+GenericName=Norka
+Exec=com.github.tenderowl.norka
+Icon=norka
+Terminal=false
+Type=Application
+Categories=Utility;TextEditor;GTK;
+Keywords=Norka;TenderOwl;Tender;Markdown;

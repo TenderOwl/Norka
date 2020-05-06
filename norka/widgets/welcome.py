@@ -28,7 +28,7 @@
 
 from gi.repository import Gtk, Granite, GObject
 
-from src.widgets.document_grid import DocumentGrid
+from norka.widgets.document_grid import DocumentGrid
 
 
 class Welcome(Granite.WidgetsWelcome):

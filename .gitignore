@@ -1,7 +1,9 @@
 .idea
 .vscode
 
-build-aux
+build
 
 *.pyc
 __pycache__
+
+.snap

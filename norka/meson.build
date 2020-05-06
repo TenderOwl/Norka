@@ -1,0 +1,60 @@
+pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
+moduledir = join_paths(pkgdatadir, 'norka')
+gnome = import('gnome')
+
+gnome.compile_resources('norka',
+  'norka.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
+)
+
+python = import('python')
+python_dir = join_paths(get_option('prefix'), python.sysconfig_path('purelib'))
+LIBEXEC_DIR = join_paths(get_option('prefix'), get_option('libexecdir'))
+DATA_DIR = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
+bindir = join_paths(get_option('prefix'), get_option('bindir'))
+
+conf = configuration_data()
+conf.set('PYTHON', python.find_installation('python3').path())
+conf.set('VERSION', meson.project_version())
+conf.set('DATA_DIR', DATA_DIR)
+conf.set('PYTHON_DIR', python_dir)
+conf.set('libexecdir', LIBEXEC_DIR)
+conf.set('localedir', join_paths(get_option('prefix'), get_option('localedir')))
+conf.set('pkgdatadir', pkgdatadir)
+
+norka_sources = [
+  '__init__.py',
+  'main.py',
+  'window.py',
+  'define.py',
+  'models/__init__.py',
+  'models/document.py',
+  'services/__init__.py',
+  'services/storage.py',
+  'widgets/__init__.py',
+  'widgets/document_grid.py',
+  'widgets/editor.py',
+  'widgets/header.py',
+  'widgets/rename_popover.py',
+  'widgets/screens.py',
+  'widgets/welcome.py',
+]
+
+install_subdir(
+  'norka',
+  install_dir: python_dir
+)
+
+message('Preparing init file')
+configure_file(
+  input: 'norka.in',
+  output: 'com.github.tenderowl.norka',
+  configuration: conf,
+  # install: true,
+  install_dir: binddir
+)
+
+
+install_data(norka_sources, install_dir: moduledir)

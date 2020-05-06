@@ -1,6 +1,7 @@
-# main.py
-#
+#!/usr/bin/env python
+# Startup from system-wide installation
 # Copyright 2020 Andrey Maksimov
+# <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -26,48 +27,6 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-import sys
-import gi
+from norka.main import main
 
-from src.define import APP_ID
-from src.services.storage import storage
-
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-
-from gi.repository import Gtk, Gio
-
-from src.window import NorkaWindow
-
-
-class Application(Gtk.Application):
-    __gtype_name__ = 'NorkaApplication'
-
-    def __init__(self):
-        super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
-
-        try:
-            storage.init()
-        except Exception as e:
-            sys.exit(e)
-
-        action = Gio.SimpleAction.new("quit", None)
-        action.connect("activate", self.on_quit)
-        self.add_action(action)
-        self.set_accels_for_action('app.quit', ('<Control>q',))
-
-    def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = NorkaWindow(application=self)
-        win.present()
-
-    def on_quit(self, action, param):
-        self.props.active_window.on_delete_event()
-        self.quit()
-
-
-if __name__ == '__main__':
-    app = Application()
-    app.run(sys.argv)
+main()

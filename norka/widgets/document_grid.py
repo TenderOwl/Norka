@@ -30,8 +30,8 @@ import os
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
-from src.services.storage import storage
-from src.widgets.rename_popover import RenamePopover
+from norka.services.storage import storage
+from norka.widgets.rename_popover import RenamePopover
 
 
 class DocumentGrid(Gtk.Grid):
@@ -52,6 +52,7 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_text_column(1)
         self.view.set_item_width(80)
         self.view.set_activate_on_single_click(True)
+        self.view.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
         self.view.connect('show', self.reload_items)
         self.view.connect('button-press-event', self.key_pressed)
@@ -74,15 +75,25 @@ class DocumentGrid(Gtk.Grid):
         return True
 
     def key_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
-        if event.type == Gdk.EventType.BUTTON_PRESS and \
-                event.button == Gdk.BUTTON_SECONDARY:
+        if event.button == Gdk.BUTTON_SECONDARY:
 
             path = self.view.get_path_at_pos(event.x, event.y)
             if not path:
-                return
+                return self.view.unselect_all()
 
             self.view.select_path(path)
-            item_title = self.model.get_value(self.model.get_iter(path), 1)
-            popover = RenamePopover(widget, item_title)
-            popover.show_all()
-            popover.popup()
+
+            menu = Gtk.Menu()
+
+            menu.append(Gtk.MenuItem.new_with_label('Export...'))
+            menu.append(Gtk.SeparatorMenuItem())
+            menu.append(Gtk.MenuItem.new_with_label('Rename...'))
+            menu.append(Gtk.SeparatorMenuItem())
+            menu.append(Gtk.MenuItem.new_with_label('Archive'))
+            menu.append(Gtk.MenuItem.new_with_label('Delete'))
+
+            menu.show_all()
+            menu.popup(None, None, None, None, event.button, event.time)
+
+            return
+        self.view.unselect_all()
