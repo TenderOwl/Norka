@@ -2,8 +2,12 @@
 .vscode
 
 build
+dist
 
 *.pyc
 __pycache__
 
-.snap
+*.egg
+*.egg-info
+*.whl
+*.snap
