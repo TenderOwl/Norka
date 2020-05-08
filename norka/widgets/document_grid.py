@@ -31,6 +31,7 @@ from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.services.storage import storage
+from norka.widgets.document_context_menu import DocumentContextMenu
 from norka.widgets.rename_popover import RenamePopover
 
 
@@ -45,6 +46,8 @@ class DocumentGrid(Gtk.Grid):
         super().__init__()
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int)
+
+        self.selected_document = None
 
         self.view = Gtk.IconView()
         self.view.set_model(self.model)
@@ -70,30 +73,24 @@ class DocumentGrid(Gtk.Grid):
             icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             self.model.append([icon, document.title, document.content, document._id])
 
-    def rename_item(self, widget) -> bool:
-        print(f'Rename item')
-        return True
-
     def key_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
         if event.button == Gdk.BUTTON_SECONDARY:
 
             path = self.view.get_path_at_pos(event.x, event.y)
             if not path:
+                self.selected_document = None
                 return self.view.unselect_all()
 
             self.view.select_path(path)
 
-            menu = Gtk.Menu()
+            self.selected_document = storage.get(self.model.get_value(
+                self.model.get_iter(path), 3
+            ))
 
-            menu.append(Gtk.MenuItem.new_with_label('Export...'))
-            menu.append(Gtk.SeparatorMenuItem())
-            menu.append(Gtk.MenuItem.new_with_label('Rename...'))
-            menu.append(Gtk.SeparatorMenuItem())
-            menu.append(Gtk.MenuItem.new_with_label('Archive'))
-            menu.append(Gtk.MenuItem.new_with_label('Delete'))
-
-            menu.show_all()
+            menu = DocumentContextMenu(self.view)
             menu.popup(None, None, None, None, event.button, event.time)
 
             return
+
         self.view.unselect_all()
+        self.selected_document = None

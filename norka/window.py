@@ -26,7 +26,7 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, Granite
 
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
@@ -43,9 +43,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.set_default_size(786, 520)
 
+        self.init_actions()
+
         self.header = Header()
         self.header.add_button.connect('clicked', self.document_create)
-        self.header.back_button.connect('clicked', self.icon_list_activated)
         self.set_titlebar(self.header)
         self.header.show()
 
@@ -70,37 +71,56 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.add(self.screens)
 
-        self.init_actions()
-
         # If here's at least one document in storage
         # then show documents grid
-        if storage.count() > 0:
-            self.screens.set_visible_child_name('document-grid')
+        self.check_documents_count()
 
     def init_actions(self):
-        items = [{
-            'group': '',
-            'name': 'create',
-            'callback': lambda x: print,
-            'accel': '<Control>n'
-        }]
+        action_items = {
+            'document': [
+                {
+                    'name': 'create',
+                    'action': self.document_create,
+                    'accel': '<Control>n'
+                },
+                {
+                    'name': 'close',
+                    'action': self.back_button_activated,
+                    'accel': '<Control>w'
+                },
+                {
+                    'name': 'rename',
+                    'action': self.rename_activated,
+                    'accel': 'F2'
+                },
+                {
+                    'name': 'archive',
+                    'action': self.archive_activated,
+                    'accel': None
+                },
+                {
+                    'name': 'delete',
+                    'action': self.delete_activated,
+                    'accel': None
+                }
+            ]
+        }
 
-        document_actions = Gio.SimpleActionGroup()
-        create_document = Gio.SimpleAction(name="create")
-        create_document.connect('activate', self.document_create)
-        self.get_application().set_accels_for_action('document.create', ('<Control>n',))
-        document_actions.add_action(create_document)
+        for action_group_key, actions in action_items.items():
+            action_group = Gio.SimpleActionGroup()
 
-        self.insert_action_group('document', document_actions)
+            for item in actions:
+                action = Gio.SimpleAction(name=item['name'])
+                action.connect('activate', item['action'])
+                self.get_application().set_accels_for_action(f'{action_group_key}.{item["name"]}', (item["accel"],))
+                action_group.add_action(action)
 
-        # self.add_action_entries()
+            self.insert_action_group(action_group_key, action_group)
 
-    # def make_action(self, name, callback=None, accel=None) -> Gio.SimpleAction:
-    #     action = Gio.SimpleAction.new(name, None)
-    #     action.connect('activate', callback)
-    #     return action
+        app: Gtk.Application = self.get_application()
+        print(app.get_actions_for_accel('<Control>q'))
 
-    def on_delete_event(self):
+    def on_window_delete_event(self):
         if self.editor.document:
             try:
                 self.editor.save_document()
@@ -110,7 +130,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
         else:
             print('Nothing to save')
 
-    def icon_list_activated(self, button):
+    def check_documents_count(self):
+        if storage.count() > 0:
+            self.screens.set_visible_child_name('document-grid')
+        else:
+            self.screens.set_visible_child_name('welcome-grid')
+
+    def back_button_activated(self, sender: Gtk.Widget, event=None) -> None:
         self.screens.set_visible_child_name('document-grid')
         self.editor.unload_document()
         self.document_grid.reload_items(self)
@@ -133,7 +159,39 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.toggle_document_mode()
         self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
 
-    def document_create(self, sender=None, index=None):
+    def document_create(self, sender: Gtk.Widget = None, index=None):
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
+
+    def rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        print(f'rename_activated')
+
+    def archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        doc = self.document_grid.selected_document
+        if doc:
+            if storage.update(
+                    doc_id=doc._id,
+                    data={'archived': True}
+            ):
+                self.check_documents_count()
+                self.document_grid.reload_items(self)
+
+    def delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        doc = self.document_grid.selected_document
+
+        prompt = Granite.MessageDialog.with_image_from_icon_name(
+            f"Permanently delete “{doc.title}”?",
+            "Deleted items are not sent to Archive and are not recoverable",
+            "dialog-warning",
+            Gtk.ButtonsType.OK
+        )
+        if doc:
+            prompt.run()
+
+        if doc and storage.update(
+                doc_id=doc._id,
+                data={'archived': True}
+        ):
+            self.document_grid.reload_items(self)
+            self.check_documents_count()

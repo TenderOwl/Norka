@@ -86,6 +86,9 @@ class Editor(Gtk.ScrolledWindow):
 
         :return: None
         """
+        if not self.document:
+            return
+
         self.save_document()
         self.buffer.set_text('')
         self.document = None
@@ -106,12 +109,14 @@ class Editor(Gtk.ScrolledWindow):
         return True
 
     def save_document(self) -> bool:
-        self.document.content = self.buffer.get_text(
+        if not self.document:
+            return False
+
+        text = self.buffer.get_text(
             self.buffer.get_start_iter(),
             self.buffer.get_end_iter(),
             True
         )
-        return storage.update(
-            self.document._id,
-            {"content": self.document.content}
-        )
+        if storage.update(self.document._id, {"content": text}):
+            self.document.content = text
+            return True

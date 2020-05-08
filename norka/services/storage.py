@@ -61,10 +61,9 @@ class Storage(object):
             """)
 
     def count(self, with_archived: bool = False) -> int:
-        cursor = self.conn.cursor()
         query = 'SELECT COUNT (1) AS count FROM documents'
         if not with_archived:
-            query += " WHERE `archived`=0"
+            query += " WHERE archived=0"
         cursor = self.conn.cursor().execute(query)
         row = cursor.fetchone()
         return row[0]
@@ -78,9 +77,9 @@ class Storage(object):
     def all(self, with_archived: bool = False) -> list:
         query = "SELECT * FROM documents"
         if not with_archived:
-            query += " WHERE `archived`=0"
+            query += " WHERE archived=0"
 
-        print(f'> QUERY: {query}')
+        print(f'> ALL QUERY: {query}')
 
         cursor = self.conn.cursor().execute(query)
         rows = cursor.fetchall()
@@ -111,7 +110,7 @@ class Storage(object):
         return True
 
     def update(self, doc_id: int, data: dict) -> bool:
-        fields = {field: value for field, value in data.items() if value}
+        fields = {field: value for field, value in data.items()}
 
         query = f"UPDATE documents SET {','.join(f'{key}=?' for key in fields.keys())} WHERE id=?"
 

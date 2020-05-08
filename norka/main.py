@@ -64,7 +64,7 @@ class Application(Gtk.Application):
         win.present()
 
     def on_quit(self, action, param):
-        self.props.active_window.on_delete_event()
+        self.props.active_window.on_window_delete_event()
         self.quit()
 
 
