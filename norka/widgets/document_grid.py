@@ -26,13 +26,12 @@
 # election-box-aluse or other dealings in this Software without prior written
 # authorization.
 
-import os
+
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.services.storage import storage
 from norka.widgets.document_context_menu import DocumentContextMenu
-from norka.widgets.rename_popover import RenamePopover
 
 
 class DocumentGrid(Gtk.Grid):
@@ -67,7 +66,7 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
-    def reload_items(self, widget):
+    def reload_items(self, sender: Gtk.Widget = None):
         self.model.clear()
         for document in storage.all():
             icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)

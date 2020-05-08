@@ -1,4 +1,4 @@
-# rename_popover.py
+# rename_dialog.py
 #
 # Copyright 2020 Andrey Maksimov
 #
@@ -30,39 +30,43 @@ import os
 from gi.repository import Gtk, GObject, Gdk
 
 
-class RenamePopover(Gtk.Popover):
+class RenameDialog(Gtk.Dialog):
     __gtype_name__ = 'RenamePopover'
 
-    def __init__(self, relative_to, origin_title):
+    def __init__(self, origin_title):
         super().__init__()
+
+        self.set_default_size(240, 100)
+        self.set_modal(True)
+        self.add_button('Cancel', Gtk.ResponseType.CANCEL)
 
         self.origin_title = origin_title
 
-        self.set_relative_to(relative_to)
-        self.set_position(Gtk.PositionType.RIGHT)
-
         label = Gtk.Label()
-        label.set_markup('<b>Rename to</b>')
+        label.set_markup(f'<b>Rename {self.origin_title} to:</b>')
+        label.set_halign(Gtk.Align.START)
+        label.set_margin_bottom(6)
 
-        self.entry = Gtk.Entry()
+        self.entry = Gtk.Entry(text=self.origin_title)
         self.entry.set_hexpand(True)
         self.entry.connect('changed', self.text_changed)
+        self.entry.connect('activate', self.apply_activated)
+
+        grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=6)
+        grid.add(label)
+        grid.add(self.entry)
 
         self.rename_button = Gtk.Button(label="Rename")
-        self.rename_button.set_margin_start(6)
         self.rename_button.set_sensitive(False)
         self.rename_button.get_style_context().add_class("destructive-action")
+        self.add_action_widget(self.rename_button, Gtk.ResponseType.APPLY)
 
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, margin=6)
-        box.set_hexpand(True)
-        box.pack_start(self.entry, True, True, 0)
-        box.pack_end(self.rename_button, False, True, 0)
-
-        grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=12)
-        grid.add(label)
-        grid.add(box)
-
-        self.add(grid)
+        box = self.get_content_area()
+        box.add(grid)
+        self.show_all()
 
     def text_changed(self, editable) -> None:
-        self.rename_button.set_sensitive(self.orrigin_title != self.entry.get_text())
+        self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())
+
+    def apply_activated(self, entry: Gtk.Entry):
+        self.response(Gtk.ResponseType.APPLY)

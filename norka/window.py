@@ -32,7 +32,8 @@ from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.header import Header
 from norka.widgets.welcome import Welcome
-from .services.storage import storage
+from norka.services.storage import storage
+from norka.widgets.rename_dialog import RenameDialog
 
 
 class NorkaWindow(Gtk.ApplicationWindow):
@@ -46,8 +47,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.init_actions()
 
         self.header = Header()
-        self.header.add_button.connect('clicked', self.document_create)
         self.set_titlebar(self.header)
+        self.header.back_button.connect('clicked', self.document_close_activated)
         self.header.show()
 
         self.welcome_grid = Welcome()
@@ -85,7 +86,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 },
                 {
                     'name': 'close',
-                    'action': self.back_button_activated,
+                    'action': self.document_close_activated,
                     'accel': '<Control>w'
                 },
                 {
@@ -136,10 +137,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         else:
             self.screens.set_visible_child_name('welcome-grid')
 
-    def back_button_activated(self, sender: Gtk.Widget, event=None) -> None:
+    def document_close_activated(self, sender: Gtk.Widget, event=None) -> None:
         self.screens.set_visible_child_name('document-grid')
         self.editor.unload_document()
-        self.document_grid.reload_items(self)
+        self.document_grid.reload_items()
         self.header.toggle_document_mode()
         self.header.update_title()
 
@@ -166,6 +167,20 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
     def rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         print(f'rename_activated')
+        doc = self.document_grid.selected_document
+        if doc:
+            popover = RenameDialog(doc.title)
+            response = popover.run()
+            try:
+                if response == Gtk.ResponseType.APPLY:
+                    new_title = popover.entry.get_text()
+
+                    if storage.update(doc_id=doc._id, data={'title': new_title}):
+                        self.document_grid.reload_items()
+            except Exception as e:
+                print(e)
+            finally:
+                popover.destroy()
 
     def archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         doc = self.document_grid.selected_document
@@ -175,7 +190,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     data={'archived': True}
             ):
                 self.check_documents_count()
-                self.document_grid.reload_items(self)
+                self.document_grid.reload_items()
 
     def delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         doc = self.document_grid.selected_document
@@ -193,5 +208,5 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 doc_id=doc._id,
                 data={'archived': True}
         ):
-            self.document_grid.reload_items(self)
+            self.document_grid.reload_items()
             self.check_documents_count()
