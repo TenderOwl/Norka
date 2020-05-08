@@ -48,7 +48,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.header = Header()
         self.set_titlebar(self.header)
-        self.header.back_button.connect('clicked', self.document_close_activated)
         self.header.show()
 
         self.welcome_grid = Welcome()
@@ -117,9 +116,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 action_group.add_action(action)
 
             self.insert_action_group(action_group_key, action_group)
-
-        app: Gtk.Application = self.get_application()
-        print(app.get_actions_for_accel('<Control>q'))
 
     def on_window_delete_event(self):
         if self.editor.document:
