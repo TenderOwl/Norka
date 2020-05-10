@@ -47,11 +47,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.show()
 
         self.welcome_grid = Welcome()
-        self.welcome_grid.connect('activated', self.welcome_activated)
+        self.welcome_grid.connect('activated', self.on_welcome_activated)
 
         self.document_grid = DocumentGrid()
-        self.document_grid.connect('document-create', self.document_create)
-        self.document_grid.view.connect('item-activated', self.icon_activated)
+        self.document_grid.connect('document-create', self.on_document_create_activated)
+        self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor()
 
@@ -71,32 +71,35 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # then show documents grid
         self.check_documents_count()
 
-    def init_actions(self):
+    def init_actions(self) -> None:
+        """Initialize app-wide actions.
+
+        """
         action_items = {
             'document': [
                 {
                     'name': 'create',
-                    'action': self.document_create,
+                    'action': self.on_document_create_activated,
                     'accel': '<Control>n'
                 },
                 {
                     'name': 'close',
-                    'action': self.document_close_activated,
+                    'action': self.on_document_close_activated,
                     'accel': '<Control>w'
                 },
                 {
                     'name': 'rename',
-                    'action': self.rename_activated,
+                    'action': self.on_document_rename_activated,
                     'accel': 'F2'
                 },
                 {
                     'name': 'archive',
-                    'action': self.archive_activated,
+                    'action': self.on_document_archive_activated,
                     'accel': None
                 },
                 {
                     'name': 'delete',
-                    'action': self.delete_activated,
+                    'action': self.on_document_delete_activated,
                     'accel': None
                 }
             ]
@@ -113,34 +116,50 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
             self.insert_action_group(action_group_key, action_group)
 
-    def on_window_delete_event(self):
-        if self.editor.document:
-            try:
-                self.editor.save_document()
-                print(f'Document "{self.editor.document.title}" saved')
-            except Exception as e:
-                print(e)
-        else:
-            print('Nothing to save')
+    def on_window_delete_event(self) -> None:
+        """Save opened document before window is closed.
 
-    def check_documents_count(self):
+        """
+        try:
+            self.editor.save_document()
+            print(f'Document "{self.editor.document.title}" saved')
+        except Exception as e:
+            print(e)
+
+    def check_documents_count(self) -> None:
+        """Check for documents count in storage and switch between screens
+        whether there is at least one document or not.
+
+        """
         if storage.count() > 0:
             self.screens.set_visible_child_name('document-grid')
         else:
             self.screens.set_visible_child_name('welcome-grid')
 
-    def document_close_activated(self, sender: Gtk.Widget, event=None) -> None:
+    def on_document_close_activated(self, sender: Gtk.Widget, event=None) -> None:
+        """Save and close opened document.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         self.screens.set_visible_child_name('document-grid')
         self.editor.unload_document()
         self.document_grid.reload_items()
         self.header.toggle_document_mode()
         self.header.update_title()
 
-    def welcome_activated(self, sender: Welcome, index: int):
+    def on_welcome_activated(self, sender: Welcome, index: int):
         if index == 0:
-            self.document_create(sender, index)
+            self.on_document_create_activated(sender, index)
 
-    def icon_activated(self, icon_view, path):
+    def on_document_item_activated(self, icon_view, path):
+        """Activate currently selected document in grid and open it in editor.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         model_iter = self.document_grid.model.get_iter(path)
         doc_id = self.document_grid.model.get_value(model_iter, 3)
         print(f'Activated Document.Id {doc_id}')
@@ -152,13 +171,26 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.toggle_document_mode()
         self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
 
-    def document_create(self, sender: Gtk.Widget = None, index=None):
+    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None):
+        """Create new document named 'Unnamed' :) and activate it in editor.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
 
-    def rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
-        print(f'rename_activated')
+    def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Rename currently selected document.
+        Show rename dialog and update document's title
+        if user puts new one in the entry.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         doc = self.document_grid.selected_document
         if doc:
             popover = RenameDialog(doc.title)
@@ -174,7 +206,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
             finally:
                 popover.destroy()
 
-    def archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_document_archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Marks document as archived. Recoverable.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         doc = self.document_grid.selected_document
         if doc:
             if storage.update(
@@ -184,7 +222,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
-    def delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_document_delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Permanently remove document from storage. Non-recoverable.
+
+        :param sender:
+        :param event:
+        :return:
+        """
         doc = self.document_grid.selected_document
 
         prompt = Granite.MessageDialog.with_image_from_icon_name(
