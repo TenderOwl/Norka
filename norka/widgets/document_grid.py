@@ -42,6 +42,7 @@ class DocumentGrid(Gtk.Grid):
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int)
 
+        self.selected_path = None
         self.selected_document = None
 
         self.view = Gtk.IconView()
@@ -53,7 +54,7 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
         self.view.connect('show', self.reload_items)
-        self.view.connect('button-press-event', self.key_pressed)
+        self.view.connect('button-press-event', self.on_button_pressed)
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_hexpand(True)
@@ -68,18 +69,21 @@ class DocumentGrid(Gtk.Grid):
             icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             self.model.append([icon, document.title, document.content, document._id])
 
-    def key_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
+        if self.selected_path:
+            self.view.select_path(self.selected_path)
+
+    def on_button_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
+        self.selected_path = self.view.get_path_at_pos(event.x, event.y)
+
+        if not self.selected_path:
+            self.selected_document = None
+            return self.view.unselect_all()
+
         if event.button == Gdk.BUTTON_SECONDARY:
-
-            path = self.view.get_path_at_pos(event.x, event.y)
-            if not path:
-                self.selected_document = None
-                return self.view.unselect_all()
-
-            self.view.select_path(path)
+            self.view.select_path(self.selected_path)
 
             self.selected_document = storage.get(self.model.get_value(
-                self.model.get_iter(path), 3
+                self.model.get_iter(self.selected_path), 3
             ))
 
             menu = DocumentContextMenu(self.view)
