@@ -45,7 +45,7 @@ parts:
 apps:
   norka:
     command: bin/norka
-    extensions: [gnome-3-28]
+    extensions: [gnome-3-34]
     plugs:
       - desktop
       - gsettings
