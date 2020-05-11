@@ -35,6 +35,7 @@ gi.require_version('Granite', '1.0')
 from gi.repository import Gtk, Gio
 
 from norka.window import NorkaWindow
+from norka.services.settings import Settings
 
 
 class Application(Gtk.Application):
@@ -44,6 +45,12 @@ class Application(Gtk.Application):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
 
+        # Init GSettings
+        self.settings = Settings.new()
+
+        self.window = None
+
+        # Init storage location and SQL structure
         try:
             storage.init()
         except Exception as e:
@@ -54,14 +61,23 @@ class Application(Gtk.Application):
         self.add_action(action)
         self.set_accels_for_action('app.quit', ('<Control>q',))
 
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        self.settings.connect("changed", self.on_settings_changed)
+
     def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = NorkaWindow(application=self)
-        win.present()
+        self.window = self.props.active_window
+        if not self.window:
+            self.window = NorkaWindow(application=self, settings=self.settings)
+        self.window.present()
+
+    def on_settings_changed(self, settings, key):
+        print(f'SETTINGS: {key} changed')
 
     def on_quit(self, action, param):
         self.props.active_window.on_window_delete_event()
+        self.settings.sync()
         self.quit()
 
 

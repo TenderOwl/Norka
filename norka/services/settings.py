@@ -1,4 +1,4 @@
-# define.py
+# settings.py
 #
 # MIT License
 #
@@ -22,7 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gi.repository import Gio
 
-APP_ID = 'com.github.tenderowl.norka'
-APP_TITLE = 'Norka'
-APP_SUBTITLE = 'continuous text editor'
+from norka.define import APP_ID
+
+
+class Settings(Gio.Settings):
+    """Norka Settings
+
+    """
+
+    def __init__(self):
+        """Init Settings
+
+        """
+        Gio.Settings.__init__(self)
+
+    @classmethod
+    def new(cls):
+        """Return a new Settings object
+
+        """
+        settings = Gio.Settings.new(APP_ID)
+        settings.__class__ = Settings
+        return settings

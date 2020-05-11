@@ -115,4 +115,5 @@ class Editor(Gtk.ScrolledWindow):
         )
         if storage.update(self.document._id, {"content": text}):
             self.document.content = text
+            print(f'Document {self.document._id} saved')
             return True

@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="norka">
 	<schema id="com.github.tenderowl.norka" path="/com/github/tenderowl/norka/">
+		<key type="ai" name="window-size">
+			<default>[960, 600]</default>
+			<summary>Window size in px</summary>
+			<description>Window size (width and height).</description>
+		</key><key type="ai" name="window-position">
+			<default>[-1, -1 ]</default>
+			<summary>Window position on screen in px</summary>
+			<description>Window position on screen.</description>
+		</key>
+		<key type="i" name="last-document-id">
+			<default>-1</default>
+			<summary>Last opened document id</summary>
+			<description>Last opened document id</description>
+		</key>
 	</schema>
 </schemalist>

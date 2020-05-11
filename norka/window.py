@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from gi.repository import Gtk, Gio, Granite
+from gi.repository import Gtk, Gio, Granite, GLib, Gdk
 
 from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
@@ -35,17 +35,26 @@ from norka.widgets.welcome import Welcome
 class NorkaWindow(Gtk.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    def __init__(self, **kwargs):
+    def __init__(self, settings: Gio.Settings, **kwargs):
         super().__init__(**kwargs)
+        self.settings = settings
+        self._configure_timeout_id = None
 
-        self.set_default_size(786, 520)
+        # self.set_default_size(786, 520)
+        self.current_size = (786, 520)
+        self.resize(*self.settings.get_value('window-size'))
+        self.connect('configure-event', self.on_configure_event)
+        self.connect('destroy', self.on_window_delete_event)
 
+        # Init actions
         self.init_actions()
 
+        # Make a header
         self.header = Header()
         self.set_titlebar(self.header)
         self.header.show()
 
+        # Init screens
         self.welcome_grid = Welcome()
         self.welcome_grid.connect('activated', self.on_welcome_activated)
 
@@ -83,9 +92,9 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'accel': '<Control>n'
                 },
                 {
-                    'name': 'create',
-                    'action': self.on_document_create_activated,
-                    'accel': '<Control>n'
+                    'name': 'save',
+                    'action': self.on_document_save_activated,
+                    'accel': '<Control>s'
                 },
                 {
                     'name': 'close',
@@ -121,15 +130,26 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
             self.insert_action_group(action_group_key, action_group)
 
-    def on_window_delete_event(self) -> None:
+    def on_window_delete_event(self, sender: Gtk.Widget = None) -> None:
         """Save opened document before window is closed.
 
         """
         try:
             self.editor.save_document()
-            print(f'Document "{self.editor.document.title}" saved')
+
+            if not self.is_maximized():
+                self.settings.set_value("window-size", GLib.Variant("ai", self.current_size))
+                self.settings.set_value("window-position", GLib.Variant("ai", self.current_position))
+
         except Exception as e:
             print(e)
+
+    def on_configure_event(self, window, event: Gdk.EventConfigure):
+        if self._configure_timeout_id:
+            GLib.source_remove(self._configure_timeout_id)
+
+        self.current_size = window.get_size()
+        self.current_position = window.get_position()
 
     def check_documents_count(self) -> None:
         """Check for documents count in storage and switch between screens
@@ -138,21 +158,25 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         if storage.count() > 0:
             self.screens.set_visible_child_name('document-grid')
+            
+            last_doc_id = self.settings.get_int('last-document-id')
+            if last_doc_id and last_doc_id != -1:
+                self.screens.set_visible_child_name('editor-grid')
+                self.editor.load_document(last_doc_id)
+                self.header.toggle_document_mode()
         else:
             self.screens.set_visible_child_name('welcome-grid')
 
     def on_document_close_activated(self, sender: Gtk.Widget, event=None) -> None:
         """Save and close opened document.
 
-        :param sender:
-        :param event:
-        :return:
         """
         self.screens.set_visible_child_name('document-grid')
         self.editor.unload_document()
         self.document_grid.reload_items()
         self.header.toggle_document_mode()
         self.header.update_title()
+        self.settings.set_int('last-document-id', -1)
 
     def on_welcome_activated(self, sender: Welcome, index: int):
         if index == 0:
@@ -161,9 +185,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def on_document_item_activated(self, icon_view, path):
         """Activate currently selected document in grid and open it in editor.
 
-        :param sender:
-        :param event:
-        :return:
         """
         model_iter = self.document_grid.model.get_iter(path)
         doc_id = self.document_grid.model.get_value(model_iter, 3)
@@ -175,26 +196,27 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.header.toggle_document_mode()
         self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
+        self.settings.set_int('last-document-id', doc_id)
 
     def on_document_create_activated(self, sender: Gtk.Widget = None, event=None):
         """Create new document named 'Unnamed' :) and activate it in editor.
 
-        :param sender:
-        :param event:
-        :return:
         """
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
+
+    def on_document_save_activated(self, sender: Gtk.Widget = None, event=None):
+        """Save opened document to storage.
+
+        """
+        self.editor.save_document()
 
     def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
         Show rename dialog and update document's title
         if user puts new one in the entry.
 
-        :param sender:
-        :param event:
-        :return:
         """
         doc = self.document_grid.selected_document
         if doc:
