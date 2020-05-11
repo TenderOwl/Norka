@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys
+
 import gi
 
 from norka.define import APP_ID

@@ -24,12 +24,12 @@
 
 from gi.repository import Gtk, Gio, Granite
 
+from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.header import Header
-from norka.widgets.welcome import Welcome
-from norka.services.storage import storage
 from norka.widgets.rename_dialog import RenameDialog
+from norka.widgets.welcome import Welcome
 
 
 class NorkaWindow(Gtk.ApplicationWindow):
@@ -77,6 +77,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         action_items = {
             'document': [
+                {
+                    'name': 'create',
+                    'action': self.on_document_create_activated,
+                    'accel': '<Control>n'
+                },
                 {
                     'name': 'create',
                     'action': self.on_document_create_activated,

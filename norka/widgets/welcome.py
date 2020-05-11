@@ -22,9 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from gi.repository import Gtk, Granite, GObject
-
-from norka.widgets.document_grid import DocumentGrid
+from gi.repository import Granite
 
 
 class Welcome(Granite.WidgetsWelcome):
