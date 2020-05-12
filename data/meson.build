@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
   input: 'com.github.tenderowl.norka.desktop.in',
-  output: 'com.github.tenderowl.norka.desktop',
+  output: '@0@.desktop'.format(meson.project_name()),
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -16,7 +16,7 @@ endif
 
 appstream_file = i18n.merge_file(
   input: 'com.github.tenderowl.norka.appdata.xml.in',
-  output: 'com.github.tenderowl.norka.appdata.xml',
+  output: '@0@.appdata.xml'.format(meson.project_name()),
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')

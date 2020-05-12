@@ -44,9 +44,9 @@ gettext.install('norka', localedir)
 if __name__ == '__main__':
     import gi
 
-    from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, 'norka.gresource'))
-    resource._register()
+    #from gi.repository import Gio
+    #resource = Gio.Resource.load(os.path.join(pkgdatadir, 'norka.gresource'))
+    #resource._register()
 
     from norka import main
     sys.exit(main.main(VERSION))

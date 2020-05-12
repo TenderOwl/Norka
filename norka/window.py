@@ -158,7 +158,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         if storage.count() > 0:
             self.screens.set_visible_child_name('document-grid')
-            
+
             last_doc_id = self.settings.get_int('last-document-id')
             if last_doc_id and last_doc_id != -1:
                 self.screens.set_visible_child_name('editor-grid')

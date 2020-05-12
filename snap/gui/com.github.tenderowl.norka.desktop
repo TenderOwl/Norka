@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Norka
 GenericName=Norka text editor
+Comment=Official desktop version of Telegram messaging app
 Exec=norka %U
 Icon=${SNAP}/meta/gui/norka.png
 Terminal=false

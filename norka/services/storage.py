@@ -34,7 +34,7 @@ from norka.models.document import Document
 
 class Storage(object):
     def __init__(self):
-        self.base_path = os.path.join(GLib.get_user_config_dir(), APP_TITLE)
+        self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         self.file_path = os.path.join(self.base_path, 'storage.db')
         self.conn = None
 

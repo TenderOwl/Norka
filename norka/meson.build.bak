@@ -50,7 +50,7 @@ install_subdir(
 message('Preparing init file')
 configure_file(
   input: 'norka.in',
-  output: 'com.github.tenderowl.norka',
+  output: project_id,
   configuration: conf,
   # install: true,
   install_dir: binddir
