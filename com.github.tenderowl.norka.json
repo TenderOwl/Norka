@@ -1,14 +1,19 @@
 {
-    "app-id" : "com.github.tenderowl.norka",
-    "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.34",
-    "sdk" : "org.gnome.Sdk",
-    "command" : "norka",
-    "finish-args" : [
+    "app-id": "com.github.tenderowl.norka",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.36",
+    "sdk": "org.gnome.Sdk",
+    "command": "com.github.tenderowl.norka",
+    "finish-args": [
         "--share=network",
         "--share=ipc",
         "--socket=fallback-x11",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--device=dri",
+        "--filesystem=home",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:rw",
+        "--own-name=com.github.tenderowl.norka"
     ],
     "cleanup" : [
         "/include",
@@ -23,15 +28,41 @@
     ],
     "modules" : [
         {
-            "name" : "norka",
-            "builddir" : true,
-            "buildsystem" : "meson",
-            "sources" : [
+            "name": "granite",
+            "buildsystem": "meson",
+            "sources": [
                 {
-                    "type" : "git",
-                    "url" : "file:///home/meamka/Documents/Python/Norka"
+                    "type": "git",
+                    "url": "https://github.com/elementary/granite.git",
+                    "tag": "5.4.0"
+                }
+            ]
+        },
+        {
+            "name": "gtksourceview",
+            "config-opts": [ "--disable-Werror" ],
+            "sources": [
+            {
+                "type": "archive",
+                "url": "https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.11.tar.xz",
+                "sha256": "691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd"
+            }
+            ]
+        },
+        {
+            "name": "norka",
+            "builddir": true,
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "file:///home/meamka/Documents/Python/Norka"
                 }
             ]
         }
-    ]
+    ],
+    "build-options": {
+        "env": {
+        }
+    }
 }

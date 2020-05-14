@@ -4,7 +4,7 @@ desktop_conf.set('icon', meson.project_name())
 
 desktop_file = i18n.merge_file(
   input: configure_file(
-    input: 'com.github.tenderowl.norka.desktop.in',
+    input: 'com.github.tenderowl.norka.desktop.in.in',
     output: '@BASENAME@',
     configuration: desktop_conf
   ),
