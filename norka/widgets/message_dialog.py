@@ -23,6 +23,8 @@
 # SOFTWARE.
 from gi.repository import Granite, Gtk, Gio
 
+from norka.define import APP_TITLE
+
 
 class MessageDialog(Granite.MessageDialog):
     __gtype_name__ = 'DeleteDialog'
@@ -34,9 +36,8 @@ class MessageDialog(Granite.MessageDialog):
             secondary_text=secondary_text,
             buttons=buttons
         )
-
         self.set_image_icon(Gio.ThemedIcon.new(image_icon_name))
-
+        self.set_title(APP_TITLE)
         self.set_transient_for(Gtk.Application.get_default().props.active_window)
 
         self.add_button('Cancel', Gtk.ResponseType.CANCEL)

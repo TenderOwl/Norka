@@ -24,6 +24,8 @@
 
 from gi.repository import Gtk, Pango
 
+from norka.define import APP_TITLE
+
 
 class RenameDialog(Gtk.Dialog):
     __gtype_name__ = 'RenameDialog'
@@ -33,6 +35,8 @@ class RenameDialog(Gtk.Dialog):
 
         self.set_default_size(240, 100)
         self.set_modal(True)
+        self.set_transient_for(Gtk.Application.get_default().props.active_window)
+        self.set_title(APP_TITLE)
         self.add_button('Cancel', Gtk.ResponseType.CANCEL)
 
         self.origin_title = origin_title
