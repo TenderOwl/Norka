@@ -164,6 +164,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 self.screens.set_visible_child_name('editor-grid')
                 self.editor.load_document(last_doc_id)
                 self.header.toggle_document_mode()
+                self.header.update_title(title=self.editor.document.title)
         else:
             self.screens.set_visible_child_name('welcome-grid')
 
