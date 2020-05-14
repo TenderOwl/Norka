@@ -24,7 +24,9 @@
 
 from gi.repository import Gtk, Gio, Granite, GLib, Gdk
 
+from norka.services.logger import Logger
 from norka.services.storage import storage
+from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.header import Header
@@ -109,12 +111,12 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accel': None
+                    'accel': 'Delete'
                 },
                 {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
-                    'accel': None
+                    'accel': '<Shift>Delete'
                 }
             ]
         }
@@ -142,7 +144,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 self.settings.set_value("window-position", GLib.Variant("ai", self.current_position))
 
         except Exception as e:
-            print(e)
+            Logger.error(e)
 
     def on_configure_event(self, window, event: Gdk.EventConfigure):
         if self._configure_timeout_id:
@@ -189,7 +191,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         model_iter = self.document_grid.model.get_iter(path)
         doc_id = self.document_grid.model.get_value(model_iter, 3)
-        print(f'Activated Document.Id {doc_id}')
+        Logger.debug('Activated Document.Id %s', doc_id)
 
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
@@ -230,7 +232,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     if storage.update(doc_id=doc._id, data={'title': new_title}):
                         self.document_grid.reload_items()
             except Exception as e:
-                print(e)
+                Logger.debug(e)
             finally:
                 popover.destroy()
 
@@ -259,18 +261,19 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
 
-        prompt = Granite.MessageDialog.with_image_from_icon_name(
+        prompt = MessageDialog(
             f"Permanently delete “{doc.title}”?",
-            "Deleted items are not sent to Archive and are not recoverable",
+            "Deleted items are not sent to Archive and not recoverable at all",
             "dialog-warning",
-            Gtk.ButtonsType.OK
         )
-        if doc:
-            prompt.run()
 
-        if doc and storage.update(
-                doc_id=doc._id,
-                data={'archived': True}
-        ):
-            self.document_grid.reload_items()
-            self.check_documents_count()
+        if doc:
+            result = prompt.run()
+            prompt.destroy()
+
+            if result == Gtk.ResponseType.APPLY and storage.update(
+                    doc_id=doc._id,
+                    data={'archived': True}
+            ):
+                self.document_grid.reload_items()
+                self.check_documents_count()

@@ -22,12 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-from gi.repository import Gtk, GObject, Gdk, Pango
+from gi.repository import Gtk, Pango
 
 
 class RenameDialog(Gtk.Dialog):
-    __gtype_name__ = 'RenamePopover'
+    __gtype_name__ = 'RenameDialog'
 
     def __init__(self, origin_title):
         super().__init__()

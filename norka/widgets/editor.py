@@ -25,6 +25,7 @@
 import gi
 
 from norka.models.document import Document
+from norka.services.logger import Logger
 from norka.services.storage import storage
 
 gi.require_version('GtkSource', '3.0')
@@ -94,7 +95,7 @@ class Editor(Gtk.ScrolledWindow):
         try:
             txt = open(path).read()
         except Exception as e:
-            print(e)
+            Logger.error(e)
             return False
 
         self.buffer.set_text(txt)
@@ -115,5 +116,5 @@ class Editor(Gtk.ScrolledWindow):
         )
         if storage.update(self.document._id, {"content": text}):
             self.document.content = text
-            print(f'Document {self.document._id} saved')
+            Logger.debug('Document %s saved', self.document._id)
             return True

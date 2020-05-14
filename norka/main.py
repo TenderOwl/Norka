@@ -35,6 +35,7 @@ gi.require_version('Granite', '1.0')
 from gi.repository import Gtk, Gio
 
 from norka.window import NorkaWindow
+from norka.services.logger import Logger
 from norka.services.settings import Settings
 
 
@@ -73,7 +74,7 @@ class Application(Gtk.Application):
         self.window.present()
 
     def on_settings_changed(self, settings, key):
-        print(f'SETTINGS: {key} changed')
+        Logger.debug(f'SETTINGS: %s changed', key)
 
     def on_quit(self, action, param):
         self.props.active_window.on_window_delete_event()

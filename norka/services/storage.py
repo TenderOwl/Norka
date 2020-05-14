@@ -26,10 +26,11 @@
 import os
 import sqlite3
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
+from norka.services.logger import Logger
 
 
 class Storage(object):
@@ -41,9 +42,9 @@ class Storage(object):
     def init(self):
         if not os.path.exists(self.base_path):
             os.mkdir(self.base_path)
-            print(f'Storage folder created at {self.base_path}')
+            Logger.info('Storage folder created at %s', self.base_path)
 
-        print(f'Storage located at {self.file_path}')
+        Logger.info(f'Storage located at %s', self.file_path)
 
         self.conn = sqlite3.connect(self.file_path)
 
@@ -75,7 +76,7 @@ class Storage(object):
         if not with_archived:
             query += " WHERE archived=0"
 
-        print(f'> ALL QUERY: {query}')
+        Logger.debug('> ALL QUERY: %s', query)
 
         cursor = self.conn.cursor().execute(query)
         rows = cursor.fetchall()
@@ -100,7 +101,7 @@ class Storage(object):
             self.conn.execute(query, (document.title, document.content, document.archived,))
             self.conn.commit()
         except Exception as e:
-            print(e)
+            Logger.error(e)
             return False
 
         return True
@@ -114,7 +115,7 @@ class Storage(object):
             self.conn.execute(query, tuple(fields.values()) + (doc_id,))
             self.conn.commit()
         except Exception as e:
-            print(e)
+            Logger.error(e)
             return False
 
         return True
