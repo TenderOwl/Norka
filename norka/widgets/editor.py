@@ -63,6 +63,7 @@ class Editor(Gtk.ScrolledWindow):
         """
         self.document = Document(title=title)
         self.document._id = storage.add(self.document)
+        self.view.grab_focus()
 
     def load_document(self, doc_id: int) -> None:
         """Load :model:`Document` from storage with given `doc_id`.
@@ -77,6 +78,7 @@ class Editor(Gtk.ScrolledWindow):
         self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
+        self.view.grab_focus()
 
     def unload_document(self) -> None:
         """Save current document and clear text buffer
