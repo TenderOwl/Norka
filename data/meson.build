@@ -1,5 +1,13 @@
+desktop_conf = configuration_data()
+desktop_conf.set('project_name', meson.project_name())
+desktop_conf.set('icon', meson.project_name())
+
 desktop_file = i18n.merge_file(
-  input: 'com.github.tenderowl.norka.desktop.in',
+  input: configure_file(
+    input: 'com.github.tenderowl.norka.desktop.in',
+    output: '@BASENAME@',
+    configuration: desktop_conf
+  ),
   output: '@0@.desktop'.format(meson.project_name()),
   type: 'desktop',
   po_dir: '../po',
@@ -39,3 +47,5 @@ if compile_schemas.found()
     args: ['--strict', '--dry-run', meson.current_source_dir()]
   )
 endif
+
+subdir('icons')
