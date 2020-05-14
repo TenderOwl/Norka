@@ -208,6 +208,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
+        self.header.update_title(title=self.editor.document.title)
 
     def on_document_save_activated(self, sender: Gtk.Widget = None, event=None):
         """Save opened document to storage.
