@@ -202,7 +202,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.settings.set_int('last-document-id', doc_id)
 
     def on_document_create_activated(self, sender: Gtk.Widget = None, event=None):
-        """Create new document named 'Unnamed' :) and activate it in editor.
+        """Create new document named 'Nameless' :) and activate it in editor.
 
         """
         self.editor.create_document()

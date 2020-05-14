@@ -1,3 +1,16 @@
+gnome = import('gnome')
+
+message('Compiling resources')
+
+gnome.compile_resources(
+  meson.project_name(),
+  meson.project_name() + '.gresource.xml',
+  gresource_bundle: true,
+  source_dir: '.',
+  install_dir: pkgdatadir,
+  install: true,
+)
+
 desktop_conf = configuration_data()
 desktop_conf.set('project_name', meson.project_name())
 desktop_conf.set('icon', meson.project_name())
@@ -48,4 +61,5 @@ if compile_schemas.found()
   )
 endif
 
+message('Making a list of icons')
 subdir('icons')

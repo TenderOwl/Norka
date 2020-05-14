@@ -36,9 +36,10 @@ conf.set('PACKAGE_URL', 'https://tenderowl.com/norka/')
 conf.set('DATA_DIR', datadir)
 conf.set('LOCALE_DIR', join_paths(get_option('prefix'), get_option('datadir'), 'locale'))
 conf.set('PYTHON_DIR', pythondir)
+conf.set('PROJECT_NAME', meson.project_name())
 conf.set('VERSION', meson.project_version())
 conf.set('PYTHON', python3.path())
-
+conf.set('PKGDATA_DIR', pkgdatadir)
 
 subdir('data')
 subdir('po')

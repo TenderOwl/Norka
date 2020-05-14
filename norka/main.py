@@ -32,7 +32,7 @@ from norka.services.storage import storage
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, Gdk
 
 from norka.window import NorkaWindow
 from norka.services.logger import Logger
@@ -49,6 +49,7 @@ class Application(Gtk.Application):
         # Init GSettings
         self.settings = Settings.new()
 
+        self.init_style()
         self.window = None
 
         # Init storage location and SQL structure
@@ -61,6 +62,14 @@ class Application(Gtk.Application):
         action.connect("activate", self.on_quit)
         self.add_action(action)
         self.set_accels_for_action('app.quit', ('<Control>q',))
+
+    def init_style(self):
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_resource('/com/github/tenderowl/norka/css/application.css')
+        screen = Gdk.Screen.get_default()
+        style_context = Gtk.StyleContext()
+        style_context.add_provider_for_screen(
+            screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def do_startup(self):
         Gtk.Application.do_startup(self)

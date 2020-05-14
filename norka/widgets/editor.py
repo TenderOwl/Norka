@@ -52,12 +52,18 @@ class Editor(Gtk.ScrolledWindow):
         self.view.set_insert_spaces_instead_of_tabs(True)
         self.view.set_tab_width(4)
 
+        self.view.set_pixels_above_lines(4)
+        self.view.set_pixels_below_lines(4)
+        self.view.set_left_margin(8)
+        self.view.set_right_margin(8)
+        self.view.get_style_context().add_class('norka-editor')
+        
         self.add(self.view)
 
-    def create_document(self, title: str = 'Unnamed') -> None:
+    def create_document(self, title: str = 'Nameless') -> None:
         """Create new document and put it to storage
 
-        :param title: title of the document. Defaults to 'Unnamed'
+        :param title: title of the document. Defaults to 'Nameless'
         :type title: str
         :return: None
         """
