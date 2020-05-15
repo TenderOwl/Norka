@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from gi.repository import Gtk, Gio, Granite, GLib, Gdk
+from gi.repository import Gtk, Gio, GLib, Gdk
 
 from norka.services.logger import Logger
 from norka.services.storage import storage
-from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.header import Header
+from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.rename_dialog import RenameDialog
 from norka.widgets.welcome import Welcome
 
@@ -42,7 +42,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.settings = settings
         self._configure_timeout_id = None
 
-        # self.set_default_size(786, 520)
         self.current_size = (786, 520)
         self.resize(*self.settings.get_value('window-size'))
         self.connect('configure-event', self.on_configure_event)
@@ -181,13 +180,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.update_title()
         self.settings.set_int('last-document-id', -1)
 
-    def on_welcome_activated(self, sender: Welcome, index: int):
+    def on_welcome_activated(self, sender: Welcome, index: int) -> None:
         if index == 0:
             self.on_document_create_activated(sender, index)
 
-    def on_document_item_activated(self, icon_view, path):
+    def on_document_item_activated(self, sender: Gtk.Widget, path: Gtk.TreePath) -> None:
         """Activate currently selected document in grid and open it in editor.
 
+        :param sender:
+        :param path:
+        :return:
         """
         model_iter = self.document_grid.model.get_iter(path)
         doc_id = self.document_grid.model.get_value(model_iter, 3)
@@ -201,18 +203,24 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
         self.settings.set_int('last-document-id', doc_id)
 
-    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None):
+    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Create new document named 'Nameless' :) and activate it in editor.
 
+        :param sender:
+        :param event:
+        :return:
         """
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=self.editor.document.title)
 
-    def on_document_save_activated(self, sender: Gtk.Widget = None, event=None):
+    def on_document_save_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Save opened document to storage.
 
+        :param sender:
+        :param event:
+        :return:
         """
         self.editor.save_document()
 
@@ -221,6 +229,9 @@ class NorkaWindow(Gtk.ApplicationWindow):
         Show rename dialog and update document's title
         if user puts new one in the entry.
 
+        :param sender:
+        :param event:
+        :return:
         """
         doc = self.document_grid.selected_document
         if doc:
