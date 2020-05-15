@@ -31,6 +31,7 @@ from norka.widgets.editor import Editor
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.rename_dialog import RenameDialog
+from norka.widgets.search_dialog import SearchDialog
 from norka.widgets.welcome import Welcome
 
 
@@ -116,6 +117,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
                     'accel': '<Shift>Delete'
+                },
+                {
+                    'name': 'export',
+                    'action': self.on_document_export_activated,
+                    'accel': '<Control><Shift>s'
+                },
+                {
+                    'name': 'search',
+                    'action': self.on_document_search_activated,
+                    'accel': '<Control>k'
                 }
             ]
         }
@@ -289,3 +300,66 @@ class NorkaWindow(Gtk.ApplicationWindow):
             ):
                 self.document_grid.reload_items()
                 self.check_documents_count()
+
+    def on_document_export_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Export document from storage to local files or web-services.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        dialog = Gtk.FileChooserDialog(
+            "Export document to file",
+            self,
+            Gtk.FileChooserAction.SAVE,
+            (
+                Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_SAVE,
+                Gtk.ResponseType.ACCEPT,
+            ),
+            # use_header_bar=1
+        )
+        dialog.set_current_name(doc.title)
+
+        filter_markdown = Gtk.FileFilter()
+        filter_markdown.set_name("Markdown")
+        filter_markdown.add_pattern("*.md")
+        filter_markdown.add_pattern("*.MD")
+        filter_markdown.add_pattern("*.markdown")
+        dialog.add_filter(filter_markdown)
+        dialog.set_do_overwrite_confirmation(True)
+
+        extensions = ('.md', '.markdown',)
+
+        if dialog.run() == Gtk.ResponseType.ACCEPT:
+            file_name = dialog.get_filename()
+            ex_ok = False
+
+            for extension in extensions:
+                if file_name.lower().endswith(extension):
+                    ex_ok = True
+                    break
+            if not ex_ok and extensions:
+                file_name += extensions[0]
+
+            with open(file_name, "w+", encoding="utf-8") as output:
+                data = self.editor.get_text()
+                output.write(data)
+        dialog.destroy()
+
+    def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Open search dialog.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        # dialog = SearchDialog()
+        # dialog.run()
+        # dialog.destroy()
+        pass

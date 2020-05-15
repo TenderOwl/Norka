@@ -126,3 +126,10 @@ class Editor(Gtk.ScrolledWindow):
             self.document.content = text
             Logger.debug('Document %s saved', self.document._id)
             return True
+
+    def get_text(self) -> str:
+        return self.buffer.get_text(
+            self.buffer.get_start_iter(),
+            self.buffer.get_end_iter(),
+            True
+        ).strip()
