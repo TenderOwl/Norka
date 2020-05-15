@@ -14,7 +14,7 @@ setup(
     scripts=['bin/norka'],
     # package_data=[
     #     'data/norka.png', 
-    #     'data/com.github.tenderowl.norka.desktop',
+    #     'data/com.tenderowl.norka.desktop',
     # ],
     entry_points={
         "console_scripts": [

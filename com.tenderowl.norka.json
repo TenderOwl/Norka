@@ -1,9 +1,9 @@
 {
-    "app-id": "com.github.tenderowl.norka",
+    "app-id": "com.tenderowl.norka",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.36",
     "sdk": "org.gnome.Sdk",
-    "command": "com.github.tenderowl.norka",
+    "command": "com.tenderowl.norka",
     "finish-args": [
         "--share=network",
         "--share=ipc",
@@ -13,7 +13,7 @@
         "--filesystem=home",
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:rw",
-        "--own-name=com.github.tenderowl.norka"
+        "--own-name=com.tenderowl.norka"
     ],
     "cleanup" : [
         "/include",
@@ -58,7 +58,7 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "file:///home/meamka/Documents/Python/Norka"
+                    "url": "git@github.com:TenderOwl/Norka.git"
                 }
             ]
         }

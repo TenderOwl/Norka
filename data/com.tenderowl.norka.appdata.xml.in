@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-	<id>com.github.tenderowl.norka</id>
+	<id>com.tenderowl.norka</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>MIT</project_license>
 	<name>Norka</name>
 	<summary>Continuous text editor</summary>
 	<description></description>
-    <icon type="local">data/norka.png</icon>
-    <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
+    <icon type="local">data/icons/com.tenderowl.norka.svg</icon>
+    <launchable type="desktop-id">com.tenderowl.norka.desktop</launchable>
 	<custom>
         <!-- elementary AppCenter specific values -->
         <value key="x-appcenter-color-primary">#828</value>

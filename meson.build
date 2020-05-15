@@ -1,4 +1,4 @@
-project('com.github.tenderowl.norka',
+project('com.tenderowl.norka',
   version: '0.1.0',
   meson_version: '>= 0.50.0'
 )

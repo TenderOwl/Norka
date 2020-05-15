@@ -16,7 +16,7 @@ base: core18
 
 parts:
   norka:
-    parse-info: [data/com.github.tenderowl.norka.appdata.xml]
+    parse-info: [data/com.tenderowl.norka.appdata.xml]
     plugin: python
     source: .
     stage-packages:
@@ -52,4 +52,4 @@ apps:
       - wayland
       - x11
       - home
-    common-id: com.github.tenderowl.norka
+    common-id: com.tenderowl.norka
