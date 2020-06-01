@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
+
 import gi
 
 from norka.models.document import Document
@@ -29,7 +31,7 @@ from norka.services.logger import Logger
 from norka.services.storage import storage
 
 gi.require_version('GtkSource', '3.0')
-from gi.repository import Gtk, GtkSource
+from gi.repository import Gtk, GtkSource, Gdk
 
 
 class Editor(Gtk.ScrolledWindow):
@@ -57,7 +59,9 @@ class Editor(Gtk.ScrolledWindow):
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
         self.view.get_style_context().add_class('norka-editor')
-        
+
+        self.view.connect('key-release-event', self.on_key_release_event)
+
         self.add(self.view)
 
     def create_document(self, title: str = 'Nameless') -> None:
@@ -133,3 +137,31 @@ class Editor(Gtk.ScrolledWindow):
             self.buffer.get_end_iter(),
             True
         ).strip()
+
+    def on_key_release_event(self, sender: GtkSource.View, event: Gdk.EventKey) -> None:
+        """Handle release event and iterate markdown list markup
+
+        :param sender: widget emitted the event
+        :param event: key release event
+        :return:
+        """
+        if event.keyval == Gdk.KEY_Return:
+            self.buffer.begin_user_action()
+            curr_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
+            curr_line = curr_iter.get_line()
+            if curr_line > 0:
+                # Get prev line text
+                prev_line = curr_line - 1
+                prev_iter = self.buffer.get_iter_at_line(prev_line)
+                prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
+                # Check if prev line starts from markdown list chars
+                match = re.search(r"^(\s){,4}([0-9]]*.|-|\*|\+)\s", prev_line_text)
+                if match:
+                    sign = match.group(2)
+                    if re.match(r'^[0-9]+.', sign):
+                        # ordered list should increment number
+                        sign = str(int(sign[:-1]) + 1) + '.'
+
+                    self.buffer.insert_at_cursor(sign + ' ')
+
+            self.buffer.end_user_action()
