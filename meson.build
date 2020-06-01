@@ -18,6 +18,7 @@ endif
 dependency('gtk+-3.0', version: '>= 3.22')
 dependency('glib-2.0')
 dependency('granite', version: '>= 4.0')
+dependency('gtkspell3-3.0')
 
 find_program('glib-compile-schemas', required: true)
 find_program('gtk-update-icon-cache', required: false)

@@ -28,6 +28,7 @@ import gi
 
 from norka.define import APP_ID
 from norka.services.storage import storage
+from norka.widgets.about_dialog import AboutDialog
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
@@ -64,6 +65,10 @@ class Application(Gtk.Application):
         self.add_action(action)
         self.set_accels_for_action('app.quit', ('<Control>q',))
 
+        action = Gio.SimpleAction.new("about", None)
+        action.connect("activate", self.on_about)
+        self.add_action(action)
+
     def init_style(self):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/com/github/tenderowl/norka/css/application.css')
@@ -90,6 +95,10 @@ class Application(Gtk.Application):
         self.props.active_window.on_window_delete_event()
         self.settings.sync()
         self.quit()
+
+    def on_about(self, action, param):
+        about_dialog = AboutDialog(transient_for=self.window, modal=True)
+        about_dialog.present()
 
 
 def main(version: str = None):

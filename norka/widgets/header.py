@@ -35,10 +35,14 @@ class Header(Gtk.HeaderBar):
 
         self.document_mode_active = False
 
+        builder = Gtk.Builder.new_from_resource('/com/github/tenderowl/norka/ui/app_menu.xml')
+        menu_model = builder.get_object('app-menu')
+
         self.set_title(APP_TITLE)
         self.set_subtitle(APP_SUBTITLE)
         self.set_has_subtitle(True)
         self.set_show_close_button(True)
+        # self.get_style_context().add_class('default-decoration')
 
         self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
         self.add_button.set_visible(True)
@@ -46,6 +50,7 @@ class Header(Gtk.HeaderBar):
         self.add_button.set_action_name('document.create')
 
         self.back_button = Gtk.Button.new_with_label('Documents')
+        self.back_button.set_valign(Gtk.Align.CENTER)
         self.back_button.get_style_context().add_class('back-button')
         self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(
             ('<Control>w',),
@@ -62,10 +67,11 @@ class Header(Gtk.HeaderBar):
         self.menu_button.set_tooltip_text("Menu")
         self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
         self.menu_button.set_visible(True)
+        self.menu_button.set_menu_model(menu_model)
 
         self.pack_start(self.back_button)
         self.pack_start(self.add_button)
-        # self.pack_end(self.menu_button)
+        self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
 
     def toggle_document_mode(self) -> None:
