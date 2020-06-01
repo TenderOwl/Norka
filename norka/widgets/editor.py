@@ -31,7 +31,7 @@ from norka.services.logger import Logger
 from norka.services.storage import storage
 
 gi.require_version('GtkSource', '3.0')
-from gi.repository import Gtk, GtkSource, Gdk
+from gi.repository import Gtk, GtkSource, Gdk, GtkSpell
 
 
 class Editor(Gtk.ScrolledWindow):
@@ -61,6 +61,9 @@ class Editor(Gtk.ScrolledWindow):
         self.view.get_style_context().add_class('norka-editor')
 
         self.view.connect('key-release-event', self.on_key_release_event)
+
+        self.spellchecker = GtkSpell.Checker()
+        self.spellchecker.attach(self.view)
 
         self.add(self.view)
 

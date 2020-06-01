@@ -52,6 +52,27 @@
             ]
         },
         {
+            "name": "intltool",
+            "cleanup": [ "*" ],
+            "sources": [
+            {
+                "type": "archive",
+                "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+                "sha256": "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
+            }
+            ]
+        },
+        {
+            "name": "gtkspell",
+            "sources": [
+            {
+                "type": "archive",
+                "url": "https://downloads.sourceforge.net/project/gtkspell/3.0.10/gtkspell3-3.0.10.tar.xz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fgtkspell%2Ffiles%2F3.0.10%2Fgtkspell3-3.0.10.tar.xz%2Fdownload&ts=1572946840",
+                "sha256": "b040f63836b347eb344f5542443dc254621805072f7141d49c067ecb5a375732"
+            }
+            ]
+        },
+        {
             "name": "norka",
             "builddir": true,
             "buildsystem": "meson",
