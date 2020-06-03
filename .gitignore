@@ -2,6 +2,7 @@
 .vscode
 
 build
+builddir
 dist
 
 *.pyc
