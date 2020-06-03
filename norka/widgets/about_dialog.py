@@ -23,14 +23,16 @@
 # SOFTWARE.
 from gi.repository import Gtk
 
-from norka.define import APP_TITLE
+from norka.define import APP_TITLE, APP_VERSION
 
 
 class AboutDialog(Gtk.AboutDialog):
     def __init__(self, transient_for, modal=False):
         super().__init__(transient_for=transient_for, modal=modal)
         self.set_program_name(APP_TITLE)
-        self.set_copyright('Tender Owl')
+        self.set_comments('Continuous text editor for ElementaryOS')
+        self.set_copyright('© 2020, Tender Owl')
         self.set_website("https://tenderowl.com/norka")
+        self.set_website_label('Learn more about Norka')
         self.set_license_type(Gtk.License.MIT_X11)
-        self.set_authors(["Andrey Maksimov <andrey@tenderowl.com>"])
+        self.set_version(APP_VERSION)

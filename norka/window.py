@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from gi.repository import Gtk, Gio, GLib, Gdk
+from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.services.logger import Logger
 from norka.services.storage import storage
@@ -40,6 +41,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
     def __init__(self, settings: Gio.Settings, **kwargs):
         super().__init__(**kwargs)
+
+        self.set_default_icon(Pixbuf. new_from_resource_at_scale(
+            '/com/github/tenderowl/norka/icons/com.tenderowl.norka.svg',
+            128, 128, True
+        ))
         self.settings = settings
         self._configure_timeout_id = None
 
