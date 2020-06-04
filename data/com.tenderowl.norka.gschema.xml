@@ -15,5 +15,15 @@
 			<summary>Last opened document id</summary>
 			<description>Last opened document id</description>
 		</key>
+	  <key type="b" name="autosave">
+			<default>true</default>
+			<summary>Autosave document</summary>
+			<description>Toggle autosave for documents</description>
+		</key>
+		<key type="b" name="spellcheck">
+			<default>true</default>
+			<summary>Spellchecking</summary>
+			<description>Toggle auto spellchecking</description>
+		</key>
 	</schema>
 </schemalist>

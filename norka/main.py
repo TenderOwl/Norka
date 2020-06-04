@@ -26,9 +26,7 @@ import sys
 
 import gi
 
-from norka.define import APP_ID
-from norka.services.storage import storage
-from norka.widgets.about_dialog import AboutDialog
+from norka.widgets.preferences_dialog import PreferencesDialog
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
@@ -36,9 +34,12 @@ gi.require_version('GtkSpell', '3.0')
 
 from gi.repository import Gtk, Gio, Gdk
 
-from norka.window import NorkaWindow
+from norka.define import APP_ID
 from norka.services.logger import Logger
 from norka.services.settings import Settings
+from norka.services.storage import storage
+from norka.widgets.about_dialog import AboutDialog
+from norka.window import NorkaWindow
 
 
 class Application(Gtk.Application):
@@ -69,6 +70,11 @@ class Application(Gtk.Application):
         action.connect("activate", self.on_about)
         self.add_action(action)
 
+        action = Gio.SimpleAction.new("preferences", None)
+        action.connect("activate", self.on_preferences)
+        self.add_action(action)
+        self.set_accels_for_action('app.preferences', ('<Control>comma',))
+
     def init_style(self):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/com/github/tenderowl/norka/css/application.css')
@@ -90,6 +96,13 @@ class Application(Gtk.Application):
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)
+        if key == "spellcheck":
+            self.window.toggle_spellcheck(settings.get_boolean(key))
+
+    def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
+        preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
+        preferences_dialog.show_all()
+        preferences_dialog.present()
 
     def on_quit(self, action, param):
         self.props.active_window.on_window_delete_event()

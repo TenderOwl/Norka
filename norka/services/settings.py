@@ -1,4 +1,4 @@
-# settings.py
+# preferences_dialog.py
 #
 # MIT License
 #

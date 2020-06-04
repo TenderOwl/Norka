@@ -32,7 +32,6 @@ from norka.widgets.editor import Editor
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.rename_dialog import RenameDialog
-from norka.widgets.search_dialog import SearchDialog
 from norka.widgets.welcome import Welcome
 
 
@@ -87,6 +86,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # If here's at least one document in storage
         # then show documents grid
         self.check_documents_count()
+
+        # Pull the Settings
+        self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
+        self.autosave = self.settings.get_boolean('autosave')
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -153,7 +156,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         """
         try:
-            self.editor.save_document()
+            if self.autosave:
+                self.editor.save_document()
+            else:
+                print('Ask for action!')
 
             if not self.is_maximized():
                 self.settings.set_value("window-size", GLib.Variant("ai", self.current_size))
@@ -191,7 +197,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         """
         self.screens.set_visible_child_name('document-grid')
-        self.editor.unload_document()
+        self.editor.unload_document(save=self.autosave)
         self.document_grid.reload_items()
         self.header.toggle_document_mode()
         self.header.update_title()
@@ -369,3 +375,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # dialog.run()
         # dialog.destroy()
         pass
+
+    def toggle_spellcheck(self, state: bool):
+        self.editor.set_spellcheck(state)

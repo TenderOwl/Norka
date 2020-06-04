@@ -63,7 +63,6 @@ class Editor(Gtk.ScrolledWindow):
         self.view.connect('key-release-event', self.on_key_release_event)
 
         self.spellchecker = GtkSpell.Checker()
-        self.spellchecker.attach(self.view)
 
         self.add(self.view)
 
@@ -93,7 +92,7 @@ class Editor(Gtk.ScrolledWindow):
         self.buffer.place_cursor(self.buffer.get_start_iter())
         self.view.grab_focus()
 
-    def unload_document(self) -> None:
+    def unload_document(self, save=True) -> None:
         """Save current document and clear text buffer
 
         :return: None
@@ -101,7 +100,8 @@ class Editor(Gtk.ScrolledWindow):
         if not self.document:
             return
 
-        self.save_document()
+        if save:
+            self.save_document()
         self.buffer.set_text('')
         self.document = None
 
@@ -168,3 +168,9 @@ class Editor(Gtk.ScrolledWindow):
                     self.buffer.insert_at_cursor(sign + ' ')
 
             self.buffer.end_user_action()
+
+    def set_spellcheck(self, spellcheck: bool):
+        if spellcheck:
+            self.spellchecker.attach(self.view)
+        else:
+            self.spellchecker.detach()
