@@ -1,3 +1,8 @@
+.norka-header {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
 .norka-editor {
   border: none;
   background: transparent;

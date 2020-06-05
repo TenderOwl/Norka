@@ -42,7 +42,7 @@ class Header(Gtk.HeaderBar):
         self.set_subtitle(APP_SUBTITLE)
         self.set_has_subtitle(True)
         self.set_show_close_button(True)
-        # self.get_style_context().add_class('default-decoration')
+        self.get_style_context().add_class('norka-header')
 
         self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
         self.add_button.set_visible(True)
