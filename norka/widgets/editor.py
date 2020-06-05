@@ -158,7 +158,7 @@ class Editor(Gtk.ScrolledWindow):
                 prev_iter = self.buffer.get_iter_at_line(prev_line)
                 prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
                 # Check if prev line starts from markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]]*.|-|\*|\+)\s", prev_line_text)
+                match = re.search(r"^(\s){,4}([0-9]]*.|-|\*|\+)\s+", prev_line_text)
                 if match:
                     sign = match.group(2)
                     if re.match(r'^[0-9]+.', sign):

@@ -42,7 +42,7 @@
 			<description>Indent width</description>
 		</key>
 		<key type="s" name="stylescheme">
-			<default>""</default>
+			<default>"classic"</default>
 			<summary>Editor style scheme</summary>
 			<description>Style scheme</description>
 		</key>

@@ -45,7 +45,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))
-        indent_width.connect('change-value', self.on_indent_width)
+        indent_width.connect('value-changed', self.on_indent_width)
 
         self.spellcheck_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.spellcheck_switch.set_state(self.settings.get_boolean('spellcheck'))
@@ -131,5 +131,5 @@ class PreferencesDialog(Gtk.Dialog):
     def on_spaces_tabs(self, sender, state):
         self.settings.set_boolean('spaces-instead-of-tabs', state)
 
-    def on_indent_width(self, sender, value):
-        self.settings.set_int('indent-width', value)
+    def on_indent_width(self, sender: Gtk.SpinButton) -> None:
+        self.settings.set_int('indent-width', sender.get_value_as_int())

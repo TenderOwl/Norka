@@ -36,3 +36,8 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_website_label('Learn more about Norka')
         self.set_license_type(Gtk.License.MIT_X11)
         self.set_version(APP_VERSION)
+
+        self.connect('response', self.on_close)
+
+    def on_close(self, sender: Gtk.Widget, response_id: int) -> None:
+        self.destroy()

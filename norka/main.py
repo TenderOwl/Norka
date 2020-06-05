@@ -96,10 +96,18 @@ class Application(Gtk.Application):
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)
-        if key == "spellcheck":
+        if key == "autosave":
+            self.window.autosave = settings.get_boolean(key)
+        elif key == "spellcheck":
             self.window.toggle_spellcheck(settings.get_boolean(key))
         elif key == 'stylescheme':
             self.window.set_style_scheme(settings.get_string(key))
+        elif key == 'autoindent':
+            self.window.set_autoindent(self.settings.get_boolean('autoindent'))
+        elif key == 'spaces-instead-of-tabs':
+            self.window.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
+        elif key == 'indent-width':
+            self.window.set_indent_width(self.settings.get_int('indent-width'))
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
