@@ -169,8 +169,12 @@ class Editor(Gtk.ScrolledWindow):
 
             self.buffer.end_user_action()
 
-    def set_spellcheck(self, spellcheck: bool):
+    def set_spellcheck(self, spellcheck: bool) -> None:
         if spellcheck:
             self.spellchecker.attach(self.view)
         else:
             self.spellchecker.detach()
+
+    def set_style_scheme(self, scheme_id: str) -> None:
+        scheme = GtkSource.StyleSchemeManager().get_scheme(scheme_id)
+        self.buffer.set_style_scheme(scheme)

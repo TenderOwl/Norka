@@ -90,6 +90,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # Pull the Settings
         self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
         self.autosave = self.settings.get_boolean('autosave')
+        self.set_autoindent(self.settings.get_boolean('autoindent'))
+        self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
+        self.set_indent_width(self.settings.get_int('indent-width'))
+        self.set_style_scheme(self.settings.get_string('stylescheme'))
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -376,5 +380,17 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # dialog.destroy()
         pass
 
-    def toggle_spellcheck(self, state: bool):
+    def toggle_spellcheck(self, state: bool) -> None:
         self.editor.set_spellcheck(state)
+
+    def set_style_scheme(self, scheme_id: str) -> None:
+        self.editor.set_style_scheme(scheme_id)
+
+    def set_autoindent(self, autoindent):
+        self.editor.view.set_auto_indent(autoindent)
+
+    def set_tabs_spaces(self, state):
+        self.editor.view.set_insert_spaces_instead_of_tabs(state)
+
+    def set_indent_width(self, size):
+        self.editor.view.set_indent_width(size)

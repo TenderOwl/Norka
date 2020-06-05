@@ -98,6 +98,8 @@ class Application(Gtk.Application):
         Logger.debug(f'SETTINGS: %s changed', key)
         if key == "spellcheck":
             self.window.toggle_spellcheck(settings.get_boolean(key))
+        elif key == 'stylescheme':
+            self.window.set_style_scheme(settings.get_string(key))
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)

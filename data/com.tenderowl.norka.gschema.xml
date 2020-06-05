@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="norka">
-	<schema id="com.tenderowl.norka" path="/com/github/tenderowl/norka/">
+	<schema id="com.tenderowl.norka" path="/com/tenderowl/norka/">
 		<key type="ai" name="window-size">
 			<default>[960, 600]</default>
 			<summary>Window size in px</summary>
 			<description>Window size (width and height).</description>
-		</key><key type="ai" name="window-position">
+		</key>
+		<key type="ai" name="window-position">
 			<default>[-1, -1 ]</default>
 			<summary>Window position on screen in px</summary>
 			<description>Window position on screen.</description>
@@ -15,7 +16,7 @@
 			<summary>Last opened document id</summary>
 			<description>Last opened document id</description>
 		</key>
-	  <key type="b" name="autosave">
+		<key type="b" name="autosave">
 			<default>true</default>
 			<summary>Autosave document</summary>
 			<description>Toggle autosave for documents</description>
@@ -24,6 +25,26 @@
 			<default>true</default>
 			<summary>Spellchecking</summary>
 			<description>Toggle auto spellchecking</description>
+		</key>
+		<key type="b" name="spaces-instead-of-tabs">
+			<default>true</default>
+			<summary>Spaces instead of tabs</summary>
+			<description>Insert spaces instead of tabs</description>
+		</key>
+		<key type="b" name="autoindent">
+			<default>true</default>
+			<summary>Autoindent</summary>
+			<description>Set autoindent mode for editor</description>
+		</key>
+		<key type="i" name="indent-width">
+			<default>4</default>
+			<summary>Indent width</summary>
+			<description>Indent width</description>
+		</key>
+		<key type="s" name="stylescheme">
+			<default>""</default>
+			<summary>Editor style scheme</summary>
+			<description>Style scheme</description>
 		</key>
 	</schema>
 </schemalist>
