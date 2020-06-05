@@ -88,6 +88,9 @@ class PreferencesDialog(Gtk.Dialog):
         scheme = GtkSource.StyleSchemeManager().get_scheme(
             self.settings.get_string('stylescheme')
         )
+        if not scheme:
+            scheme = GtkSource.StyleSchemeManager().get_scheme("classic")
+
         style_chooser.set_style_scheme(scheme)
 
         interface_grid.attach(Granite.HeaderLabel("Styles"), 0, 0, 2, 1)
