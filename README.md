@@ -1,5 +1,7 @@
 # Norka
 
+ [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
+
 ## Preface
 
 While I'm not the UX-man and it's just a hobby, I try to create visually appealing applications. And Norka is one of my trials to create a cozy text editor for GNOME and Elementary OS exactly. 
