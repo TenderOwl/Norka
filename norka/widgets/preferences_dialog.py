@@ -94,7 +94,7 @@ class PreferencesDialog(Gtk.Dialog):
         style_chooser.set_style_scheme(scheme)
 
         interface_grid.attach(Granite.HeaderLabel("Styles"), 0, 0, 2, 1)
-        interface_grid.attach(scrolled, 0, 2, 1, 1)
+        interface_grid.attach(scrolled, 0, 2, 2, 1)
 
         main_stack = Gtk.Stack(margin=6, margin_bottom=18, margin_top=8)
         main_stack.add_titled(general_grid, "behavior", "Behavior")
