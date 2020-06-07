@@ -29,3 +29,8 @@ APP_SUBTITLE = 'continuous text editor'
 APP_VERSION = '0.1.0'
 
 DEBUG = False
+
+FONT_SIZE_FAMILY = 'Noto Sans Mono'
+FONT_SIZE_DEFAULT = 10
+FONT_SIZE_MAX = 72
+FONT_SIZE_MIN = 7

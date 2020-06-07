@@ -25,18 +25,17 @@
 from gi.repository import Gtk, Granite
 
 from norka.define import APP_TITLE, APP_SUBTITLE
+from norka.widgets.menu_popover import MenuPopover
 
 
 class Header(Gtk.HeaderBar):
     __gtype_name__ = 'Header'
 
-    def __init__(self):
+    def __init__(self, settings):
         super().__init__()
 
         self.document_mode_active = False
-
-        builder = Gtk.Builder.new_from_resource('/com/github/tenderowl/norka/ui/app_menu.xml')
-        menu_model = builder.get_object('app-menu')
+        self.settings = settings
 
         self.set_title(APP_TITLE)
         self.set_subtitle(APP_SUBTITLE)
@@ -63,11 +62,10 @@ class Header(Gtk.HeaderBar):
         self.export_button.set_action_name('document.export')
         self.export_button.set_visible(False)
 
-        self.menu_button = Gtk.MenuButton()
-        self.menu_button.set_tooltip_text("Menu")
+        self.menu_button = Gtk.MenuButton(tooltip_text="Menu")
         self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
+        self.menu_button.set_popover(MenuPopover(settings=self.settings))
         self.menu_button.set_visible(True)
-        self.menu_button.set_menu_model(menu_model)
 
         self.pack_start(self.back_button)
         self.pack_start(self.add_button)

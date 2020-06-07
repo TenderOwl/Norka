@@ -103,11 +103,13 @@ class Application(Gtk.Application):
         elif key == 'stylescheme':
             self.window.set_style_scheme(settings.get_string(key))
         elif key == 'autoindent':
-            self.window.set_autoindent(self.settings.get_boolean('autoindent'))
+            self.window.set_autoindent(settings.get_boolean('autoindent'))
         elif key == 'spaces-instead-of-tabs':
-            self.window.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
+            self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
         elif key == 'indent-width':
-            self.window.set_indent_width(self.settings.get_int('indent-width'))
+            self.window.set_indent_width(settings.get_int('indent-width'))
+        elif key == 'font':
+            self.window.editor.update_font(settings.get_string('font'))
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)

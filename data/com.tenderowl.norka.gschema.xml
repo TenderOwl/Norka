@@ -34,7 +34,7 @@
 		<key type="b" name="autoindent">
 			<default>true</default>
 			<summary>Autoindent</summary>
-			<description>Set autoindent mode for editor</description>
+			<description>Set autoindent mode</description>
 		</key>
 		<key type="i" name="indent-width">
 			<default>4</default>
@@ -46,5 +46,15 @@
 			<summary>Editor style scheme</summary>
 			<description>Style scheme</description>
 		</key>
+	  <key name="zoom" type="i">
+      <default>100</default>
+      <summary>Font Zoom</summary>
+      <description>Set the zoom of the font</description>
+    </key>
+    <key name="font" type="s">
+      <default>'Noto Sans Mono 10'</default>
+      <summary>Preferred Font</summary>
+      <description>Set the preferred font</description>
+    </key>
 	</schema>
 </schemalist>

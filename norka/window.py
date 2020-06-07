@@ -22,9 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from gi.repository import Gtk, Gio, GLib, Gdk
+from gi.repository import Gtk, Gio, GLib, Gdk, Pango
 from gi.repository.GdkPixbuf import Pixbuf
 
+from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
 from norka.services.logger import Logger
 from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
@@ -57,7 +58,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.init_actions()
 
         # Make a header
-        self.header = Header()
+        self.header = Header(self.settings)
         self.set_titlebar(self.header)
         self.header.show()
 
@@ -94,6 +95,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
         self.set_indent_width(self.settings.get_int('indent-width'))
         self.set_style_scheme(self.settings.get_string('stylescheme'))
+        self.editor.update_font(self.settings.get_string('font'))
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -140,7 +142,22 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'search',
                     'action': self.on_document_search_activated,
                     'accel': '<Control>k'
-                }
+                },
+                {
+                    'name': 'zoom_in',
+                    'action': self.on_zoom_in,
+                    'accel': '<Control>plus'
+                },
+                {
+                    'name': 'zoom_out',
+                    'action': self.on_zoom_out,
+                    'accel': '<Control>minus'
+                },
+                {
+                    'name': 'zoom_default',
+                    'action': self.on_zoom_default,
+                    'accel': '<Control>0'
+                },
             ]
         }
 
@@ -380,17 +397,52 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # dialog.destroy()
         pass
 
+    def on_zoom_in(self, sender, event) -> None:
+        self.zooming(Gdk.ScrollDirection.UP)
+
+    def on_zoom_out(self, sender, event) -> None:
+        self.zooming(Gdk.ScrollDirection.DOWN)
+
+    def on_zoom_default(self, sender, event) -> None:
+        self.settings.set_int('zoom', 100)
+        self.settings.set_string("font", f'{FONT_SIZE_FAMILY} {FONT_SIZE_DEFAULT}')
+
     def toggle_spellcheck(self, state: bool) -> None:
         self.editor.set_spellcheck(state)
 
     def set_style_scheme(self, scheme_id: str) -> None:
         self.editor.set_style_scheme(scheme_id)
 
-    def set_autoindent(self, autoindent):
+    def set_autoindent(self, autoindent: bool) -> None:
         self.editor.view.set_auto_indent(autoindent)
 
-    def set_tabs_spaces(self, state):
+    def set_tabs_spaces(self, state: bool) -> None:
         self.editor.view.set_insert_spaces_instead_of_tabs(state)
 
-    def set_indent_width(self, size):
-        self.editor.view.set_indent_width(size)
+    def set_indent_width(self, size: int) -> None:
+        self.editor.view.set_tab_width(size)
+
+    def zooming(self, direction: Gdk.ScrollDirection) -> None:
+
+        font = self.get_current_font()
+        zoom = self.settings.get_int('zoom')
+
+        if direction == Gdk.ScrollDirection.UP:
+            zoom += 10
+        elif direction == Gdk.ScrollDirection.DOWN:
+            zoom -= 10
+
+        font_size = int(FONT_SIZE_DEFAULT * zoom / 100)
+        if font_size < FONT_SIZE_MIN or font_size > FONT_SIZE_MAX:
+            return
+
+        self.settings.set_string('font', f'{font} {font_size}')
+        self.settings.set_int('zoom', zoom)
+
+    def get_current_font(self) -> str:
+        font = self.settings.get_string("font")
+        return font[:font.rfind(" ")]
+
+    def get_current_font_size(self) -> float:
+        font = self.settings.get_string("font")
+        return float(font[font.rfind(" ") + 1:])

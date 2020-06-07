@@ -62,6 +62,7 @@ class Editor(Gtk.ScrolledWindow):
 
         self.view.connect('key-release-event', self.on_key_release_event)
 
+        self.font_desc = Pango.FontDescription()
         self.spellchecker = GtkSpell.Checker()
 
         self.add(self.view)
@@ -178,3 +179,7 @@ class Editor(Gtk.ScrolledWindow):
     def set_style_scheme(self, scheme_id: str) -> None:
         scheme = GtkSource.StyleSchemeManager().get_scheme(scheme_id)
         self.buffer.set_style_scheme(scheme)
+
+    def update_font(self, font: str) -> None:
+        self.font_desc = Pango.FontDescription.from_string(font)
+        self.view.override_font(self.font_desc)
