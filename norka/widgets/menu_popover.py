@@ -33,14 +33,14 @@ class MenuPopover(Gtk.Popover):
 
         zoom_out_button = Gtk.Button.new_from_icon_name("zoom-out-symbolic", Gtk.IconSize.MENU)
         zoom_out_button.set_action_name('document.zoom_out')
-        zoom_out_button.tooltip_markup = Granite.markup_accel_tooltip('document.zoom_out', "Zoom Out")
+        zoom_out_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>minus',), 'Zoom Out'))
 
         self.zoom_default_button = Gtk.Button("100%", action_name='document.zoom_default')
-        self.zoom_default_button.tooltip_markup = Granite.markup_accel_tooltip('document.zoom_default', "Zoom 1:1")
+        self.zoom_default_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>0',), 'Zoom 1:1'))
 
         zoom_in_button = Gtk.Button.new_from_icon_name("zoom-in-symbolic", Gtk.IconSize.MENU)
         zoom_in_button.set_action_name('document.zoom_in')
-        zoom_in_button.tooltip_markup = Granite.markup_accel_tooltip('document.zoom', "Zoom In")
+        zoom_in_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>equal', '<Control>plus'), 'Zoom In'))
 
         font_size_grid = Gtk.Grid(column_homogeneous=True, hexpand=True, margin=12)
         font_size_grid.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)

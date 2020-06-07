@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Pango
+from gi.repository import Gtk, Gio, GLib, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
@@ -106,57 +106,57 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'create',
                     'action': self.on_document_create_activated,
-                    'accel': '<Control>n'
+                    'accels': ('<Control>n',)
                 },
                 {
                     'name': 'save',
                     'action': self.on_document_save_activated,
-                    'accel': '<Control>s'
+                    'accels': ('<Control>s',)
                 },
                 {
                     'name': 'close',
                     'action': self.on_document_close_activated,
-                    'accel': '<Control>w'
+                    'accels': ('<Control>w',)
                 },
                 {
                     'name': 'rename',
                     'action': self.on_document_rename_activated,
-                    'accel': 'F2'
+                    'accels': ('F2',)
                 },
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accel': 'Delete'
+                    'accels': ('Delete',)
                 },
                 {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
-                    'accel': '<Shift>Delete'
+                    'accels': ('<Shift>Delete',)
                 },
                 {
                     'name': 'export',
                     'action': self.on_document_export_activated,
-                    'accel': '<Control><Shift>s'
+                    'accels': ('<Control><Shift>s',)
                 },
                 {
                     'name': 'search',
                     'action': self.on_document_search_activated,
-                    'accel': '<Control>k'
+                    'accels': ('<Control>k',)
                 },
                 {
                     'name': 'zoom_in',
                     'action': self.on_zoom_in,
-                    'accel': '<Control>plus'
+                    'accels': ('<Control>equal', '<Control>plus')
                 },
                 {
                     'name': 'zoom_out',
                     'action': self.on_zoom_out,
-                    'accel': '<Control>minus'
+                    'accels': ('<Control>minus',)
                 },
                 {
                     'name': 'zoom_default',
                     'action': self.on_zoom_default,
-                    'accel': '<Control>0'
+                    'accels': ('<Control>0',)
                 },
             ]
         }
@@ -167,7 +167,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             for item in actions:
                 action = Gio.SimpleAction(name=item['name'])
                 action.connect('activate', item['action'])
-                self.get_application().set_accels_for_action(f'{action_group_key}.{item["name"]}', (item["accel"],))
+                self.get_application().set_accels_for_action(f'{action_group_key}.{item["name"]}', item["accels"])
                 action_group.add_action(action)
 
             self.insert_action_group(action_group_key, action_group)
