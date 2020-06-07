@@ -1,9 +1,9 @@
 {
-    "app-id": "com.tenderowl.norka",
+    "app-id": "com.github.tenderowl.norka",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.36",
     "sdk": "org.gnome.Sdk",
-    "command": "com.tenderowl.norka",
+    "command": "com.github.tenderowl.norka",
     "finish-args": [
         "--share=network",
         "--share=ipc",
@@ -13,7 +13,7 @@
         "--filesystem=home",
         "--filesystem=xdg-run/dconf",
         "--filesystem=~/.config/dconf:rw",
-        "--own-name=com.tenderowl.norka"
+        "--own-name=com.github.tenderowl.norka"
     ],
     "cleanup" : [
         "/include",

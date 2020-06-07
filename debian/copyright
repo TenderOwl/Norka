@@ -1,6 +1,6 @@
 Format: https://dep.debian.net/deps/dep5
 Upstream-Name: cmake-hello-world
-Source: https://github.com/tenderowl/norka
+Source: https://github.com/github/tenderowl/norka
 
 Files: *
 Copyright: 2020 Andrey Maksimov <andrey@tenderowl.com>

@@ -1,4 +1,4 @@
-Source: com.tenderowl.norka
+Source: com.github.tenderowl.norka
 Section: x11
 Priority: extra
 Maintainer: Andrey Maksimov <andrey@tenderowl.com>
@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 9),
                libgtkspell3-3-dev,
 Standards-Version: 3.9.3
 
-Package: com.tenderowl.norka
+Package: com.github.tenderowl.norka
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Norka

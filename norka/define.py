@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 
-APP_ID = 'com.tenderowl.norka'
+APP_ID = 'com.github.tenderowl.norka'
 APP_TITLE = 'Norka'
 APP_SUBTITLE = 'continuous text editor'
 APP_VERSION = '0.1.0'

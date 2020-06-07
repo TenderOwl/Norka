@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="norka">
-	<schema id="com.tenderowl.norka" path="/com/tenderowl/norka/">
+	<schema id="com.github.tenderowl.norka" path="/com/github/tenderowl/norka/">
 		<key type="ai" name="window-size">
 			<default>[960, 600]</default>
 			<summary>Window size in px</summary>
