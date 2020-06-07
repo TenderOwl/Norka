@@ -6,7 +6,6 @@ Exec=@project_name@
 Icon=@icon@
 Terminal=false
 Type=Application
-Categories=Utility;TextEditor;GTK;
+Categories=Utility;TextEditor;GTK;Office;
 Keywords=Norka;TenderOwl;Tender;Markdown;
-MimeType=text/x-markdown;text/plain;
 
