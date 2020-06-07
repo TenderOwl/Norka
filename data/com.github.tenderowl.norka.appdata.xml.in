@@ -17,7 +17,6 @@
     </ul>
   </description>
 
-  <icon type="local">data/icons/com.github.tenderowl.norka.svg</icon>
   <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
   <developer_name>Andrey Maksimov</developer_name>
   <url type="homepage">https://tenderowl.com/norka</url>
@@ -47,7 +46,7 @@
   </screenshots>
 
   <releases>
-    <release date="2020-07-06" version="0.1.0">
+    <release date="2020-06-07" version="0.1.3">
       <description>
         <p>Initial release</p>
       </description>
