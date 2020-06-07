@@ -1,21 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <component type="desktop">
-	<id>com.github.tenderowl.norka</id>
-	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>MIT</project_license>
-	<name>Norka</name>
-	<summary>Continuous text editor</summary>
-	<description>
-	  <p>Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or accidentally deleted notes.</p>
-	  <p>Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.</p>
-	  <ul>
-	    <li>All your notes inside</li>
-	    <li>Automatically saved in place</li>
-	    <li>Can be easily exported to files in one click</li>
-	    <li>If you neet markup - use markdown</li>
-	    <li>Don't like the default theme - choose different</li>
-	  </ul>
-	</description>
+  <id>com.github.tenderowl.norka</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Norka</name>
+  <summary>Continuous text editor</summary>
+  <description>
+    <p>Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or accidentally deleted notes.</p>
+    <p>Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.</p>
+    <ul>
+      <li>All your notes inside</li>
+      <li>Automatically saved in place</li>
+      <li>Can be easily exported to files in one click</li>
+      <li>If you neet markup - use markdown</li>
+      <li>Don't like the default theme - choose different</li>
+    </ul>
+  </description>
 
   <icon type="local">data/icons/com.github.tenderowl.norka.svg</icon>
   <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
@@ -23,15 +23,38 @@
   <url type="homepage">https://tenderowl.com/norka</url>
   <url type="bugtracker">https://github.com/github/tenderowl/norka/issues</url>
 
+  <screenshots>
+    <screenshot type="default">
+      <caption>Welcome screen</caption>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/welcome.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Documents list</caption>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Editor</caption>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Dark mode</caption>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Dark mode Editor</caption>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor-dark.png</image>
+    </screenshot>
+  </screenshots>
+
   <releases>
-   <release date="2020-07-06" version="0.1.0">
+    <release date="2020-07-06" version="0.1.0">
       <description>
         <p>Initial release</p>
       </description>
     </release>
   </releases>
 
-	<custom>
+  <custom>
     <!-- elementary AppCenter specific values -->
     <value key="x-appcenter-color-primary">#b5c3cb</value>
     <value key="x-appcenter-color-primary-text">#273445</value>
