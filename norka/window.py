@@ -345,17 +345,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         if not doc:
             return
 
-        dialog = Gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserNative.new(
             "Export document to file",
             self,
-            Gtk.FileChooserAction.SAVE,
-            (
-                Gtk.STOCK_CANCEL,
-                Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_SAVE,
-                Gtk.ResponseType.ACCEPT,
-            ),
-            # use_header_bar=1
+            Gtk.FileChooserAction.SAVE
         )
         dialog.set_current_name(doc.title)
 
