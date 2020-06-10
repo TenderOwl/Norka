@@ -42,19 +42,19 @@
 			<description>Indent width</description>
 		</key>
 		<key type="s" name="stylescheme">
-			<default>"classic"</default>
+			<default>"norka"</default>
 			<summary>Editor style scheme</summary>
 			<description>Style scheme</description>
 		</key>
-	  <key name="zoom" type="i">
-      <default>100</default>
-      <summary>Font Zoom</summary>
-      <description>Set the zoom of the font</description>
-    </key>
-    <key name="font" type="s">
-      <default>'Noto Sans Mono 10'</default>
-      <summary>Preferred Font</summary>
-      <description>Set the preferred font</description>
-    </key>
+	  	<key name="zoom" type="i">
+			<default>100</default>
+			<summary>Font Zoom</summary>
+			<description>Set the zoom of the font</description>
+		</key>
+		<key name="font" type="s">
+			<default>'Noto Sans Mono 10'</default>
+			<summary>Preferred Font</summary>
+			<description>Set the preferred font</description>
+		</key>
 	</schema>
 </schemalist>
