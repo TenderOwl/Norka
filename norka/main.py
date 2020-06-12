@@ -49,6 +49,8 @@ class Application(Gtk.Application):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
 
+        self.version = version
+
         # Init GSettings
         self.settings = Settings.new()
 
@@ -122,7 +124,7 @@ class Application(Gtk.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(transient_for=self.window, modal=True)
+        about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
         about_dialog.present()
 
 

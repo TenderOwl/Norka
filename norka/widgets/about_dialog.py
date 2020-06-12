@@ -23,11 +23,11 @@
 # SOFTWARE.
 from gi.repository import Gtk
 
-from norka.define import APP_TITLE, APP_VERSION
+from norka.define import APP_TITLE
 
 
 class AboutDialog(Gtk.AboutDialog):
-    def __init__(self, transient_for, modal=False):
+    def __init__(self, version, transient_for, modal=False):
         super().__init__(transient_for=transient_for, modal=modal)
         self.set_program_name(APP_TITLE)
         self.set_comments('Continuous text editor for ElementaryOS')
@@ -35,7 +35,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_website("https://tenderowl.com/norka")
         self.set_website_label('Learn more about Norka')
         self.set_license_type(Gtk.License.MIT_X11)
-        self.set_version(APP_VERSION)
+        self.set_version(version)
 
         self.connect('response', self.on_close)
 

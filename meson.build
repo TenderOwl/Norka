@@ -1,7 +1,12 @@
 project('com.github.tenderowl.norka',
-  version: '0.1.0',
+  version: '0.1.4',
   meson_version: '>= 0.50.0'
 )
+
+revision = run_command('bin/revision.sh').stdout().strip()
+if revision == ''
+  revision=meson.project_version()
+endif
 
 i18n = import('i18n')
 python = import('python3')
@@ -40,6 +45,7 @@ conf.set('LOCALE_DIR', join_paths(get_option('prefix'), get_option('datadir'), '
 conf.set('PYTHON_DIR', pythondir)
 conf.set('PROJECT_NAME', meson.project_name())
 conf.set('VERSION', meson.project_version())
+conf.set('REVISION', revision)
 conf.set('PYTHON', python3.path())
 conf.set('PKGDATA_DIR', pkgdatadir)
 
