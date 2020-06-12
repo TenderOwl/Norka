@@ -63,19 +63,24 @@ class Application(Gtk.Application):
         except Exception as e:
             sys.exit(e)
 
-        action = Gio.SimpleAction.new("quit", None)
-        action.connect("activate", self.on_quit)
-        self.add_action(action)
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.on_quit)
+        self.add_action(quit_action)
         self.set_accels_for_action('app.quit', ('<Control>q',))
 
-        action = Gio.SimpleAction.new("about", None)
-        action.connect("activate", self.on_about)
-        self.add_action(action)
+        about_action = Gio.SimpleAction.new("about", None)
+        about_action.connect("activate", self.on_about)
+        self.add_action(about_action)
 
-        action = Gio.SimpleAction.new("preferences", None)
-        action.connect("activate", self.on_preferences)
-        self.add_action(action)
+        preferences_action = Gio.SimpleAction.new("preferences", None)
+        preferences_action.connect("activate", self.on_preferences)
+        self.add_action(preferences_action)
         self.set_accels_for_action('app.preferences', ('<Control>comma',))
+
+        shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
+        shortcuts_action.connect("activate", self.on_shortcuts)
+        self.add_action(shortcuts_action)
+
 
     def init_style(self):
         css_provider = Gtk.CssProvider()
@@ -126,6 +131,13 @@ class Application(Gtk.Application):
     def on_about(self, action, param):
         about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
         about_dialog.present()
+
+    def on_shortcuts(self, action, param):
+        builder = Gtk.Builder()
+        builder.add_from_resource(
+            "/com/github/tenderowl/norka/ui/shortcuts.ui")
+        builder.get_object("shortcuts").set_transient_for(self.window)
+        builder.get_object("shortcuts").show()
 
 
 def main(version: str = None):

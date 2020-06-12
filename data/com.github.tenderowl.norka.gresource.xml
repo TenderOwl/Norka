@@ -2,7 +2,7 @@
 <gresources>
 	<gresource prefix="/com/github/tenderowl/norka/">
 		<file compressed="true">css/application.css</file>
-		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
+		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 		<file preprocess="xml-stripblanks">icons/com.github.tenderowl.norka.svg</file>
 	</gresource>
 </gresources>
