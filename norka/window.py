@@ -54,9 +54,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
-        # Init actions
-        self.init_actions()
-
         # Make a header
         self.header = Header(self.settings)
         self.set_titlebar(self.header)
@@ -83,6 +80,9 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.screens.show_all()
 
         self.add(self.screens)
+
+        # Init actions
+        self.init_actions()
 
         # If here's at least one document in storage
         # then show documents grid
@@ -162,6 +162,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'search_text',
                     'action': self.on_text_search_activated,
                     'accels': ('<Control>f',)
+                },
+                {
+                    'name': 'search_text_next',
+                    'action': self.on_text_search_forward,
+                    'accels': ('<Control>g',)
+                },
+                {
+                    'name': 'search_text_prev',
+                    'action': self.on_text_search_backward,
+                    'accels': ('<Control><Shift>g',)
                 },
             ]
         }
@@ -399,6 +409,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """Open search dialog to find text in a documents
         """
         self.editor.on_search_text_activated(sender, event)
+
+    def on_text_search_forward(self, sender: Gtk.Widget = None, event=None) -> None:
+        if self.screens.get_visible_child_name() == 'editor-grid' \
+                and self.editor.search_revealer.get_child_revealed():
+            self.editor.search_forward(sender=sender, event=event)
+
+    def on_text_search_backward(self, sender: Gtk.Widget = None, event=None) -> None:
+        if self.screens.get_visible_child_name() == 'editor-grid' \
+                and self.editor.search_revealer.get_child_revealed():
+            self.editor.search_backward(sender=sender, event=event)
 
     def on_zoom_in(self, sender, event) -> None:
         self.zooming(Gdk.ScrollDirection.UP)

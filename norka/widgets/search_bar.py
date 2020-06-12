@@ -30,7 +30,6 @@ class SearchBar(Gtk.FlowBox):
         'find-changed': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         'find-next': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         'find-prev': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
-        # 'stop-search': (GObject.SIGNAL_RUN_FIRST, None, (None, )),
     }
 
     def __init__(self):
@@ -50,7 +49,7 @@ class SearchBar(Gtk.FlowBox):
         tool_arrow_down.connect('clicked', self.on_find_next)
 
         tool_arrow_up = Gtk.Button.new_from_icon_name("go-up-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
-        tool_arrow_down.connect('clicked', self.on_find_prev)
+        tool_arrow_up.connect('clicked', self.on_find_prev)
 
         tool_close = Gtk.Button.new_from_icon_name('window-close-symbolic', Gtk.IconSize.SMALL_TOOLBAR)
         tool_close.connect('clicked', self.on_stop_search)

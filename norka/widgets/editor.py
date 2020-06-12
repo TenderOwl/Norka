@@ -229,12 +229,12 @@ class Editor(Gtk.Grid):
         self.search_revealer.set_reveal_child(False)
         self.view.grab_focus()
 
-    def search(self, text, forward=True):
+    def search(self, text: str, forward: bool = True) -> bool:
 
         self.search_context.set_highlight(False)
 
+        # Can't search anything in an inexistant buffer and/or without anything to search.
         if any([not self.buffer, not self.get_text(), not text]):
-            print("Can't search anything in an inexistant buffer and/or without anything to search.")
             self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             return False
 
@@ -242,45 +242,58 @@ class Editor(Gtk.Grid):
 
         if self.search_settings.get_search_text() != text:
             self.search_settings.set_search_text(text)
-            self.search_iter = self.buffer.get_iter_at_mark(
-                self.buffer.get_insert())
+            self.search_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
         elif self.search_iter:
             self.search_iter.forward_char()
         else:
             return False
 
-        if self.search_for_iter(self.search_iter, forward):
+        if forward:
+            found, self.search_iter = self.search_for_iter(self.search_iter)
+        else:
+            found, self.search_iter = self.search_for_iter_backward(self.search_iter)
+
+        if found:
             self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
             self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
         else:
-            self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
-            self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+            self.search_iter = self.buffer.get_start_iter()
+            found, end_iter = self.search_for_iter(self.search_iter, forward)
+            if found:
+                self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
+                self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            else:
+                self.search_iter.set_offset(-1)
+                self.buffer.select_range(self.search_iter, self.search_iter)
+                self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
+                self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+                return False
 
         return True
 
-    def search_for_iter(self, start_iter, forward=True) -> bool:
-        if forward:
-            found, start_iter, end_iter, has_wrapped = self.search_context.forward2(start_iter)
-        else:
-            found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
-
+    def search_for_iter(self, start_iter) -> (bool, Gtk.TextIter):
+        found, start_iter, end_iter, has_wrapped = self.search_context.forward2(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
+        return found, end_iter
 
-        return found
-
-    def search_for_iter_backward(self, start_iter) -> bool:
+    def search_for_iter_backward(self, start_iter) -> (bool, Gtk.TextIter):
         found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
-
-        return found
+        return found, start_iter
 
     def do_next_match(self, sender, text: str) -> bool:
         return self.search(text)
 
     def do_previous_match(self, sender, text: str) -> bool:
         return self.search(text, False)
+
+    def search_forward(self, sender=None, event=None) -> bool:
+        return self.do_next_match(sender, self.search_bar.search_entry.get_text())
+
+    def search_backward(self, sender=None, event=None) -> bool:
+        return self.do_previous_match(sender, self.search_bar.search_entry.get_text())
 
     def scroll_to(self, start_iter, end_iter):
 
