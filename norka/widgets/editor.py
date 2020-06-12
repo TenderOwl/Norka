@@ -29,12 +29,13 @@ import gi
 from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.storage import storage
+from norka.widgets.search_bar import SearchBar
 
 gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango
 
 
-class Editor(Gtk.ScrolledWindow):
+class Editor(Gtk.Grid):
     __gtype_name__ = 'Editor'
 
     def __init__(self):
@@ -44,7 +45,9 @@ class Editor(Gtk.ScrolledWindow):
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
-        self.buffer.set_language(self.manager.get_language("markdown"))
+        self.language = self.manager.get_language("markdown")
+        self.buffer.set_language(self.language)
+        self.buffer.create_tag('match', background="#66ff00")
 
         self.view = GtkSource.View()
         self.view.set_buffer(self.buffer)
@@ -54,18 +57,39 @@ class Editor(Gtk.ScrolledWindow):
         self.view.set_insert_spaces_instead_of_tabs(True)
         self.view.set_tab_width(4)
 
-        self.view.set_pixels_above_lines(4)
-        self.view.set_pixels_below_lines(4)
+        # self.view.set_pixels_above_lines(4)
+        # self.view.set_pixels_below_lines(4)
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
         self.view.get_style_context().add_class('norka-editor')
 
         self.view.connect('key-release-event', self.on_key_release_event)
 
+        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self.scrolled.add(self.view)
+
+        # SearchBar
+        self.search_bar = SearchBar()
+        self.search_revealer = Gtk.Revealer()
+        self.search_revealer.add(self.search_bar)
+        self.search_bar.connect('find-changed', self.do_next_match)
+        self.search_bar.connect('find-next', self.do_next_match)
+        self.search_bar.connect('find-prev', self.do_previous_match)
+        self.search_bar.connect('stop-search', self.do_stop_search)
+
+        content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        content_grid.pack_start(self.search_revealer, False, True, 0)
+        content_grid.pack_start(self.scrolled, True, True, 0)
+        content_grid.show_all()
+
+        self.add(content_grid)
+
         self.font_desc = Pango.FontDescription()
         self.spellchecker = GtkSpell.Checker()
 
-        self.add(self.view)
+        self.search_settings = GtkSource.SearchSettings(wrap_around=True)
+        self.search_context = GtkSource.SearchContext(buffer=self.buffer, settings=self.search_settings)
+        self.search_iter = None
 
     def create_document(self, title: str = 'Nameless') -> None:
         """Create new document and put it to storage
@@ -105,6 +129,11 @@ class Editor(Gtk.ScrolledWindow):
             self.save_document()
         self.buffer.set_text('')
         self.document = None
+        self.hide_search_bar()
+
+    def hide_search_bar(self):
+        self.search_revealer.set_reveal_child(False)
+        self.search_bar.stop_search()
 
     def load_file(self, path: str) -> bool:
         self.buffer.begin_not_undoable_action()
@@ -170,6 +199,18 @@ class Editor(Gtk.ScrolledWindow):
 
             self.buffer.end_user_action()
 
+    def on_search_text_activated(self, sender: Gtk.Widget = None, event=None):
+        state = self.search_revealer.get_child_revealed()
+        if not state:
+            # If there is selected text in view put it as search text
+            bounds = self.buffer.get_selection_bounds()
+            if bounds:
+                text = bounds[0].get_text(bounds[1])
+                self.search_bar.search_entry.set_text(text)
+
+            self.search_revealer.set_reveal_child(True)
+            self.search_bar.search_entry.grab_focus()
+
     def set_spellcheck(self, spellcheck: bool) -> None:
         if spellcheck:
             self.spellchecker.attach(self.view)
@@ -183,3 +224,68 @@ class Editor(Gtk.ScrolledWindow):
     def update_font(self, font: str) -> None:
         self.font_desc = Pango.FontDescription.from_string(font)
         self.view.override_font(self.font_desc)
+
+    def do_stop_search(self, event: Gdk.Event=None) -> None:
+        self.search_revealer.set_reveal_child(False)
+        self.view.grab_focus()
+
+    def search(self, text, forward=True):
+
+        self.search_context.set_highlight(False)
+
+        if any([not self.buffer, not self.get_text(), not text]):
+            print("Can't search anything in an inexistant buffer and/or without anything to search.")
+            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            return False
+
+        self.search_context.set_highlight(True)
+
+        if self.search_settings.get_search_text() != text:
+            self.search_settings.set_search_text(text)
+            self.search_iter = self.buffer.get_iter_at_mark(
+                self.buffer.get_insert())
+        elif self.search_iter:
+            self.search_iter.forward_char()
+        else:
+            return False
+
+        if self.search_for_iter(self.search_iter, forward):
+            self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
+            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+        else:
+            self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
+            self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+
+        return True
+
+    def search_for_iter(self, start_iter, forward=True) -> bool:
+        if forward:
+            found, start_iter, end_iter, has_wrapped = self.search_context.forward2(start_iter)
+        else:
+            found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
+
+        if found:
+            self.scroll_to(start_iter, end_iter)
+
+        return found
+
+    def search_for_iter_backward(self, start_iter) -> bool:
+        found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
+        if found:
+            self.scroll_to(start_iter, end_iter)
+
+        return found
+
+    def do_next_match(self, sender, text: str) -> bool:
+        return self.search(text)
+
+    def do_previous_match(self, sender, text: str) -> bool:
+        return self.search(text, False)
+
+    def scroll_to(self, start_iter, end_iter):
+
+        mark = self.buffer.create_mark(None, start_iter, False)
+        self.view.scroll_to_mark(mark, 0, False, 0, 0)
+
+        self.buffer.place_cursor(start_iter)
+        self.buffer.select_range(start_iter, end_iter)

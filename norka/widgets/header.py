@@ -57,6 +57,12 @@ class Header(Gtk.HeaderBar):
         self.back_button.set_visible(False)
         self.back_button.set_action_name('document.close')
 
+        # self.search_button = Gtk.ToggleButton()
+        # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
+        # self.search_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>f',), 'Find text'))
+        # self.search_button.set_action_name('document.search_text')
+        # self.search_button.set_visible(False)
+
         self.export_button = Gtk.Button.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR)
         self.export_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>e',), 'Export document to file'))
         self.export_button.set_action_name('document.export')
@@ -71,6 +77,7 @@ class Header(Gtk.HeaderBar):
         self.pack_start(self.add_button)
         self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
+        # self.pack_end(self.search_button)
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions
@@ -80,6 +87,7 @@ class Header(Gtk.HeaderBar):
         self.document_mode_active = not self.document_mode_active
 
         self.back_button.set_visible(self.document_mode_active)
+        # self.search_button.set_visible(self.document_mode_active)
         self.export_button.set_visible(self.document_mode_active)
         self.add_button.set_visible(not self.document_mode_active)
 

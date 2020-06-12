@@ -6,8 +6,8 @@
   <style name="text" foreground="#C3C3C3" background="#1d252c" />
   <style name="cursor" foreground="#287a82" />
   <style name="current-line" background="#4D4D4D" />
-  <style name="selection" foreground="#efefef" background="#5299EA" />
-  <style name="search-match" foreground="#191919" background="#CC890D" />
+  <style name="search-match" foreground="#1d252c" background="#ffbb4a" />
+  <style name="selection" foreground="#f7f7f7" background="#5299EA" />
 
   <!-- Bold -->
   <style name="def:statement" bold="true" />

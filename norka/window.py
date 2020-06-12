@@ -158,6 +158,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'action': self.on_zoom_default,
                     'accels': ('<Control>0',)
                 },
+                {
+                    'name': 'search_text',
+                    'action': self.on_text_search_activated,
+                    'accels': ('<Control>f',)
+                },
             ]
         }
 
@@ -379,7 +384,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         dialog.destroy()
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
-        """Open search dialog.
+        """Open search dialog to find a documents
 
         :param sender:
         :param event:
@@ -389,6 +394,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # dialog.run()
         # dialog.destroy()
         pass
+
+    def on_text_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Open search dialog to find text in a documents
+        """
+        self.editor.on_search_text_activated(sender, event)
 
     def on_zoom_in(self, sender, event) -> None:
         self.zooming(Gdk.ScrollDirection.UP)
