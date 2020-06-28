@@ -21,7 +21,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import os
+from urllib.parse import urlparse, unquote_plus
 
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
@@ -29,12 +30,15 @@ from gi.repository.GdkPixbuf import Pixbuf
 from norka.services.storage import storage
 from norka.widgets.document_context_menu import DocumentContextMenu
 
+TARGET_ENTRY_TEXT = 1
+
 
 class DocumentGrid(Gtk.Grid):
     __gtype_name__ = 'DocumentGrid'
 
     __gsignals__ = {
-        'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+        'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
     }
 
     def __init__(self):
@@ -55,6 +59,12 @@ class DocumentGrid(Gtk.Grid):
 
         self.view.connect('show', self.reload_items)
         self.view.connect('button-press-event', self.on_button_pressed)
+
+        # Enable drag-drop
+        enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
+                                [enforce_target], Gdk.DragAction.COPY)
+        self.view.connect('drag-data-received', self.on_drag_data_received)
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_hexpand(True)
@@ -93,3 +103,18 @@ class DocumentGrid(Gtk.Grid):
 
         self.view.unselect_all()
         self.selected_document = None
+
+    def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
+                              data: Gtk.SelectionData, info: int, time: int) -> None:
+        if info == TARGET_ENTRY_TEXT:
+            uris = data.get_text().split('\n')
+
+            for uri in uris:
+                # Skip empty items
+                if not uri:
+                    continue
+
+                p = urlparse(unquote_plus(uri))
+                filename = os.path.abspath(os.path.join(p.netloc, p.path))
+
+                self.emit('document-import', filename)

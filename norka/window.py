@@ -21,11 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
 
 from gi.repository import Gtk, Gio, GLib, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
+from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
@@ -65,6 +67,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.document_grid = DocumentGrid()
         self.document_grid.connect('document-create', self.on_document_create_activated)
+        self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor()
@@ -283,6 +286,25 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         self.editor.save_document()
 
+    def on_document_import(self, sender: Gtk.Widget = None, filepath: str = None) -> None:
+        """Import files from filesystem.
+        Creates new document in storage and fill it with file's contents.
+
+        :param sender:
+        :param filepath: path to file to import
+        """
+        if not os.path.exists(filepath):
+            return
+
+        with open(filepath, 'r') as _file:
+            lines = _file.readlines()
+            filename = os.path.basename(filepath)[:filepath.rfind('.')]
+
+            _doc = Document(title=filename, content='\r\n'.join(lines))
+            _doc_id = storage.add(_doc)
+
+            self.document_grid.reload_items(self)
+
     def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
         Show rename dialog and update document's title
@@ -377,9 +399,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         extensions = ('.md', '.markdown',)
 
-        if dialog.run() == Gtk.ResponseType.ACCEPT:
+        dialog_result = dialog.run()
+        print(dialog_result)
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
             file_name = dialog.get_filename()
             ex_ok = False
+            print(file_name)
 
             for extension in extensions:
                 if file_name.lower().endswith(extension):
@@ -388,9 +414,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
             if not ex_ok and extensions:
                 file_name += extensions[0]
 
+            print(file_name)
             with open(file_name, "w+", encoding="utf-8") as output:
                 data = self.editor.get_text()
                 output.write(data)
+
         dialog.destroy()
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
