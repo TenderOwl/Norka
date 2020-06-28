@@ -86,7 +86,7 @@ class DocumentGrid(Gtk.Grid):
         if self.selected_path:
             self.view.select_path(self.selected_path)
 
-    def gen_preview(self, text, size=12, opacity=1) -> Pixbuf:
+    def gen_preview(self, text, size=9, opacity=1) -> Pixbuf:
         pix = Pixbuf.new(Colorspace.RGB, True, 8, 60, 80)
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, pix.get_width(), pix.get_height())
         context = cairo.Context(surface)
