@@ -77,7 +77,7 @@ class Header(Gtk.HeaderBar):
 
         self.archived_button = Gtk.ToggleButton()
         self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
-        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>h',), 'Show Archived files'))
+        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, 'Show Archived files'))
         self.archived_button.set_action_name('document.toggle_archived')
         self.archived_button.set_visible(True)
 

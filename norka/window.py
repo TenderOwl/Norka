@@ -129,7 +129,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accels': ('Delete',)
+                    'accels': (None,)
                 },
                 {
                     'name': 'unarchive',
@@ -189,8 +189,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'toggle_archived',
                     'action': self.on_toggle_archive,
-                    'accels': ('<Control>h',),
-                    'stateful': (GLib.Variant('b', False).get_type(), GLib.Variant('b', False)),
+                    'accels': (None,)
                 },
             ]
         }
@@ -199,11 +198,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             action_group = Gio.SimpleActionGroup()
 
             for item in actions:
-                stateful = item.get('stateful')
-                if not stateful:
-                    action = Gio.SimpleAction(name=item['name'])
-                else:
-                    action = Gio.SimpleAction.new_stateful(item['name'], stateful[0], stateful[1])
+                action = Gio.SimpleAction(name=item['name'])
                 action.connect('activate', item['action'])
                 self.get_application().set_accels_for_action(f'{action_group_key}.{item["name"]}', item["accels"])
                 action_group.add_action(action)
@@ -555,6 +550,6 @@ class NorkaWindow(Gtk.ApplicationWindow):
         font = self.settings.get_string("font")
         return float(font[font.rfind(" ") + 1:])
 
-    def on_toggle_archive(self, sender: Gio.SimpleAction, name: str = None):
+    def on_toggle_archive(self, action: Gio.SimpleAction, name:str =None):
         self.document_grid.show_archived = self.header.archived_button.get_active()
         self.document_grid.reload_items()
