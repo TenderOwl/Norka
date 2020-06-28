@@ -21,9 +21,9 @@ endif
 
 # Dependencies
 dependency('gtk+-3.0', version: '>= 3.22')
-dependency('glib-2.0')
+dependency('glib-2.0', version: '>=2.30.0')
 dependency('granite', version: '>= 4.0')
-dependency('gtksourceview-3.0')
+dependency('gtksourceview-3.0', version: '>= 3.24')
 dependency('gtkspell3-3.0')
 
 find_program('glib-compile-schemas', required: true)

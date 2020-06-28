@@ -2,15 +2,18 @@ Source: com.github.tenderowl.norka
 Section: x11
 Priority: extra
 Maintainer: Andrey Maksimov <andrey@tenderowl.com>
-Build-Depends: debhelper (>= 9),
+Homepage: https://tenderowl.com/norka/
+Build-Depends: appstream,
+               debhelper (>= 9),
                dh-python,
-               libgtk-3-dev (>= 3.10),
-               meson,
                libgranite-dev,
+               libgtk-3-dev (>= 3.10),
+               intltool,
                libgtkspell3-3-dev,
+               meson (>= 0.50.0),
                python-gi
 Standards-Version: 3.9.3
-X-Python3-Version: >= 3.6
+X-Python-Version: >= 3.6
 
 Package: com.github.tenderowl.norka
 Architecture: any
