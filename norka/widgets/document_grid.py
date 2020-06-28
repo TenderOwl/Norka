@@ -94,31 +94,41 @@ class DocumentGrid(Gtk.Grid):
         # context.select_font_face('sans-serif')
         context.set_font_size(size)
 
-        # grad = cairo.LinearGradient(0, 0, 0, pix.get_height())
-        # grad.add_color_stop_rgb(0, 0.95, 0.95, 0.95)
-        # grad.add_color_stop_rgb(pix.get_height(), 0.86, 0.86, 0.86)
-        # context.set_source(grad)
-        context.set_source_rgba(1, 1, 1, 1)
-        context.fill()
+        # Document background
+        grad = cairo.LinearGradient(0, 0, 0, pix.get_height())
+        grad.add_color_stop_rgb(0, 0.95, 0.95, 0.95)
+        grad.add_color_stop_rgb(pix.get_height(), 0.93, 0.93, 0.93)
+        context.set_source(grad)
+        context.paint()
+
+        # Document Outline
+        grad = cairo.LinearGradient(0, 0, 0, pix.get_height())
+        grad.add_color_stop_rgb(0, 1, 1, 1)
+        grad.add_color_stop_rgb(pix.get_height(), 0.94, 0.94, 0.94)
+        context.rectangle(1, 1, pix.get_width() - 2, pix.get_height() - 2)
+        context.set_source(grad)
+        context.stroke()
+
+        # Border
+        context.rectangle(0, 0, pix.get_width(), pix.get_height())
+        context.set_source_rgb(0.9, 0.9, 0.9)
+        context.stroke()
 
         # add the text
         for num, line in enumerate(text.split('\n'), 1):
-            context.set_source_rgba(0, 0, 0, 1)
+            context.set_source_rgba(0.2, 0.2, 0.24, 1)
 
+            # Fix to remove \r if it exists
             if line.startswith('\r'):
                 line = line[1:]
 
             if num == 1:
-                context.select_font_face('monospace', cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                context.select_font_face('sans-serif', cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
             else:
-                context.select_font_face('monospace',  cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-            print(4 + size * num, line)
-            context.move_to(4, size / 4 + size * num)
-            context.show_text(line)
+                context.select_font_face('monospace', cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
 
-        context.rectangle(0, 0, pix.get_width(), pix.get_height())
-        context.set_source_rgb(0.9, 0.9, 0.9)
-        context.stroke()
+            context.move_to(4, 4 + size * num)
+            context.show_text(line)
 
         # get the resulting pixbuf
         surface = context.get_target()
