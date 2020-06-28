@@ -46,14 +46,23 @@
   </screenshots>
 
   <releases>
+    <release date="2020-06-28" version="0.2.0">
+      <description>
+        <p>Norka grows up and learn new tricks like import files to Norka's documents! 
+          You could use any methods you like: drag-n-drop, keyboard shortcut (Ctrl+O) or Headerbar button. And from command line of course!</p>
+        <p>For a while, you were able only to archive documents, because delete archives its too :) 
+          Now you can see archived documents and delete 'em permanent or unarchive if you changed your mind.</p>
+        <p>Every document will have its own face. I mean preview. Documents list now shows a preview of documents instead of dummy icons.</p>
+      </description>
+    </release>
     <release date="2020-06-12" version="0.1.4">
       <description>
         <p>Search and Shortcuts. 
           Now you can use Text Searh via keyboard shortcuts:</p>
         <ul>
-          <li><code>Control+f</code> - to start search</li>
-          <li><code>Control+g</code> - to find next</li>
-          <li><code>Shift+Control+g</code> - to find previous</li>
+          <li>Control+F - to start search</li>
+          <li>Control+G - to find next</li>
+          <li>Shift+Control+G - to find previous</li>
         </ul>
       </description>
     </release>
