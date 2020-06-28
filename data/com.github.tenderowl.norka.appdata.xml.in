@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
   <id>com.github.tenderowl.norka</id>
   <metadata_license>CC0-1.0</metadata_license>
@@ -7,14 +7,16 @@
   <summary>Continuous text editor</summary>
   <description>
     <p>Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or accidentally deleted notes.</p>
-    <p>Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.</p>
-    <ul>
-      <li>All your notes inside</li>
-      <li>Automatically saved in place</li>
-      <li>Can be easily exported to files in one click</li>
-      <li>If you neet markup - use markdown</li>
-      <li>Don't like the default theme - choose different</li>
-    </ul>
+    <p>
+      Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.
+      <ul>
+        <li>All your notes inside</li>
+        <li>Automatically saved in place</li>
+        <li>Can be easily exported to files in one click</li>
+        <li>If you neet markup - use markdown</li>
+        <li>Don't like the default theme - choose different</li>
+      </ul>
+    </p>
   </description>
   <update_contact>andrey_AT_tenderowl.com</update_contact>
 
@@ -33,15 +35,15 @@
       <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents.png</image>
     </screenshot>
     <screenshot>
-      <caption>Editor</caption>
+      <caption>Editor view</caption>
       <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor.png</image>
     </screenshot>
     <screenshot>
-      <caption>Dark mode</caption>
+      <caption>Documents list in dark mode</caption>
       <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents-dark.png</image>
     </screenshot>
     <screenshot>
-      <caption>Dark mode Editor</caption>
+      <caption>Editor in dark mode</caption>
       <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor-dark.png</image>
     </screenshot>
   </screenshots>
@@ -51,25 +53,27 @@
       <description>
         <p>Norka grows up and learn new tricks like import files to Norka's documents! 
           You could use any methods you like: drag-n-drop, keyboard shortcut (Ctrl+O) or Headerbar button. And from command line of course!</p>
-        <p>For a while, you were able only to archive documents, because delete archives its too :) 
+        <p>For a while, you were able only to archive documents, because delete archives its too :)
           Now you can see archived documents and delete 'em permanent or unarchive if you changed your mind.</p>
         <p>Every document will have its own face. I mean preview. Documents list now shows a preview of documents instead of dummy icons.</p>
       </description>
     </release>
     <release date="2020-06-12" version="0.1.4">
       <description>
-        <p>Search and Shortcuts. 
-          Now you can use Text Searh via keyboard shortcuts:</p>
-        <ul>
-          <li>Control+F - to start search</li>
-          <li>Control+G - to find next</li>
-          <li>Shift+Control+G - to find previous</li>
-        </ul>
+        <p>
+          Search and Shortcuts. 
+          Now you can use Text Searh via keyboard shortcuts:
+          <ul>
+            <li>Control+F - to start search</li>
+            <li>Control+G - to find next</li>
+            <li>Shift+Control+G - to find previous</li>
+          </ul>
+        </p>
       </description>
     </release>
     <release date="2020-06-07" version="0.1.0">
       <description>
-        <p>Initial release</p>
+        <p>Initial release of Norka. Young yet ready to provide you with editing functions and Markdown formatter, even export but who needs it.</p>
       </description>
     </release>
   </releases>
