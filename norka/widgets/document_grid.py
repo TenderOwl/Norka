@@ -24,8 +24,9 @@
 import os
 from urllib.parse import urlparse, unquote_plus
 
+import cairo
 from gi.repository import Gtk, GObject, Gdk
-from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.services.storage import storage
 from norka.widgets.document_context_menu import DocumentContextMenu
@@ -76,11 +77,52 @@ class DocumentGrid(Gtk.Grid):
     def reload_items(self, sender: Gtk.Widget = None):
         self.model.clear()
         for document in storage.all():
-            icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
+            # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
+            icon = self.gen_preview(document.content[:200], size=8)
             self.model.append([icon, document.title, document.content, document._id])
 
         if self.selected_path:
             self.view.select_path(self.selected_path)
+
+    def gen_preview(self, text, size=12) -> Pixbuf:
+        pix = Pixbuf.new(Colorspace.RGB, True, 8, 60, 80)
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, pix.get_width(), pix.get_height())
+        context = cairo.Context(surface)
+
+        # Gdk.cairo_set_source_pixbuf(context, pix, 0, 0)
+        # context.paint()  # paint the pixbuf
+        # context.select_font_face('sans-serif')
+        context.set_font_size(size)
+
+        # grad = cairo.LinearGradient(0, 0, 0, pix.get_height())
+        # grad.add_color_stop_rgb(0, 0.95, 0.95, 0.95)
+        # grad.add_color_stop_rgb(pix.get_height(), 0.86, 0.86, 0.86)
+        # context.set_source(grad)
+        context.set_source_rgba(1, 1, 1, 1)
+        context.fill()
+
+        # add the text
+        for num, line in enumerate(text.split('\n'), 1):
+            context.set_source_rgba(0, 0, 0, 1)
+
+            if line.startswith('\r'):
+                line = line[1:]
+
+            if num == 1:
+                context.select_font_face('monospace', cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+            else:
+                context.select_font_face('monospace',  cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+            print(4 + size * num, line)
+            context.move_to(4, size / 4 + size * num)
+            context.show_text(line)
+
+        context.rectangle(0, 0, pix.get_width(), pix.get_height())
+        context.set_source_rgb(0.9, 0.9, 0.9)
+        context.stroke()
+
+        # get the resulting pixbuf
+        surface = context.get_target()
+        return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
     def on_button_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
         self.selected_path = self.view.get_path_at_pos(event.x, event.y)
