@@ -47,7 +47,7 @@ class Application(Gtk.Application):
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
+                         flags=Gio.ApplicationFlags.HANDLES_OPEN)
 
         self.version = version
 
@@ -55,7 +55,7 @@ class Application(Gtk.Application):
         self.settings = Settings.new()
 
         self.init_style()
-        self.window = None
+        self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
         try:
@@ -81,7 +81,6 @@ class Application(Gtk.Application):
         shortcuts_action.connect("activate", self.on_shortcuts)
         self.add_action(shortcuts_action)
 
-
     def init_style(self):
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/com/github/tenderowl/norka/css/application.css')
@@ -96,10 +95,28 @@ class Application(Gtk.Application):
         self.settings.connect("changed", self.on_settings_changed)
 
     def do_activate(self):
+        """Activates the application.
+
+        """
         self.window = self.props.active_window
         if not self.window:
             self.window = NorkaWindow(application=self, settings=self.settings)
         self.window.present()
+
+    def do_open(self, files: [Gio.File], n_files: int, hint: str):
+        """Opens the given files.
+
+        :param files: an array of Gio.Files to open
+        :param n_files: number of files in command line args
+        :param hint: a hint (or “”), but never None
+        """
+        if n_files and not self.window:
+            self.do_activate()
+        for gfile in files:
+            path = gfile.get_path()
+            if not path:
+                continue
+            self.window.import_document(file_path=path)
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)

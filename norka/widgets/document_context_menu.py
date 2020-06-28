@@ -27,7 +27,7 @@ from gi.repository import Gtk, Granite
 
 class DocumentContextMenu(Gtk.Menu):
 
-    def __init__(self, attach_to=None):
+    def __init__(self, attach_to=None, archived=False):
         super().__init__()
         self.attach_to_widget(attach_to)
 
@@ -40,6 +40,9 @@ class DocumentContextMenu(Gtk.Menu):
         archive_menu = Gtk.MenuItem(action_name='document.archive')
         archive_menu.add(Granite.AccelLabel.from_action_name('Archive', 'document.archive'))
 
+        unarchive_menu = Gtk.MenuItem(action_name='document.unarchive')
+        unarchive_menu.add(Granite.AccelLabel.from_action_name('Unarchive', 'document.unarchive'))
+
         delete_menu = Gtk.MenuItem(action_name='document.delete')
         delete_menu.add(Granite.AccelLabel.from_action_name('Delete', 'document.delete'))
 
@@ -47,6 +50,11 @@ class DocumentContextMenu(Gtk.Menu):
         self.append(Gtk.SeparatorMenuItem())
         self.append(export_menu)
         self.append(Gtk.SeparatorMenuItem())
-        self.append(archive_menu)
+
+        if not archived:
+            self.append(archive_menu)
+        else:
+            self.append(unarchive_menu)
+
         self.append(delete_menu)
         self.show_all()

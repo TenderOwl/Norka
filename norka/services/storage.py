@@ -120,5 +120,17 @@ class Storage(object):
 
         return True
 
+    def delete(self, doc_id: int) -> bool:
+        query = f"DELETE FROM documents WHERE id=?"
+
+        try:
+            self.conn.execute(query, (doc_id,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
 
 storage = Storage()
