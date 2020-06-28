@@ -11,6 +11,7 @@ Build-Depends: appstream,
                intltool,
                libgtkspell3-3-dev,
                meson (>= 0.50.0),
+               python3 (>=3.6),
                python-gi
 Standards-Version: 3.9.3
 X-Python-Version: >= 3.6

@@ -4,6 +4,7 @@
 build
 builddir
 dist
+obj-x86_64-linux-gnu
 
 *.pyc
 __pycache__
@@ -12,3 +13,4 @@ __pycache__
 *.egg-info
 *.whl
 *.snap
+*.log
