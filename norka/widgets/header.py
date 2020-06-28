@@ -43,6 +43,11 @@ class Header(Gtk.HeaderBar):
         self.set_show_close_button(True)
         self.get_style_context().add_class('norka-header')
 
+        self.import_button = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.LARGE_TOOLBAR)
+        self.import_button.set_visible(True)
+        self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), 'Import file to Norka'))
+        self.import_button.set_action_name('document.import')
+
         self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
         self.add_button.set_visible(True)
         self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), 'Create new document'))
@@ -75,6 +80,7 @@ class Header(Gtk.HeaderBar):
 
         self.pack_start(self.back_button)
         self.pack_start(self.add_button)
+        self.pack_start(self.import_button)
         self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
         # self.pack_end(self.search_button)
@@ -90,6 +96,7 @@ class Header(Gtk.HeaderBar):
         # self.search_button.set_visible(self.document_mode_active)
         self.export_button.set_visible(self.document_mode_active)
         self.add_button.set_visible(not self.document_mode_active)
+        self.import_button.set_visible(not self.document_mode_active)
 
     def update_title(self, title: str = None) -> None:
         self.set_title(title or APP_TITLE)

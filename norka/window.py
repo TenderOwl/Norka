@@ -137,6 +137,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'accels': ('<Shift>Delete',)
                 },
                 {
+                    'name': 'import',
+                    'action': self.on_document_import_activated,
+                    'accels': ('<Control>o',)
+                },
+                {
                     'name': 'export',
                     'action': self.on_document_export_activated,
                     'accels': ('<Control><Shift>s',)
@@ -286,24 +291,51 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         self.editor.save_document()
 
-    def on_document_import(self, sender: Gtk.Widget = None, filepath: str = None) -> None:
+    def on_document_import_activated(self, sender, event):
+        dialog = Gtk.FileChooserNative.new(
+            "Import files into Norka",
+            self,
+            Gtk.FileChooserAction.OPEN
+        )
+
+        filter_markdown = Gtk.FileFilter()
+        filter_markdown.set_name("Text Files")
+        filter_markdown.add_mime_type("text/plain")
+        dialog.add_filter(filter_markdown)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            file_path = dialog.get_filename()
+            self.import_document(file_path)
+
+        dialog.destroy()
+
+    def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
+        self.import_document(file_path=file_path)
+
+    def import_document(self, file_path: str) -> bool:
         """Import files from filesystem.
         Creates new document in storage and fill it with file's contents.
 
         :param sender:
         :param filepath: path to file to import
         """
-        if not os.path.exists(filepath):
-            return
+        if not os.path.exists(file_path):
+            return False
 
-        with open(filepath, 'r') as _file:
-            lines = _file.readlines()
-            filename = os.path.basename(filepath)[:filepath.rfind('.')]
+        try:
+            with open(file_path, 'r') as _file:
+                lines = _file.readlines()
+                filename = os.path.basename(file_path)[:file_path.rfind('.')]
 
-            _doc = Document(title=filename, content='\r\n'.join(lines))
-            _doc_id = storage.add(_doc)
+                _doc = Document(title=filename, content='\r\n'.join(lines))
+                _doc_id = storage.add(_doc)
 
-            self.document_grid.reload_items(self)
+                self.document_grid.reload_items(self)
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
