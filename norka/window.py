@@ -21,11 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
 
 from gi.repository import Gtk, Gio, GLib, Gdk
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
+from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
@@ -42,7 +44,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def __init__(self, settings: Gio.Settings, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_icon(Pixbuf. new_from_resource_at_scale(
+        self.set_default_icon(Pixbuf.new_from_resource_at_scale(
             '/com/github/tenderowl/norka/icons/com.github.tenderowl.norka.svg',
             128, 128, True
         ))
@@ -65,6 +67,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.document_grid = DocumentGrid()
         self.document_grid.connect('document-create', self.on_document_create_activated)
+        self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor()
@@ -126,12 +129,22 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accels': ('Delete',)
+                    'accels': (None,)
+                },
+                {
+                    'name': 'unarchive',
+                    'action': self.on_document_unarchive_activated,
+                    'accels': (None,)
                 },
                 {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
                     'accels': ('<Shift>Delete',)
+                },
+                {
+                    'name': 'import',
+                    'action': self.on_document_import_activated,
+                    'accels': ('<Control>o',)
                 },
                 {
                     'name': 'export',
@@ -172,6 +185,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'search_text_prev',
                     'action': self.on_text_search_backward,
                     'accels': ('<Control><Shift>g',)
+                },
+                {
+                    'name': 'toggle_archived',
+                    'action': self.on_toggle_archive,
+                    'accels': (None,)
                 },
             ]
         }
@@ -283,6 +301,55 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         self.editor.save_document()
 
+    def on_document_import_activated(self, sender, event):
+        dialog = Gtk.FileChooserNative.new(
+            "Import files into Norka",
+            self,
+            Gtk.FileChooserAction.OPEN
+        )
+
+        filter_markdown = Gtk.FileFilter()
+        filter_markdown.set_name("Text Files")
+        filter_markdown.add_mime_type("text/plain")
+        dialog.add_filter(filter_markdown)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            file_path = dialog.get_filename()
+            self.import_document(file_path)
+
+        dialog.destroy()
+
+    def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
+        self.import_document(file_path=file_path)
+
+    def import_document(self, file_path: str) -> bool:
+        """Import files from filesystem.
+        Creates new document in storage and fill it with file's contents.
+
+        :param sender:
+        :param filepath: path to file to import
+        """
+        if not os.path.exists(file_path):
+            return False
+
+        self.header.show_spinner(True)
+        try:
+            with open(file_path, 'r') as _file:
+                lines = _file.readlines()
+                filename = os.path.basename(file_path)[:file_path.rfind('.')]
+
+                _doc = Document(title=filename, content='\r\n'.join(lines))
+                _doc_id = storage.add(_doc)
+
+                self.document_grid.reload_items()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+        finally:
+            self.header.show_spinner(False)
+
     def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
         Show rename dialog and update document's title
@@ -316,10 +383,20 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(
-                    doc_id=doc._id,
-                    data={'archived': True}
-            ):
+            if storage.update(doc_id=doc._id, data={'archived': True}):
+                self.check_documents_count()
+                self.document_grid.reload_items()
+
+    def on_document_unarchive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Unarchive document.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document
+        if doc:
+            if storage.update(doc_id=doc._id, data={'archived': False}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -342,10 +419,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and storage.update(
-                    doc_id=doc._id,
-                    data={'archived': True}
-            ):
+            if result == Gtk.ResponseType.APPLY and storage.delete(doc._id):
                 self.document_grid.reload_items()
                 self.check_documents_count()
 
@@ -377,9 +451,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         extensions = ('.md', '.markdown',)
 
-        if dialog.run() == Gtk.ResponseType.ACCEPT:
+        dialog_result = dialog.run()
+        print(dialog_result)
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
             file_name = dialog.get_filename()
             ex_ok = False
+            print(file_name)
 
             for extension in extensions:
                 if file_name.lower().endswith(extension):
@@ -388,9 +466,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
             if not ex_ok and extensions:
                 file_name += extensions[0]
 
+            print(file_name)
             with open(file_name, "w+", encoding="utf-8") as output:
                 data = self.editor.get_text()
                 output.write(data)
+
         dialog.destroy()
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -469,3 +549,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def get_current_font_size(self) -> float:
         font = self.settings.get_string("font")
         return float(font[font.rfind(" ") + 1:])
+
+    def on_toggle_archive(self, action: Gio.SimpleAction, name:str =None):
+        self.document_grid.show_archived = self.header.archived_button.get_active()
+        self.document_grid.reload_items()

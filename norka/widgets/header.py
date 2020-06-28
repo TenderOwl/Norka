@@ -43,6 +43,13 @@ class Header(Gtk.HeaderBar):
         self.set_show_close_button(True)
         self.get_style_context().add_class('norka-header')
 
+        self.spinner = Gtk.Spinner(visible=False)
+
+        self.import_button = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.LARGE_TOOLBAR)
+        self.import_button.set_visible(True)
+        self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), 'Import file to Norka'))
+        self.import_button.set_action_name('document.import')
+
         self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
         self.add_button.set_visible(True)
         self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), 'Create new document'))
@@ -68,6 +75,12 @@ class Header(Gtk.HeaderBar):
         self.export_button.set_action_name('document.export')
         self.export_button.set_visible(False)
 
+        self.archived_button = Gtk.ToggleButton()
+        self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
+        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, 'Show Archived files'))
+        self.archived_button.set_action_name('document.toggle_archived')
+        self.archived_button.set_visible(True)
+
         self.menu_button = Gtk.MenuButton(tooltip_text="Menu")
         self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
         self.menu_button.set_popover(MenuPopover(settings=self.settings))
@@ -75,8 +88,11 @@ class Header(Gtk.HeaderBar):
 
         self.pack_start(self.back_button)
         self.pack_start(self.add_button)
+        self.pack_start(self.import_button)
+        self.pack_start(self.spinner)
         self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
+        self.pack_end(self.archived_button)
         # self.pack_end(self.search_button)
 
     def toggle_document_mode(self) -> None:
@@ -90,6 +106,15 @@ class Header(Gtk.HeaderBar):
         # self.search_button.set_visible(self.document_mode_active)
         self.export_button.set_visible(self.document_mode_active)
         self.add_button.set_visible(not self.document_mode_active)
+        self.import_button.set_visible(not self.document_mode_active)
+        self.archived_button.set_visible(not self.document_mode_active)
 
     def update_title(self, title: str = None) -> None:
         self.set_title(title or APP_TITLE)
+
+    def show_spinner(self, state: bool = False) -> None:
+        if state:
+            self.spinner.start()
+        else:
+            self.spinner.stop()
+        self.spinner.set_visible(state)
