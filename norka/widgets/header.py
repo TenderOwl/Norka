@@ -73,6 +73,12 @@ class Header(Gtk.HeaderBar):
         self.export_button.set_action_name('document.export')
         self.export_button.set_visible(False)
 
+        self.archived_button = Gtk.ToggleButton()
+        self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
+        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>h',), 'Show Archived files'))
+        self.archived_button.set_action_name('document.toggle_archived')
+        self.archived_button.set_visible(True)
+
         self.menu_button = Gtk.MenuButton(tooltip_text="Menu")
         self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
         self.menu_button.set_popover(MenuPopover(settings=self.settings))
@@ -83,6 +89,7 @@ class Header(Gtk.HeaderBar):
         self.pack_start(self.import_button)
         self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
+        self.pack_end(self.archived_button)
         # self.pack_end(self.search_button)
 
     def toggle_document_mode(self) -> None:
@@ -97,6 +104,7 @@ class Header(Gtk.HeaderBar):
         self.export_button.set_visible(self.document_mode_active)
         self.add_button.set_visible(not self.document_mode_active)
         self.import_button.set_visible(not self.document_mode_active)
+        self.archived_button.set_visible(not self.document_mode_active)
 
     def update_title(self, title: str = None) -> None:
         self.set_title(title or APP_TITLE)

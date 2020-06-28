@@ -44,7 +44,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def __init__(self, settings: Gio.Settings, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_icon(Pixbuf. new_from_resource_at_scale(
+        self.set_default_icon(Pixbuf.new_from_resource_at_scale(
             '/com/github/tenderowl/norka/icons/com.github.tenderowl.norka.svg',
             128, 128, True
         ))
@@ -180,6 +180,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'search_text_prev',
                     'action': self.on_text_search_backward,
                     'accels': ('<Control><Shift>g',)
+                },
+                {
+                    'name': 'toggle_archived',
+                    'action': self.on_toggle_archive,
+                    'accels': ('<Control>h',)
                 },
             ]
         }
@@ -331,7 +336,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 _doc = Document(title=filename, content='\r\n'.join(lines))
                 _doc_id = storage.add(_doc)
 
-                self.document_grid.reload_items(self)
+                self.document_grid.reload_items()
             return True
         except Exception as e:
             print(e)
@@ -396,10 +401,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and storage.update(
-                    doc_id=doc._id,
-                    data={'archived': True}
-            ):
+            if result == Gtk.ResponseType.APPLY and storage.delete(doc._id):
                 self.document_grid.reload_items()
                 self.check_documents_count()
 
@@ -529,3 +531,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def get_current_font_size(self) -> float:
         font = self.settings.get_string("font")
         return float(font[font.rfind(" ") + 1:])
+
+    def on_toggle_archive(self, sender: Gio.SimpleAction, name: str = None):
+        self.document_grid.show_archived = self.header.archived_button.get_active()
+        self.document_grid.reload_items()

@@ -47,6 +47,7 @@ class DocumentGrid(Gtk.Grid):
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int)
 
+        self.show_archived = False
         self.selected_path = None
         self.selected_document = None
 
@@ -74,17 +75,18 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
-    def reload_items(self, sender: Gtk.Widget = None):
+    def reload_items(self, sender: Gtk.Widget = None) -> None:
         self.model.clear()
-        for document in storage.all():
+        for document in storage.all(self.show_archived):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
-            icon = self.gen_preview(document.content[:200], size=8)
+            opacity = 0.2 if document.archived else 1
+            icon = self.gen_preview(document.content[:200], opacity=opacity)
             self.model.append([icon, document.title, document.content, document._id])
 
         if self.selected_path:
             self.view.select_path(self.selected_path)
 
-    def gen_preview(self, text, size=12) -> Pixbuf:
+    def gen_preview(self, text, size=12, opacity=1) -> Pixbuf:
         pix = Pixbuf.new(Colorspace.RGB, True, 8, 60, 80)
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, pix.get_width(), pix.get_height())
         context = cairo.Context(surface)
@@ -99,24 +101,24 @@ class DocumentGrid(Gtk.Grid):
         grad.add_color_stop_rgb(0, 0.95, 0.95, 0.95)
         grad.add_color_stop_rgb(pix.get_height(), 0.93, 0.93, 0.93)
         context.set_source(grad)
-        context.paint()
+        context.paint_with_alpha(opacity)
 
         # Document Outline
         grad = cairo.LinearGradient(0, 0, 0, pix.get_height())
-        grad.add_color_stop_rgb(0, 1, 1, 1)
-        grad.add_color_stop_rgb(pix.get_height(), 0.94, 0.94, 0.94)
+        grad.add_color_stop_rgba(0, 1, 1, 1, opacity)
+        grad.add_color_stop_rgba(pix.get_height(), 0.94, 0.94, 0.94, opacity)
         context.rectangle(1, 1, pix.get_width() - 2, pix.get_height() - 2)
         context.set_source(grad)
         context.stroke()
 
         # Border
         context.rectangle(0, 0, pix.get_width(), pix.get_height())
-        context.set_source_rgb(0.9, 0.9, 0.9)
+        context.set_source_rgba(0.9, 0.9, 0.9, opacity)
         context.stroke()
 
         # add the text
         for num, line in enumerate(text.split('\n'), 1):
-            context.set_source_rgba(0.2, 0.2, 0.24, 1)
+            context.set_source_rgba(0.2, 0.2, 0.24, opacity)
 
             # Fix to remove \r if it exists
             if line.startswith('\r'):
