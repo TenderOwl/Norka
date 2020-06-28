@@ -19,6 +19,13 @@
               </object>
             </child>
             <child>
+              <object class="GtkShortcutsShortcut" id="s1-3">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Import</property>
+                <property name="accelerator">&lt;Primary&gt;o</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkShortcutsShortcut" id="s1-4">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Export</property>
