@@ -150,7 +150,7 @@ class DocumentGrid(Gtk.Grid):
                 self.model.get_iter(self.selected_path), 3
             ))
 
-            menu = DocumentContextMenu(self.view)
+            menu = DocumentContextMenu(self.view, self.selected_document.archived)
             menu.popup(None, None, None, None, event.button, event.time)
 
             return

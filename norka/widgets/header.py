@@ -43,6 +43,8 @@ class Header(Gtk.HeaderBar):
         self.set_show_close_button(True)
         self.get_style_context().add_class('norka-header')
 
+        self.spinner = Gtk.Spinner(visible=False)
+
         self.import_button = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.LARGE_TOOLBAR)
         self.import_button.set_visible(True)
         self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), 'Import file to Norka'))
@@ -87,6 +89,7 @@ class Header(Gtk.HeaderBar):
         self.pack_start(self.back_button)
         self.pack_start(self.add_button)
         self.pack_start(self.import_button)
+        self.pack_start(self.spinner)
         self.pack_end(self.menu_button)
         self.pack_end(self.export_button)
         self.pack_end(self.archived_button)
@@ -108,3 +111,10 @@ class Header(Gtk.HeaderBar):
 
     def update_title(self, title: str = None) -> None:
         self.set_title(title or APP_TITLE)
+
+    def show_spinner(self, state: bool = False) -> None:
+        if state:
+            self.spinner.start()
+        else:
+            self.spinner.stop()
+        self.spinner.set_visible(state)

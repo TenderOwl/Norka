@@ -132,6 +132,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'accels': ('Delete',)
                 },
                 {
+                    'name': 'unarchive',
+                    'action': self.on_document_unarchive_activated,
+                    'accels': (None,)
+                },
+                {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
                     'accels': ('<Shift>Delete',)
@@ -184,7 +189,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'toggle_archived',
                     'action': self.on_toggle_archive,
-                    'accels': ('<Control>h',)
+                    'accels': ('<Control>h',),
+                    'stateful': (GLib.Variant('b', False).get_type(), GLib.Variant('b', False)),
                 },
             ]
         }
@@ -193,7 +199,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
             action_group = Gio.SimpleActionGroup()
 
             for item in actions:
-                action = Gio.SimpleAction(name=item['name'])
+                stateful = item.get('stateful')
+                if not stateful:
+                    action = Gio.SimpleAction(name=item['name'])
+                else:
+                    action = Gio.SimpleAction.new_stateful(item['name'], stateful[0], stateful[1])
                 action.connect('activate', item['action'])
                 self.get_application().set_accels_for_action(f'{action_group_key}.{item["name"]}', item["accels"])
                 action_group.add_action(action)
@@ -328,6 +338,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         if not os.path.exists(file_path):
             return False
 
+        self.header.show_spinner(True)
         try:
             with open(file_path, 'r') as _file:
                 lines = _file.readlines()
@@ -341,6 +352,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         except Exception as e:
             print(e)
             return False
+        finally:
+            self.header.show_spinner(False)
 
     def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
@@ -375,10 +388,20 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(
-                    doc_id=doc._id,
-                    data={'archived': True}
-            ):
+            if storage.update(doc_id=doc._id, data={'archived': True}):
+                self.check_documents_count()
+                self.document_grid.reload_items()
+
+    def on_document_unarchive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Unarchive document.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document
+        if doc:
+            if storage.update(doc_id=doc._id, data={'archived': False}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
