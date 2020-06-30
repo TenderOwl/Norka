@@ -2,7 +2,7 @@
 language: node_js
 
 node_js:
-  - lts/*
+  - 10.17.0
 
 sudo: required
 
@@ -21,3 +21,6 @@ install:
 
 script:
   - houston ci
+    --type system-app
+    --name-domain com.github.tenderowl.norka
+    --name-human Norka
