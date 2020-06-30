@@ -1,6 +1,6 @@
 project('com.github.tenderowl.norka',
   version: '0.2.0',
-  meson_version: '>= 0.50.0'
+  # meson_version: '>= 0.50.0'
 )
 
 revision = run_command('bin/revision.sh').stdout().strip()

@@ -21,6 +21,6 @@ install:
 
 script:
   - houston ci
-    --type system-app
+    --type app
     --name-domain com.github.tenderowl.norka
     --name-human Norka
