@@ -24,10 +24,13 @@
 
 import gi
 
+from norka.gobject_worker import GObjectWorker
+
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, Granite, GtkSource
+from norka.services.medium import Medium
 
 
 class PreferencesDialog(Gtk.Dialog):
@@ -79,6 +82,7 @@ class PreferencesDialog(Gtk.Dialog):
         general_grid.attach(Gtk.Label("Tab width:", halign=Gtk.Align.END), 0, 6, 1, 1)
         general_grid.attach(indent_width, 1, 6, 2, 1)
 
+        # Interface grid
         interface_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
         scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
         style_chooser = GtkSource.StyleSchemeChooserWidget()
@@ -96,9 +100,28 @@ class PreferencesDialog(Gtk.Dialog):
         interface_grid.attach(Granite.HeaderLabel("Styles"), 0, 0, 2, 1)
         interface_grid.attach(scrolled, 0, 2, 2, 1)
 
+        # Export grid
+        export_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+
+        self.toast = Granite.WidgetsToast(title="Toast")
+
+        self.medium_token = Gtk.Entry(hexpand=True, placeholder_text="Token")
+        self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
+        self.medium_token.connect("changed", self.on_medium_token)
+
+        self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
+        self.medium_link.set_label("Create Integration token and copy it here")
+
+        export_grid.attach(Granite.HeaderLabel("Medium.com"), 0, 0, 3, 1)
+        export_grid.attach(Gtk.Label("Personal Token:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        export_grid.attach(self.medium_token, 1, 1, 2, 1)
+        export_grid.attach(self.medium_link, 0, 2, 3, 1)
+
+        # Main Stack
         main_stack = Gtk.Stack(margin=6, margin_bottom=18, margin_top=8)
         main_stack.add_titled(general_grid, "behavior", "Behavior")
         main_stack.add_titled(interface_grid, "interface", "Interface")
+        main_stack.add_titled(export_grid, "export", "Export")
 
         main_stackswitcher = Gtk.StackSwitcher()
         main_stackswitcher.set_stack(main_stack)
@@ -108,7 +131,10 @@ class PreferencesDialog(Gtk.Dialog):
         main_grid.attach(main_stackswitcher, 0, 0, 1, 1)
         main_grid.attach(main_stack, 0, 1, 1, 1)
 
-        self.get_content_area().add(main_grid)
+        self.overlay = Gtk.Overlay()
+        self.overlay.add_overlay(main_grid)
+        self.overlay.add_overlay(self.toast)
+        self.get_content_area().add(self.overlay)
 
         close_button = Gtk.Button(label="Close")
         close_button.connect('clicked', self.on_close_activated)
@@ -136,3 +162,28 @@ class PreferencesDialog(Gtk.Dialog):
 
     def on_indent_width(self, sender: Gtk.SpinButton) -> None:
         self.settings.set_int('indent-width', sender.get_value_as_int())
+
+    def on_medium_token(self, sender: Gtk.Entry) -> None:
+        token = sender.get_text().strip()
+        self.settings.set_string("medium-personal-token", token)
+        if token:
+            sender.set_sensitive(False)
+            medium_client = Medium(access_token=token)
+            GObjectWorker.call(medium_client.get_user, callback=self.on_medium_callback)
+        else:
+            self.settings.set_string("medium-user-id", "")
+
+    def on_medium_callback(self, result):
+        self.medium_token.set_sensitive(True)
+        if result:
+            self.toast.set_title(f"Token accepted, {result['name']}!")
+            self.settings.set_string("medium-user-id", result['id'])
+            self.toast.send_notification()
+        else:
+            self.on_medium_errorback()
+
+    def on_medium_errorback(self, error=None):
+        self.medium_token.set_sensitive(True)
+        self.toast.set_title("Something goes wrong!")
+        self.toast.send_notification()
+        self.settings.set_string("medium-user-id", "")

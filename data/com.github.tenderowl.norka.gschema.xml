@@ -51,10 +51,20 @@
 			<summary>Font Zoom</summary>
 			<description>Set the zoom of the font</description>
 		</key>
-		<key name="font" type="s">
+		<key type="s" name="font">
 			<default>'Noto Sans Mono 10'</default>
 			<summary>Preferred Font</summary>
 			<description>Set the preferred font</description>
 		</key>
+	  <key type="s" name="medium-personal-token">
+	    <default>""</default>
+	    <summary>Medium.com access token</summary>
+	    <description>Personal access token to Medium.com</description>
+	  </key>
+	  <key type="s" name="medium-user-id">
+	    <default>""</default>
+	    <summary>Medium.com user ID</summary>
+	    <description>Medium.com user ID for personal access token</description>
+	  </key>
 	</schema>
 </schemalist>

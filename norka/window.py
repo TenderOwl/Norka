@@ -22,13 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+import time
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Granite
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
+from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services.logger import Logger
+from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import storage
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
@@ -86,7 +89,14 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.screens.show_all()
 
-        self.add(self.screens)
+        self.toast = Granite.WidgetsToast()
+
+        self.overlay = Gtk.Overlay()
+        self.overlay.add_overlay(self.screens)
+        self.overlay.add_overlay(self.toast)
+        self.overlay.show_all()
+
+        self.add(self.overlay)
 
         # Init actions
         self.init_actions()
@@ -154,6 +164,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'export',
                     'action': self.on_document_export_activated,
                     'accels': ('<Control><Shift>s',)
+                },
+                {
+                    'name': 'export-medium',
+                    'action': self.on_export_medium,
+                    'accels': (None,)
                 },
                 {
                     'name': 'search',
@@ -476,6 +491,34 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 output.write(data)
 
         dialog.destroy()
+
+    def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
+        token = self.settings.get_string("medium-personal-token")
+        user_id = self.settings.get_string("medium-user-id")
+
+        if not token or not user_id:
+            self.toast.set_title("You need to set Medium token in Preferences")
+            self.toast.set_default_action("Configure")
+            self.toast.connect("default-action", self.get_application().on_preferences)
+            self.toast.send_notification()
+
+        else:
+            self.header.show_spinner(True)
+            self.medium_client = Medium(access_token=token)
+            GObjectWorker.call(self.medium_client.create_post,
+                               args=(user_id, self.editor.document, PublishStatus.DRAFT),
+                               callback=self.on_export_medium_callback)
+
+    def on_export_medium_callback(self, result):
+        self.header.show_spinner(False)
+        if result:
+            self.toast.set_title("Document successfully exported!")
+            self.toast.set_default_action("View")
+            self.toast.connect("default-action", lambda x: Gtk.show_uri(None, result["url"], int(time.time())))
+        else:
+            self.toast.set_title("Export failed!")
+            self.toast.set_default_action(None)
+        self.toast.send_notification()
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find a documents

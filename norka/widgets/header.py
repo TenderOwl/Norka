@@ -25,6 +25,7 @@
 from gi.repository import Gtk, Granite
 
 from norka.define import APP_TITLE, APP_SUBTITLE
+from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
 
 
@@ -70,10 +71,9 @@ class Header(Gtk.HeaderBar):
         # self.search_button.set_action_name('document.search_text')
         # self.search_button.set_visible(False)
 
-        self.export_button = Gtk.Button.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR)
-        self.export_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control><Shift>s',), 'Export document to file'))
-        self.export_button.set_action_name('document.export')
-        self.export_button.set_visible(False)
+        self.share_app_menu = Gtk.MenuButton(tooltip_text="Share")
+        self.share_app_menu.set_image(Gtk.Image.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR))
+        self.share_app_menu.set_popover(MenuExport(settings=self.settings))
 
         self.archived_button = Gtk.ToggleButton()
         self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
@@ -91,7 +91,7 @@ class Header(Gtk.HeaderBar):
         self.pack_start(self.import_button)
         self.pack_start(self.spinner)
         self.pack_end(self.menu_button)
-        self.pack_end(self.export_button)
+        self.pack_end(self.share_app_menu)
         self.pack_end(self.archived_button)
         # self.pack_end(self.search_button)
 
@@ -104,7 +104,7 @@ class Header(Gtk.HeaderBar):
 
         self.back_button.set_visible(self.document_mode_active)
         # self.search_button.set_visible(self.document_mode_active)
-        self.export_button.set_visible(self.document_mode_active)
+        self.share_app_menu.set_visible(self.document_mode_active)
         self.add_button.set_visible(not self.document_mode_active)
         self.import_button.set_visible(not self.document_mode_active)
         self.archived_button.set_visible(not self.document_mode_active)
