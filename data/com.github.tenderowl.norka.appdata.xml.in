@@ -49,6 +49,14 @@
   </screenshots>
 
   <releases>
+    <release date="2020-07-16" version="0.3.0">
+      <description>
+        <p>TenderOwl thinks a living project is better than enormous updates yet we created a new little one!</p>
+        <p>This release brings a new feature - export to Medium. All you need is open preferences and put the integration token from your Medium account. All documents exports as Draft in case you misclicked once :)</p>
+        <p>Along with export we fixed some issues and make Norka more userfriendly: when something goes wrong - it lets you know.</p>
+        <p>Stay tuned!</p>
+      </description>
+    </release>
     <release date="2020-06-28" version="0.2.0">
       <description>
         <p>Norka grows up and learn new tricks like import files to Norka's documents! 

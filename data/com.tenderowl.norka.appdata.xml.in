@@ -33,9 +33,9 @@
 
 	<custom>
     <!-- elementary AppCenter specific values -->
-    <value key="x-appcenter-color-primary">#b5c3cb</value>
-    <value key="x-appcenter-color-primary-text">#273445</value>
-    <value key="x-appcenter-suggested-price">12</value>
+    <value key="x-appcenter-color-primary">#4a7da5</value>
+    <value key="x-appcenter-color-primary-text">#efefef</value>
+    <value key="x-appcenter-suggested-price">15</value>
   </custom>
 
   <content_rating type="oars-1.1">
