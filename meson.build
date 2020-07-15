@@ -31,13 +31,15 @@ find_program('gtk-update-icon-cache', required: false)
 find_program('update-desktop-database', required: false)
 
 gettext_package = meson.project_name()
-pythondir = python.sysconfig_path('purelib')
-pkgdatadir = datadir / meson.project_name()
+localedir = get_option('localedir')
+pythondir = join_paths(get_option('prefix'), python.sysconfig_path('purelib'))
+datadir = get_option('datadir')
+pkgdatadir = join_paths(get_option('prefix'), datadir, meson.project_name())
 podir = meson.source_root() / 'po'
 
 conf = configuration_data()
 conf.set('PACKAGE_URL', 'https://tenderowl.com/norka/')
-conf.set('DATA_DIR', datadir)
+conf.set('DATA_DIR', get_option('datadir'))
 conf.set('LOCALE_DIR', join_paths(get_option('datadir'), 'locale'))
 conf.set('PYTHON_DIR', pythondir)
 conf.set('PROJECT_NAME', meson.project_name())
@@ -59,7 +61,7 @@ configure_file(
   input: 'norka/norka.in',
   output: meson.project_name(),
   configuration: conf,
-  install_dir: bindir
+  install_dir: get_option('bindir')
 )
 
 meson.add_install_script('build-aux/meson/postinstall.py')
