@@ -258,7 +258,7 @@ class Editor(Gtk.Grid):
             self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
         else:
             self.search_iter = self.buffer.get_start_iter()
-            found, end_iter = self.search_for_iter(self.search_iter, forward)
+            found, end_iter = self.search_for_iter(self.search_iter)
             if found:
                 self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
                 self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
