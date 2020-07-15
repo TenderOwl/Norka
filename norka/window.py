@@ -23,7 +23,7 @@
 # SOFTWARE.
 import os
 
-from gi.repository import Gtk, Gio, GLib, Gdk
+from gi.repository import Gtk, Gio, GLib, Gdk, Granite
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
@@ -50,6 +50,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         ))
         self.settings = settings
         self._configure_timeout_id = None
+
+        Granite.widgets_utils_set_color_primary(self,
+                                                Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
+                                                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self.current_size = (786, 520)
         self.resize(*self.settings.get_value('window-size'))
