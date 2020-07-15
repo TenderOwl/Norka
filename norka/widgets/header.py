@@ -71,7 +71,7 @@ class Header(Gtk.HeaderBar):
         # self.search_button.set_visible(False)
 
         self.export_button = Gtk.Button.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR)
-        self.export_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>e',), 'Export document to file'))
+        self.export_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control><Shift>s',), 'Export document to file'))
         self.export_button.set_action_name('document.export')
         self.export_button.set_visible(False)
 
