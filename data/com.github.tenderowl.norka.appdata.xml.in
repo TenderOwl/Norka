@@ -86,8 +86,7 @@
     </release>
   </releases>
 
-  <translation />
-
+  <translation type="gettext"></translation>
 
   <custom>
     <!-- elementary AppCenter specific values -->
