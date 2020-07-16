@@ -25,6 +25,7 @@
 import gi
 
 from norka.gobject_worker import GObjectWorker
+from norka.services.writeas import Writeas
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
@@ -40,11 +41,13 @@ class PreferencesDialog(Gtk.Dialog):
         super().__init__(transient_for=transient_for, modal=False)
 
         self.settings = settings
-        self.set_default_size(340, 300)
+        self.set_default_size(340, 340)
 
         self.set_border_width(5)
         self.set_deletable(False)
         self.set_title('Preferences')
+
+        self.toast = Granite.WidgetsToast(title="Toast")
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))
@@ -103,19 +106,8 @@ class PreferencesDialog(Gtk.Dialog):
         # Export grid
         export_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
 
-        self.toast = Granite.WidgetsToast(title="Toast")
-
-        self.medium_token = Gtk.Entry(hexpand=True, placeholder_text="Token")
-        self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
-        self.medium_token.connect("changed", self.on_medium_token)
-
-        self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
-        self.medium_link.set_label("Create Integration token and copy it here")
-
-        export_grid.attach(Granite.HeaderLabel("Medium.com"), 0, 0, 3, 1)
-        export_grid.attach(Gtk.Label("Personal Token:", halign=Gtk.Align.END), 0, 1, 1, 1)
-        export_grid.attach(self.medium_token, 1, 1, 2, 1)
-        export_grid.attach(self.medium_link, 0, 2, 3, 1)
+        self.render_medium(export_grid)
+        self.render_writeas(export_grid)
 
         # Main Stack
         main_stack = Gtk.Stack(margin=6, margin_bottom=18, margin_top=8)
@@ -132,13 +124,59 @@ class PreferencesDialog(Gtk.Dialog):
         main_grid.attach(main_stack, 0, 1, 1, 1)
 
         self.overlay = Gtk.Overlay()
-        self.overlay.add_overlay(main_grid)
+        self.overlay.add(main_grid)
         self.overlay.add_overlay(self.toast)
         self.get_content_area().add(self.overlay)
 
         close_button = Gtk.Button(label="Close")
         close_button.connect('clicked', self.on_close_activated)
         self.add_action_widget(close_button, 0)
+
+    def render_medium(self, content_grid):
+        self.medium_token = Gtk.Entry(hexpand=True, placeholder_text="Token")
+        self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
+        self.medium_token.connect("changed", self.on_medium_token)
+
+        self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
+        self.medium_link.set_label("Create Integration token and copy it here")
+
+        content_grid.attach(Granite.HeaderLabel("Medium.com"), 0, 0, 3, 1)
+        content_grid.attach(Gtk.Label("Personal Token:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        content_grid.attach(self.medium_token, 1, 1, 2, 1)
+        content_grid.attach(self.medium_link, 0, 2, 3, 1)
+
+    def render_writeas(self, content_grid):
+        self.writeas_login = Gtk.Entry(hexpand=True, placeholder_text="Login")
+        self.writeas_password = Gtk.Entry(hexpand=True, placeholder_text="Password", visibility=False)
+        self.writeas_login_button = Gtk.Button(label="Login")
+        self.writeas_login_button.connect("clicked", self.on_writeas_login)
+        self.writeas_logout_button = Gtk.Button(label="Logout", hexpand=True)
+        self.writeas_logout_button.connect("clicked", self.on_writeas_logout)
+
+        content_grid.attach(Granite.HeaderLabel("Write.as"), 0, 3, 3, 1)
+
+        self.writeas_login_revealer = Gtk.Revealer()
+        self.writeas_login_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
+        login_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+        login_grid.attach(Gtk.Label("Login:", halign=Gtk.Align.END), 0, 0, 1, 1)
+        login_grid.attach(self.writeas_login, 1, 0, 2, 1)
+        login_grid.attach(Gtk.Label("Password:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        login_grid.attach(self.writeas_password, 1, 1, 2, 1)
+        login_grid.attach(self.writeas_login_button, 0, 2, 3, 1)
+        self.writeas_login_revealer.add(login_grid)
+
+        self.writeas_logout_revealer = Gtk.Revealer()
+        self.writeas_logout_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
+        logout_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+        logout_grid.attach(self.writeas_logout_button, 0, 0, 3, 1)
+        self.writeas_logout_revealer.add(logout_grid)
+
+        content_grid.attach(self.writeas_login_revealer, 0, 4, 3, 1)
+        content_grid.attach(self.writeas_logout_revealer, 0, 4, 3, 1)
+
+        self.writeas_reveal()
+
+        self.settings.connect("changed", self.on_settings_changed)
 
     def on_spellcheck(self, sender: Gtk.Widget, state):
         self.settings.set_boolean("spellcheck", state)
@@ -187,3 +225,52 @@ class PreferencesDialog(Gtk.Dialog):
         self.toast.set_title("Something goes wrong!")
         self.toast.send_notification()
         self.settings.set_string("medium-user-id", "")
+
+    def on_writeas_login(self, button: Gtk.Button):
+        """Login to write.as and save token on success
+        """
+        # Disable widgets while login
+        self.writeas_login.set_sensitive(False)
+        self.writeas_password.set_sensitive(False)
+        self.writeas_login_button.set_sensitive(False)
+
+        GObjectWorker.call(Writeas().login,
+                           (self.writeas_login.get_text(), self.writeas_password.get_text()),
+                           self.on_writeas_callback)
+
+    def on_writeas_logout(self, button: Gtk.Button):
+        """Clear writeas access token settings
+        """
+        self.toast.send_notification()
+        self.settings.set_string("writeas-access-token", "")
+
+    def writeas_reveal(self):
+        """Toggle writeas revealers state
+        """
+        if self.settings.get_string("writeas-access-token"):
+            self.writeas_login_revealer.set_reveal_child(False)
+            self.writeas_logout_revealer.set_reveal_child(True)
+        else:
+            self.writeas_login_revealer.set_reveal_child(True)
+            self.writeas_logout_revealer.set_reveal_child(False)
+
+    def on_writeas_callback(self, result):
+        data, error = result
+        self.toast.set_default_action(None)
+        if error:
+            self.toast.set_title(error)
+            self.toast.send_notification()
+
+        if data and "access_token" in data:
+            self.settings.set_string("writeas-access-token", data["access_token"])
+            self.toast.set_title(f"Logged as {data['user']['username']}.")
+            self.toast.send_notification()
+
+        # Enable widgets while login
+        self.writeas_login.set_sensitive(True)
+        self.writeas_password.set_sensitive(True)
+        self.writeas_login_button.set_sensitive(True)
+
+    def on_settings_changed(self, settings, key):
+        if key == "writeas-access-token":
+            self.writeas_reveal()

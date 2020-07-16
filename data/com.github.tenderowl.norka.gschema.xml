@@ -66,5 +66,10 @@
 	    <summary>Medium.com user ID</summary>
 	    <description>Medium.com user ID for personal access token</description>
 	  </key>
+	  <key type="s" name="writeas-access-token">
+	    <default>""</default>
+	    <summary>Write.as access token</summary>
+	    <description>Write.as access token for authenticated users</description>
+	  </key>
 	</schema>
 </schemalist>

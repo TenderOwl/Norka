@@ -42,10 +42,17 @@ class MenuExport(Gtk.Popover):
         self.export_medium.add(Granite.AccelLabel(label="To Medium"))
         self.export_medium.set_action_name("document.export-medium")
 
+        self.export_writeas = Gtk.ModelButton()
+        self.export_writeas.get_child().destroy()
+        self.export_writeas.add(Granite.AccelLabel(label="To Write.as"))
+        self.export_writeas.set_action_name("document.export-writeas")
+
         menu_grid = Gtk.Grid(margin_bottom=3, margin_top=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
 
         menu_grid.attach(self.export_file, 0, 0, 3, 1)
-        menu_grid.attach(self.export_medium, 0, 1, 3, 1)
+        menu_grid.attach(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL), 0, 1, 3, 1)
+        menu_grid.attach(self.export_medium, 0, 2, 3, 1)
+        menu_grid.attach(self.export_writeas, 0, 3, 3, 1)
 
         self.add(menu_grid)
 

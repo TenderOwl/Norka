@@ -33,6 +33,7 @@ from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import storage
+from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.header import Header
@@ -62,6 +63,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.resize(*self.settings.get_value('window-size'))
         self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
+
+        # Export clients
+        self.medium_client = Medium()
+        self.writeas_client = Writeas()
+        self.uri_to_open = None
 
         # Make a header
         self.header = Header(self.settings)
@@ -168,6 +174,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 {
                     'name': 'export-medium',
                     'action': self.on_export_medium,
+                    'accels': (None,)
+                },
+                {
+                    'name': 'export-writeas',
+                    'action': self.on_export_writeas,
                     'accels': (None,)
                 },
                 {
@@ -493,30 +504,77 @@ class NorkaWindow(Gtk.ApplicationWindow):
         dialog.destroy()
 
     def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Configure Medium client and export document asynchronously
+
+        :param sender:
+        :param event:
+        :return:
+        """
+
         token = self.settings.get_string("medium-personal-token")
         user_id = self.settings.get_string("medium-user-id")
 
         if not token or not user_id:
-            self.toast.set_title("You need to set Medium token in Preferences")
+            self.toast.set_title("You need to set Medium token in Preferences -> Export")
             self.toast.set_default_action("Configure")
+            self.disconnect_toast()
             self.toast.connect("default-action", self.get_application().on_preferences)
             self.toast.send_notification()
 
         else:
             self.header.show_spinner(True)
-            self.medium_client = Medium(access_token=token)
+            self.medium_client.set_token(token)
             GObjectWorker.call(self.medium_client.create_post,
                                args=(user_id, self.editor.document, PublishStatus.DRAFT),
                                callback=self.on_export_medium_callback)
 
     def on_export_medium_callback(self, result):
+
         self.header.show_spinner(False)
         if result:
             self.toast.set_title("Document successfully exported!")
             self.toast.set_default_action("View")
-            self.toast.connect("default-action", lambda x: Gtk.show_uri(None, result["url"], int(time.time())))
+            self.uri_to_open = result["url"]
+            self.disconnect_toast()
+            self.toast.connect("default-action", self.open_uri)
         else:
             self.toast.set_title("Export failed!")
+            self.toast.set_default_action(None)
+        self.toast.send_notification()
+
+    def on_export_writeas(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Configure Write.as client and export document asynchronously
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        token = self.settings.get_string("writeas-access-token")
+
+        if not token:
+            self.toast.set_title("You have to login to Write.as in Preferences -> Export")
+            self.toast.set_default_action("Configure")
+            self.disconnect_toast()
+            self.toast.connect("default-action", self.get_application().on_preferences)
+            self.toast.send_notification()
+
+        else:
+            self.header.show_spinner(True)
+            self.writeas_client.set_token(access_token=token)
+            GObjectWorker.call(self.writeas_client.create_post,
+                               args=(self.editor.document,),
+                               callback=self.on_export_writeas_callback)
+
+    def on_export_writeas_callback(self, result):
+        self.header.show_spinner(False)
+        if result:
+            self.toast.set_title("Document successfully exported!")
+            self.toast.set_default_action("View")
+            self.disconnect_toast()
+            self.uri_to_open = f"https://write.as/{result['id']}"
+            self.toast.connect("default-action", self.open_uri)
+        else:
+            self.toast.set_title(f"Export failed.")
             self.toast.set_default_action(None)
         self.toast.send_notification()
 
@@ -597,6 +655,23 @@ class NorkaWindow(Gtk.ApplicationWindow):
         font = self.settings.get_string("font")
         return float(font[font.rfind(" ") + 1:])
 
-    def on_toggle_archive(self, action: Gio.SimpleAction, name:str =None):
+    def on_toggle_archive(self, action: Gio.SimpleAction, name: str = None):
         self.document_grid.show_archived = self.header.archived_button.get_active()
         self.document_grid.reload_items()
+
+    def open_uri(self, event):
+        print(event)
+        if self.uri_to_open:
+            Gtk.show_uri(None, self.uri_to_open, int(time.time()) + 1)
+            self.uri_to_open = None
+
+    def disconnect_toast(self):
+        try:
+            self.toast.disconnect_by_func(self.get_application().on_preferences)
+        except:
+            pass
+
+        try:
+            self.toast.disconnect_by_func(self.open_uri)
+        except:
+            pass
