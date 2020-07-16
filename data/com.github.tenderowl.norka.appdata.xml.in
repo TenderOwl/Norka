@@ -86,7 +86,7 @@
     </release>
   </releases>
 
-  <translation type="gettext"></translation>
+  <translation type="gettext">com.github.tenderowl.norka</translation>
 
   <custom>
     <!-- elementary AppCenter specific values -->
