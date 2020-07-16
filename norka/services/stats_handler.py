@@ -40,10 +40,10 @@ class StatsHandler:
     PARAGRAPHS = 3
     READ_TIME = 4
 
-    def __init__(self, stats_button, buffer: GtkSource.Buffer):
+    def __init__(self, overlay_bar, buffer: GtkSource.Buffer):
         super().__init__()
 
-        self.stats_button = stats_button
+        self.stats_button = overlay_bar
         self.stats_button.connect("destroy", self.on_destroy)
 
         self.buffer = buffer

@@ -87,7 +87,7 @@ class Editor(Gtk.Grid):
         self.overlay.add(content_grid)
         self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
 
-        self.stats_handler = StatsHandler(stats_button=self.stats_overlay, buffer=self.buffer)
+        self.stats_handler = StatsHandler(overlay_bar=self.stats_overlay, buffer=self.buffer)
         self.stats_handler.update_default_stat()
 
         self.add(self.overlay)
