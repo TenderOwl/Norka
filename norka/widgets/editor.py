@@ -28,11 +28,12 @@ import gi
 
 from norka.models.document import Document
 from norka.services.logger import Logger
+from norka.services.stats_handler import StatsHandler
 from norka.services.storage import storage
 from norka.widgets.search_bar import SearchBar
 
 gi.require_version('GtkSource', '3.0')
-from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango
+from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite
 
 
 class Editor(Gtk.Grid):
@@ -82,7 +83,14 @@ class Editor(Gtk.Grid):
         content_grid.pack_start(self.scrolled, True, True, 0)
         content_grid.show_all()
 
-        self.add(content_grid)
+        self.overlay = Gtk.Overlay()
+        self.overlay.add(content_grid)
+        self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
+
+        self.stats_handler = StatsHandler(stats_button=self.stats_overlay, buffer=self.buffer)
+        self.stats_handler.update_default_stat()
+
+        self.add(self.overlay)
 
         self.font_desc = Pango.FontDescription()
         self.spellchecker = GtkSpell.Checker()
@@ -122,6 +130,7 @@ class Editor(Gtk.Grid):
 
         :return: None
         """
+        # self.stats_overlay.destroy()
         if not self.document:
             return
 
