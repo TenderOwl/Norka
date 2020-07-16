@@ -13,6 +13,24 @@ Markdown for markup, no files, your data always saved and can be exported in a m
 
 ![Norka](data/screenshots/app_screenshot.png)
 
+# Features
+
+* Markdown support
+* Text search
+* Autosave
+* Document previews in a grid
+* Reading time
+* Drag-n-drop import local files
+* Spell checking
+* Export to files
+* Export to Medium.com
+* Export to Write.as
+* Different color schemes for editor
+* Document archiving
+* And of course, you can delete them permanently
+
+Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
+
 ## Tech part
 
 Text editor built for GNOME on top of [PyGObject](https://pygobject.readthedocs.io/en/latest/), Python 3 and GTK+ 3. Project under development so it will be massively changing in time :)
@@ -28,7 +46,7 @@ Build time requirements:
 - python3 >= 3.6
 - python-sqlite
 - python-gobject
-- meson >= 0.50
+- meson >= 0.49
 - ninja
 
 ## Installing
