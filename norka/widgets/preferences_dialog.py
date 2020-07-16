@@ -247,18 +247,23 @@ class PreferencesDialog(Gtk.Dialog):
     def writeas_reveal(self):
         """Toggle writeas revealers state
         """
+        # Maybe I should rewrite it with bind_property
         if self.settings.get_string("writeas-access-token"):
             self.writeas_login_revealer.set_reveal_child(False)
             self.writeas_logout_revealer.set_reveal_child(True)
+            self.writeas_login_revealer.set_visible(False)
+            self.writeas_logout_revealer.set_visible(True)
         else:
             self.writeas_login_revealer.set_reveal_child(True)
             self.writeas_logout_revealer.set_reveal_child(False)
+            self.writeas_login_revealer.set_visible(True)
+            self.writeas_logout_revealer.set_visible(False)
 
     def on_writeas_callback(self, result):
         data, error = result
         self.toast.set_default_action(None)
         if error:
-            self.toast.set_title(error)
+            self.toast.set_title("Login failed.")
             self.toast.send_notification()
 
         if data and "access_token" in data:
