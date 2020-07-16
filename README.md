@@ -1,6 +1,7 @@
 # Norka
 
- [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
+[![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
+[![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
 
 <a href="https://flathub.org/apps/details/com.github.tenderowl.norka" class="text-center"><img alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png" width="240"></a>
 
@@ -10,7 +11,7 @@ While I'm not the UX-man and it's just a hobby, I try to create visually appeali
 
 Markdown for markup, no files, your data always saved and can be exported in a moment.
 
-![Norka](data/images/app_screenshot.png)
+![Norka](data/screenshots/app_screenshot.png)
 
 ## Tech part
 
