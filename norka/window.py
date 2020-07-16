@@ -317,6 +317,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :param event:
         :return:
         """
+        # If document already loaded to editor we need to close it before create new one
+        if self.editor.document:
+            self.on_document_close_activated(sender, event)
+
         self.editor.create_document()
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
