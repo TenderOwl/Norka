@@ -26,10 +26,6 @@
   <url type="bugtracker">https://github.com/tenderowl/norka/issues</url>
 
   <screenshots>
-    <screenshot type="default">
-      <caption>Welcome screen</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_screenshot.png</image>
-    </screenshot>
     <screenshot>
       <caption>Documents list</caption>
       <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_screenshot.png</image>
