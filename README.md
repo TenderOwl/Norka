@@ -3,7 +3,11 @@
 [![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
 
+<p align="center">
+<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter"></a>
+<br/>
 <a href="https://flathub.org/apps/details/com.github.tenderowl.norka" class="text-center"><img alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png" width="240"></a>
+</p>
 
 ## Preface
 
@@ -58,9 +62,14 @@ meson build
 ninja -C build install
 ```
 
-### AppCenter / Flathub / Snap 
+### AppCenter / Flathub
 
+<p align="center">
+<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter"></a>
+<br/>
 <a href="https://flathub.org/apps/details/com.github.tenderowl.norka" class="text-center"><img alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png" width="240"></a>
+</p>
+
 
 # Afterword
 
