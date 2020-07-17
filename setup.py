@@ -1,19 +1,28 @@
 from setuptools import setup
 
+
+def doc():
+    with open("README.md", "r", encoding="utf-8") as readme:
+        return readme.read().strip()
+
+
 setup(
     name='norka',
     version='0.4.0',
-    packages=['norka', 'norka.models', 'norka.widgets', 'norka.services'],
+    packages=['norka'],
     url='https://tenderowl.com/norka',
     license='MIT',
     author='Andrey Maksimov',
     author_email='meamka@ya.ru',
     description='Text editor baked for simplicity.',
-    install_requires=['pygobject','requests','writeasapi'],
+    long_description=doc(),
+    keywords=["doc", "html", "md", "markdown", "editor"],
+    requires=['python_gi', 'gtksourceview'],
+    install_requires=['PyGObject', 'pycairo', 'requests==2.24.0', 'writeasapi', 'mistune==2.0.0a4'],
     python_requires='>=3.6',
-    scripts=['bin/norka'],
+    scripts=['norka/main.py'],
     # package_data=[
-    #     'data/norka.png', 
+    #     'data/norka.png',
     #     'data/com.github.tenderowl.norka.desktop',
     # ],
     entry_points={

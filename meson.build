@@ -1,5 +1,5 @@
 project('com.github.tenderowl.norka',
-  version: '0.3.0',
+  version: '0.4.0',
   meson_version: '>= 0.49.0'
 )
 

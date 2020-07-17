@@ -28,27 +28,33 @@
   <screenshots>
     <screenshot type="default">
       <caption>Welcome screen</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/welcome.png</image>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_screenshot.png</image>
     </screenshot>
     <screenshot>
       <caption>Documents list</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents.png</image>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_screenshot.png</image>
     </screenshot>
     <screenshot>
       <caption>Editor view</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor.png</image>
-    </screenshot>
-    <screenshot>
-      <caption>Documents list in dark mode</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/documents-dark.png</image>
-    </screenshot>
-    <screenshot>
-      <caption>Editor in dark mode</caption>
-      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/editor-dark.png</image>
+      <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_dark.png</image>
     </screenshot>
   </screenshots>
 
   <releases>
+    <release date="2020-07-17" version="0.4.0">
+      <description>
+        <p>Yet another update: small but valuable.</p>
+        <p>What it brings to us:
+            <ul>
+                <li>Redesigned Share menu</li>
+                <li>Export to Write.as</li>
+                <li>Extended export to local files, now with support of HTML and plaintext formats</li>
+                <li>Reading time to know your power</li>
+                <li>And in a case when you create a new document while edit another Norka will immediately switch to the created one</li>
+            </ul>
+        </p>
+      </description>
+    </release>
     <release date="2020-07-16" version="0.3.0">
       <description>
         <p>TenderOwl thinks a living project is better than enormous updates yet we created a new little one!</p>
