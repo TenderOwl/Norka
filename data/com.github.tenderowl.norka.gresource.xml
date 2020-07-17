@@ -4,5 +4,8 @@
 		<file compressed="true">css/application.css</file>
 		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 		<file preprocess="xml-stripblanks">icons/com.github.tenderowl.norka.svg</file>
+		<file>icons/text.svg</file>
+		<file>icons/text-html.svg</file>
+		<file>icons/text-markdown.svg</file>
 	</gresource>
 </gresources>

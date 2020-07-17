@@ -26,8 +26,6 @@ import sys
 
 import gi
 
-from norka.widgets.preferences_dialog import PreferencesDialog
-
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSpell', '3.0')
@@ -39,6 +37,7 @@ from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import storage
 from norka.widgets.about_dialog import AboutDialog
+from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
 
 

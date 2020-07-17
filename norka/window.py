@@ -30,12 +30,14 @@ from gi.repository.GdkPixbuf import Pixbuf
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
+from norka.services.export import Exporter
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import storage
 from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
+from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.rename_dialog import RenameDialog
@@ -168,8 +170,18 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 },
                 {
                     'name': 'export',
-                    'action': self.on_document_export_activated,
+                    'action': self.on_export_plaintext,
+                    'accels': (None,)
+                },
+                {
+                    'name': 'export-markdown',
+                    'action': self.on_export_markdown,
                     'accels': ('<Control><Shift>s',)
+                },
+                {
+                    'name': 'export-html',
+                    'action': self.on_export_html,
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-medium',
@@ -457,7 +469,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 self.document_grid.reload_items()
                 self.check_documents_count()
 
-    def on_document_export_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_export_plaintext(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
 
         :param sender:
@@ -468,44 +480,106 @@ class NorkaWindow(Gtk.ApplicationWindow):
         if not doc:
             return
 
-        dialog = Gtk.FileChooserNative.new(
+        dialog = ExportFileDialog(
             "Export document to file",
             self,
             Gtk.FileChooserAction.SAVE
         )
         dialog.set_current_name(doc.title)
-
-        filter_markdown = Gtk.FileFilter()
-        filter_markdown.set_name("Markdown")
-        filter_markdown.add_pattern("*.md")
-        filter_markdown.add_pattern("*.MD")
-        filter_markdown.add_pattern("*.markdown")
-        dialog.add_filter(filter_markdown)
-        dialog.set_do_overwrite_confirmation(True)
-
-        extensions = ('.md', '.markdown',)
-
+        export_format = ExportFormat.PlainText
+        dialog.set_format(export_format)
         dialog_result = dialog.run()
-        print(dialog_result)
 
         if dialog_result == Gtk.ResponseType.ACCEPT:
-            file_name = dialog.get_filename()
-            ex_ok = False
-            print(file_name)
+            self.header.show_spinner(True)
+            basename, ext = os.path.splitext(dialog.get_filename())
+            if ext not in export_format[1]:
+                ext = export_format[1][0][1:]
 
-            for extension in extensions:
-                if file_name.lower().endswith(extension):
-                    ex_ok = True
-                    break
-            if not ex_ok and extensions:
-                file_name += extensions[0]
-
-            print(file_name)
-            with open(file_name, "w+", encoding="utf-8") as output:
-                data = self.editor.get_text()
-                output.write(data)
+            GObjectWorker.call(Exporter.export_plaintext,
+                               (basename + ext, doc),
+                               callback=self.on_export_callback)
 
         dialog.destroy()
+
+    def on_export_markdown(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Export document from storage to local files or web-services.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        dialog = ExportFileDialog(
+            "Export document to file",
+            self,
+            Gtk.FileChooserAction.SAVE
+        )
+        dialog.set_current_name(doc.title)
+        export_format = ExportFormat.Markdown
+        dialog.set_format(export_format)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            self.header.show_spinner(True)
+            basename, ext = os.path.splitext(dialog.get_filename())
+            if ext not in export_format[1]:
+                ext = export_format[1][0][1:]
+
+            GObjectWorker.call(Exporter.export_markdown,
+                               (basename + ext, doc),
+                               callback=self.on_export_callback)
+
+        dialog.destroy()
+
+    def on_export_html(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Export document from storage to local files or web-services.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        dialog = ExportFileDialog(
+            "Export document to file",
+            self,
+            Gtk.FileChooserAction.SAVE
+        )
+        dialog.set_current_name(doc.title)
+        export_format = ExportFormat.Html
+        dialog.set_format(export_format)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            self.header.show_spinner(True)
+            basename, ext = os.path.splitext(dialog.get_filename())
+            if ext not in export_format[1]:
+                ext = export_format[1][0][1:]
+
+            GObjectWorker.call(Exporter.export_html,
+                               (basename + ext, doc),
+                               callback=self.on_export_callback)
+
+        dialog.destroy()
+
+    def on_export_callback(self, result):
+        self.header.show_spinner(False)
+        self.disconnect_toast()
+        if result:
+            self.toast.set_title("Document exported.")
+            self.toast.set_default_action("Open folder")
+            self.uri_to_open = f"file://{os.path.dirname(result)}"
+            self.toast.connect("default-action", self.open_uri)
+            self.toast.send_notification()
+        else:
+            self.toast.set_title("Export goes wrong.")
+            self.toast.send_notification()
 
     def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
         """Configure Medium client and export document asynchronously
@@ -664,9 +738,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.document_grid.reload_items()
 
     def open_uri(self, event):
-        print(event)
         if self.uri_to_open:
-            Gtk.show_uri(None, self.uri_to_open, int(time.time()) + 1)
+            Gtk.show_uri_on_window(None, self.uri_to_open, Gdk.CURRENT_TIME)
             self.uri_to_open = None
 
     def disconnect_toast(self):
