@@ -8,7 +8,7 @@ def doc():
 
 setup(
     name='norka',
-    version='0.4.1',
+    version='0.4.2',
     packages=['norka'],
     url='https://tenderowl.com/norka',
     license='MIT',
