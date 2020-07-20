@@ -1,23 +1,24 @@
 # Norka
 
 [![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
-[![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app) 
+[![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
 
-<p align="center">
-<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter"></a>
-<br/>
-<a href="https://flathub.org/apps/details/com.github.tenderowl.norka" class="text-center"><img alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png" width="240"></a>
-</p>
 
-## Preface
+<div align="center">
+  <span align="center"> <img width="80" height="70" class="center" src="https://github.com/tenderowl/norka/blob/master/data/icons/com.github.tenderowl.norka.svg" alt="Icon"></span>
+  <h1 align="center">Norka</h1>
+  <h3 align="center">Continuous text editing for everyone</h3>
+</div>
 
 While I'm not the UX-man and it's just a hobby, I try to create visually appealing applications. And Norka is one of my trials to create a cozy text editor for GNOME and Elementary OS exactly. 
 
-Markdown for markup, no files, your data always saved and can be exported in a moment.
+Markdown for markup; No files until you need it; Your notes always saved and can be exported in a moment.
 
-![Norka](data/screenshots/app_screenshot.png)
+<div align="center">
+  <img class="center" alt="Norka" src="data/screenshots/app_screenshot.png" />
+</div>
 
-# Features
+## Features
 
 * Markdown support
 * Text search
@@ -35,6 +36,14 @@ Markdown for markup, no files, your data always saved and can be exported in a m
 
 Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
 
+## Installation
+
+## elementary OS AppCenter
+<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
+
+### Flathub
+<a href="https://flathub.org/apps/details/com.github.tenderowl.norka"><img height="50" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
+
 ## Tech part
 
 Text editor built for GNOME on top of [PyGObject](https://pygobject.readthedocs.io/en/latest/), Python 3 and GTK+ 3. Project under development so it will be massively changing in time :)
@@ -44,36 +53,35 @@ Text editor built for GNOME on top of [PyGObject](https://pygobject.readthedocs.
 
 Build time requirements:
 
-- gtk3 >= 3.20
-- gtkspell3-3.0
-- granite >= 5.4
-- python3 >= 3.6
-- python-sqlite
-- python-gobject
-- meson >= 0.49
-- ninja
+- meson (>= 0.49)
+- python3 (>= 3.6)
+- libgranite-dev
+- libgtk-3-dev (>= 3.10)
+- intltool
+- libgtkspell3-3-dev
+- libgtksourceview-3.0-dev (>= 3.24.3)
+- python-gi
+- gir1.2-gtkspell3-3.0
+- gir1.2-gtksource-3.0
+- gir1.2-granite-1.0
 
-## Installing
+Run meson build to configure the build environment. Change to the build directory and run `ninja` to build:
 
-Use meson and ninja to build and install Norka through terminal commands:
-
-```bash
-meson build
-ninja -C build install
+```
+meson build --prefix=/usr
+ninja -C build
 ```
 
-### AppCenter / Flathub
+To install, use `ninja install`, then execute with `com.github.tenderowl.norka`:
 
-<p align="center">
-<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter"></a>
-<br/>
-<a href="https://flathub.org/apps/details/com.github.tenderowl.norka" class="text-center"><img alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png" width="240"></a>
-</p>
-
+```
+sudo ninja -C build install
+com.github.tenderowl.norka
+```
 
 # Afterword
 
 That's all. If you want to see any features or push any changes - just submit a PR or create an issue.
 
-See ya!
+Brought to you by Tender Owl :owl:
 
