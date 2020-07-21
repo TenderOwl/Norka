@@ -37,9 +37,15 @@
   </screenshots>
 
   <releases>
-    <release date="2020-07-17" version="0.4.3">
+    <release date="2020-07-21" version="0.4.3">
       <description>
-        <p>Some fixes.</p>
+        <p>Some fixes:</p>
+        <ul>
+            <li>Fix build for ElementaryOS</li>
+            <li>Properly toggle welcome screen and show archived</li>
+            <li>Fix drag-n-drop on welcome screen</li>
+            <li>Improve HeaderBar contrast</li>
+        </ul>
       </description>
     </release>
     <release date="2020-07-17" version="0.4.2">
@@ -77,12 +83,12 @@
         <p>
           Search and Shortcuts. 
           Now you can use Text Searh via keyboard shortcuts:
+        </p>
           <ul>
             <li>Control+F - to start search</li>
             <li>Control+G - to find next</li>
             <li>Shift+Control+G - to find previous</li>
           </ul>
-        </p>
       </description>
     </release>
     <release date="2020-06-07" version="0.1.0">
