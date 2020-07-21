@@ -28,10 +28,11 @@ import cairo
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
+from norka.define import TARGET_ENTRY_TEXT
 from norka.services.storage import storage
 from norka.widgets.document_context_menu import DocumentContextMenu
 
-TARGET_ENTRY_TEXT = 1
+
 
 
 class DocumentGrid(Gtk.Grid):
@@ -158,6 +159,7 @@ class DocumentGrid(Gtk.Grid):
         self.view.unselect_all()
         self.selected_document = None
 
+    # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
         if info == TARGET_ENTRY_TEXT:

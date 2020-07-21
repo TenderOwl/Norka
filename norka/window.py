@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
-import time
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Granite
 from gi.repository.GdkPixbuf import Pixbuf
@@ -79,6 +78,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         # Init screens
         self.welcome_grid = Welcome()
         self.welcome_grid.connect('activated', self.on_welcome_activated)
+        self.welcome_grid.connect('document-import', self.on_document_import)
 
         self.document_grid = DocumentGrid()
         self.document_grid.connect('document-create', self.on_document_create_activated)
@@ -367,7 +367,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         dialog.destroy()
 
     def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
-        self.import_document(file_path=file_path)
+        if self.import_document(file_path=file_path):
+            self.check_documents_count()
 
     def import_document(self, file_path: str) -> bool:
         """Import files from filesystem.

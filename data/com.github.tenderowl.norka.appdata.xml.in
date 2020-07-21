@@ -37,18 +37,22 @@
   </screenshots>
 
   <releases>
+    <release date="2020-07-17" version="0.4.3">
+      <description>
+        <p>Some fixes.</p>
+      </description>
+    </release>
     <release date="2020-07-17" version="0.4.2">
       <description>
         <p>Yet another update: small but valuable.</p>
-        <p>What it brings to us:
-            <ul>
-                <li>Redesigned Share menu</li>
-                <li>Export to Write.as</li>
-                <li>Extended export to local files, now with support of HTML and plaintext formats</li>
-                <li>Reading time to know your power</li>
-                <li>And in a case when you create a new document while edit another Norka will immediately switch to the created one</li>
-            </ul>
-        </p>
+        <p>What it brings to us:</p>
+        <ul>
+            <li>Redesigned Share menu</li>
+            <li>Export to Write.as</li>
+            <li>Extended export to local files, now with support of HTML and plaintext formats</li>
+            <li>Reading time to know your power</li>
+            <li>And in a case when you create a new document while edit another Norka will immediately switch to the created one</li>
+        </ul>
       </description>
     </release>
     <release date="2020-07-16" version="0.3.0">
