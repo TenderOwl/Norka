@@ -38,7 +38,7 @@ Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
 
 ## Installation
 
-## elementary OS AppCenter
+### elementary OS AppCenter
 <a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
 
 ### Flathub
@@ -79,7 +79,14 @@ sudo ninja -C build install
 com.github.tenderowl.norka
 ```
 
-# Afterword
+## Support
+
+If you want to support me
+
+<a href="https://www.buymeacoffee.com/tenderowl" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg" alt="Buy Me A Coffee" ></a>
+
+
+## Afterword
 
 That's all. If you want to see any features or push any changes - just submit a PR or create an issue.
 
