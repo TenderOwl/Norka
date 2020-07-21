@@ -286,7 +286,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 self.header.toggle_document_mode()
                 self.header.update_title(title=self.editor.document.title)
         else:
+            self.toggle_welcome(True)
+
+    def toggle_welcome(self, state=True):
+        if state:
             self.screens.set_visible_child_name('welcome-grid')
+        else:
+            self.screens.set_visible_child_name('document-grid')
 
     def on_document_close_activated(self, sender: Gtk.Widget, event=None) -> None:
         """Save and close opened document.
@@ -735,8 +741,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         return float(font[font.rfind(" ") + 1:])
 
     def on_toggle_archive(self, action: Gio.SimpleAction, name: str = None):
-        self.document_grid.show_archived = self.header.archived_button.get_active()
+        show_archived = self.header.archived_button.get_active()
+        self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
+
+        self.toggle_welcome(not show_archived and storage.count(with_archived=show_archived) == 0)
 
     def open_uri(self, event):
         if self.uri_to_open:
