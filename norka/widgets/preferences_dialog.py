@@ -30,7 +30,7 @@ from norka.services.writeas import Writeas
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSource', '3.0')
-from gi.repository import Gtk, Granite, GtkSource
+from gi.repository import Gtk, Granite, GtkSource, Gdk
 from norka.services.medium import Medium
 
 
@@ -42,6 +42,11 @@ class PreferencesDialog(Gtk.Dialog):
 
         self.settings = settings
         self.set_default_size(340, 340)
+
+        hints = Gdk.Geometry()
+        hints.min_width = 340
+        hints.min_height = 340
+        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
 
         self.set_border_width(5)
         self.set_deletable(False)
