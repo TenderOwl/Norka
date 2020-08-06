@@ -3,13 +3,13 @@
   padding-bottom: 3px;
 }
 
-.norka-header *
+.elementary .norka-header *
 {
   color: #fffcfa;
 }
 
-.norka-header .title,
-.norka-header .subtitle {
+.elementary .norka-header .title,
+.elementary .norka-header .subtitle {
   text-shadow: 0 1px 1px #111;
 }
 
