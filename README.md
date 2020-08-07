@@ -1,8 +1,9 @@
 # Norka
 
-[![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
-
+[![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
+[![norka](https://snapcraft.io//norka/badge.svg)](https://snapcraft.io/norka)
+[![norka](https://snapcraft.io//norka/trending.svg?name=0)](https://snapcraft.io/norka)
 
 <div align="center">
   <span align="center"> <img width="80" height="70" class="center" src="https://github.com/tenderowl/norka/blob/master/data/icons/com.github.tenderowl.norka.svg" alt="Icon"></span>
@@ -38,11 +39,18 @@ Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
 
 ## Installation
 
-### elementary OS AppCenter
-<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
-
 ### Flathub
 <a href="https://flathub.org/apps/details/com.github.tenderowl.norka"><img height="50" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
+
+### Snap Store
+
+<a href="https://snapcraft.io/norka">
+  <img height="50" alt="Get it from the Snap Store" src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" />
+</a>
+
+### Elementary OS AppCenter
+<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
+
 
 ## Tech part
 
@@ -55,12 +63,13 @@ Build time requirements:
 
 - meson (>= 0.49)
 - python3 (>= 3.6)
+- intltool
 - libgranite-dev
 - libgtk-3-dev (>= 3.10)
-- intltool
 - libgtkspell3-3-dev
 - libgtksourceview-3.0-dev (>= 3.24.3)
-- python-gi
+- python3-gi
+- python3-gi-cairo
 - gir1.2-gtkspell3-3.0
 - gir1.2-gtksource-3.0
 - gir1.2-granite-1.0
