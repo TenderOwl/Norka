@@ -1,0 +1,14 @@
+diff --git a/norka/main.py b/norka/main.py
+index f151a5b..5928e37 100755
+--- a/norka/main.py
++++ b/norka/main.py
+@@ -48,6 +48,9 @@ class Application(Gtk.Application):
+         super().__init__(application_id=APP_ID,
+                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
+ 
++        Gtk.Settings.get_default().set_property("gtk-theme-name", "elementary")
++        Gtk.Settings.get_default().set_property("gtk-icon-theme-name", "elementary")
++
+         self.version = version
+ 
+         # Init GSettings
