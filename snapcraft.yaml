@@ -101,15 +101,16 @@ apps:
       - wayland
       - x11
       - home
-    slots:
-      - dbus-norka
+      - network
+    # slots:
+    #   - dbus-norka
     common-id: com.github.tenderowl.norka
     environment:
       GSETTINGS_SCHEMA_DIR: $SNAP/share/glib-2.0/schemas
       GTK_USE_PORTAL: "1"
 
-slots:
-  dbus-norka:
-    interface: dbus
-    bus: session
-    name: com.github.tenderowl.norka
+# slots:
+#   dbus-norka:
+#     interface: dbus
+#     bus: session
+#     name: com.github.tenderowl.norka
