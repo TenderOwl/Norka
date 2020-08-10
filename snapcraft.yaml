@@ -22,6 +22,13 @@ architectures:
   - build-on: i386
 
 parts:
+  snapcraft-preload:
+    source: https://github.com/diddledan/snapcraft-preload.git
+    source-branch: semaphore-support
+    plugin: cmake
+    build-packages:
+      - gcc-multilib
+      - g++-multilib
   elementary-theme:
     plugin: meson
     meson-parameters:
@@ -92,7 +99,7 @@ parts:
 
 apps:
   norka:
-    command: usr/bin/com.github.tenderowl.norka
+    command: desktop-launch snapcraft-preload $SNAP/usr/bin/com.github.tenderowl.norka
     desktop: usr/share/applications/com.github.tenderowl.norka.desktop
     extensions: [gnome-3-34]
     plugs:
