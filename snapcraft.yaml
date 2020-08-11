@@ -109,6 +109,9 @@ apps:
       - x11
       - home
       - network
+      - hostname-control
+      - mount-observe
+      - login-session-observe
     slots:
       - dbus-norka
     common-id: com.github.tenderowl.norka
