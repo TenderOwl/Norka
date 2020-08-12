@@ -22,14 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import writeas
-
 from norka.models.document import Document
-
+from norka.writeasapi.writeas import client
 
 class Writeas:
     def __init__(self):
-        self.client = writeas.client()
+        self.client = client()
 
     def login(self, login: str, password: str) -> (dict, str):
         result = self.client.login(login, password)
