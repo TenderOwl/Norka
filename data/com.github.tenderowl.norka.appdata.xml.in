@@ -37,6 +37,19 @@
   </screenshots>
 
   <releases>
+    <release date="2020-08-12" version="0.4.6">
+      <description>
+        <p>Improvements</p>
+        <ul>
+            <li>Set the minimum size of the Preferences dialog</li>
+            <li>Set the title to nameless documents on saving</li>
+        </ul>
+        <p>Some fixes:</p>
+        <ul>
+            <li>Fix build for ElementaryOS</li>
+        </ul>
+      </description>
+    </release>
     <release date="2020-07-21" version="0.4.3">
       <description>
         <p>Some fixes:</p>
