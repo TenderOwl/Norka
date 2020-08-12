@@ -168,7 +168,13 @@ class Editor(Gtk.Grid):
             self.buffer.get_end_iter(),
             True
         )
-        if storage.update(self.document._id, {"content": text}):
+        if self.document.title in ('', 'Nameless'):
+            try:
+                self.document.title = text.partition('\n')[0].lstrip(' #')
+            except TypeError:
+                pass
+
+        if storage.update(self.document._id, {"content": text, 'title': self.document.title}):
             self.document.content = text
             Logger.debug('Document %s saved', self.document._id)
             return True
