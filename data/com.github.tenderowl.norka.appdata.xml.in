@@ -37,6 +37,11 @@
   </screenshots>
 
   <releases>
+    <release date="2020-08-13" version="0.4.7">
+      <description>
+        <p>Update metadata.</p>
+      </description>
+    </release>
     <release date="2020-08-12" version="0.4.6">
       <description>
         <p>Improvements</p>
@@ -44,17 +49,12 @@
             <li>Set the minimum size of the Preferences dialog</li>
             <li>Set the title to nameless documents on saving</li>
         </ul>
-        <p>Some fixes:</p>
-        <ul>
-            <li>Fix build for ElementaryOS</li>
-        </ul>
       </description>
     </release>
     <release date="2020-07-21" version="0.4.3">
       <description>
         <p>Some fixes:</p>
         <ul>
-            <li>Fix build for ElementaryOS</li>
             <li>Properly toggle welcome screen and show archived</li>
             <li>Fix drag-n-drop on welcome screen</li>
             <li>Improve HeaderBar contrast</li>
