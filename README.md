@@ -11,7 +11,7 @@
   <h3 align="center">Continuous text editing for everyone</h3>
 </div>
 
-While I'm not the UX-man and it's just a hobby, I try to create visually appealing applications. And Norka is one of my trials to create a cozy text editor for GNOME and Elementary OS exactly. 
+While I'm not the UX-man and it's just a hobby, I try to create visually appealing applications. And Norka is one of my trials to create a cozy text editor for GNOME and elementary OS exactly. 
 
 Markdown for markup; No files until you need it; Your notes always saved and can be exported in a moment.
 
@@ -48,7 +48,7 @@ Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
   <img height="50" alt="Get it from the Snap Store" src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" />
 </a>
 
-### Elementary OS AppCenter
+### elementary OS AppCenter
 <a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
 
 

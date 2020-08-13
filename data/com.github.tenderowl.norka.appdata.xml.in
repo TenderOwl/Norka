@@ -114,7 +114,7 @@
   <translation type="gettext">com.github.tenderowl.norka</translation>
 
   <custom>
-    <!-- elementary AppCenter specific values -->
+    <!-- elementary OS AppCenter specific values -->
     <value key="x-appcenter-color-primary">#b5c3cb</value>
     <value key="x-appcenter-color-primary-text">#273445</value>
     <value key="x-appcenter-suggested-price">12</value>

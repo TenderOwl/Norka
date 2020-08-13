@@ -30,7 +30,7 @@ class AboutDialog(Gtk.AboutDialog):
     def __init__(self, version, transient_for, modal=False):
         super().__init__(transient_for=transient_for, modal=modal)
         self.set_program_name(APP_TITLE)
-        self.set_comments('Continuous text editor for ElementaryOS')
+        self.set_comments('Continuous text editor')
         self.set_copyright('© 2020, Tender Owl')
         self.set_website("https://tenderowl.com/norka")
         self.set_website_label('Learn more about Norka')

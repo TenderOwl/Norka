@@ -122,7 +122,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.editor.update_font(self.settings.get_string('font'))
 
     def apply_styling(self):
-        """Apply Elementary OS header styling only for Elementary OS"""
+        """Apply elementary OS header styling only for elementary OS"""
         if distro.id() == 'elementary':
             Granite.widgets_utils_set_color_primary(self,
                                                     Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
