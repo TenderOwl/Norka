@@ -307,12 +307,15 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """Save and close opened document.
 
         """
-        self.screens.set_visible_child_name('document-grid')
-        self.editor.unload_document(save=self.autosave)
-        self.document_grid.reload_items()
-        self.header.toggle_document_mode()
-        self.header.update_title()
-        self.settings.set_int('last-document-id', -1)
+
+        # Should work only in editor mode.
+        if self.screens.get_visible_child_name() == 'editor-grid':
+            self.screens.set_visible_child_name('document-grid')
+            self.editor.unload_document(save=self.autosave)
+            self.document_grid.reload_items()
+            self.header.toggle_document_mode()
+            self.header.update_title()
+            self.settings.set_int('last-document-id', -1)
 
     def on_welcome_activated(self, sender: Welcome, index: int) -> None:
         if index == 0:
