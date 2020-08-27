@@ -26,12 +26,12 @@ from gi.repository import GObject
 
 class Document(GObject.GObject):
 
-    document_id = GObject.property(type=int)
+    document_id = GObject.property(type=int, default=-1)
     title = GObject.property(type=str)
     content = GObject.property(type=str)
     archived = GObject.property(type=bool, default=False)
 
-    def __init__(self, title: str, content: str = '', _id: int = None, archived=False):
+    def __init__(self, title: str, content: str = '', _id: int = -1, archived=False):
         GObject.GObject.__init__(self)
         self.document_id = _id
         self.title = title
