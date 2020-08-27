@@ -19,3 +19,18 @@
   font-family: 'Noto Sans Mono', monospace;
 }
 
+.quick-find-dialog {
+    background-color: shade (white, 1.2);
+}
+
+.quick-dialog list {
+    background-color: shade (white, 1.2);
+}
+
+.quick-dialog entry {
+    border-radius: 4px;
+}
+
+.muted {
+    color: shade(white, 0.5);
+}

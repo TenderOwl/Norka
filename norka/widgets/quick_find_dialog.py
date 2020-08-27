@@ -33,7 +33,9 @@ class QuickFindDialog(Gtk.Dialog):
 
     def __init__(self):
         super().__init__(deletable=False,
-                         use_header_bar=False,
+                         destroy_with_parent=True,
+                         use_header_bar=1,
+                         title="Quick Find",
                          )
 
         # Store document_id to response
@@ -41,11 +43,8 @@ class QuickFindDialog(Gtk.Dialog):
 
         self.get_style_context().add_class("quick-find-dialog")
 
-        header = Gtk.HeaderBar(title="Search for...",
-                               no_show_all=True,
-                               visible=False)
-        header.set_visible(False)
-        self.set_titlebar(header)
+        self.get_header_bar().set_visible(False)
+        self.get_header_bar().set_no_show_all(True)
 
         self.set_default_size(400, 200)
         self.set_modal(True)
@@ -59,6 +58,28 @@ class QuickFindDialog(Gtk.Dialog):
         result_box.bind_model(self.result_store, QuickFindRow)
         result_box.connect('row-activated', self.row_activated)
 
+        placeholder_image = Gtk.Image.new_from_icon_name("folder-saved-search-symbolic",
+                                                         Gtk.IconSize.LARGE_TOOLBAR)
+
+        placeholder_label = Gtk.Label(label="Quickly find documents, just start typing its name.",
+                                      wrap=True,
+                                      max_width_chars=32,
+                                      justify=Gtk.Justification.CENTER,
+                                      )
+        placeholder_label.show()
+
+        placeholder_grid = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL,
+                                    halign=Gtk.Align.CENTER,
+                                    row_spacing=12,
+                                    margin_top=32,
+                                    )
+        placeholder_grid.get_style_context().add_class("dim-label")
+        placeholder_grid.add(placeholder_image)
+        placeholder_grid.add(placeholder_label)
+        placeholder_grid.show_all()
+
+        result_box.set_placeholder(placeholder_grid)
+
         scrolled = Gtk.ScrolledWindow(expand=True,
                                       hscrollbar_policy=Gtk.PolicyType.NEVER)
         scrolled.add(result_box)
@@ -67,6 +88,11 @@ class QuickFindDialog(Gtk.Dialog):
         self.search_entry.connect('search-changed', self.search_changed)
 
         box = self.get_content_area()
+        box.set_margin_start(6)
+        box.set_margin_end(6)
+        box.set_margin_top(6)
+        box.set_margin_bottom(6)
+        box.set_spacing(6)
         box.pack_start(self.search_entry, False, True, 0)
         box.pack_end(scrolled, True, True, 0)
         self.set_titlebar(None)
@@ -116,7 +142,12 @@ class QuickFindRow(Gtk.ListBoxRow):
                       margin=6)
 
         doc_label = Gtk.Label(label=item.title)
+        archive_icon = Gtk.Image.new_from_icon_name('user-trash-symbolic', Gtk.IconSize.SMALL_TOOLBAR)
+        archive_icon.get_style_context().add_class('muted')
+
         box.pack_start(doc_label, False, True, 0)
+        if item.archived:
+            box.pack_end(archive_icon, False, False, 0)
 
         self.add(box)
         self.show_all()

@@ -131,9 +131,9 @@ class Storage(object):
         return True
 
     def find(self, search_text: str) -> list:
-        query = "SELECT * FROM documents WHERE title LIKE ? COLLATE NOCASE"
+        query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
-        cursor = self.conn.cursor().execute(query, (f"%{search_text}%",))
+        cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
         rows = cursor.fetchall()
 
         docs = []

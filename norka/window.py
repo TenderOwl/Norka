@@ -202,11 +202,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'action': self.on_export_writeas,
                     'accels': (None,)
                 },
-                {
-                    'name': 'search',
-                    'action': self.on_document_search_activated,
-                    'accels': ('<Control>k',)
-                },
+                # {
+                #     'name': 'search',
+                #     'action': self.search_activated,
+                #     'accels': ('<Control>k',)
+                # },
                 {
                     'name': 'zoom_in',
                     'action': self.on_zoom_in,
@@ -224,7 +224,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 },
                 {
                     'name': 'search_text',
-                    'action': self.on_text_search_activated,
+                    'action': self.search_activated,
                     'accels': ('<Control>f',)
                 },
                 {
@@ -674,6 +674,14 @@ class NorkaWindow(Gtk.ApplicationWindow):
             self.toast.set_default_action(None)
         self.toast.send_notification()
 
+    def search_activated(self, sender, event=None):
+        if self.screens.get_visible_child_name() == 'document-grid':
+            self.on_document_search_activated(sender, event)
+        elif self.screens.get_visible_child_name() == 'editor-grid':
+            self.on_text_search_activated(sender, event)
+        else:
+            pass
+
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find a documents
 
@@ -681,13 +689,12 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :param event:
         :return:
         """
-        if self.screens.get_visible_child_name() == 'document-grid':
-            dialog = QuickFindDialog()
-            response = dialog.run()
-            print(response, dialog.document_id)
-            if response == Gtk.ResponseType.APPLY and dialog.document_id:
-                self.document_activate(dialog.document_id)
-            dialog.destroy()
+        dialog = QuickFindDialog()
+        response = dialog.run()
+        print(response, dialog.document_id)
+        if response == Gtk.ResponseType.APPLY and dialog.document_id:
+            self.document_activate(dialog.document_id)
+        dialog.destroy()
 
     def on_text_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find text in a documents
