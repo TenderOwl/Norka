@@ -21,18 +21,19 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from gi.repository import GObject
 
 
-class Document(object):
-    __slots__ = ('_id', 'title', 'content', 'archived')
+class Document(GObject.GObject):
 
-    _id: int
-    title: str
-    content: str
-    archived: bool
+    document_id = GObject.property(type=int)
+    title = GObject.property(type=str)
+    content = GObject.property(type=str)
+    archived = GObject.property(type=bool, default=False)
 
     def __init__(self, title: str, content: str = '', _id: int = None, archived=False):
-        self._id = _id
+        GObject.GObject.__init__(self)
+        self.document_id = _id
         self.title = title
         self.content = content
         self.archived = archived
@@ -52,4 +53,4 @@ class Document(object):
         )
 
     def __repr__(self) -> str:
-        return f"{self._id}: {self.title}"
+        return f"{self.document_id}: {self.title}"

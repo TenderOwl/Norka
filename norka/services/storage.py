@@ -76,8 +76,6 @@ class Storage(object):
         if not with_archived:
             query += " WHERE archived=0"
 
-        Logger.debug('> ALL QUERY: %s', query)
-
         cursor = self.conn.cursor().execute(query)
         rows = cursor.fetchall()
 
@@ -131,6 +129,18 @@ class Storage(object):
             return False
 
         return True
+
+    def find(self, search_text: str) -> list:
+        query = "SELECT * FROM documents WHERE title LIKE ? COLLATE NOCASE"
+
+        cursor = self.conn.cursor().execute(query, (f"%{search_text}%",))
+        rows = cursor.fetchall()
+
+        docs = []
+        for row in rows:
+            docs.append(Document.new_with_row(row))
+
+        return docs
 
 
 storage = Storage()

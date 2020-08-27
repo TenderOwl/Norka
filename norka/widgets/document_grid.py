@@ -82,7 +82,7 @@ class DocumentGrid(Gtk.Grid):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
             icon = self.gen_preview(document.content[:200], opacity=opacity)
-            self.model.append([icon, document.title, document.content, document._id])
+            self.model.append([icon, document.title, document.content, document.document_id])
 
         if self.selected_path:
             self.view.select_path(self.selected_path)

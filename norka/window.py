@@ -40,6 +40,7 @@ from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
+from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_dialog import RenameDialog
 from norka.widgets.welcome import Welcome
 
@@ -328,12 +329,14 @@ class NorkaWindow(Gtk.ApplicationWindow):
         doc_id = self.document_grid.model.get_value(model_iter, 3)
         Logger.debug('Activated Document.Id %s', doc_id)
 
+        self.document_activate(doc_id)
+
+    def document_activate(self, doc_id):
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
         self.screens.set_visible_child_name('editor-grid')
-
         self.header.toggle_document_mode()
-        self.header.update_title(title=self.document_grid.model.get_value(model_iter, 1))
+        self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
 
     def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -428,7 +431,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 if response == Gtk.ResponseType.APPLY:
                     new_title = popover.entry.get_text()
 
-                    if storage.update(doc_id=doc._id, data={'title': new_title}):
+                    if storage.update(doc_id=doc.document_id, data={'title': new_title}):
                         self.document_grid.reload_items()
             except Exception as e:
                 Logger.debug(e)
@@ -444,7 +447,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(doc_id=doc._id, data={'archived': True}):
+            if storage.update(doc_id=doc.document_id, data={'archived': True}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -457,7 +460,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(doc_id=doc._id, data={'archived': False}):
+            if storage.update(doc_id=doc.document_id, data={'archived': False}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -480,7 +483,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and storage.delete(doc._id):
+            if result == Gtk.ResponseType.APPLY and storage.delete(doc.document_id):
                 self.document_grid.reload_items()
                 self.check_documents_count()
 
@@ -678,10 +681,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :param event:
         :return:
         """
-        # dialog = SearchDialog()
-        # dialog.run()
-        # dialog.destroy()
-        pass
+        if self.screens.get_visible_child_name() == 'document-grid':
+            dialog = QuickFindDialog()
+            response = dialog.run()
+            print(response, dialog.document_id)
+            if response == Gtk.ResponseType.APPLY and dialog.document_id:
+                self.document_activate(dialog.document_id)
+            dialog.destroy()
 
     def on_text_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find text in a documents

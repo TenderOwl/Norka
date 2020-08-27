@@ -107,7 +107,7 @@ class Editor(Gtk.Grid):
         :return: None
         """
         self.document = Document(title=title)
-        self.document._id = storage.add(self.document)
+        self.document.document_id = storage.add(self.document)
         self.view.grab_focus()
 
     def load_document(self, doc_id: int) -> None:
@@ -174,9 +174,9 @@ class Editor(Gtk.Grid):
             except TypeError:
                 pass
 
-        if storage.update(self.document._id, {"content": text, 'title': self.document.title}):
+        if storage.update(self.document.document_id, {"content": text, 'title': self.document.title}):
             self.document.content = text
-            Logger.debug('Document %s saved', self.document._id)
+            Logger.debug('Document %s saved', self.document.document_id)
             return True
 
     def get_text(self) -> str:
