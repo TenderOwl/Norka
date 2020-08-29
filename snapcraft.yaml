@@ -63,7 +63,7 @@ parts:
   norka:
     plugin: meson
     meson-parameters: [--prefix=/snap/norka/current/usr]
-    source: .
+    source: https://github.com/TenderOwl/Norka.git
     build-packages:
       - gettext
       - libgtk-3-dev
