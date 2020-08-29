@@ -1,3 +1,4 @@
+data/ui/shortcuts.ui
 norka/define.py
 norka/services/stats_handler.py
 norka/widgets/about_dialog.py

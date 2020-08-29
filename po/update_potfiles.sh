@@ -14,7 +14,7 @@ rm *.pot
 version=$(fgrep "version: " ../meson.build | head -1 | grep -o "'.*'" | sed "s/'//g")
 
 find ../$APP_NAME -iname "*.py" | xargs pygettext -d $APP_DOMAIN -o $APP_NAME-python.pot
-find ../data/ui -iname "*.ui" -or -iname "*.glade" | xargs pygettext -d $APP_DOMAIN -o $APP_NAME-glade.pot
+find ../data/ui -iname "*.ui" -or -iname "*.glade" | xargs xgettext --package-name=$APP_APP_DOMAIN --package-version=$version --from-code=UTF-8 --output=$APP_NAME-glade.pot -L Glade
 find ../data/ -iname "*.desktop.in" | xargs pygettext -d $APP_DOMAIN -o $APP_NAME-desktop.pot
 find ../data/ -iname "*.appdata.xml.in" | xargs pygettext -d $APP_DOMAIN -o $APP_NAME-appdata.pot
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: com.github.tenderowl.norka VERSION\n"
-"POT-Creation-Date: 2020-08-29 22:07+MSK\n"
+"POT-Creation-Date: 2020-08-29 22:55+MSK\n"
 "PO-Revision-Date: 2020-08-29 21:29+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: English (British)\n"
@@ -367,3 +367,103 @@ msgstr "Export failed!"
 #: ../norka/window.py:677
 msgid "Export failed."
 msgstr "Export failed."
+
+#: ../data/ui/shortcuts.ui:13
+msgctxt "shortcut window"
+msgid "General"
+msgstr "General"
+
+#: ../data/ui/shortcuts.ui:17
+msgctxt "shortcut window"
+msgid "New"
+msgstr "New"
+
+#: ../data/ui/shortcuts.ui:24
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "Import"
+
+#: ../data/ui/shortcuts.ui:31
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Export"
+
+#: ../data/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Close document"
+
+#: ../data/ui/shortcuts.ui:45
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Quit application"
+
+#: ../data/ui/shortcuts.ui:55 ../data/ui/shortcuts.ui:59
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Find"
+
+#: ../data/ui/shortcuts.ui:66
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Find next"
+
+#: ../data/ui/shortcuts.ui:73
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Find previous"
+
+#: ../data/ui/shortcuts.ui:137
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Copy and paste"
+
+#: ../data/ui/shortcuts.ui:141
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Copy selected text to clipboard"
+
+#: ../data/ui/shortcuts.ui:148
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Cut selected text to clipboard"
+
+#: ../data/ui/shortcuts.ui:155
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Paste selected text from clipboard"
+
+#: ../data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Undo and redo"
+
+#: ../data/ui/shortcuts.ui:170
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Undo previous command"
+
+#: ../data/ui/shortcuts.ui:177
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Redo previous command"
+
+#: ../data/ui/shortcuts.ui:188
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Selection"
+
+#: ../data/ui/shortcuts.ui:192
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Select all text"
+
+#: ../data/ui/shortcuts.ui:203
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Preferences"
+
+#: ../data/ui/shortcuts.ui:207
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Open Preferences"

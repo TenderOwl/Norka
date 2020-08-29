@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-08-29 22:17+MSK\n"
+"POT-Creation-Date: 2020-08-29 22:50+MSK\n"
 "PO-Revision-Date: 2020-08-27 19:23+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: Russian\n"
@@ -368,3 +368,103 @@ msgstr "Экспорт прошёл неудачно!"
 #: ../norka/window.py:677
 msgid "Export failed."
 msgstr "Экспорт прошёл неудачно."
+
+#: ../data/ui/shortcuts.ui:13
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Общие"
+
+#: ../data/ui/shortcuts.ui:17
+msgctxt "shortcut window"
+msgid "New"
+msgstr "Новый"
+
+#: ../data/ui/shortcuts.ui:24
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "Импорт"
+
+#: ../data/ui/shortcuts.ui:31
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Экспорт"
+
+#: ../data/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Закрыть документ"
+
+#: ../data/ui/shortcuts.ui:45
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Выйти из приложения"
+
+#: ../data/ui/shortcuts.ui:55 ../data/ui/shortcuts.ui:59
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Найти"
+
+#: ../data/ui/shortcuts.ui:66
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Найти след."
+
+#: ../data/ui/shortcuts.ui:73
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Найти пред."
+
+#: ../data/ui/shortcuts.ui:137
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Копирование и вставка"
+
+#: ../data/ui/shortcuts.ui:141
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Копировать выделенный текст"
+
+#: ../data/ui/shortcuts.ui:148
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Вырезать выделенный текст"
+
+#: ../data/ui/shortcuts.ui:155
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Вставить текст"
+
+#: ../data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Отмена и повтор"
+
+#: ../data/ui/shortcuts.ui:170
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Отменить действие"
+
+#: ../data/ui/shortcuts.ui:177
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Повторить действие"
+
+#: ../data/ui/shortcuts.ui:188
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Выделение"
+
+#: ../data/ui/shortcuts.ui:192
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Выделить весь текст"
+
+#: ../data/ui/shortcuts.ui:203
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Настройки"
+
+#: ../data/ui/shortcuts.ui:207
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Открыть настройки"
