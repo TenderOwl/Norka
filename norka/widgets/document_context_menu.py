@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
+
 from gi.repository import Gtk, Granite
 
 
@@ -32,19 +34,19 @@ class DocumentContextMenu(Gtk.Menu):
         self.attach_to_widget(attach_to)
 
         export_menu = Gtk.MenuItem(action_name='document.export')
-        export_menu.add(Granite.AccelLabel.from_action_name('Export...', 'document.export'))
+        export_menu.add(Granite.AccelLabel.from_action_name(_('Export...'), 'document.export'))
 
         rename_menu = Gtk.MenuItem(action_name='document.rename')
-        rename_menu.add(Granite.AccelLabel.from_action_name('Rename', 'document.rename'))
+        rename_menu.add(Granite.AccelLabel.from_action_name(_('Rename'), 'document.rename'))
 
         archive_menu = Gtk.MenuItem(action_name='document.archive')
-        archive_menu.add(Granite.AccelLabel.from_action_name('Archive', 'document.archive'))
+        archive_menu.add(Granite.AccelLabel.from_action_name(_('Archive'), 'document.archive'))
 
         unarchive_menu = Gtk.MenuItem(action_name='document.unarchive')
-        unarchive_menu.add(Granite.AccelLabel.from_action_name('Unarchive', 'document.unarchive'))
+        unarchive_menu.add(Granite.AccelLabel.from_action_name(_('Unarchive'), 'document.unarchive'))
 
         delete_menu = Gtk.MenuItem(action_name='document.delete')
-        delete_menu.add(Granite.AccelLabel.from_action_name('Delete', 'document.delete'))
+        delete_menu.add(Granite.AccelLabel.from_action_name(_('Delete'), 'document.delete'))
 
         self.append(rename_menu)
         self.append(Gtk.SeparatorMenuItem())

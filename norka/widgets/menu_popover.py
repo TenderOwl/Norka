@@ -21,6 +21,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from gettext import gettext as _
+
 from gi.repository import Gtk, Granite
 
 
@@ -33,14 +35,17 @@ class MenuPopover(Gtk.Popover):
 
         zoom_out_button = Gtk.Button.new_from_icon_name("zoom-out-symbolic", Gtk.IconSize.MENU)
         zoom_out_button.set_action_name('document.zoom_out')
-        zoom_out_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>minus',), 'Zoom Out'))
+        zoom_out_button.set_tooltip_markup(
+            Granite.markup_accel_tooltip(('<Control>minus',), _('Zoom Out')))
 
         self.zoom_default_button = Gtk.Button("100%", action_name='document.zoom_default')
-        self.zoom_default_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>0',), 'Zoom 1:1'))
+        self.zoom_default_button.set_tooltip_markup(
+            Granite.markup_accel_tooltip(('<Control>0',), _('Zoom 1:1')))
 
         zoom_in_button = Gtk.Button.new_from_icon_name("zoom-in-symbolic", Gtk.IconSize.MENU)
         zoom_in_button.set_action_name('document.zoom_in')
-        zoom_in_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>equal', '<Control>plus'), 'Zoom In'))
+        zoom_in_button.set_tooltip_markup(
+            Granite.markup_accel_tooltip(('<Control>equal', '<Control>plus'), _('Zoom In')))
 
         font_size_grid = Gtk.Grid(column_homogeneous=True, hexpand=True, margin=12)
         font_size_grid.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
@@ -48,10 +53,10 @@ class MenuPopover(Gtk.Popover):
         font_size_grid.add(self.zoom_default_button)
         font_size_grid.add(zoom_in_button)
 
-        preferences_menuitem = Gtk.ModelButton(text="Preferences", action_name='app.preferences')
-        about_menuitem = Gtk.ModelButton(text="About", action_name='app.about')
-        shortcuts_menuitem = Gtk.ModelButton(text="Shortcuts", action_name='app.shortcuts')
-        quit_menuitem = Gtk.ModelButton(text="Quit", action_name='app.quit')
+        preferences_menuitem = Gtk.ModelButton(text=_("Preferences"), action_name='app.preferences')
+        about_menuitem = Gtk.ModelButton(text=_("About"), action_name='app.about')
+        shortcuts_menuitem = Gtk.ModelButton(text=_("Shortcuts"), action_name='app.shortcuts')
+        quit_menuitem = Gtk.ModelButton(text=_("Quit"), action_name='app.quit')
 
         menu_separator = Gtk.Separator(margin_top=12, orientation=Gtk.Orientation.HORIZONTAL)
 

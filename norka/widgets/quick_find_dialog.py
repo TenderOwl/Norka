@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
+
 from gi.repository import Gtk, Gdk, Gio, GObject
 
 from norka.models.document import Document
@@ -35,7 +37,7 @@ class QuickFindDialog(Gtk.Dialog):
         super().__init__(deletable=False,
                          destroy_with_parent=True,
                          use_header_bar=1,
-                         title="Quick Find",
+                         title=_("Quick Find"),
                          )
 
         # Store document_id to response
@@ -61,7 +63,7 @@ class QuickFindDialog(Gtk.Dialog):
         placeholder_image = Gtk.Image.new_from_icon_name("folder-saved-search-symbolic",
                                                          Gtk.IconSize.LARGE_TOOLBAR)
 
-        placeholder_label = Gtk.Label(label="Quickly find documents, just start typing its name.",
+        placeholder_label = Gtk.Label(label=_("Quickly find documents, just start typing its name."),
                                       wrap=True,
                                       max_width_chars=32,
                                       justify=Gtk.Justification.CENTER,
@@ -84,7 +86,7 @@ class QuickFindDialog(Gtk.Dialog):
                                       hscrollbar_policy=Gtk.PolicyType.NEVER)
         scrolled.add(result_box)
 
-        self.search_entry = Gtk.SearchEntry(placeholder_text='Jump to...')
+        self.search_entry = Gtk.SearchEntry(placeholder_text=_('Jump to...'))
         self.search_entry.connect('search-changed', self.search_changed)
 
         box = self.get_content_area()

@@ -33,8 +33,6 @@ from norka.services.storage import storage
 from norka.widgets.document_context_menu import DocumentContextMenu
 
 
-
-
 class DocumentGrid(Gtk.Grid):
     __gtype_name__ = 'DocumentGrid'
 

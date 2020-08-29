@@ -21,17 +21,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from gettext import gettext as _
 
 import gi
-
-from norka.gobject_worker import GObjectWorker
-from norka.services.writeas import Writeas
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSource', '3.0')
+
 from gi.repository import Gtk, Granite, GtkSource, Gdk
 from norka.services.medium import Medium
+from norka.gobject_worker import GObjectWorker
+from norka.services.writeas import Writeas
 
 
 class PreferencesDialog(Gtk.Dialog):
@@ -50,9 +51,9 @@ class PreferencesDialog(Gtk.Dialog):
 
         self.set_border_width(5)
         self.set_deletable(False)
-        self.set_title('Preferences')
+        self.set_title(_('Preferences'))
 
-        self.toast = Granite.WidgetsToast(title="Toast")
+        self.toast = Granite.WidgetsToast(title=_("Toast"))
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))
@@ -76,18 +77,18 @@ class PreferencesDialog(Gtk.Dialog):
 
         general_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
 
-        general_grid.attach(Granite.HeaderLabel("General"), 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label("Save files when changed:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        general_grid.attach(Granite.HeaderLabel(_("General")), 0, 0, 3, 1)
+        general_grid.attach(Gtk.Label(_("Save files when changed:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         general_grid.attach(self.autosave_switch, 1, 1, 1, 1)
-        general_grid.attach(Gtk.Label("Spell checking:", halign=Gtk.Align.END), 0, 2, 1, 1)
+        general_grid.attach(Gtk.Label(_("Spell checking:"), halign=Gtk.Align.END), 0, 2, 1, 1)
         general_grid.attach(self.spellcheck_switch, 1, 2, 1, 1)
 
-        general_grid.attach(Granite.HeaderLabel("Tabs"), 0, 3, 3, 1)
-        general_grid.attach(Gtk.Label("Automatic indentation:", halign=Gtk.Align.END), 0, 4, 1, 1)
+        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 3, 3, 1)
+        general_grid.attach(Gtk.Label(_("Automatic indentation:"), halign=Gtk.Align.END), 0, 4, 1, 1)
         general_grid.attach(self.autoindent_switch, 1, 4, 1, 1)
-        general_grid.attach(Gtk.Label("Insert spaces instead of tabs:", halign=Gtk.Align.END), 0, 5, 1, 1)
+        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), halign=Gtk.Align.END), 0, 5, 1, 1)
         general_grid.attach(self.spaces_tabs_switch, 1, 5, 1, 1)
-        general_grid.attach(Gtk.Label("Tab width:", halign=Gtk.Align.END), 0, 6, 1, 1)
+        general_grid.attach(Gtk.Label(_("Tab width:"), halign=Gtk.Align.END), 0, 6, 1, 1)
         general_grid.attach(indent_width, 1, 6, 2, 1)
 
         # Interface grid
@@ -105,7 +106,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         style_chooser.set_style_scheme(scheme)
 
-        interface_grid.attach(Granite.HeaderLabel("Styles"), 0, 0, 2, 1)
+        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 0, 2, 1)
         interface_grid.attach(scrolled, 0, 2, 2, 1)
 
         # Export grid
@@ -116,9 +117,9 @@ class PreferencesDialog(Gtk.Dialog):
 
         # Main Stack
         main_stack = Gtk.Stack(margin=6, margin_bottom=18, margin_top=8)
-        main_stack.add_titled(general_grid, "behavior", "Behavior")
-        main_stack.add_titled(interface_grid, "interface", "Interface")
-        main_stack.add_titled(export_grid, "export", "Export")
+        main_stack.add_titled(general_grid, "behavior", _("Behavior"))
+        main_stack.add_titled(interface_grid, "interface", _("Interface"))
+        main_stack.add_titled(export_grid, "export", _("Export"))
 
         main_stackswitcher = Gtk.StackSwitcher()
         main_stackswitcher.set_stack(main_stack)
@@ -133,29 +134,29 @@ class PreferencesDialog(Gtk.Dialog):
         self.overlay.add_overlay(self.toast)
         self.get_content_area().add(self.overlay)
 
-        close_button = Gtk.Button(label="Close")
+        close_button = Gtk.Button(label=_("Close"))
         close_button.connect('clicked', self.on_close_activated)
         self.add_action_widget(close_button, 0)
 
     def render_medium(self, content_grid):
-        self.medium_token = Gtk.Entry(hexpand=True, placeholder_text="Token")
+        self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
         self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
         self.medium_token.connect("changed", self.on_medium_token)
 
         self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
-        self.medium_link.set_label("Create Integration token and copy it here")
+        self.medium_link.set_label(_("Create Integration token and copy it here"))
 
         content_grid.attach(Granite.HeaderLabel("Medium.com"), 0, 0, 3, 1)
-        content_grid.attach(Gtk.Label("Personal Token:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        content_grid.attach(Gtk.Label(_("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         content_grid.attach(self.medium_token, 1, 1, 2, 1)
         content_grid.attach(self.medium_link, 0, 2, 3, 1)
 
     def render_writeas(self, content_grid):
-        self.writeas_login = Gtk.Entry(hexpand=True, placeholder_text="Login")
-        self.writeas_password = Gtk.Entry(hexpand=True, placeholder_text="Password", visibility=False)
-        self.writeas_login_button = Gtk.Button(label="Login")
+        self.writeas_login = Gtk.Entry(hexpand=True, placeholder_text=_("Login"))
+        self.writeas_password = Gtk.Entry(hexpand=True, placeholder_text=_("Password"), visibility=False)
+        self.writeas_login_button = Gtk.Button(label=_("Login"))
         self.writeas_login_button.connect("clicked", self.on_writeas_login)
-        self.writeas_logout_button = Gtk.Button(label="Logout", hexpand=True)
+        self.writeas_logout_button = Gtk.Button(label=_("Logout"), hexpand=True)
         self.writeas_logout_button.connect("clicked", self.on_writeas_logout)
 
         content_grid.attach(Granite.HeaderLabel("Write.as"), 0, 3, 3, 1)
@@ -163,9 +164,9 @@ class PreferencesDialog(Gtk.Dialog):
         self.writeas_login_revealer = Gtk.Revealer()
         self.writeas_login_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
         login_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
-        login_grid.attach(Gtk.Label("Login:", halign=Gtk.Align.END), 0, 0, 1, 1)
+        login_grid.attach(Gtk.Label(_("Login:"), halign=Gtk.Align.END), 0, 0, 1, 1)
         login_grid.attach(self.writeas_login, 1, 0, 2, 1)
-        login_grid.attach(Gtk.Label("Password:", halign=Gtk.Align.END), 0, 1, 1, 1)
+        login_grid.attach(Gtk.Label(_("Password:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         login_grid.attach(self.writeas_password, 1, 1, 2, 1)
         login_grid.attach(self.writeas_login_button, 0, 2, 3, 1)
         self.writeas_login_revealer.add(login_grid)
@@ -227,7 +228,7 @@ class PreferencesDialog(Gtk.Dialog):
 
     def on_medium_errorback(self, error=None):
         self.medium_token.set_sensitive(True)
-        self.toast.set_title("Something goes wrong!")
+        self.toast.set_title(_("Something goes wrong!"))
         self.toast.send_notification()
         self.settings.set_string("medium-user-id", "")
 
@@ -268,12 +269,12 @@ class PreferencesDialog(Gtk.Dialog):
         data, error = result
         self.toast.set_default_action(None)
         if error:
-            self.toast.set_title("Login failed.")
+            self.toast.set_title(_("Login failed."))
             self.toast.send_notification()
 
         if data and "access_token" in data:
             self.settings.set_string("writeas-access-token", data["access_token"])
-            self.toast.set_title(f"Logged as {data['user']['username']}.")
+            self.toast.set_title(_("Logged as {}.").format(data['user']['username']))
             self.toast.send_notification()
 
         # Enable widgets while login

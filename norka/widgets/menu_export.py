@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
+
 from gi.repository import Gtk, Granite
 
 
@@ -33,9 +35,9 @@ class MenuExport(Gtk.Popover):
         self.settings = settings
 
         self.export_plain = Gtk.Button(
-            label="Text",
+            label=_("Text"),
             action_name="document.export",
-            tooltip_text="Export document to plain text file",
+            tooltip_text=_("Export document to plain text file"),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
@@ -43,10 +45,10 @@ class MenuExport(Gtk.Popover):
             Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text.svg"))
 
         self.export_markdown = Gtk.Button(
-            label="Markdown",
+            label=_("Markdown"),
             action_name="document.export-markdown",
             tooltip_markup=Granite.markup_accel_tooltip(
-                ("<Control><Shift>s",), "Export document to markdown"),
+                ("<Control><Shift>s",), _("Export document to markdown")),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
@@ -54,39 +56,39 @@ class MenuExport(Gtk.Popover):
             Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text-markdown.svg"))
 
         self.export_html = Gtk.Button(
-            "Html",
+            _("Html"),
             action_name="document.export-html",
-            tooltip_text="Export document to HTML",
+            tooltip_text=_("Export document to HTML"),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
-        self.export_html.set_tooltip_text("Export document to HTML")
+        self.export_html.set_tooltip_text(_("Export document to HTML"))
         self.export_html.set_image(
             Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text-html.svg"))
 
         self.export_file = Gtk.ModelButton()
         self.export_file.get_child().destroy()
-        self.export_file.add(Granite.AccelLabel(label="Export to file", accel_string='<Control><Shift>s'))
+        self.export_file.add(Granite.AccelLabel(label=_("Export to file"), accel_string='<Control><Shift>s'))
         self.export_file.set_action_name("document.export")
 
         self.export_medium = Gtk.ModelButton()
         self.export_medium.get_child().destroy()
-        self.export_medium.add(Granite.AccelLabel(label="To Medium"))
+        self.export_medium.add(Granite.AccelLabel(label=_("To Medium")))
         self.export_medium.set_action_name("document.export-medium")
 
         self.export_writeas = Gtk.ModelButton()
         self.export_writeas.get_child().destroy()
-        self.export_writeas.add(Granite.AccelLabel(label="To Write.as"))
+        self.export_writeas.add(Granite.AccelLabel(label=_("To Write.as")))
         self.export_writeas.set_action_name("document.export-writeas")
 
         menu_grid = Gtk.Grid(margin_bottom=3, margin_top=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
-        menu_grid.attach(Granite.HeaderLabel("Files", margin_left=12, margin_right=12), 0, 0, 3, 1)
+        menu_grid.attach(Granite.HeaderLabel(_("Files"), margin_left=12, margin_right=12), 0, 0, 3, 1)
         menu_grid.attach(self.export_plain, 0, 1, 1, 1)
         menu_grid.attach(self.export_markdown, 1, 1, 1, 1)
         menu_grid.attach(self.export_html, 2, 1, 1, 1)
 
         menu_grid.attach(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, margin_top=12), 0, 2, 3, 1)
-        menu_grid.attach(Granite.HeaderLabel("Internet", margin_left=12, margin_right=12), 0, 3, 3, 1)
+        menu_grid.attach(Granite.HeaderLabel(_("Internet"), margin_left=12, margin_right=12), 0, 3, 3, 1)
         menu_grid.attach(self.export_medium, 0, 4, 3, 1)
         menu_grid.attach(self.export_writeas, 0, 5, 3, 1)
 

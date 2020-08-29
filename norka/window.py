@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+from gettext import gettext as _
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Granite
 from gi.repository.GdkPixbuf import Pixbuf
@@ -369,13 +370,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
     def on_document_import_activated(self, sender, event):
         dialog = Gtk.FileChooserNative.new(
-            "Import files into Norka",
+            _("Import files into Norka"),
             self,
             Gtk.FileChooserAction.OPEN
         )
 
         filter_markdown = Gtk.FileFilter()
-        filter_markdown.set_name("Text Files")
+        filter_markdown.set_name(_("Text Files"))
         filter_markdown.add_mime_type("text/plain")
         dialog.add_filter(filter_markdown)
         dialog_result = dialog.run()
@@ -568,7 +569,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             return
 
         dialog = ExportFileDialog(
-            "Export document to file",
+            _("Export document to file"),
             self,
             Gtk.FileChooserAction.SAVE
         )
@@ -593,13 +594,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.header.show_spinner(False)
         self.disconnect_toast()
         if result:
-            self.toast.set_title("Document exported.")
-            self.toast.set_default_action("Open folder")
+            self.toast.set_title(_("Document exported."))
+            self.toast.set_default_action(_("Open folder"))
             self.uri_to_open = f"file://{os.path.dirname(result)}"
             self.toast.connect("default-action", self.open_uri)
             self.toast.send_notification()
         else:
-            self.toast.set_title("Export goes wrong.")
+            self.toast.set_title(_("Export goes wrong."))
             self.toast.send_notification()
 
     def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -614,8 +615,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         user_id = self.settings.get_string("medium-user-id")
 
         if not token or not user_id:
-            self.toast.set_title("You need to set Medium token in Preferences -> Export")
-            self.toast.set_default_action("Configure")
+            self.toast.set_title(_("You need to set Medium token in Preferences -> Export"))
+            self.toast.set_default_action(_("Configure"))
             self.disconnect_toast()
             self.toast.connect("default-action", self.get_application().on_preferences)
             self.toast.send_notification()
@@ -631,13 +632,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.header.show_spinner(False)
         if result:
-            self.toast.set_title("Document successfully exported!")
-            self.toast.set_default_action("View")
+            self.toast.set_title(_("Document successfully exported!"))
+            self.toast.set_default_action(_("View"))
             self.uri_to_open = result["url"]
             self.disconnect_toast()
             self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title("Export failed!")
+            self.toast.set_title(_("Export failed!"))
             self.toast.set_default_action(None)
         self.toast.send_notification()
 
@@ -667,13 +668,13 @@ class NorkaWindow(Gtk.ApplicationWindow):
     def on_export_writeas_callback(self, result):
         self.header.show_spinner(False)
         if result:
-            self.toast.set_title("Document successfully exported!")
-            self.toast.set_default_action("View")
+            self.toast.set_title(_("Document successfully exported!"))
+            self.toast.set_default_action(_("View"))
             self.disconnect_toast()
             self.uri_to_open = f"https://write.as/{result['id']}"
             self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title(f"Export failed.")
+            self.toast.set_title(_("Export failed."))
             self.toast.set_default_action(None)
         self.toast.send_notification()
 
@@ -777,6 +778,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             self.uri_to_open = None
 
     def disconnect_toast(self):
+        """Disconnect toast action. Weird way, need ti rewrite it"""
         try:
             self.toast.disconnect_by_func(self.get_application().on_preferences)
         except:

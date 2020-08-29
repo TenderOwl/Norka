@@ -32,6 +32,8 @@ import os
 import sys
 import signal
 import gettext
+import locale
+
 
 VERSION = '@VERSION@'
 REVISION = '@REVISION@'
@@ -41,7 +43,13 @@ project_name = '@PROJECT_NAME@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
 signal.signal(signal.SIGINT, signal.SIG_DFL)
-gettext.install('norka', localedir)
+
+locale.textdomain(project_name)
+locale.bindtextdomain(project_name, localedir)
+gettext.textdomain(project_name)
+gettext.bindtextdomain(project_name, localedir)
+
+print('GETTEXT: ', localedir, project_name, gettext.find(project_name, localedir))
 
 if __name__ == '__main__':
     import gi

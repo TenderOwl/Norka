@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
 from gi.repository import Gtk, Pango
 
 from norka.define import APP_TITLE
@@ -37,12 +38,12 @@ class RenameDialog(Gtk.Dialog):
         self.set_modal(True)
         self.set_transient_for(Gtk.Application.get_default().props.active_window)
         self.set_title(APP_TITLE)
-        self.add_button('Cancel', Gtk.ResponseType.CANCEL)
+        self.add_button(_('Cancel'), Gtk.ResponseType.CANCEL)
 
         self.origin_title = origin_title
 
         label = Gtk.Label()
-        label.set_markup(f'<b>Rename {self.origin_title} to:</b>')
+        label.set_markup(_('<b>Rename {} to:</b>').format(self.origin_title))
         label.set_halign(Gtk.Align.START)
         label.set_margin_bottom(6)
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
@@ -56,7 +57,7 @@ class RenameDialog(Gtk.Dialog):
         grid.add(label)
         grid.add(self.entry)
 
-        self.rename_button = Gtk.Button(label="Rename")
+        self.rename_button = Gtk.Button(label=_("Rename"))
         self.rename_button.set_sensitive(False)
         self.rename_button.get_style_context().add_class("destructive-action")
         self.add_action_widget(self.rename_button, Gtk.ResponseType.APPLY)
@@ -69,4 +70,5 @@ class RenameDialog(Gtk.Dialog):
         self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())
 
     def apply_activated(self, entry: Gtk.Entry):
-        self.response(Gtk.ResponseType.APPLY)
+        if self.origin_title != self.entry.get_text():
+            self.response(Gtk.ResponseType.APPLY)

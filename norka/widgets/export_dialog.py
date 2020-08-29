@@ -21,13 +21,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from gettext import gettext as _
+
 from gi.repository import Gtk
 
 
 class ExportFormat:
-    PlainText = ("Plain text", ("*.txt",))
-    Markdown = ("Markdown", (".md", ".markdown",))
-    Html = ("HTML", ("*.html", "*.htm"))
+    PlainText = (_("Plain text"), ("*.txt",))
+    Markdown = (_("Markdown"), (".md", ".markdown",))
+    Html = (_("HTML"), ("*.html", "*.htm"))
 
 
 class ExportFileDialog(Gtk.FileChooserNative):

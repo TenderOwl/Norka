@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
+
 from gi.repository import Gtk, GObject
 
 
@@ -40,7 +42,7 @@ class SearchBar(Gtk.FlowBox):
         self.set_max_children_per_line(1)
         self.get_style_context().add_class('search-bar')
 
-        self.search_entry = Gtk.SearchEntry(hexpand=True, placeholder_text="Find")
+        self.search_entry = Gtk.SearchEntry(hexpand=True, placeholder_text=_("Find"))
         self.search_entry.connect('changed', self.on_find_changed)
         self.search_entry.connect('activate', self.on_find_next)
         self.search_entry.connect('stop_search', self.on_stop_search)

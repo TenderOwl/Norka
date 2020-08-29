@@ -14,6 +14,7 @@
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
+from gettext import gettext as _
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,6 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+from gettext import gettext as _
 from urllib.parse import urlparse, unquote_plus
 
 from gi.repository import Granite, Gtk, Gdk, GObject
@@ -38,9 +40,9 @@ class Welcome(Granite.WidgetsWelcome):
 
     def __init__(self):
         super().__init__()
-        self.set_title('No documents yet')
-        self.set_subtitle('Create one and start writing')
-        self.append('document-new', 'New document', 'Create empty document')
+        self.set_title(_('No documents yet'))
+        self.set_subtitle(_('Create one and start writing'))
+        self.append('document-new', _('New document'), _('Create empty document'))
         self.get_button_from_index(0).set_can_focus(False)
 
         # Enable drag-drop

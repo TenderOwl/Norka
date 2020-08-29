@@ -21,6 +21,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+from gettext import gettext as _
+
 from gi.repository import Gtk
 
 from norka.define import APP_TITLE
@@ -30,10 +33,10 @@ class AboutDialog(Gtk.AboutDialog):
     def __init__(self, version, transient_for, modal=False):
         super().__init__(transient_for=transient_for, modal=modal)
         self.set_program_name(APP_TITLE)
-        self.set_comments('Continuous text editor')
+        self.set_comments(_('Continuous text editor'))
         self.set_copyright('© 2020, Tender Owl')
         self.set_website("https://tenderowl.com/norka")
-        self.set_website_label('Learn more about Norka')
+        self.set_website_label(_('Learn more about Norka'))
         self.set_license_type(Gtk.License.MIT_X11)
         self.set_version(version)
 

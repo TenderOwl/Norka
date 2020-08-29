@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
+
 from gi.repository import Gtk, Granite
 
 from norka.define import APP_TITLE, APP_SUBTITLE
@@ -38,7 +40,7 @@ class Header(Gtk.HeaderBar):
         self.document_mode_active = False
         self.settings = settings
 
-        self.set_title(APP_TITLE)
+        self.set_title(_("Norka"))
         self.set_subtitle(APP_SUBTITLE)
         self.set_has_subtitle(True)
         self.set_show_close_button(True)
@@ -48,20 +50,20 @@ class Header(Gtk.HeaderBar):
 
         self.import_button = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.LARGE_TOOLBAR)
         self.import_button.set_visible(True)
-        self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), 'Import file to Norka'))
+        self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), _('Import file to Norka')))
         self.import_button.set_action_name('document.import')
 
         self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
         self.add_button.set_visible(True)
-        self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), 'Create new document'))
+        self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), _('Create new document')))
         self.add_button.set_action_name('document.create')
 
-        self.back_button = Gtk.Button.new_with_label('Documents')
+        self.back_button = Gtk.Button.new_with_label(_('Documents'))
         self.back_button.set_valign(Gtk.Align.CENTER)
         self.back_button.get_style_context().add_class('back-button')
         self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(
             ('<Control>w',),
-            'Save document and return to documents list'))
+            _('Save document and return to documents list')))
         self.back_button.set_visible(False)
         self.back_button.set_action_name('document.close')
 
@@ -71,17 +73,17 @@ class Header(Gtk.HeaderBar):
         # self.search_button.set_action_name('document.search_text')
         # self.search_button.set_visible(False)
 
-        self.share_app_menu = Gtk.MenuButton(tooltip_text="Share")
+        self.share_app_menu = Gtk.MenuButton(tooltip_text=_("Share"))
         self.share_app_menu.set_image(Gtk.Image.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR))
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))
 
         self.archived_button = Gtk.ToggleButton()
         self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
-        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, 'Show Archived files'))
+        self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Show Archived files')))
         self.archived_button.set_action_name('document.toggle_archived')
         self.archived_button.set_visible(True)
 
-        self.menu_button = Gtk.MenuButton(tooltip_text="Menu")
+        self.menu_button = Gtk.MenuButton(tooltip_text=_("Menu"))
         self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
         self.menu_button.set_popover(MenuPopover(settings=self.settings))
         self.menu_button.set_visible(True)

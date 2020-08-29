@@ -22,10 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from gettext import gettext as _
 
 APP_ID = 'com.github.tenderowl.norka'
 APP_TITLE = 'Norka'
-APP_SUBTITLE = 'continuous text editor'
+APP_SUBTITLE = _('continuous text editor')
 
 DEBUG = False
 
