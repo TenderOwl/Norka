@@ -1,0 +1,471 @@
+# Espanish translations (Argentina) for com.github.tenderowl.norka package.
+# Copyright (C) 2020 ORGANIZATION
+# Andrey Maksimov <andrey@tenderowl.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.tenderowl.norka VERSION\n"
+"POT-Creation-Date: 2020-08-29 22:55+MSK\n"
+"PO-Revision-Date: 2020-08-30 20:15-0300\n"
+"Last-Translator: Cristian Molina <megatux@gmail.com>\n"
+"Language-Team: Spanish (Argentina)\n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.1\n"
+
+#: ../norka/define.py:29
+msgid "continuous text editor"
+msgstr "editor de texto contínuo"
+
+#: ../norka/services/stats_handler.py:67
+msgid "{:n} Characters"
+msgstr "{:n} Carácteres"
+
+#: ../norka/services/stats_handler.py:69
+msgid "{:n} Words"
+msgstr "{:n} Palabras"
+
+#: ../norka/services/stats_handler.py:71
+msgid "{:n} Sentences"
+msgstr "{:n} Oraciones"
+
+#: ../norka/services/stats_handler.py:73
+msgid "{:n} Paragraphs"
+msgstr "{:n} Párrafos"
+
+#: ../norka/services/stats_handler.py:75
+msgid "{:d}:{:02d}:{:02d} Read Time"
+msgstr "{:d}:{:02d}:{:02d} Tiempo de Lectura"
+
+#: ../norka/widgets/about_dialog.py:36
+msgid "Continuous text editor"
+msgstr "Editor de Texto Contínuo"
+
+#: ../norka/widgets/about_dialog.py:39
+msgid "Learn more about Norka"
+msgstr "Aprende más acerca de Norka"
+
+#: ../norka/widgets/document_context_menu.py:37
+msgid "Export..."
+msgstr "Exportar..."
+
+#: ../norka/widgets/document_context_menu.py:40
+#: ../norka/widgets/rename_dialog.py:60
+msgid "Rename"
+msgstr "Renombrar"
+
+#: ../norka/widgets/document_context_menu.py:43
+msgid "Archive"
+msgstr "Archivar"
+
+#: ../norka/widgets/document_context_menu.py:46
+msgid "Unarchive"
+msgstr "Desarchivar"
+
+#: ../norka/widgets/document_context_menu.py:49
+#: ../norka/widgets/message_dialog.py:46
+msgid "Delete"
+msgstr "Borrar"
+
+#: ../norka/widgets/export_dialog.py:30
+msgid "Plain text"
+msgstr "Texto Plano"
+
+#: ../norka/widgets/export_dialog.py:31 ../norka/widgets/menu_export.py:48
+msgid "Markdown"
+msgstr "Markdown"
+
+#: ../norka/widgets/export_dialog.py:32
+msgid "HTML"
+msgstr "HTML"
+
+#: ../norka/widgets/header.py:43
+msgid "Norka"
+msgstr "Norka"
+
+#: ../norka/widgets/header.py:53
+msgid "Import file to Norka"
+msgstr "Importar archivo a Norka"
+
+#: ../norka/widgets/header.py:58
+msgid "Create new document"
+msgstr "Crear nuevo documento"
+
+#: ../norka/widgets/header.py:61
+msgid "Documents"
+msgstr "Documentos"
+
+#: ../norka/widgets/header.py:66
+msgid "Save document and return to documents list"
+msgstr "Guardar documento y retornar a la lista de documentos"
+
+#: ../norka/widgets/header.py:76
+msgid "Share"
+msgstr "Compartir"
+
+#: ../norka/widgets/header.py:82
+msgid "Show Archived files"
+msgstr "Mostrar archivos archivados"
+
+#: ../norka/widgets/header.py:86
+msgid "Menu"
+msgstr "Menú"
+
+#: ../norka/widgets/menu_export.py:38
+msgid "Text"
+msgstr "Texto"
+
+#: ../norka/widgets/menu_export.py:40
+msgid "Export document to plain text file"
+msgstr "Exportar documento a archivo de texto plano"
+
+#: ../norka/widgets/menu_export.py:51
+msgid "Export document to markdown"
+msgstr "Exportar documento a markdown"
+
+#: ../norka/widgets/menu_export.py:59
+msgid "Html"
+msgstr "Html"
+
+#: ../norka/widgets/menu_export.py:61 ../norka/widgets/menu_export.py:65
+msgid "Export document to HTML"
+msgstr "Exportar documento a HTML"
+
+#: ../norka/widgets/menu_export.py:71
+msgid "Export to file"
+msgstr "Exportar a archivo"
+
+#: ../norka/widgets/menu_export.py:76
+msgid "To Medium"
+msgstr "A Medium"
+
+#: ../norka/widgets/menu_export.py:81
+msgid "To Write.as"
+msgstr "A Write.as"
+
+#: ../norka/widgets/menu_export.py:85
+msgid "Files"
+msgstr "Archivos"
+
+#: ../norka/widgets/menu_export.py:91
+msgid "Internet"
+msgstr "Internet"
+
+#: ../norka/widgets/menu_popover.py:39
+msgid "Zoom Out"
+msgstr "Alejar"
+
+#: ../norka/widgets/menu_popover.py:43
+msgid "Zoom 1:1"
+msgstr "Zoom 1:1"
+
+#: ../norka/widgets/menu_popover.py:48
+msgid "Zoom In"
+msgstr "Acercar"
+
+#: ../norka/widgets/menu_popover.py:56
+#: ../norka/widgets/preferences_dialog.py:54
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: ../norka/widgets/menu_popover.py:57
+msgid "About"
+msgstr "Acerca"
+
+#: ../norka/widgets/menu_popover.py:58
+msgid "Shortcuts"
+msgstr "Atajos"
+
+#: ../norka/widgets/menu_popover.py:59
+msgid "Quit"
+msgstr "Salir"
+
+#: ../norka/widgets/message_dialog.py:45 ../norka/widgets/rename_dialog.py:41
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../norka/widgets/preferences_dialog.py:56
+msgid "Toast"
+msgstr "Brindis"
+
+#: ../norka/widgets/preferences_dialog.py:80
+msgid "General"
+msgstr "General"
+
+#: ../norka/widgets/preferences_dialog.py:81
+msgid "Save files when changed:"
+msgstr "Guardar archivo cuando cambie:"
+
+#: ../norka/widgets/preferences_dialog.py:83
+msgid "Spell checking:"
+msgstr "Revisión ortográfica:"
+
+#: ../norka/widgets/preferences_dialog.py:86
+msgid "Tabs"
+msgstr "Tabs"
+
+#: ../norka/widgets/preferences_dialog.py:87
+msgid "Automatic indentation:"
+msgstr "Sangrado automática:"
+
+#: ../norka/widgets/preferences_dialog.py:89
+msgid "Insert spaces instead of tabs:"
+msgstr "Insertar espacios en lugar de tabs:"
+
+#: ../norka/widgets/preferences_dialog.py:91
+msgid "Tab width:"
+msgstr "Ancho del tab:"
+
+#: ../norka/widgets/preferences_dialog.py:109
+msgid "Styles"
+msgstr "Estilos"
+
+#: ../norka/widgets/preferences_dialog.py:120
+msgid "Behavior"
+msgstr "Comportamiento"
+
+#: ../norka/widgets/preferences_dialog.py:121
+msgid "Interface"
+msgstr "Interfaz"
+
+#: ../norka/widgets/preferences_dialog.py:122
+msgid "Export"
+msgstr "Exportar"
+
+#: ../norka/widgets/preferences_dialog.py:137
+msgid "Close"
+msgstr "Cerrar"
+
+#: ../norka/widgets/preferences_dialog.py:142
+#, fuzzy
+msgid "Token"
+msgstr "Token"
+
+#: ../norka/widgets/preferences_dialog.py:147
+msgid "Create Integration token and copy it here"
+msgstr "Crear token de integración y copiarlo aquí"
+
+#: ../norka/widgets/preferences_dialog.py:150
+msgid "Personal Token:"
+msgstr "Token personal:"
+
+#: ../norka/widgets/preferences_dialog.py:155
+#: ../norka/widgets/preferences_dialog.py:157
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: ../norka/widgets/preferences_dialog.py:156
+msgid "Password"
+msgstr "Contraseña"
+
+#: ../norka/widgets/preferences_dialog.py:159
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+#: ../norka/widgets/preferences_dialog.py:167
+msgid "Login:"
+msgstr "Login:"
+
+#: ../norka/widgets/preferences_dialog.py:169
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: ../norka/widgets/preferences_dialog.py:231
+msgid "Something goes wrong!"
+msgstr "Algo fue mal!"
+
+#: ../norka/widgets/preferences_dialog.py:272
+msgid "Login failed."
+msgstr "Iniciar de sesión fallido."
+
+#: ../norka/widgets/preferences_dialog.py:277
+msgid "Logged as {}."
+msgstr "Ingresado como {}."
+
+#: ../norka/widgets/quick_find_dialog.py:40
+msgid "Quick Find"
+msgstr "Búsqueda Rápida"
+
+#: ../norka/widgets/quick_find_dialog.py:66
+msgid "Quickly find documents, just start typing its name."
+msgstr "Busca rápidamente en documentos, sólo comienza a escribir su nombre."
+
+#: ../norka/widgets/quick_find_dialog.py:89
+msgid "Jump to..."
+msgstr "Saltar a..."
+
+#: ../norka/widgets/rename_dialog.py:46
+msgid "<b>Rename {} to:</b>"
+msgstr "<b>Renombrar {} a:</b>"
+
+#: ../norka/widgets/search_bar.py:45
+msgid "Find"
+msgstr "Buscar"
+
+#: ../norka/widgets/welcome.py:43
+msgid "No documents yet"
+msgstr "Sin documentos aún"
+
+#: ../norka/widgets/welcome.py:44
+msgid "Create one and start writing"
+msgstr "Crear uno y comenzar a escribir"
+
+#: ../norka/widgets/welcome.py:45
+msgid "Create empty document"
+msgstr "Crear un documento vacío"
+
+#: ../norka/widgets/welcome.py:45
+msgid "New document"
+msgstr "Nuevo documento"
+
+#: ../norka/window.py:373
+msgid "Import files into Norka"
+msgstr "Importar archivos hacia Norka"
+
+#: ../norka/window.py:379
+msgid "Text Files"
+msgstr "Archivos de Texto"
+
+#: ../norka/window.py:572
+msgid "Export document to file"
+msgstr "Exportar documento a archivo"
+
+#: ../norka/window.py:597
+msgid "Document exported."
+msgstr "Documento exportado."
+
+#: ../norka/window.py:598
+msgid "Open folder"
+msgstr "Abrir carpeta"
+
+#: ../norka/window.py:603
+msgid "Export goes wrong."
+msgstr "Exportación fue fallida."
+
+#: ../norka/window.py:618
+msgid "You need to set Medium token in Preferences -> Export"
+msgstr "Necesita configurar el token de Medium en Preferencias -> Exportar"
+
+#: ../norka/window.py:619
+msgid "Configure"
+msgstr "Configurar"
+
+#: ../norka/window.py:635 ../norka/window.py:671
+msgid "Document successfully exported!"
+msgstr "Documento exportado correctamente!"
+
+#: ../norka/window.py:636 ../norka/window.py:672
+msgid "View"
+msgstr "Ver"
+
+#: ../norka/window.py:641
+msgid "Export failed!"
+msgstr "Exportación fallida!"
+
+#: ../norka/window.py:677
+msgid "Export failed."
+msgstr "Exportación fallida."
+
+#: ../data/ui/shortcuts.ui:13
+msgctxt "shortcut window"
+msgid "General"
+msgstr "General"
+
+#: ../data/ui/shortcuts.ui:17
+msgctxt "shortcut window"
+msgid "New"
+msgstr "Nuevo"
+
+#: ../data/ui/shortcuts.ui:24
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "Importar"
+
+#: ../data/ui/shortcuts.ui:31
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Exportar"
+
+#: ../data/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Cerrar documento"
+
+#: ../data/ui/shortcuts.ui:45
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Cerrar aplicación"
+
+#: ../data/ui/shortcuts.ui:55 ../data/ui/shortcuts.ui:59
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Buscar"
+
+#: ../data/ui/shortcuts.ui:66
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Buscar siguiente"
+
+#: ../data/ui/shortcuts.ui:73
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Buscar anterior"
+
+#: ../data/ui/shortcuts.ui:137
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Copiar y pegar"
+
+#: ../data/ui/shortcuts.ui:141
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Copiar texto seleccionado al portapapeles"
+
+#: ../data/ui/shortcuts.ui:148
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Cortar texto  seleccionado al portapapeles"
+
+#: ../data/ui/shortcuts.ui:155
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Pegar texto seleccionado desde el portapapeles"
+
+#: ../data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Deshacer y rehacer"
+
+#: ../data/ui/shortcuts.ui:170
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Deshacer comando previo"
+
+#: ../data/ui/shortcuts.ui:177
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Rehacer comando previo"
+
+#: ../data/ui/shortcuts.ui:188
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Selección"
+
+#: ../data/ui/shortcuts.ui:192
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Seleccionar todo el texto"
+
+#: ../data/ui/shortcuts.ui:203
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: ../data/ui/shortcuts.ui:207
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Abrir Preferencias"
