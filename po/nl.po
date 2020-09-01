@@ -1,0 +1,473 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.tenderowl.norka package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.tenderowl.norka\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-01 13:20+0200\n"
+"PO-Revision-Date: 2020-09-01 13:28+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: data/ui/shortcuts.ui:13
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Algemeen"
+
+#: data/ui/shortcuts.ui:17
+msgctxt "shortcut window"
+msgid "New"
+msgstr "Nieuw"
+
+#: data/ui/shortcuts.ui:24
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "Importeren"
+
+#: data/ui/shortcuts.ui:31
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Exporteren"
+
+#: data/ui/shortcuts.ui:38
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Document sluiten"
+
+#: data/ui/shortcuts.ui:45
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Toepassing afsluiten"
+
+#: data/ui/shortcuts.ui:55 data/ui/shortcuts.ui:59
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Zoeken"
+
+#: data/ui/shortcuts.ui:66
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Volgende zoeken"
+
+#: data/ui/shortcuts.ui:73
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Vorige zoeken"
+
+#: data/ui/shortcuts.ui:137
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Kopiëren en plakken"
+
+#: data/ui/shortcuts.ui:141
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Geselecteerde tekst kopiëren naar klembord"
+
+#: data/ui/shortcuts.ui:148
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Geselecteerde tekst knippen naar klembord"
+
+#: data/ui/shortcuts.ui:155
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Geselecteerde tekst plakken van klembord"
+
+#: data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Ongedaan maken/Opnieuw"
+
+#: data/ui/shortcuts.ui:170
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Vorige actie ongedaan maken"
+
+#: data/ui/shortcuts.ui:177
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Vorige actie opnieuw uitvoeren"
+
+#: data/ui/shortcuts.ui:188
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Selectie"
+
+#: data/ui/shortcuts.ui:192
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Alle tekst selecteren"
+
+#: data/ui/shortcuts.ui:203
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: data/ui/shortcuts.ui:207
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Voorkeuren openen"
+
+#: norka/define.py:29
+msgid "continuous text editor"
+msgstr "oneindige tekstbewerker"
+
+#: norka/services/stats_handler.py:67
+msgid "{:n} Characters"
+msgstr "{:n} tekens"
+
+#: norka/services/stats_handler.py:69
+msgid "{:n} Words"
+msgstr "{:n} woorden"
+
+#: norka/services/stats_handler.py:71
+msgid "{:n} Sentences"
+msgstr "{:n} zinnen"
+
+#: norka/services/stats_handler.py:73
+msgid "{:n} Paragraphs"
+msgstr "{:n} paragrafen"
+
+#: norka/services/stats_handler.py:75
+msgid "{:d}:{:02d}:{:02d} Read Time"
+msgstr "{:d}:{:02d}:{:02d} leestijd"
+
+#: norka/widgets/about_dialog.py:36
+msgid "Continuous text editor"
+msgstr "Oneindige tekstbewerker"
+
+#: norka/widgets/about_dialog.py:39
+msgid "Learn more about Norka"
+msgstr "Meer informatie over Norka"
+
+#: norka/widgets/document_context_menu.py:37
+msgid "Export..."
+msgstr "Exporteren..."
+
+#: norka/widgets/document_context_menu.py:40 norka/widgets/rename_dialog.py:60
+msgid "Rename"
+msgstr "Naam wijzigen"
+
+#: norka/widgets/document_context_menu.py:43
+msgid "Archive"
+msgstr "Archiveren"
+
+#: norka/widgets/document_context_menu.py:46
+msgid "Unarchive"
+msgstr "De-archiveren"
+
+#: norka/widgets/document_context_menu.py:49 norka/widgets/message_dialog.py:46
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: norka/widgets/export_dialog.py:30
+msgid "Plain text"
+msgstr "Platte tekst"
+
+#: norka/widgets/export_dialog.py:31 norka/widgets/menu_export.py:48
+msgid "Markdown"
+msgstr "Markdown"
+
+#: norka/widgets/export_dialog.py:32
+msgid "HTML"
+msgstr "HTML"
+
+#: norka/widgets/header.py:43
+msgid "Norka"
+msgstr "Norka"
+
+#: norka/widgets/header.py:53
+msgid "Import file to Norka"
+msgstr "Bestand importeren"
+
+#: norka/widgets/header.py:58
+msgid "Create new document"
+msgstr "Document maken"
+
+#: norka/widgets/header.py:61
+msgid "Documents"
+msgstr "Documenten"
+
+#: norka/widgets/header.py:66
+msgid "Save document and return to documents list"
+msgstr "Sla het document op en ga terug naar de documentenlijst"
+
+#. self.search_button = Gtk.ToggleButton()
+#. self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
+#. self.search_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>f',), 'Find text'))
+#. self.search_button.set_action_name('document.search_text')
+#. self.search_button.set_visible(False)
+#: norka/widgets/header.py:76
+msgid "Share"
+msgstr "Delen"
+
+#: norka/widgets/header.py:82
+msgid "Show Archived files"
+msgstr "Gearchiveerde bestanden tonen"
+
+#: norka/widgets/header.py:86
+msgid "Menu"
+msgstr "Menu"
+
+#: norka/widgets/menu_export.py:38
+msgid "Text"
+msgstr "Tekst"
+
+#: norka/widgets/menu_export.py:40
+msgid "Export document to plain text file"
+msgstr "Document exporteren naar plattetekstbestand"
+
+#: norka/widgets/menu_export.py:51
+msgid "Export document to markdown"
+msgstr "Document exporteren naar markdown"
+
+#: norka/widgets/menu_export.py:59
+msgid "Html"
+msgstr "HTML"
+
+#: norka/widgets/menu_export.py:61 norka/widgets/menu_export.py:65
+msgid "Export document to HTML"
+msgstr "Document exporteren naar HTML"
+
+#: norka/widgets/menu_export.py:71
+msgid "Export to file"
+msgstr "Exporteren naar bestand"
+
+#: norka/widgets/menu_export.py:76
+msgid "To Medium"
+msgstr "Naar Medium"
+
+#: norka/widgets/menu_export.py:81
+msgid "To Write.as"
+msgstr "Naar Write.as"
+
+#: norka/widgets/menu_export.py:85
+msgid "Files"
+msgstr "Bestanden"
+
+#: norka/widgets/menu_export.py:91
+msgid "Internet"
+msgstr "Internet"
+
+#: norka/widgets/menu_popover.py:39
+msgid "Zoom Out"
+msgstr "Uitzoomen"
+
+#: norka/widgets/menu_popover.py:43
+msgid "Zoom 1:1"
+msgstr "Ware grootte"
+
+#: norka/widgets/menu_popover.py:48
+msgid "Zoom In"
+msgstr "Inzoomen"
+
+#: norka/widgets/menu_popover.py:56 norka/widgets/preferences_dialog.py:54
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: norka/widgets/menu_popover.py:57
+msgid "About"
+msgstr "Over"
+
+#: norka/widgets/menu_popover.py:58
+msgid "Shortcuts"
+msgstr "Sneltoetsen"
+
+#: norka/widgets/menu_popover.py:59
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: norka/widgets/message_dialog.py:45 norka/widgets/rename_dialog.py:41
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: norka/widgets/preferences_dialog.py:56
+msgid "Toast"
+msgstr "Melding"
+
+#: norka/widgets/preferences_dialog.py:80
+msgid "General"
+msgstr "Algemeen"
+
+#: norka/widgets/preferences_dialog.py:81
+msgid "Save files when changed:"
+msgstr "Gewijzigde bestanden opslaan:"
+
+#: norka/widgets/preferences_dialog.py:83
+msgid "Spell checking:"
+msgstr "Spellingcontrole:"
+
+#: norka/widgets/preferences_dialog.py:86
+msgid "Tabs"
+msgstr "Tabs"
+
+#: norka/widgets/preferences_dialog.py:87
+msgid "Automatic indentation:"
+msgstr "Automatisch inspringen:"
+
+#: norka/widgets/preferences_dialog.py:89
+msgid "Insert spaces instead of tabs:"
+msgstr "Spaties in plaats van tabs:"
+
+#: norka/widgets/preferences_dialog.py:91
+msgid "Tab width:"
+msgstr "Tabbreedte:"
+
+#: norka/widgets/preferences_dialog.py:109
+msgid "Styles"
+msgstr "Stijlen"
+
+#: norka/widgets/preferences_dialog.py:120
+msgid "Behavior"
+msgstr "Gedrag"
+
+#: norka/widgets/preferences_dialog.py:121
+msgid "Interface"
+msgstr "Uiterlijk"
+
+#: norka/widgets/preferences_dialog.py:122
+msgid "Export"
+msgstr "Exporteren"
+
+#: norka/widgets/preferences_dialog.py:137
+msgid "Close"
+msgstr "Sluiten"
+
+#: norka/widgets/preferences_dialog.py:142
+msgid "Token"
+msgstr "Toegangssleutel"
+
+#: norka/widgets/preferences_dialog.py:147
+msgid "Create Integration token and copy it here"
+msgstr "Maak een integratietoegangssleutel aan en plak deze hier"
+
+#: norka/widgets/preferences_dialog.py:150
+msgid "Personal Token:"
+msgstr "Persoonlijke toegangssleutel:"
+
+#: norka/widgets/preferences_dialog.py:155
+#: norka/widgets/preferences_dialog.py:157
+msgid "Login"
+msgstr "Inloggen"
+
+#: norka/widgets/preferences_dialog.py:156
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: norka/widgets/preferences_dialog.py:159
+msgid "Logout"
+msgstr "Uitloggen"
+
+#: norka/widgets/preferences_dialog.py:167
+msgid "Login:"
+msgstr "Gebruikersnaam:"
+
+#: norka/widgets/preferences_dialog.py:169
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: norka/widgets/preferences_dialog.py:231
+msgid "Something goes wrong!"
+msgstr "Er is iets misgegaan!"
+
+#: norka/widgets/preferences_dialog.py:272
+msgid "Login failed."
+msgstr "Inloggen mislukt."
+
+#: norka/widgets/preferences_dialog.py:277
+msgid "Logged as {}."
+msgstr "Ingelogd als {}"
+
+#: norka/widgets/quick_find_dialog.py:40
+msgid "Quick Find"
+msgstr "Snelzoeken"
+
+#: norka/widgets/quick_find_dialog.py:66
+msgid "Quickly find documents, just start typing its name."
+msgstr "Zoek snel naar documenten door de naam ervan te typen."
+
+#: norka/widgets/quick_find_dialog.py:89
+msgid "Jump to..."
+msgstr "Ga naar..."
+
+#: norka/widgets/rename_dialog.py:46
+msgid "<b>Rename {} to:</b>"
+msgstr "<b>Naam van {} wijzigen in:</b>"
+
+#: norka/widgets/search_bar.py:45
+msgid "Find"
+msgstr "Zoeken"
+
+#: norka/widgets/welcome.py:43
+msgid "No documents yet"
+msgstr "Er zijn nog geen documenten"
+
+#: norka/widgets/welcome.py:44
+msgid "Create one and start writing"
+msgstr "Maak een document en begin met schrijven"
+
+#: norka/widgets/welcome.py:45
+msgid "New document"
+msgstr "Nieuw document"
+
+#: norka/widgets/welcome.py:45
+msgid "Create empty document"
+msgstr "Nieuw blanco document"
+
+#: norka/window.py:373
+msgid "Import files into Norka"
+msgstr "Importeer bestanden naar Norka"
+
+#: norka/window.py:379
+msgid "Text Files"
+msgstr "Tekstbestanden"
+
+#: norka/window.py:572
+msgid "Export document to file"
+msgstr "Document exporteren naar bestand"
+
+#: norka/window.py:597
+msgid "Document exported."
+msgstr "Het document is geëxporteerd."
+
+#: norka/window.py:598
+msgid "Open folder"
+msgstr "Map openen"
+
+#: norka/window.py:603
+msgid "Export goes wrong."
+msgstr "Het exporteren is mislukt."
+
+#: norka/window.py:618
+msgid "You need to set Medium token in Preferences -> Export"
+msgstr "Geef een Medium-toegangssleutel op via Voorkeuren --> Exporteren"
+
+#: norka/window.py:619
+msgid "Configure"
+msgstr "Instellen"
+
+#: norka/window.py:635 norka/window.py:671
+msgid "Document successfully exported!"
+msgstr "Het document is geëxporteerd!"
+
+#: norka/window.py:636 norka/window.py:672
+msgid "View"
+msgstr "Bekijken"
+
+#: norka/window.py:641
+msgid "Export failed!"
+msgstr "Het exporteren is mislukt!"
+
+#: norka/window.py:677
+msgid "Export failed."
+msgstr "Het exporteren is mislukt."
