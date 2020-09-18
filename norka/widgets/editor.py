@@ -57,16 +57,21 @@ class Editor(Gtk.Grid):
         self.view.set_smart_home_end(True)
         self.view.set_insert_spaces_instead_of_tabs(True)
         self.view.set_tab_width(4)
+        self.view.props.width_request = 800
+        self.view.set_halign(Gtk.Align.CENTER)
 
-        # self.view.set_pixels_above_lines(4)
-        # self.view.set_pixels_below_lines(4)
+        self.view.set_pixels_above_lines(2)
+        self.view.set_pixels_below_lines(2)
+        self.view.set_pixels_inside_wrap(4)
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
+        self.view.set_monospace(True)
         self.view.get_style_context().add_class('norka-editor')
 
         self.view.connect('key-release-event', self.on_key_release_event)
 
         self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self.scrolled.get_style_context().add_class('scrolled-editor')
         self.scrolled.add(self.view)
 
         # SearchBar
@@ -236,11 +241,20 @@ class Editor(Gtk.Grid):
         scheme = GtkSource.StyleSchemeManager().get_scheme(scheme_id)
         self.buffer.set_style_scheme(scheme)
 
+        try:
+            bgcolor = scheme.get_style('text').props.background
+        except AttributeError:
+            bgcolor = '#fff'
+
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
+        self.scrolled.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
     def update_font(self, font: str) -> None:
         self.font_desc = Pango.FontDescription.from_string(font)
         self.view.override_font(self.font_desc)
 
-    def do_stop_search(self, event: Gdk.Event=None) -> None:
+    def do_stop_search(self, event: Gdk.Event = None) -> None:
         self.search_revealer.set_reveal_child(False)
         self.view.grab_focus()
 
