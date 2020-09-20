@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+from datetime import datetime
+from gettext import gettext as _
 from urllib.parse import urlparse, unquote_plus
 
 import cairo
@@ -44,7 +46,7 @@ class DocumentGrid(Gtk.Grid):
     def __init__(self):
         super().__init__()
 
-        self.model = Gtk.ListStore(Pixbuf, str, str, int)
+        self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
 
         self.show_archived = False
         self.selected_path = None
@@ -54,6 +56,7 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_model(self.model)
         self.view.set_pixbuf_column(0)
         self.view.set_text_column(1)
+        self.view.set_tooltip_column(4)
         self.view.set_item_width(80)
         self.view.set_activate_on_single_click(True)
         self.view.set_selection_mode(Gtk.SelectionMode.BROWSE)
@@ -79,8 +82,28 @@ class DocumentGrid(Gtk.Grid):
         for document in storage.all(self.show_archived):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
+
+            # generate icon. It needs to stay in cache
             icon = self.gen_preview(document.content[:200], opacity=opacity)
-            self.model.append([icon, document.title, document.content, document.document_id])
+
+            # Generate tooltip
+            tooltip = f"{document.title}"
+
+            if document.created:
+                created = datetime.strptime(document.created, "%Y-%m-%d %H:%M:%S.%f")
+                tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
+                           f"{_('Created')}: {created.strftime('%x')}</span>"
+
+            if document.modified:
+                modified = datetime.strptime(document.modified, "%Y-%m-%d %H:%M:%S.%f")
+                tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
+                           f"{_('Modified')}: {modified.strftime('%x')}</span>"
+
+            self.model.append([icon,
+                               document.title,
+                               document.content,
+                               document.document_id,
+                               tooltip])
 
         if self.selected_path:
             self.view.select_path(self.selected_path)

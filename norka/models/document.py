@@ -21,6 +21,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import datetime
+
 from gi.repository import GObject
 
 
@@ -30,13 +32,17 @@ class Document(GObject.GObject):
     title = GObject.property(type=str)
     content = GObject.property(type=str)
     archived = GObject.property(type=bool, default=False)
+    created = GObject.property(type=str)
+    modified = GObject.property(type=str)
 
-    def __init__(self, title: str, content: str = '', _id: int = -1, archived=False):
+    def __init__(self, title: str, content: str = '', _id: int = -1, archived=False, created=-1, modified=-1):
         GObject.GObject.__init__(self)
         self.document_id = _id
         self.title = title
         self.content = content
         self.archived = archived
+        self.created = created
+        self.modified = modified
 
     @classmethod
     def new_with_row(cls, row: list):
@@ -49,7 +55,9 @@ class Document(GObject.GObject):
             _id=row[0],
             title=row[1],
             content=row[2],
-            archived=row[3]
+            archived=row[3],
+            created=row[4],
+            modified=row[5]
         )
 
     def __repr__(self) -> str:

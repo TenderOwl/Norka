@@ -25,6 +25,7 @@
 
 import os
 import sqlite3
+from datetime import datetime
 
 from gi.repository import GLib
 
@@ -38,6 +39,7 @@ class Storage(object):
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         self.file_path = os.path.join(self.base_path, 'storage.db')
         self.conn = None
+        self.version = None
 
     def init(self):
         if not os.path.exists(self.base_path):
@@ -46,7 +48,8 @@ class Storage(object):
 
         Logger.info(f'Storage located at %s', self.file_path)
 
-        self.conn = sqlite3.connect(self.file_path)
+        self.conn = sqlite3.connect(self.file_path,
+                                    detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
 
         self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS `documents` (
@@ -57,6 +60,31 @@ class Storage(object):
                 )
             """)
 
+        self.conn.execute("""
+                CREATE TABLE IF NOT EXISTS `version` (
+                    `version` TEXT,
+                    `timestamp` timestamp
+                )
+            """)
+
+        # Check if storage DB needs to be upgraded
+        version = self.conn.execute("""
+                SELECT version, timestamp 
+                FROM version 
+                ORDER BY timestamp DESC 
+                LIMIT 1
+            """).fetchone()
+        print(f'Current storage version: {version[0]}')
+        self.version = version
+
+        if not version:
+            upgrade_version = '5.1'
+            with self.conn:
+                print(f'Upgrading storage to version: {upgrade_version}')
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `created` timestamp""")
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `modified` timestamp""")
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (upgrade_version, datetime.now(),))
+
     def count(self, with_archived: bool = False) -> int:
         query = 'SELECT COUNT (1) AS count FROM documents'
         if not with_archived:
@@ -66,8 +94,14 @@ class Storage(object):
         return row[0]
 
     def add(self, document: Document) -> int:
-        cursor = self.conn.cursor().execute("INSERT INTO documents(title, content, archived) VALUES (?, ?, ?)",
-                                            (document.title, document.content, document.archived,), )
+        cursor = self.conn.cursor().execute(
+            "INSERT INTO documents(title, content, archived, created, modified) VALUES (?, ?, ?, ?, ?)",
+            (document.title,
+             document.content,
+             document.archived,
+             datetime.now(),
+             datetime.now()
+             ), )
         self.conn.commit()
         return cursor.lastrowid
 
@@ -93,10 +127,10 @@ class Storage(object):
         return Document.new_with_row(row)
 
     def save(self, document: Document) -> bool:
-        query = "UPDATE documents SET title=?, content=?, archived=? WHERE id=?"
+        query = "UPDATE documents SET title=?, content=?, archived=?, modified=? WHERE id=?"
 
         try:
-            self.conn.execute(query, (document.title, document.content, document.archived,))
+            self.conn.execute(query, (document.title, document.content, document.archived, datetime.now()))
             self.conn.commit()
         except Exception as e:
             Logger.error(e)
@@ -107,10 +141,10 @@ class Storage(object):
     def update(self, doc_id: int, data: dict) -> bool:
         fields = {field: value for field, value in data.items()}
 
-        query = f"UPDATE documents SET {','.join(f'{key}=?' for key in fields.keys())} WHERE id=?"
+        query = f"UPDATE documents SET {','.join(f'{key}=?' for key in fields.keys())}, modified=? WHERE id=?"
 
         try:
-            self.conn.execute(query, tuple(fields.values()) + (doc_id,))
+            self.conn.execute(query, tuple(fields.values()) + (datetime.now(), doc_id,))
             self.conn.commit()
         except Exception as e:
             Logger.error(e)

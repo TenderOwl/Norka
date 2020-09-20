@@ -175,7 +175,7 @@ class Editor(Gtk.Grid):
         )
         if self.document.title in ('', 'Nameless'):
             try:
-                self.document.title = text.partition('\n')[0].lstrip(' #')
+                self.document.title = text.partition('\n')[0].lstrip(' #') or "Nameless"
             except TypeError:
                 pass
 
