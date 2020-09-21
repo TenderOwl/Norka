@@ -25,6 +25,7 @@
 
 import os
 import sqlite3
+import traceback
 from datetime import datetime
 
 from gi.repository import GLib
@@ -62,28 +63,49 @@ class Storage(object):
 
         self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS `version` (
-                    `version` TEXT,
+                    `version` INTEGER,
                     `timestamp` timestamp
                 )
             """)
 
         # Check if storage DB needs to be upgraded
-        version = self.conn.execute("""
-                SELECT version, timestamp 
+        version_response = self.conn.execute("""
+                SELECT version 
                 FROM version 
                 ORDER BY timestamp DESC 
                 LIMIT 1
-            """).fetchone()
-        print(f'Current storage version: {version[0]}')
+            """)
+        version = version_response.fetchone()
+        Logger.info(f'Current storage version: {version}')
         self.version = version
 
-        if not version:
-            upgrade_version = '5.1'
-            with self.conn:
-                print(f'Upgrading storage to version: {upgrade_version}')
+        if not version or version[0] < 1:
+            self.v1_upgrade()
+
+    def v1_upgrade(self):
+        """Upgrade databse to version 1.
+
+        Add fields:
+            - created - timestamp document was modified
+            - modified - timestamp document was modified
+            - tags - list of tags associated with the document
+            - order - display order in the documents list
+
+        :return:
+        """
+        with self.conn:
+            try:
+                Logger.info(f'Upgrading storage to version: {1}')
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `created` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `modified` timestamp""")
-                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (upgrade_version, datetime.now(),))
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `tags` TEXT""")
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `order` INTEGER DEFAULT 0""")
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (1, datetime.now(),))
+                Logger.info('Successfully upgraded to v1')
+                return True
+            except Exception:
+                Logger.error(traceback.format_exc())
+                return False
 
     def count(self, with_archived: bool = False) -> int:
         query = 'SELECT COUNT (1) AS count FROM documents'

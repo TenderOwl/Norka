@@ -30,9 +30,12 @@ APP_SUBTITLE = _('continuous text editor')
 
 DEBUG = False
 
-FONT_SIZE_FAMILY = 'Noto Sans Mono'
+FONT_SIZE_FAMILY = 'Open Sans'
 FONT_SIZE_DEFAULT = 10
 FONT_SIZE_MAX = 72
 FONT_SIZE_MIN = 7
 
 TARGET_ENTRY_TEXT = 1
+
+# DB Structure version
+DB_VERSION = 1
