@@ -3,6 +3,7 @@ norka/define.py
 norka/services/stats_handler.py
 norka/widgets/about_dialog.py
 norka/widgets/document_context_menu.py
+norka/widgets/document_grid.py
 norka/widgets/export_dialog.py
 norka/widgets/header.py
 norka/widgets/menu_export.py

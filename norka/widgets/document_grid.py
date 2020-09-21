@@ -92,12 +92,12 @@ class DocumentGrid(Gtk.Grid):
             if document.created:
                 created = datetime.strptime(document.created, "%Y-%m-%d %H:%M:%S.%f")
                 tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
-                           f"{_('Created')}: {created.strftime('%x')}</span>"
+                           + _('Created') + f": {created.strftime('%x')}</span>"
 
             if document.modified:
                 modified = datetime.strptime(document.modified, "%Y-%m-%d %H:%M:%S.%f")
                 tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
-                           f"{_('Modified')}: {modified.strftime('%x')}</span>"
+                           + _('Modified') + f": {modified.strftime('%x')}</span>"
 
             self.model.append([icon,
                                document.title,
