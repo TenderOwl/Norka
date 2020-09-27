@@ -33,16 +33,25 @@ from norka.services.storage import storage
 from norka.widgets.search_bar import SearchBar
 
 gi.require_version('GtkSource', '3.0')
-from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite
+from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
 
 
 class Editor(Gtk.Grid):
     __gtype_name__ = 'Editor'
 
+    __gsignals__ = {
+        'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
+    }
+
     def __init__(self):
         super().__init__()
 
         self.document = None
+
+        self.get_style_context().add_class('norka-editor-view')
+        self.connect('insert-bold', self.on_insert_bold)
+        self.connect('insert-italic', self.on_insert_italic)
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
@@ -331,3 +340,69 @@ class Editor(Gtk.Grid):
 
         self.buffer.place_cursor(start_iter)
         self.buffer.select_range(start_iter, end_iter)
+
+    def on_insert_italic(self, widget, data=None):
+        self.toggle_block(self.view, '_')
+
+    def on_insert_bold(self, widget, data=None):
+        self.toggle_block(self.view, '**')
+
+    def on_insert_strike(self, widget, data=None):
+        self.toggle_block(self.view, '~~')
+
+    def toggle_block(self, text_view: Gtk.TextView, markup):
+
+        buffer = text_view.get_buffer()
+
+        markup_length = len(markup)
+
+        buffer.begin_user_action()
+
+        # If buffer has selected text then work with it
+        if buffer.get_has_selection():
+            (start, end) = buffer.get_selection_bounds()
+
+        # If there is no selection but the cursor placed inside a word
+        else:
+            cursor_mark = buffer.get_insert()
+            cursor_iter = buffer.get_iter_at_mark(cursor_mark)
+
+            start = cursor_iter.copy()
+            end = cursor_iter.copy()
+            start.backward_word_start()
+            end.forward_word_end()
+
+        # Get the origin text
+        origin = buffer.get_text(start, end, True)
+
+        if start.get_offset() >= markup_length and end.get_offset() + markup_length <= buffer.get_char_count():
+            ext_start = start.copy()
+            ext_start.backward_chars(markup_length)
+            ext_end = end.copy()
+            ext_end.forward_chars(markup_length)
+
+            # Check for markup on the sides of the selection
+            ext_text = buffer.get_text(ext_start, ext_end, True)
+            if ext_text.startswith(markup) and ext_text.endswith(markup):
+                text = ext_text[markup_length:-markup_length]
+                buffer.delete(ext_start, ext_end)
+                move_back = 0
+            else:
+                buffer.delete(start, end)
+                text = markup + origin + markup
+                move_back = markup_length
+        else:
+            buffer.delete(start, end)
+            text = markup + origin + markup
+            move_back = markup_length
+
+        buffer.insert_at_cursor(text)
+
+        cursor_mark = buffer.get_insert()
+        cursor_iter = buffer.get_iter_at_mark(cursor_mark)
+        cursor_iter.backward_chars(move_back)
+        buffer.move_mark_by_name('selection_bound', cursor_iter)
+        cursor_iter.backward_chars(len(origin))
+        buffer.move_mark_by_name('insert', cursor_iter)
+
+        buffer.end_user_action()
