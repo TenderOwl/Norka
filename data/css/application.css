@@ -8,6 +8,8 @@
   bind "<ctl>l" { "insert-list" () };
   bind "<ctl><shift>l" { "insert-ordered-list" () };
   bind "<ctl>t" { "insert-quote" () };
+  bind "<ctl>k" { "insert-link" () };
+  bind "<ctl><shift>k" { "insert-image" () };
 }
 
 .norka-header {

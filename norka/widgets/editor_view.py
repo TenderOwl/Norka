@@ -1,4 +1,4 @@
-# editor.py
+# editor_view.py
 #
 # MIT License
 #
@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import re
 
 import gi
@@ -31,75 +32,22 @@ from norka.services.logger import Logger
 from norka.services.markup_formatter import MarkupFormatter
 from norka.services.stats_handler import StatsHandler
 from norka.services.storage import storage
-from norka.widgets.image_link_popover import ImageLinkPopover
-from norka.widgets.link_popover import LinkPopover
+from norka.widgets.editor import Editor
 from norka.widgets.search_bar import SearchBar
 
 gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
 
 
-class Editor(Gtk.Grid):
-    __gtype_name__ = 'Editor'
-
-    __gsignals__ = {
-        'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-h1': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-h2': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-h3': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-list': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-ordered-list': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-quote': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-link': (GObject.SignalFlags.ACTION, None, ()),
-        'insert-image': (GObject.SignalFlags.ACTION, None, ()),
-    }
+class EditorView(Gtk.Grid):
+    __gtype_name__ = 'EditorView'
 
     def __init__(self):
         super().__init__()
 
         self.document = None
 
-        self.buffer = GtkSource.Buffer()
-        self.manager = GtkSource.LanguageManager()
-        self.language = self.manager.get_language("markdown")
-        self.buffer.set_language(self.language)
-        self.buffer.create_tag('match', background="#66ff00")
-
-        self.view = GtkSource.View()
-        self.view.set_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_auto_indent(True)
-        self.view.set_smart_home_end(True)
-        self.view.set_insert_spaces_instead_of_tabs(True)
-        self.view.set_tab_width(4)
-        self.view.props.width_request = 800
-        self.view.set_halign(Gtk.Align.CENTER)
-
-        # self.view.set_pixels_above_lines(2)
-        # self.view.set_pixels_below_lines(2)
-        # self.view.set_pixels_inside_wrap(4)
-        self.view.set_left_margin(8)
-        self.view.set_right_margin(8)
-        self.view.set_monospace(True)
-        self.view.get_style_context().add_class('norka-editor')
-
-        self.view.connect('key-release-event', self.on_key_release_event)
-
-        # Connect markup handler
-        self.markup_formatter = MarkupFormatter(self.buffer)
-
-        self.get_style_context().add_class('norka-editor-view')
-        self.connect('insert-bold', self.on_insert_bold)
-        self.connect('insert-italic', self.on_insert_italic)
-        self.connect('insert-h1', self.on_toggle_header1)
-        self.connect('insert-h2', self.on_toggle_header2)
-        self.connect('insert-h3', self.on_toggle_header3)
-        self.connect('insert-list', self.on_toggle_list)
-        self.connect('insert-ordered-list', self.on_toggle_ordered_list)
-        self.connect('insert-quote', self.on_toggle_quote)
-        self.connect('insert-link', self.on_insert_link)
-        self.connect('insert-image', self.on_insert_image)
+        self.view = Editor()
 
         self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
         self.scrolled.get_style_context().add_class('scrolled-editor')
@@ -240,7 +188,7 @@ class Editor(Gtk.Grid):
                 prev_iter = buffer.get_iter_at_line(prev_line)
                 prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
                 # Check if prev line starts from markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s+", prev_line_text)
+                match = re.search(r"^(\s){,4}([0-9]*.|-|\*|\+)\s+", prev_line_text)
                 if match:
                     sign = match.group(2)
                     if re.match(r'^[0-9]+.', sign):
@@ -364,71 +312,3 @@ class Editor(Gtk.Grid):
         self.buffer.place_cursor(start_iter)
         self.buffer.select_range(start_iter, end_iter)
 
-    def get_cursor_coods(self) -> Gdk.Rectangle:
-
-        buffer = self.view.get_buffer()
-        mark = buffer.get_insert()
-        cursor_iter = buffer.get_iter_at_mark(mark)
-        cursor_location = self.view.get_iter_location(cursor_iter)
-
-        buffer_x, buffer_y = self.view.buffer_to_window_coords(
-            Gtk.TextWindowType.WIDGET,
-            cursor_location.x,
-            cursor_location.y
-        )
-
-        window = self.view.get_window(Gtk.TextWindowType.WIDGET)
-        win_x, win_y = window.get_position()
-
-        offset = (self.scrolled.get_clip().width - self.view.get_clip().width) / 2
-
-        xx = buffer_x + win_x - offset
-        yy = buffer_y + win_y + cursor_location.height
-
-        rect = Gdk.Rectangle()
-        rect.x = xx
-        rect.y = yy
-        return rect
-
-    def on_insert_italic(self, widget, data=None):
-        self.toggle_block(self.view, '_')
-
-    def on_insert_bold(self, widget, data=None):
-        self.markup_formatter.toggle_block(self.view, '**')
-
-    def on_insert_strike(self, widget, data=None):
-        self.markup_formatter.toggle_block(self.view, '~~')
-
-    def on_toggle_header1(self, widget, data=None):
-        self.markup_formatter.toggle_heading(self.view, 1)
-
-    def on_toggle_header2(self, widget, data=None):
-        self.markup_formatter.toggle_heading(self.view, 2)
-
-    def on_toggle_header3(self, widget, data=None):
-        self.markup_formatter.toggle_heading(self.view, 3)
-
-    def on_toggle_ordered_list(self, widget, data=None):
-        self.markup_formatter.toggle_ordered_list(self.view)
-
-    def on_toggle_list(self, widget, data=None):
-        self.markup_formatter.toggle_line(self.view, '-')
-
-    def on_toggle_quote(self, widget, data=None):
-        self.markup_formatter.toggle_line(self.view, '>')
-
-    def on_insert_link(self, widget, data=None):
-        rect = self.get_cursor_coods()
-        popover = LinkPopover(self.view)
-        popover.set_pointing_to(rect)
-        popover.connect('insert-link', self.markup_formatter.insert_link)
-
-        popover.popup()
-
-    def on_insert_image(self, widget, data=None):
-        rect = self.get_cursor_coods()
-        popover = ImageLinkPopover(self.view)
-        popover.set_pointing_to(rect)
-        popover.connect('insert-link', self.markup_formatter.insert_image_link)
-
-        popover.popup()
