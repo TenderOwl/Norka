@@ -5,6 +5,9 @@
   bind "<ctl>1" { "insert-h1" () };
   bind "<ctl>2" { "insert-h2" () };
   bind "<ctl>3" { "insert-h3" () };
+  bind "<ctl>l" { "insert-list" () };
+  bind "<ctl><shift>l" { "insert-ordered-list" () };
+  bind "<ctl>t" { "insert-quote" () };
 }
 
 .norka-header {

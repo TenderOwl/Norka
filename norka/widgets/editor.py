@@ -46,6 +46,9 @@ class Editor(Gtk.Grid):
         'insert-h1': (GObject.SignalFlags.ACTION, None, ()),
         'insert-h2': (GObject.SignalFlags.ACTION, None, ()),
         'insert-h3': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-list': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-ordered-list': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-quote': (GObject.SignalFlags.ACTION, None, ()),
     }
 
     def __init__(self):
@@ -61,6 +64,9 @@ class Editor(Gtk.Grid):
         self.connect('insert-h1', self.on_toggle_header1)
         self.connect('insert-h2', self.on_toggle_header2)
         self.connect('insert-h3', self.on_toggle_header3)
+        self.connect('insert-list', self.on_toggle_list)
+        self.connect('insert-ordered-list', self.on_toggle_ordered_list)
+        self.connect('insert-quote', self.on_toggle_quote)
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
@@ -227,7 +233,7 @@ class Editor(Gtk.Grid):
                 prev_iter = buffer.get_iter_at_line(prev_line)
                 prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
                 # Check if prev line starts from markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]*.|-|\*|\+)\s+", prev_line_text)
+                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s+", prev_line_text)
                 if match:
                     sign = match.group(2)
                     if re.match(r'^[0-9]+.', sign):
@@ -368,3 +374,12 @@ class Editor(Gtk.Grid):
 
     def on_toggle_header3(self, widget, data=None):
         self.markup_formatter.toggle_heading(self.view, 3)
+
+    def on_toggle_ordered_list(self, widget, data=None):
+        self.markup_formatter.toggle_ordered_list(self.view)
+
+    def on_toggle_list(self, widget, data=None):
+        self.markup_formatter.toggle_line(self.view, '-')
+
+    def on_toggle_quote(self, widget, data=None):
+        self.markup_formatter.toggle_line(self.view, '>')
