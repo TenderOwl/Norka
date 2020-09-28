@@ -2,9 +2,9 @@
 @binding-set editor-bindings {
   bind "<ctl>i" { "insert-italic" () };
   bind "<ctl>b" { "insert-bold" () };
-  bind "<alt>1" { "insert-h1" () };
-  bind "<alt>2" { "insert-h2" () };
-  bind "<alt>3" { "insert-h3" () };
+  bind "<ctl>1" { "insert-h1" () };
+  bind "<ctl>2" { "insert-h2" () };
+  bind "<ctl>3" { "insert-h3" () };
 }
 
 .norka-header {

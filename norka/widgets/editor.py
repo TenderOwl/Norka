@@ -28,6 +28,7 @@ import gi
 
 from norka.models.document import Document
 from norka.services.logger import Logger
+from norka.services.markup_formatter import MarkupFormatter
 from norka.services.stats_handler import StatsHandler
 from norka.services.storage import storage
 from norka.widgets.search_bar import SearchBar
@@ -42,6 +43,9 @@ class Editor(Gtk.Grid):
     __gsignals__ = {
         'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
         'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-h1': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-h2': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-h3': (GObject.SignalFlags.ACTION, None, ()),
     }
 
     def __init__(self):
@@ -49,9 +53,14 @@ class Editor(Gtk.Grid):
 
         self.document = None
 
+        self.markup_formatter = MarkupFormatter()
+
         self.get_style_context().add_class('norka-editor-view')
         self.connect('insert-bold', self.on_insert_bold)
         self.connect('insert-italic', self.on_insert_italic)
+        self.connect('insert-h1', self.on_toggle_header1)
+        self.connect('insert-h2', self.on_toggle_header2)
+        self.connect('insert-h3', self.on_toggle_header3)
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
@@ -69,9 +78,9 @@ class Editor(Gtk.Grid):
         self.view.props.width_request = 800
         self.view.set_halign(Gtk.Align.CENTER)
 
-        self.view.set_pixels_above_lines(2)
-        self.view.set_pixels_below_lines(2)
-        self.view.set_pixels_inside_wrap(4)
+        # self.view.set_pixels_above_lines(2)
+        # self.view.set_pixels_below_lines(2)
+        # self.view.set_pixels_inside_wrap(4)
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
         self.view.set_monospace(True)
@@ -200,22 +209,23 @@ class Editor(Gtk.Grid):
             True
         ).strip()
 
-    def on_key_release_event(self, sender: GtkSource.View, event: Gdk.EventKey) -> None:
+    def on_key_release_event(self, text_view: GtkSource.View, event: Gdk.EventKey) -> None:
         """Handle release event and iterate markdown list markup
 
-        :param sender: widget emitted the event
+        :param text_view: widget emitted the event
         :param event: key release event
         :return:
         """
+        buffer = text_view.get_buffer()
         if event.keyval == Gdk.KEY_Return:
-            self.buffer.begin_user_action()
-            curr_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
+            buffer.begin_user_action()
+            curr_iter = buffer.get_iter_at_mark(buffer.get_insert())
             curr_line = curr_iter.get_line()
             if curr_line > 0:
                 # Get prev line text
                 prev_line = curr_line - 1
-                prev_iter = self.buffer.get_iter_at_line(prev_line)
-                prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
+                prev_iter = buffer.get_iter_at_line(prev_line)
+                prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
                 # Check if prev line starts from markdown list chars
                 match = re.search(r"^(\s){,4}([0-9]*.|-|\*|\+)\s+", prev_line_text)
                 if match:
@@ -224,9 +234,9 @@ class Editor(Gtk.Grid):
                         # ordered list should increment number
                         sign = str(int(sign[:-1]) + 1) + '.'
 
-                    self.buffer.insert_at_cursor(sign + ' ')
+                    buffer.insert_at_cursor(sign + ' ')
 
-            self.buffer.end_user_action()
+            buffer.end_user_action()
 
     def on_search_text_activated(self, sender: Gtk.Widget = None, event=None):
         state = self.search_revealer.get_child_revealed()
@@ -345,64 +355,16 @@ class Editor(Gtk.Grid):
         self.toggle_block(self.view, '_')
 
     def on_insert_bold(self, widget, data=None):
-        self.toggle_block(self.view, '**')
+        self.markup_formatter.toggle_block(self.view, '**')
 
     def on_insert_strike(self, widget, data=None):
-        self.toggle_block(self.view, '~~')
+        self.markup_formatter.toggle_block(self.view, '~~')
 
-    def toggle_block(self, text_view: Gtk.TextView, markup):
+    def on_toggle_header1(self, widget, data=None):
+        self.markup_formatter.toggle_heading(self.view, 1)
 
-        buffer = text_view.get_buffer()
+    def on_toggle_header2(self, widget, data=None):
+        self.markup_formatter.toggle_heading(self.view, 2)
 
-        markup_length = len(markup)
-
-        buffer.begin_user_action()
-
-        # If buffer has selected text then work with it
-        if buffer.get_has_selection():
-            (start, end) = buffer.get_selection_bounds()
-
-        # If there is no selection but the cursor placed inside a word
-        else:
-            cursor_mark = buffer.get_insert()
-            cursor_iter = buffer.get_iter_at_mark(cursor_mark)
-
-            start = cursor_iter.copy()
-            end = cursor_iter.copy()
-            start.backward_word_start()
-            end.forward_word_end()
-
-        # Get the origin text
-        origin = buffer.get_text(start, end, True)
-
-        if start.get_offset() >= markup_length and end.get_offset() + markup_length <= buffer.get_char_count():
-            ext_start = start.copy()
-            ext_start.backward_chars(markup_length)
-            ext_end = end.copy()
-            ext_end.forward_chars(markup_length)
-
-            # Check for markup on the sides of the selection
-            ext_text = buffer.get_text(ext_start, ext_end, True)
-            if ext_text.startswith(markup) and ext_text.endswith(markup):
-                text = ext_text[markup_length:-markup_length]
-                buffer.delete(ext_start, ext_end)
-                move_back = 0
-            else:
-                buffer.delete(start, end)
-                text = markup + origin + markup
-                move_back = markup_length
-        else:
-            buffer.delete(start, end)
-            text = markup + origin + markup
-            move_back = markup_length
-
-        buffer.insert_at_cursor(text)
-
-        cursor_mark = buffer.get_insert()
-        cursor_iter = buffer.get_iter_at_mark(cursor_mark)
-        cursor_iter.backward_chars(move_back)
-        buffer.move_mark_by_name('selection_bound', cursor_iter)
-        cursor_iter.backward_chars(len(origin))
-        buffer.move_mark_by_name('insert', cursor_iter)
-
-        buffer.end_user_action()
+    def on_toggle_header3(self, widget, data=None):
+        self.markup_formatter.toggle_heading(self.view, 3)
