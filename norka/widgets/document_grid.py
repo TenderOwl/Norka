@@ -32,7 +32,7 @@ from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.define import TARGET_ENTRY_TEXT
 from norka.services.storage import storage
-from norka.widgets.document_context_menu import DocumentContextMenu
+from norka.utils import find_child
 
 
 class DocumentGrid(Gtk.Grid):
@@ -108,7 +108,8 @@ class DocumentGrid(Gtk.Grid):
         if self.selected_path:
             self.view.select_path(self.selected_path)
 
-    def gen_preview(self, text, size=9, opacity=1) -> Pixbuf:
+    @staticmethod
+    def gen_preview(text, size=9, opacity=1) -> Pixbuf:
         pix = Pixbuf.new(Colorspace.RGB, True, 8, 60, 80)
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, pix.get_width(), pix.get_height())
         context = cairo.Context(surface)
@@ -163,7 +164,8 @@ class DocumentGrid(Gtk.Grid):
 
         if not self.selected_path:
             self.selected_document = None
-            return self.view.unselect_all()
+            self.view.unselect_all()
+            return True
 
         if event.button == Gdk.BUTTON_SECONDARY:
             self.view.select_path(self.selected_path)
@@ -172,10 +174,22 @@ class DocumentGrid(Gtk.Grid):
                 self.model.get_iter(self.selected_path), 3
             ))
 
-            menu = DocumentContextMenu(self.view, self.selected_document.archived)
-            menu.popup(None, None, None, None, event.button, event.time)
+            event_point = Gdk.Rectangle()
+            event_point.x = event.x
+            event_point.y = event.y
 
-            return
+            builder = Gtk.Builder()
+            builder.add_from_resource('/com/github/tenderowl/norka/ui/documents_grid_context_menu.ui')
+
+            menu_popover: Gtk.PopoverMenu = builder.get_object('popover-menu')
+            find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
+            find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
+
+            menu_popover.set_relative_to(self.view)
+            menu_popover.set_pointing_to(event_point)
+            menu_popover.popup()
+
+            return True
 
         self.view.unselect_all()
         self.selected_document = None

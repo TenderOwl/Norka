@@ -42,7 +42,7 @@ from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.quick_find_dialog import QuickFindDialog
-from norka.widgets.rename_dialog import RenameDialog
+from norka.widgets.rename_dialog import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
@@ -155,7 +155,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
                 },
                 {
                     'name': 'rename',
-                    'action': self.on_document_rename_activated,
+                    'action': self.on_document_rename,
                     'accels': ('F2',)
                 },
                 {
@@ -418,7 +418,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         finally:
             self.header.show_spinner(False)
 
-    def on_document_rename_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
         Show rename dialog and update document's title
         if user puts new one in the entry.
@@ -427,20 +427,25 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
-        if doc:
-            popover = RenameDialog(doc.title)
-            response = popover.run()
-            try:
-                if response == Gtk.ResponseType.APPLY:
-                    new_title = popover.entry.get_text()
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
 
-                    if storage.update(doc_id=doc.document_id, data={'title': new_title}):
-                        self.document_grid.reload_items()
-            except Exception as e:
-                Logger.debug(e)
-            finally:
-                popover.destroy()
+        found, rect = self.document_grid.view.get_cell_rect(self.document_grid.selected_path)
+        popover = RenamePopover(self.overlay, doc.title)
+        popover.set_pointing_to(rect)
+        popover.connect('activate', self.on_document_rename_activated)
+        popover.popup()
+
+    def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
+        sender.destroy()
+
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        if storage.update(doc_id=doc.document_id, data={'title': title}):
+            self.document_grid.reload_items()
 
     def on_document_archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Marks document as archived. Recoverable.
@@ -611,6 +616,10 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :return:
         """
 
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
         token = self.settings.get_string("medium-personal-token")
         user_id = self.settings.get_string("medium-user-id")
 
@@ -625,7 +634,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             self.header.show_spinner(True)
             self.medium_client.set_token(token)
             GObjectWorker.call(self.medium_client.create_post,
-                               args=(user_id, self.editor.document, PublishStatus.DRAFT),
+                               args=(user_id, doc, PublishStatus.DRAFT),
                                callback=self.on_export_medium_callback)
 
     def on_export_medium_callback(self, result):
@@ -649,6 +658,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
         :param event:
         :return:
         """
+
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
         token = self.settings.get_string("writeas-access-token")
 
         if not token:
@@ -662,7 +676,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
             self.header.show_spinner(True)
             self.writeas_client.set_token(access_token=token)
             GObjectWorker.call(self.writeas_client.create_post,
-                               args=(self.editor.document,),
+                               args=(doc,),
                                callback=self.on_export_writeas_callback)
 
     def on_export_writeas_callback(self, result):

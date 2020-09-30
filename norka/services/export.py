@@ -102,7 +102,7 @@ class PlaintextRenderer(mistune.HTMLRenderer):
         return f"\n{text}\n"
 
     def list_item(self, text: str, level):
-        return f"{' ' * (level - 1)} - {text}\n"
+        return f"{' ' * (level - 1)} - {text}"
 
     def list(self, text: str, ordered, level, start=None):
         return f"{text}\n"

@@ -72,19 +72,19 @@
             ]
         },
         {
-            "name" : "python3-mistune",
-            "buildsystem" : "simple",
-            "build-commands" : [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} mistune"
-            ],
-            "sources" : [
-                {
-                    "type" : "file",
-                    "url" : "https://files.pythonhosted.org/packages/dc/ed/8315978a49ef7209a92e7ec5e38235c30db547d2afdf094355b6e71646b7/mistune-2.0.0a4-py2.py3-none-any.whl",
-                    "sha256" : "ebbed6e25e342705ec30f3184bdc148229dfbae0da6136c2a6892333c9f8bc6b"
-                }
-            ]
-        },
+	    "name": "python3-mistune",
+	    "buildsystem": "simple",
+	    "build-commands": [
+		"pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} mistune==2.0.0a5"
+	    ],
+	    "sources": [
+		{
+		    "type": "file",
+		    "url": "https://files.pythonhosted.org/packages/d8/02/029dc8fdcd11f2e14e0978c4981c2f9e0a36ca8209cabecf40641c6aa2ac/mistune-2.0.0a5-py2.py3-none-any.whl",
+		    "sha256": "32d03fdc560adf1d7cdf357e4417b9f5246a5a8022ef19c8f6eb23d129f49cf6"
+		}
+	    ]
+	},
         {
             "name" : "python3-requests",
             "buildsystem" : "simple",
@@ -133,10 +133,10 @@
     ],
     "build-options" : {
         "env" : {
-            "GTK_DEBUG" : "interactive",
             "GOBJECT_DEBUG" : "instance-count",
-            "LANG" : "ru_RU.UTF-8",
-            "LANGUAGE" : "ru"
+            "GTK_DEBUG" : "interactive",
+            "LANGUAGE" : "RU",
+            "LC_TIME" : "ru_RU.UTF-8"
         }
     }
 }
