@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-09-21 18:57+MSK\n"
+"POT-Creation-Date: 2020-09-30 14:19+MSK\n"
 "PO-Revision-Date: 2020-08-27 19:23+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: Russian\n"
@@ -91,6 +91,10 @@ msgstr "Markdown"
 msgid "HTML"
 msgstr "HTML"
 
+#: ../norka/widgets/format_shortcuts_dialog.py:33
+msgid "Markup Help"
+msgstr "Разметка"
+
 #: ../norka/widgets/header.py:43
 msgid "Norka"
 msgstr "Norka"
@@ -122,6 +126,31 @@ msgstr "Показать архивированные файлы"
 #: ../norka/widgets/header.py:86
 msgid "Menu"
 msgstr "Меню"
+
+#: ../norka/widgets/image_link_popover.py:41
+msgid "Image link to insert:"
+msgstr "Адрес изображения"
+
+#: ../norka/widgets/image_link_popover.py:43
+#: ../norka/widgets/link_popover.py:43
+msgid "https://tenderowl.com"
+msgstr ""
+
+#: ../norka/widgets/image_link_popover.py:46
+msgid "Choose"
+msgstr "Выбрать"
+
+#: ../norka/widgets/image_link_popover.py:71
+msgid "Select image to insert"
+msgstr "Выбрать изображение"
+
+#: ../norka/widgets/image_link_popover.py:77
+msgid "Images"
+msgstr "Изображения"
+
+#: ../norka/widgets/link_popover.py:41
+msgid "Link to insert:"
+msgstr "Ссылка"
 
 #: ../norka/widgets/menu_export.py:38
 msgid "Text"
@@ -175,20 +204,24 @@ msgstr "Масштаб"
 msgid "Zoom In"
 msgstr "Увеличить"
 
-#: ../norka/widgets/menu_popover.py:56
+#: ../norka/widgets/menu_popover.py:57
 #: ../norka/widgets/preferences_dialog.py:54
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../norka/widgets/menu_popover.py:57
+#: ../norka/widgets/menu_popover.py:60
 msgid "About"
 msgstr "О программе"
 
-#: ../norka/widgets/menu_popover.py:58
+#: ../norka/widgets/menu_popover.py:63
 msgid "Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: ../norka/widgets/menu_popover.py:59
+#: ../norka/widgets/menu_popover.py:66
+msgid "Markup Shortcuts"
+msgstr "Клавиши форматирования"
+
+#: ../norka/widgets/menu_popover.py:69
 msgid "Quit"
 msgstr "Выйти"
 

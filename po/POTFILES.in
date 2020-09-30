@@ -5,7 +5,10 @@ norka/widgets/about_dialog.py
 norka/widgets/document_context_menu.py
 norka/widgets/document_grid.py
 norka/widgets/export_dialog.py
+norka/widgets/format_shortcuts_dialog.py
 norka/widgets/header.py
+norka/widgets/image_link_popover.py
+norka/widgets/link_popover.py
 norka/widgets/menu_export.py
 norka/widgets/menu_popover.py
 norka/widgets/message_dialog.py
