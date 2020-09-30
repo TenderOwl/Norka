@@ -53,21 +53,30 @@ class MenuPopover(Gtk.Popover):
         font_size_grid.add(self.zoom_default_button)
         font_size_grid.add(zoom_in_button)
 
-        preferences_menuitem = Gtk.ModelButton(text=_("Preferences"), action_name='app.preferences')
-        about_menuitem = Gtk.ModelButton(text=_("About"), action_name='app.about')
-        shortcuts_menuitem = Gtk.ModelButton(text=_("Shortcuts"), action_name='app.shortcuts')
-        format_shortcuts_menuitem = Gtk.ModelButton(text=_("Formatting Shortcuts"), action_name='app.format_shortcuts')
-        quit_menuitem = Gtk.ModelButton(text=_("Quit"), action_name='app.quit')
-
-        menu_separator = Gtk.Separator(margin_top=12, orientation=Gtk.Orientation.HORIZONTAL)
+        preferences_menuitem = Gtk.ModelButton(
+            text=_("Preferences"),
+            action_name='app.preferences')
+        about_menuitem = Gtk.ModelButton(
+            text=_("About"),
+            action_name='app.about')
+        shortcuts_menuitem = Gtk.ModelButton(
+            text=_("Shortcuts"),
+            action_name='app.shortcuts')
+        format_shortcuts_menuitem = Gtk.ModelButton(
+            text=_("Markup Shortcuts"),
+            action_name='app.format_shortcuts')
+        quit_menuitem = Gtk.ModelButton(
+            text=_("Quit"),
+            action_name='app.quit')
 
         menu_grid = Gtk.Grid(margin_bottom=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
         menu_grid.attach(font_size_grid, 0, 0, 3, 1)
-        menu_grid.attach(preferences_menuitem, 0, 1, 3, 1)
-        menu_grid.attach(shortcuts_menuitem, 0, 2, 3, 1)
+        menu_grid.attach(self.make_sep(), 0, 1, 3, 1)
+        menu_grid.attach(preferences_menuitem, 0, 2, 3, 1)
         menu_grid.attach(format_shortcuts_menuitem, 0, 3, 3, 1)
-        menu_grid.attach(about_menuitem, 0, 4, 3, 1)
-        menu_grid.attach(menu_separator, 0, 5, 3, 1)
+        menu_grid.attach(shortcuts_menuitem, 0, 4, 3, 1)
+        menu_grid.attach(about_menuitem, 0, 5, 3, 1)
+        menu_grid.attach(self.make_sep(), 0, 6, 3, 1)
         menu_grid.attach(quit_menuitem, 0, 7, 3, 1)
 
         self.add(menu_grid)
@@ -80,3 +89,9 @@ class MenuPopover(Gtk.Popover):
     def on_settings_changed(self, settings, key):
         if key == 'zoom':
             self.zoom_default_button.set_label(f"{settings.get_int('zoom')}%")
+
+    @staticmethod
+    def make_sep():
+        return Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL,
+                             margin_top=6,
+                             margin_bottom=6)
