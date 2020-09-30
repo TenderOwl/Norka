@@ -40,8 +40,8 @@ class LinkPopover(Gtk.Popover):
 
         link_label = Gtk.Label(_('Link to insert:'), halign=Gtk.Align.START, hexpand=True)
 
-        link_entry = Gtk.Entry(placeholder_text=_('https://tenderowl.com'))
-        link_entry.connect('activate', self.on_activate)
+        self.link_entry = Gtk.Entry(placeholder_text=_('https://tenderowl.com'))
+        self.link_entry.connect('activate', self.on_activate)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
                       spacing=6,
@@ -51,11 +51,14 @@ class LinkPopover(Gtk.Popover):
                       margin_right=12,
                       margin_left=12, )
         box.add(link_label)
-        box.add(link_entry)
+        box.add(self.link_entry)
 
         self.add(box)
 
         self.show_all()
+
+    def set_link(self, link: str = None):
+        self.link_entry.set_text(link or '')
 
     def on_activate(self, entry: Gtk.Entry):
         self.emit('insert-link', entry.get_text().strip())

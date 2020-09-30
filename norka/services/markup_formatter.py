@@ -63,7 +63,9 @@ class MarkupFormatter:
     def on_insert_code_block(self, widget, data=None):
         self.toggle_block(widget, '```')
 
-    def insert_link(self, widget: Gtk.Widget, link):
+    def insert_link(self, widget: Gtk.Widget = None, link: str = None):
+        if not link:
+            return
 
         text = link
         if not re.match(r'^http[s]?://', link):
@@ -78,10 +80,14 @@ class MarkupFormatter:
 
             self.buffer.insert_at_cursor(f'[{text}]({link})')
 
-            widget.destroy()
+            if widget:
+                widget.destroy()
 
-    def insert_image_link(self, widget: Gtk.Widget, link):
-        text = os.path.basename(link)
+    def insert_image_link(self, widget: Gtk.Widget = None, link: str = None):
+        if not link:
+            return
+
+        text = os.path.basename(link.strip())
 
         with user_action(self.buffer):
             if self.buffer.get_has_selection():
@@ -92,7 +98,8 @@ class MarkupFormatter:
 
             self.buffer.insert_at_cursor(f'![{text}]({link})')
 
-            widget.destroy()
+            if widget:
+                widget.destroy()
 
     def toggle_block(self, text_view: Gtk.TextView, markup: str) -> None:
         """Apply text block markup to currently selected line.

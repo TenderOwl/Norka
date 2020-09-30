@@ -81,8 +81,10 @@ class Editor(Gtk.Grid):
         # self.view.set_pixels_above_lines(2)
         # self.view.set_pixels_below_lines(2)
         # self.view.set_pixels_inside_wrap(4)
+        self.view.set_top_margin(8)
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
+        self.view.set_bottom_margin(8)
         self.view.set_monospace(True)
         self.view.get_style_context().add_class('norka-editor')
 
@@ -226,6 +228,13 @@ class Editor(Gtk.Grid):
             True
         ).strip()
 
+    def get_selected_text(self) -> str:
+        buffer = self.view.get_buffer()
+
+        if buffer.get_has_selection():
+            (start, end) = buffer.get_selection_bounds()
+            return buffer.get_text(start, end, True)
+
     def on_key_release_event(self, text_view: GtkSource.View, event: Gdk.EventKey) -> None:
         """Handle release event and iterate markdown list markup
 
@@ -234,7 +243,7 @@ class Editor(Gtk.Grid):
         :return:
         """
         buffer = text_view.get_buffer()
-        if event.keyval == Gdk.KEY_Return:
+        if event.keyval == Gdk.KEY_Return and event.get_state() != Gdk.ModifierType.SHIFT_MASK:
             buffer.begin_user_action()
             curr_iter = buffer.get_iter_at_mark(buffer.get_insert())
             curr_line = curr_iter.get_line()
@@ -431,6 +440,7 @@ class Editor(Gtk.Grid):
         rect = self.get_cursor_coods()
         popover = LinkPopover(self.view)
         popover.set_pointing_to(rect)
+        popover.set_link(self.get_selected_text())
         popover.connect('insert-link', self.markup_formatter.insert_link)
 
         popover.popup()
@@ -439,6 +449,7 @@ class Editor(Gtk.Grid):
         rect = self.get_cursor_coods()
         popover = ImageLinkPopover(self.view)
         popover.set_pointing_to(rect)
+        popover.set_link(self.get_selected_text())
         popover.connect('insert-link', self.markup_formatter.insert_image_link)
 
         popover.popup()
