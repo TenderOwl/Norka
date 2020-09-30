@@ -56,6 +56,7 @@ class MenuPopover(Gtk.Popover):
         preferences_menuitem = Gtk.ModelButton(text=_("Preferences"), action_name='app.preferences')
         about_menuitem = Gtk.ModelButton(text=_("About"), action_name='app.about')
         shortcuts_menuitem = Gtk.ModelButton(text=_("Shortcuts"), action_name='app.shortcuts')
+        format_shortcuts_menuitem = Gtk.ModelButton(text=_("Formatting Shortcuts"), action_name='app.format_shortcuts')
         quit_menuitem = Gtk.ModelButton(text=_("Quit"), action_name='app.quit')
 
         menu_separator = Gtk.Separator(margin_top=12, orientation=Gtk.Orientation.HORIZONTAL)
@@ -64,9 +65,10 @@ class MenuPopover(Gtk.Popover):
         menu_grid.attach(font_size_grid, 0, 0, 3, 1)
         menu_grid.attach(preferences_menuitem, 0, 1, 3, 1)
         menu_grid.attach(shortcuts_menuitem, 0, 2, 3, 1)
-        menu_grid.attach(about_menuitem, 0, 3, 3, 1)
-        menu_grid.attach(menu_separator, 0, 4, 3, 1)
-        menu_grid.attach(quit_menuitem, 0, 5, 3, 1)
+        menu_grid.attach(format_shortcuts_menuitem, 0, 3, 3, 1)
+        menu_grid.attach(about_menuitem, 0, 4, 3, 1)
+        menu_grid.attach(menu_separator, 0, 5, 3, 1)
+        menu_grid.attach(quit_menuitem, 0, 7, 3, 1)
 
         self.add(menu_grid)
 

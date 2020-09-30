@@ -26,6 +26,8 @@ import sys
 
 import gi
 
+from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
+
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSpell', '3.0')
@@ -79,6 +81,10 @@ class Application(Gtk.Application):
         shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
         shortcuts_action.connect("activate", self.on_shortcuts)
         self.add_action(shortcuts_action)
+
+        sformat_shortcuts_action = Gio.SimpleAction.new("format_shortcuts", None)
+        sformat_shortcuts_action.connect("activate", self.on_format_shortcuts)
+        self.add_action(sformat_shortcuts_action)
 
     def init_style(self):
         css_provider = Gtk.CssProvider()
@@ -150,10 +156,15 @@ class Application(Gtk.Application):
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder()
-        builder.add_from_resource(
-            "/com/github/tenderowl/norka/ui/shortcuts.ui")
-        builder.get_object("shortcuts").set_transient_for(self.window)
-        builder.get_object("shortcuts").show()
+        builder.add_from_resource("/com/github/tenderowl/norka/ui/shortcuts.ui")
+        dialog = builder.get_object("shortcuts")
+        dialog.set_transient_for(self.window)
+        dialog.show()
+
+    def on_format_shortcuts(self, action, param):
+        dialog = FormatShortcutsDialog()
+        dialog.set_transient_for(self.window)
+        dialog.show()
 
 
 def main(version: str = None):

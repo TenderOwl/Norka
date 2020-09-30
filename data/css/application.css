@@ -2,6 +2,8 @@
 @binding-set editor-bindings {
   bind "<ctl>i" { "insert-italic" () };
   bind "<ctl>b" { "insert-bold" () };
+  bind "<ctl><shift>c" { "insert-code" () };
+  bind "<ctl><alt>c" { "insert-code-block" () };
   bind "<ctl>1" { "insert-h1" () };
   bind "<ctl>2" { "insert-h2" () };
   bind "<ctl>3" { "insert-h3" () };

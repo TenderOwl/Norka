@@ -45,6 +45,8 @@ class Editor(Gtk.Grid):
     __gsignals__ = {
         'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
         'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-code': (GObject.SignalFlags.ACTION, None, ()),
+        'insert-code-block': (GObject.SignalFlags.ACTION, None, ()),
         'insert-h1': (GObject.SignalFlags.ACTION, None, ()),
         'insert-h2': (GObject.SignalFlags.ACTION, None, ()),
         'insert-h3': (GObject.SignalFlags.ACTION, None, ()),
@@ -92,6 +94,8 @@ class Editor(Gtk.Grid):
         self.get_style_context().add_class('norka-editor-view')
         self.connect('insert-bold', self.on_insert_bold)
         self.connect('insert-italic', self.on_insert_italic)
+        self.connect('insert-code', self.on_insert_code)
+        self.connect('insert-code-block', self.on_insert_code_block)
         self.connect('insert-h1', self.on_toggle_header1)
         self.connect('insert-h2', self.on_toggle_header2)
         self.connect('insert-h3', self.on_toggle_header3)
@@ -391,13 +395,19 @@ class Editor(Gtk.Grid):
         return rect
 
     def on_insert_italic(self, widget, data=None):
-        self.toggle_block(self.view, '_')
+        self.markup_formatter.toggle_block(self.view, '_')
 
     def on_insert_bold(self, widget, data=None):
         self.markup_formatter.toggle_block(self.view, '**')
 
     def on_insert_strike(self, widget, data=None):
         self.markup_formatter.toggle_block(self.view, '~~')
+
+    def on_insert_code(self, widget, data=None):
+        self.markup_formatter.toggle_block(self.view, '`')
+
+    def on_insert_code_block(self, widget, data=None):
+        self.markup_formatter.toggle_block(self.view, '```')
 
     def on_toggle_header1(self, widget, data=None):
         self.markup_formatter.toggle_heading(self.view, 1)

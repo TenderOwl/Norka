@@ -57,6 +57,12 @@ class MarkupFormatter:
     def on_toggle_header3(self, widget, data=None):
         self.toggle_heading(widget, 3)
 
+    def on_insert_code(self, widget, data=None):
+        self.toggle_block(widget, '`')
+
+    def on_insert_code_block(self, widget, data=None):
+        self.toggle_block(widget, '```')
+
     def insert_link(self, widget: Gtk.Widget, link):
 
         text = link
