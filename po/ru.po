@@ -93,7 +93,7 @@ msgstr "HTML"
 
 #: ../norka/widgets/format_shortcuts_dialog.py:33
 msgid "Markup Help"
-msgstr "Разметка"
+msgstr "Форматирование"
 
 #: ../norka/widgets/header.py:43
 msgid "Norka"
@@ -219,7 +219,7 @@ msgstr "Комбинации клавиш"
 
 #: ../norka/widgets/menu_popover.py:66
 msgid "Markup Shortcuts"
-msgstr "Клавиши форматирования"
+msgstr "Форматирование"
 
 #: ../norka/widgets/menu_popover.py:69
 msgid "Quit"
