@@ -82,9 +82,9 @@ class Application(Gtk.Application):
         shortcuts_action.connect("activate", self.on_shortcuts)
         self.add_action(shortcuts_action)
 
-        sformat_shortcuts_action = Gio.SimpleAction.new("format_shortcuts", None)
-        sformat_shortcuts_action.connect("activate", self.on_format_shortcuts)
-        self.add_action(sformat_shortcuts_action)
+        format_shortcuts_action = Gio.SimpleAction.new("format_shortcuts", None)
+        format_shortcuts_action.connect("activate", self.on_format_shortcuts)
+        self.add_action(format_shortcuts_action)
 
     def init_style(self):
         css_provider = Gtk.CssProvider()

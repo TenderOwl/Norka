@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-09-30 14:19+MSK\n"
+"POT-Creation-Date: 2020-10-01 22:47+MSK\n"
 "PO-Revision-Date: 2020-08-27 19:23+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: Russian\n"
@@ -49,28 +49,6 @@ msgstr "Беспрерывный текстовый редактор"
 msgid "Learn more about Norka"
 msgstr "Узнать больше о Norka"
 
-#: ../norka/widgets/document_context_menu.py:37
-msgid "Export..."
-msgstr "Экспортировать"
-
-#: ../norka/widgets/document_context_menu.py:40
-#: ../norka/widgets/rename_dialog.py:60
-msgid "Rename"
-msgstr "Переименовать"
-
-#: ../norka/widgets/document_context_menu.py:43
-msgid "Archive"
-msgstr "Архивировать"
-
-#: ../norka/widgets/document_context_menu.py:46
-msgid "Unarchive"
-msgstr "Разархивировать"
-
-#: ../norka/widgets/document_context_menu.py:49
-#: ../norka/widgets/message_dialog.py:46
-msgid "Delete"
-msgstr "Удалить"
-
 #: ../norka/widgets/document_grid.py:95
 msgid "Created"
 msgstr "Создан"
@@ -91,7 +69,7 @@ msgstr "Markdown"
 msgid "HTML"
 msgstr "HTML"
 
-#: ../norka/widgets/format_shortcuts_dialog.py:33
+#: ../norka/widgets/format_shortcuts_dialog.py:37
 msgid "Markup Help"
 msgstr "Форматирование"
 
@@ -140,11 +118,11 @@ msgstr ""
 msgid "Choose"
 msgstr "Выбрать"
 
-#: ../norka/widgets/image_link_popover.py:71
+#: ../norka/widgets/image_link_popover.py:76
 msgid "Select image to insert"
 msgstr "Выбрать изображение"
 
-#: ../norka/widgets/image_link_popover.py:77
+#: ../norka/widgets/image_link_popover.py:82
 msgid "Images"
 msgstr "Изображения"
 
@@ -225,9 +203,13 @@ msgstr "Форматирование"
 msgid "Quit"
 msgstr "Выйти"
 
-#: ../norka/widgets/message_dialog.py:45 ../norka/widgets/rename_dialog.py:41
+#: ../norka/widgets/message_dialog.py:45
 msgid "Cancel"
 msgstr "Отмена"
+
+#: ../norka/widgets/message_dialog.py:46
+msgid "Delete"
+msgstr "Удалить"
 
 #: ../norka/widgets/preferences_dialog.py:56
 msgid "Toast"
@@ -326,6 +308,10 @@ msgstr "Ошибка входа."
 msgid "Logged as {}."
 msgstr "Войти как {}."
 
+#: ../norka/widgets/preview.py:54
+msgid "Preview"
+msgstr "Предпросмотр"
+
 #: ../norka/widgets/quick_find_dialog.py:40
 msgid "Quick Find"
 msgstr "Быстрый поиск"
@@ -338,9 +324,9 @@ msgstr "Быстро находите документы, просто начн�
 msgid "Jump to..."
 msgstr "Перейти к..."
 
-#: ../norka/widgets/rename_dialog.py:46
-msgid "<b>Rename {} to:</b>"
-msgstr "<b>Переименовать {} в:</b>"
+#: ../norka/widgets/rename_dialog.py:60
+msgid "Rename"
+msgstr "Переименовать"
 
 #: ../norka/widgets/search_bar.py:45
 msgid "Find"
@@ -362,53 +348,74 @@ msgstr "Создать пустой документ"
 msgid "New document"
 msgstr "Новый документ"
 
-#: ../norka/window.py:373
+#: ../norka/window.py:384
 msgid "Import files into Norka"
 msgstr "Импортировать файлы в Norka"
 
-#: ../norka/window.py:379
+#: ../norka/window.py:390
 msgid "Text Files"
 msgstr "Текстовые файлы"
 
-#: ../norka/window.py:572
+#: ../norka/window.py:588
 msgid "Export document to file"
 msgstr "Экспортировать документ в файл"
 
-#: ../norka/window.py:597
+#: ../norka/window.py:613
 msgid "Document exported."
 msgstr "Документ экспортирован."
 
-#: ../norka/window.py:598
+#: ../norka/window.py:614
 msgid "Open folder"
 msgstr "Открыть папку"
 
-#: ../norka/window.py:603
+#: ../norka/window.py:619
 msgid "Export goes wrong."
 msgstr "Экспорт прошёл неудачно."
 
-#: ../norka/window.py:618
+#: ../norka/window.py:638
 msgid "You need to set Medium token in Preferences -> Export"
 msgstr "Вам нужно указать токен Medium в Настройки -> Экспорт"
 
-#: ../norka/window.py:619
+#: ../norka/window.py:639
 msgid "Configure"
 msgstr "Настроить"
 
-#: ../norka/window.py:635 ../norka/window.py:671
+#: ../norka/window.py:655 ../norka/window.py:696
 msgid "Document successfully exported!"
 msgstr "Документ успешно экспортирован!"
 
-#: ../norka/window.py:636 ../norka/window.py:672
+#: ../norka/window.py:656 ../norka/window.py:697
 msgid "View"
 msgstr "Посмотреть"
 
-#: ../norka/window.py:641
+#: ../norka/window.py:661
 msgid "Export failed!"
 msgstr "Экспорт прошёл неудачно!"
 
-#: ../norka/window.py:677
+#: ../norka/window.py:702
 msgid "Export failed."
 msgstr "Экспорт прошёл неудачно."
+
+#: ../data/ui/documents_grid_context_menu.ui:47
+#: ../data/ui/documents_grid_context_menu.ui:131
+msgid "Export..."
+msgstr "Экспортировать"
+
+#: ../data/ui/documents_grid_context_menu.ui:74
+msgid "Archive"
+msgstr "Архивировать"
+
+#: ../data/ui/documents_grid_context_menu.ui:89
+msgid "Unarchive"
+msgstr "Разархивировать"
+
+#: ../data/ui/documents_grid_context_menu.ui:201
+msgid "Medium.com"
+msgstr ""
+
+#: ../data/ui/documents_grid_context_menu.ui:215
+msgid "Writeas"
+msgstr ""
 
 #: ../data/ui/shortcuts.ui:13
 msgctxt "shortcut window"
@@ -509,3 +516,6 @@ msgstr "Настройки"
 msgctxt "shortcut window"
 msgid "Open Preferences"
 msgstr "Открыть настройки"
+
+#~ msgid "<b>Rename {} to:</b>"
+#~ msgstr "<b>Переименовать {} в:</b>"

@@ -1,8 +1,8 @@
+data/ui/documents_grid_context_menu.ui
 data/ui/shortcuts.ui
 norka/define.py
 norka/services/stats_handler.py
 norka/widgets/about_dialog.py
-norka/widgets/document_context_menu.py
 norka/widgets/document_grid.py
 norka/widgets/export_dialog.py
 norka/widgets/format_shortcuts_dialog.py
@@ -13,6 +13,7 @@ norka/widgets/menu_export.py
 norka/widgets/menu_popover.py
 norka/widgets/message_dialog.py
 norka/widgets/preferences_dialog.py
+norka/widgets/preview.py
 norka/widgets/quick_find_dialog.py
 norka/widgets/rename_dialog.py
 norka/widgets/search_bar.py

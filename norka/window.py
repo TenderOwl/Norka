@@ -41,6 +41,7 @@ from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
+from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_dialog import RenamePopover
 from norka.widgets.welcome import Welcome
@@ -202,6 +203,16 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'name': 'export-writeas',
                     'action': self.on_export_writeas,
                     'accels': (None,)
+                },
+                {
+                    'name': 'preview',
+                    'action': self.on_preview,
+                    'accels': ('<Control><Shift>p',)
+                },
+                {
+                    'name': 'print',
+                    'action': self.on_print,
+                    'accels': ('<Control>p',)
                 },
                 # {
                 #     'name': 'search',
@@ -709,7 +720,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         """
         dialog = QuickFindDialog()
         response = dialog.run()
-        print(response, dialog.document_id)
+
         if response == Gtk.ResponseType.APPLY and dialog.document_id:
             self.document_activate(dialog.document_id)
         dialog.destroy()
@@ -802,3 +813,39 @@ class NorkaWindow(Gtk.ApplicationWindow):
             self.toast.disconnect_by_func(self.open_uri)
         except:
             pass
+
+    def on_preview(self, sender, event):
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        # create preview window
+        preview = Preview(parent=self, text=doc.content)
+        # connect signal handlers
+        self.editor.scrolled.get_vscrollbar().connect('value-changed', self.scroll_preview)
+        self.editor.buffer.connect('changed', preview.buffer_changed)
+        preview.show_all()
+
+    def scroll_preview(self, range: Gtk.Range):
+        print(f'Scrolled to: {range.get_value()} / {range.get_fill_level()}')
+
+    def on_print(self, sender, event=None):
+        print(sender, event)
+        # doc = self.document_grid.selected_document or self.editor.document
+        # if not doc:
+        #     return
+        # printing = Printing(parent=self, document=doc)
+        # # print(.)
+        # printing.run_dialog()
+
+        # if result == Gtk.PrintOperationResult.ERROR:
+        #     message = printing.
+        #
+        #     dialog = Gtk.MessageDialog(self,
+        #                                0,
+        #                                Gtk.MessageType.ERROR,
+        #                                Gtk.ButtonsType.CLOSE,
+        #                                message)
+        #
+        #     dialog.run()
+        #     dialog.destroy()
