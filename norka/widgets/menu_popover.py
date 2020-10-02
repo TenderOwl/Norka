@@ -78,10 +78,11 @@ class MenuPopover(Gtk.Popover):
         menu_grid.attach(preferences_menuitem, 0, 2, 3, 1)
         menu_grid.attach(preview_menuitem, 0, 3, 3, 1)
         menu_grid.attach(format_shortcuts_menuitem, 0, 4, 3, 1)
-        menu_grid.attach(shortcuts_menuitem, 0, 5, 3, 1)
-        menu_grid.attach(about_menuitem, 0, 6, 3, 1)
-        menu_grid.attach(self.make_sep(), 0, 7, 3, 1)
-        menu_grid.attach(quit_menuitem, 0, 8, 3, 1)
+        menu_grid.attach(self.make_sep(), 0, 5, 3, 1)
+        menu_grid.attach(shortcuts_menuitem, 0, 6, 3, 1)
+        menu_grid.attach(about_menuitem, 0, 7, 3, 1)
+        menu_grid.attach(self.make_sep(), 0, 8, 3, 1)
+        menu_grid.attach(quit_menuitem, 0, 9, 3, 1)
 
         self.add(menu_grid)
 

@@ -174,9 +174,7 @@ class DocumentGrid(Gtk.Grid):
                 self.model.get_iter(self.selected_path), 3
             ))
 
-            event_point = Gdk.Rectangle()
-            event_point.x = event.x
-            event_point.y = event.y
+            found, rect = self.view.get_cell_rect(self.selected_path)
 
             builder = Gtk.Builder()
             builder.add_from_resource('/com/github/tenderowl/norka/ui/documents_grid_context_menu.ui')
@@ -186,7 +184,7 @@ class DocumentGrid(Gtk.Grid):
             find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
 
             menu_popover.set_relative_to(self.view)
-            menu_popover.set_pointing_to(event_point)
+            menu_popover.set_pointing_to(rect)
             menu_popover.popup()
 
             return True

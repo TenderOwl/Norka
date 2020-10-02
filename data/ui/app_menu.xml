@@ -3,6 +3,16 @@
   <menu id="app-menu">
     <section>
       <item>
+        <attribute name="action">document.import</attribute>
+        <attribute name="label" translatable="yes">Import</attribute>
+      </item>
+      <item>
+        <attribute name="action">document.create</attribute>
+        <attribute name="label" translatable="yes">Create</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="action">app.preferences</attribute>
         <attribute name="label" translatable="yes">Preferences</attribute>
       </item>
