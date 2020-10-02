@@ -21,7 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import tempfile
 from gettext import gettext as _
 
 import gi
@@ -30,7 +30,7 @@ from norka.gobject_worker import GObjectWorker
 from norka.services.export import Exporter
 
 gi.require_version("WebKit2", "4.0")
-from gi.repository import WebKit2, Gtk, GObject
+from gi.repository import WebKit2, Gtk, Granite
 
 
 class Preview(Gtk.Window):
@@ -40,10 +40,10 @@ class Preview(Gtk.Window):
     #     'print': (GObject.SIGNAL_RUN_FIRST, None, ()),
     # }
 
-    def __init__(self, parent: Gtk.Widget, text: str):
+    def __init__(self, parent: Gtk.Widget, text: str = None):
         super().__init__(modal=False)
         self.set_default_size(800, 600)
-        self.set_accept_focus(False)
+        self.set_transient_for(parent)
 
         # print_button = Gtk.Button.new_from_icon_name('document-print', Gtk.IconSize.LARGE_TOOLBAR)
         # print_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Print document')))
@@ -61,23 +61,43 @@ class Preview(Gtk.Window):
 
         self.set_titlebar(header)
 
+        self.temp_file = tempfile.NamedTemporaryFile(prefix='norka-', delete=False)
+
         # Render in thread
-        self.show_spinner(True)
-        GObjectWorker.call(Exporter.render_html, (text,), self.update_html)
+        if text:
+            GObjectWorker.call(Exporter.export_html_preview, (self.temp_file.name, text,), self.update_html)
 
         ctx = WebKit2.WebContext.get_default()
         self.web: WebKit2.WebView = WebKit2.WebView.new_with_context(ctx)
+        self.web.connect('load-changed', self.on_load_changed)
+        web_settings = self.web.get_settings()
+        web_settings.set_enable_developer_extras(True)
+        web_settings.set_enable_tabs_to_links(False)
+        self.web.set_settings(web_settings)
 
-        self.add(self.web)
+        self.empty = Granite.WidgetsWelcome()
+        self.empty.set_title(_('Nothing to preview'))
+        self.empty.set_subtitle(_('To render preview open a document'))
+
+        self.stack = Gtk.Stack()
+        self.stack.add_named(self.empty, 'empty-page')
+        self.stack.add_named(self.web, 'preview-page')
+
+        self.add(self.stack)
 
     def buffer_changed(self, buffer: Gtk.TextBuffer):
         self.show_spinner(True)
         text = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(), True)
-        GObjectWorker.call(Exporter.render_html, (text,), self.update_html)
+        GObjectWorker.call(Exporter.export_html_preview, (self.temp_file.name, text,), self.update_html)
+
+    def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
+        if event.STARTED:
+            self.show_spinner(True)
+        if event.FINISHED:
+            self.show_spinner(False)
 
     def update_html(self, html: str):
-        self.show_spinner(False)
-        self.web.load_html(html)
+        self.web.load_uri('file://' + html)
 
     def show_spinner(self, state: bool = False) -> None:
         if state:
@@ -86,5 +106,11 @@ class Preview(Gtk.Window):
             self.spinner.stop()
         self.spinner.set_visible(state)
 
-    # def scroll_to(self, percent: float):
-    #     self.web.run_javascript(f'scrollTo({percent});')
+    def show_preview(self, sender=None, event=None):
+        self.stack.set_visible_child_name('preview-page')
+
+    def show_empty_page(self, sender=None, event=None):
+        self.stack.set_visible_child_name('empty-page')
+
+    def scroll_to(self, percent: float):
+        self.web.run_javascript(f'scrollTo({percent});', None, print)

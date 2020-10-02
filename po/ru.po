@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-01 22:47+MSK\n"
+"POT-Creation-Date: 2020-10-03 01:11+MSK\n"
 "PO-Revision-Date: 2020-08-27 19:23+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: Russian\n"
@@ -191,15 +191,19 @@ msgstr "Настройки"
 msgid "About"
 msgstr "О программе"
 
-#: ../norka/widgets/menu_popover.py:63
+#: ../norka/widgets/menu_popover.py:63 ../norka/widgets/preview.py:54
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: ../norka/widgets/menu_popover.py:66
 msgid "Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: ../norka/widgets/menu_popover.py:66
+#: ../norka/widgets/menu_popover.py:69
 msgid "Markup Shortcuts"
 msgstr "Форматирование"
 
-#: ../norka/widgets/menu_popover.py:69
+#: ../norka/widgets/menu_popover.py:72
 msgid "Quit"
 msgstr "Выйти"
 
@@ -308,9 +312,13 @@ msgstr "Ошибка входа."
 msgid "Logged as {}."
 msgstr "Войти как {}."
 
-#: ../norka/widgets/preview.py:54
-msgid "Preview"
-msgstr "Предпросмотр"
+#: ../norka/widgets/preview.py:82
+msgid "Nothing to preview"
+msgstr "Нечего показать"
+
+#: ../norka/widgets/preview.py:83
+msgid "To render preview open a document"
+msgstr "Откройте документ для предпросмотра"
 
 #: ../norka/widgets/quick_find_dialog.py:40
 msgid "Quick Find"
@@ -348,51 +356,51 @@ msgstr "Создать пустой документ"
 msgid "New document"
 msgstr "Новый документ"
 
-#: ../norka/window.py:384
+#: ../norka/window.py:385
 msgid "Import files into Norka"
 msgstr "Импортировать файлы в Norka"
 
-#: ../norka/window.py:390
+#: ../norka/window.py:391
 msgid "Text Files"
 msgstr "Текстовые файлы"
 
-#: ../norka/window.py:588
+#: ../norka/window.py:589
 msgid "Export document to file"
 msgstr "Экспортировать документ в файл"
 
-#: ../norka/window.py:613
+#: ../norka/window.py:614
 msgid "Document exported."
 msgstr "Документ экспортирован."
 
-#: ../norka/window.py:614
+#: ../norka/window.py:615
 msgid "Open folder"
 msgstr "Открыть папку"
 
-#: ../norka/window.py:619
+#: ../norka/window.py:620
 msgid "Export goes wrong."
 msgstr "Экспорт прошёл неудачно."
 
-#: ../norka/window.py:638
+#: ../norka/window.py:639
 msgid "You need to set Medium token in Preferences -> Export"
 msgstr "Вам нужно указать токен Medium в Настройки -> Экспорт"
 
-#: ../norka/window.py:639
+#: ../norka/window.py:640
 msgid "Configure"
 msgstr "Настроить"
 
-#: ../norka/window.py:655 ../norka/window.py:696
+#: ../norka/window.py:656 ../norka/window.py:697
 msgid "Document successfully exported!"
 msgstr "Документ успешно экспортирован!"
 
-#: ../norka/window.py:656 ../norka/window.py:697
+#: ../norka/window.py:657 ../norka/window.py:698
 msgid "View"
 msgstr "Посмотреть"
 
-#: ../norka/window.py:661
+#: ../norka/window.py:662
 msgid "Export failed!"
 msgstr "Экспорт прошёл неудачно!"
 
-#: ../norka/window.py:702
+#: ../norka/window.py:703
 msgid "Export failed."
 msgstr "Экспорт прошёл неудачно."
 
@@ -462,57 +470,67 @@ msgctxt "shortcut window"
 msgid "Find previous"
 msgstr "Найти пред."
 
-#: ../data/ui/shortcuts.ui:137
+#: ../data/ui/shortcuts.ui:82
+msgctxt "shortcut window"
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: ../data/ui/shortcuts.ui:86
+msgctxt "shortcut window"
+msgid "Open Preview window"
+msgstr "Открыть окно Предпросмотра"
+
+#: ../data/ui/shortcuts.ui:95
 msgctxt "shortcut window"
 msgid "Copy and paste"
 msgstr "Копирование и вставка"
 
-#: ../data/ui/shortcuts.ui:141
+#: ../data/ui/shortcuts.ui:99
 msgctxt "shortcut window"
 msgid "Copy selected text to clipboard"
 msgstr "Копировать выделенный текст"
 
-#: ../data/ui/shortcuts.ui:148
+#: ../data/ui/shortcuts.ui:106
 msgctxt "shortcut window"
 msgid "Cut selected text to clipboard"
 msgstr "Вырезать выделенный текст"
 
-#: ../data/ui/shortcuts.ui:155
+#: ../data/ui/shortcuts.ui:113
 msgctxt "shortcut window"
 msgid "Paste selected text from clipboard"
 msgstr "Вставить текст"
 
-#: ../data/ui/shortcuts.ui:166
+#: ../data/ui/shortcuts.ui:124
 msgctxt "shortcut window"
 msgid "Undo and redo"
 msgstr "Отмена и повтор"
 
-#: ../data/ui/shortcuts.ui:170
+#: ../data/ui/shortcuts.ui:128
 msgctxt "shortcut window"
 msgid "Undo previous command"
 msgstr "Отменить действие"
 
-#: ../data/ui/shortcuts.ui:177
+#: ../data/ui/shortcuts.ui:135
 msgctxt "shortcut window"
 msgid "Redo previous command"
 msgstr "Повторить действие"
 
-#: ../data/ui/shortcuts.ui:188
+#: ../data/ui/shortcuts.ui:146
 msgctxt "shortcut window"
 msgid "Selection"
 msgstr "Выделение"
 
-#: ../data/ui/shortcuts.ui:192
+#: ../data/ui/shortcuts.ui:150
 msgctxt "shortcut window"
 msgid "Select all text"
 msgstr "Выделить весь текст"
 
-#: ../data/ui/shortcuts.ui:203
+#: ../data/ui/shortcuts.ui:161
 msgctxt "shortcut window"
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../data/ui/shortcuts.ui:207
+#: ../data/ui/shortcuts.ui:165
 msgctxt "shortcut window"
 msgid "Open Preferences"
 msgstr "Открыть настройки"

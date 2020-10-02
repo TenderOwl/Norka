@@ -59,6 +59,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         ))
         self.settings = settings
         self._configure_timeout_id = None
+        self.preview = None
 
         self.apply_styling()
 
@@ -209,11 +210,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
                     'action': self.on_preview,
                     'accels': ('<Control><Shift>p',)
                 },
-                {
-                    'name': 'print',
-                    'action': self.on_print,
-                    'accels': ('<Control>p',)
-                },
+                # {
+                #     'name': 'print',
+                #     'action': self.on_print,
+                #     'accels': ('<Control>p',)
+                # },
                 # {
                 #     'name': 'search',
                 #     'action': self.search_activated,
@@ -816,36 +817,50 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
     def on_preview(self, sender, event):
         doc = self.document_grid.selected_document or self.editor.document
-        if not doc:
-            return
 
-        # create preview window
-        preview = Preview(parent=self, text=doc.content)
-        # connect signal handlers
-        self.editor.scrolled.get_vscrollbar().connect('value-changed', self.scroll_preview)
-        self.editor.buffer.connect('changed', preview.buffer_changed)
-        preview.show_all()
+        if not self.preview:
+            # create preview window
+            text = doc.content if doc else None
+            self.preview = Preview(parent=self, text=text)
+            # connect signal handlers
+            # self.editor.scrolled.get_vscrollbar().connect('value-changed', self.scroll_preview)
+            self.editor.buffer.connect('changed', self.preview.buffer_changed)
+            self.editor.connect('document-load', self.preview.show_preview)
+            self.editor.connect('document-close', self.preview.show_empty_page)
+            self.preview.connect('destroy', self.on_preview_close)
+            self.preview.show_all()
+        else:
+            self.preview.present()
+
+        if doc:
+            self.preview.show_preview(self)
 
     def scroll_preview(self, range: Gtk.Range):
-        print(f'Scrolled to: {range.get_value()} / {range.get_fill_level()}')
+        adjustment = range.get_adjustment()
+        percent = adjustment.get_value() / adjustment.get_upper()
+        print(f'Scrolled to: {percent * 100}% / {adjustment.get_lower()} / {adjustment.get_upper()}')
+        self.preview.scroll_to(percent)
 
-    def on_print(self, sender, event=None):
-        print(sender, event)
-        # doc = self.document_grid.selected_document or self.editor.document
-        # if not doc:
-        #     return
-        # printing = Printing(parent=self, document=doc)
-        # # print(.)
-        # printing.run_dialog()
+    def on_preview_close(self, sender):
+        self.preview = None
 
-        # if result == Gtk.PrintOperationResult.ERROR:
-        #     message = printing.
-        #
-        #     dialog = Gtk.MessageDialog(self,
-        #                                0,
-        #                                Gtk.MessageType.ERROR,
-        #                                Gtk.ButtonsType.CLOSE,
-        #                                message)
-        #
-        #     dialog.run()
-        #     dialog.destroy()
+    # def on_print(self, sender, event=None):
+    #     print(sender, event)
+    #     doc = self.document_grid.selected_document or self.editor.document
+    #     if not doc:
+    #         return
+    #     printing = Printing(parent=self, document=doc)
+    #     # print(.)
+    #     printing.run_dialog()
+    #
+    #     if result == Gtk.PrintOperationResult.ERROR:
+    #         message = printing.
+    #
+    #         dialog = Gtk.MessageDialog(self,
+    #                                    0,
+    #                                    Gtk.MessageType.ERROR,
+    #                                    Gtk.ButtonsType.CLOSE,
+    #                                    message)
+    #
+    #         dialog.run()
+    #         dialog.destroy()

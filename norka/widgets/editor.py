@@ -43,6 +43,8 @@ class Editor(Gtk.Grid):
     __gtype_name__ = 'Editor'
 
     __gsignals__ = {
+        'document-load': (GObject.SignalFlags.ACTION, None, (int, )),
+        'document-close': (GObject.SignalFlags.ACTION, None, (int, )),
         'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
         'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
         'insert-code': (GObject.SignalFlags.ACTION, None, ()),
@@ -151,6 +153,7 @@ class Editor(Gtk.Grid):
         self.document = Document(title=title)
         self.document.document_id = storage.add(self.document)
         self.view.grab_focus()
+        self.emit('document-load', self.document.document_id)
 
     def load_document(self, doc_id: int) -> None:
         """Load :model:`Document` from storage with given `doc_id`.
@@ -166,6 +169,7 @@ class Editor(Gtk.Grid):
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
         self.view.grab_focus()
+        self.emit('document-load', self.document.document_id)
 
     def unload_document(self, save=True) -> None:
         """Save current document and clear text buffer
@@ -179,6 +183,7 @@ class Editor(Gtk.Grid):
         if save:
             self.save_document()
         self.buffer.set_text('')
+        self.emit('document-close', self.document.document_id)
         self.document = None
         self.hide_search_bar()
 
