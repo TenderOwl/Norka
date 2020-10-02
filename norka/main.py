@@ -97,6 +97,8 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
+        builder = Gtk.Builder.new_from_resource('/com/github/tenderowl/norka/ui/app_menu.xml')
+        self.set_app_menu(builder.get_object('app-menu'))
         self.settings.connect("changed", self.on_settings_changed)
 
     def do_activate(self):
@@ -155,8 +157,7 @@ class Application(Gtk.Application):
         about_dialog.present()
 
     def on_shortcuts(self, action, param):
-        builder = Gtk.Builder()
-        builder.add_from_resource("/com/github/tenderowl/norka/ui/shortcuts.ui")
+        builder = Gtk.Builder.new_from_resource("/com/github/tenderowl/norka/ui/shortcuts.ui")
         dialog = builder.get_object("shortcuts")
         dialog.set_transient_for(self.window)
         dialog.show()
