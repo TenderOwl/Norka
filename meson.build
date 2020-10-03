@@ -1,5 +1,5 @@
 project('com.github.tenderowl.norka',
-  version: '0.5.1',
+  version: '0.6.0',
   meson_version: '>= 0.49.0'
 )
 
@@ -25,6 +25,7 @@ dependency('glib-2.0')
 dependency('granite', version: '>= 4.0')
 dependency('gtksourceview-3.0')
 dependency('gtkspell3-3.0')
+dependency('webkit2gtk-4.0')
 
 find_program('glib-compile-schemas', required: true)
 find_program('gtk-update-icon-cache', required: false)

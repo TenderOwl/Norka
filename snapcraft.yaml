@@ -1,5 +1,5 @@
 name: norka
-version: 0.5.1
+version: 0.6.0
 title: Norka
 summary: Text editor baked for simplicity.
 description: |
@@ -58,7 +58,7 @@ parts:
     python-version: python3
     python-packages:
       - writeasapi
-      - mistune==2.0.0a4
+      - mistune==2.0.0a5
       - requests
   norka:
     plugin: meson
@@ -81,6 +81,7 @@ parts:
       - gir1.2-gtkspell3-3.0
       - gir1.2-gtksource-3.0
       - gir1.2-granite-1.0
+      - gir1.2-webkit2-4.0
     override-pull: |
       snapcraftctl pull
       patch -p1 < build-aux/elementary-theme.patch

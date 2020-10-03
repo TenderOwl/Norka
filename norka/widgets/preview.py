@@ -71,7 +71,7 @@ class Preview(Gtk.Window):
         self.web: WebKit2.WebView = WebKit2.WebView.new_with_context(ctx)
         self.web.connect('load-changed', self.on_load_changed)
         web_settings = self.web.get_settings()
-        web_settings.set_enable_developer_extras(True)
+        web_settings.set_enable_developer_extras(False)
         web_settings.set_enable_tabs_to_links(False)
         self.web.set_settings(web_settings)
 
