@@ -7,7 +7,7 @@
   <summary>Continuous text editor</summary>
   <description>
     <p>Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or accidentally deleted notes.</p>
-    Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.
+    <p>Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.</p>
     <ul>
       <li>All your notes inside</li>
       <li>Automatically saved in place</li>
@@ -35,7 +35,7 @@
   </screenshots>
 
   <releases>
-    <release date="2020-10-03" version="0.6.0">
+    <release date="2020-10-06" version="0.6.2">
       <description>
         <p>Improvements</p>
         <ul>
