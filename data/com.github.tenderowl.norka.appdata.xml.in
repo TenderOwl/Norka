@@ -20,7 +20,7 @@
 
   <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
   <developer_name>Andrey Maksimov</developer_name>
-  <url type="homepage">https://tenderowl.com/norka</url>
+  <url type="homepage">https://tenderowl.com/work/norka</url>
   <url type="bugtracker">https://github.com/tenderowl/norka/issues</url>
 
   <screenshots>
