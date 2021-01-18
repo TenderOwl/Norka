@@ -28,7 +28,7 @@ from gi.repository import Gtk
 
 class ExportFormat:
     PlainText = (_("Plain text"), ("*.txt",))
-    Markdown = (_("Markdown"), (".md", ".markdown",))
+    Markdown = (_("Markdown"), ("*.md", "*.markdown",))
     Html = (_("HTML"), ("*.html", "*.htm"))
 
 
