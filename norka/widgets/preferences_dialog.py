@@ -94,6 +94,11 @@ class PreferencesDialog(Gtk.Dialog):
         # Interface grid
         interface_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
         scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+
+        self.dark_theme_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        self.dark_theme_switch.set_state(self.settings.get_boolean('prefer-dark-theme'))
+        self.dark_theme_switch.connect("state-set", self.on_dark_theme)
+
         style_chooser = GtkSource.StyleSchemeChooserWidget()
         style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
         scrolled.add(style_chooser)
@@ -106,8 +111,11 @@ class PreferencesDialog(Gtk.Dialog):
 
         style_chooser.set_style_scheme(scheme)
 
-        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 0, 2, 1)
-        interface_grid.attach(scrolled, 0, 2, 2, 1)
+        interface_grid.attach(Granite.HeaderLabel(_("Appearance")), 0, 0, 3, 1)
+        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), halign=Gtk.Align.END), 0, 1, 2, 1)
+        interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
+        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
+        interface_grid.attach(scrolled, 0, 3, 3, 1)
 
         # Export grid
         export_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
@@ -194,6 +202,9 @@ class PreferencesDialog(Gtk.Dialog):
 
     def on_close_activated(self, sender: Gtk.Widget):
         self.destroy()
+
+    def on_dark_theme(self, sender, state):
+        self.settings.set_boolean('prefer-dark-theme', state)
 
     def on_scheme_changed(self, style_chooser, event):
         self.settings.set_string('stylescheme', style_chooser.get_style_scheme().get_id())

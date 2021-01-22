@@ -94,6 +94,9 @@ class Application(Gtk.Application):
         style_context.add_provider_for_screen(
             screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
+        if self.settings.get_boolean('prefer-dark-theme'):
+            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
+
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
@@ -141,6 +144,10 @@ class Application(Gtk.Application):
             self.window.set_indent_width(settings.get_int('indent-width'))
         elif key == 'font':
             self.window.editor.update_font(settings.get_string('font'))
+        elif key == 'prefer-dark-theme':
+            Gtk.Settings.get_default()\
+                .props\
+                .gtk_application_prefer_dark_theme = settings.get_boolean('prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)

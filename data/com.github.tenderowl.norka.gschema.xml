@@ -41,6 +41,11 @@
 			<summary>Indent width</summary>
 			<description>Indent width</description>
 		</key>
+		<key type="b" name="prefer-dark-theme">
+			<default>false</default>
+			<summary>Prefer dark theme</summary>
+			<description>Whether the application prefers to use a dark theme</description>
+		</key>
 		<key type="s" name="stylescheme">
 			<default>"norka"</default>
 			<summary>Editor style scheme</summary>
