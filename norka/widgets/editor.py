@@ -151,7 +151,6 @@ class Editor(Gtk.Grid):
         :return: None
         """
         self.document = Document(title=title)
-        self.document.document_id = storage.add(self.document)
         self.view.grab_focus()
         self.emit('document-load', self.document.document_id)
 
@@ -214,12 +213,23 @@ class Editor(Gtk.Grid):
             self.buffer.get_start_iter(),
             self.buffer.get_end_iter(),
             True
-        )
+        ).strip()
+
+        # New document has id == -1
+        # No need to save new empty documents
+        if self.document.document_id == -1 and len(text) == 0:
+            # storage.delete(self.document.document_id)
+            return False
+
         if self.document.title in ('', 'Nameless'):
             try:
                 self.document.title = text.partition('\n')[0].lstrip(' #') or "Nameless"
             except TypeError:
                 pass
+
+        # Save new document to get ID before continue
+        if self.document.document_id == -1:
+            self.document.document_id = storage.add(self.document)
 
         if storage.update(self.document.document_id, {"content": text, 'title': self.document.title}):
             self.document.content = text
