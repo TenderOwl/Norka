@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-10-03 01:11+MSK\n"
+"POT-Creation-Date: 2021-01-22 15:50+MSK\n"
 "PO-Revision-Date: 2020-08-27 19:23+0300\n"
 "Last-Translator: Andrey Maksimov <andrey@tenderowl.com>\n"
 "Language-Team: Russian\n"
@@ -247,76 +247,84 @@ msgstr "Вставлять пробелы вместо табуляции"
 msgid "Tab width:"
 msgstr "Длина табуляции"
 
-#: ../norka/widgets/preferences_dialog.py:109
+#: ../norka/widgets/preferences_dialog.py:114
+msgid "Appearance"
+msgstr "Оформление"
+
+#: ../norka/widgets/preferences_dialog.py:115
+msgid "Prefer dark theme:"
+msgstr "Использовать темную тему"
+
+#: ../norka/widgets/preferences_dialog.py:117
 msgid "Styles"
 msgstr "Стили"
 
-#: ../norka/widgets/preferences_dialog.py:120
+#: ../norka/widgets/preferences_dialog.py:128
 msgid "Behavior"
 msgstr "Поведение"
 
-#: ../norka/widgets/preferences_dialog.py:121
+#: ../norka/widgets/preferences_dialog.py:129
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: ../norka/widgets/preferences_dialog.py:122
+#: ../norka/widgets/preferences_dialog.py:130
 msgid "Export"
 msgstr "Экспорт"
 
-#: ../norka/widgets/preferences_dialog.py:137
+#: ../norka/widgets/preferences_dialog.py:145
 msgid "Close"
 msgstr "Закрыть"
 
-#: ../norka/widgets/preferences_dialog.py:142
+#: ../norka/widgets/preferences_dialog.py:150
 msgid "Token"
 msgstr "Токен"
 
-#: ../norka/widgets/preferences_dialog.py:147
+#: ../norka/widgets/preferences_dialog.py:155
 msgid "Create Integration token and copy it here"
 msgstr "Создайте интеграционный токен и вставьте его сюда"
 
-#: ../norka/widgets/preferences_dialog.py:150
+#: ../norka/widgets/preferences_dialog.py:158
 msgid "Personal Token:"
 msgstr "Персональный токен"
 
-#: ../norka/widgets/preferences_dialog.py:155
-#: ../norka/widgets/preferences_dialog.py:157
+#: ../norka/widgets/preferences_dialog.py:163
+#: ../norka/widgets/preferences_dialog.py:165
 msgid "Login"
 msgstr "Войти"
 
-#: ../norka/widgets/preferences_dialog.py:156
+#: ../norka/widgets/preferences_dialog.py:164
 msgid "Password"
 msgstr "Пароль"
 
-#: ../norka/widgets/preferences_dialog.py:159
+#: ../norka/widgets/preferences_dialog.py:167
 msgid "Logout"
 msgstr "Выйти"
 
-#: ../norka/widgets/preferences_dialog.py:167
+#: ../norka/widgets/preferences_dialog.py:175
 msgid "Login:"
 msgstr "Логин"
 
-#: ../norka/widgets/preferences_dialog.py:169
+#: ../norka/widgets/preferences_dialog.py:177
 msgid "Password:"
 msgstr "Пароль"
 
-#: ../norka/widgets/preferences_dialog.py:231
+#: ../norka/widgets/preferences_dialog.py:242
 msgid "Something goes wrong!"
 msgstr "Что-то пошло не так!"
 
-#: ../norka/widgets/preferences_dialog.py:272
+#: ../norka/widgets/preferences_dialog.py:283
 msgid "Login failed."
 msgstr "Ошибка входа."
 
-#: ../norka/widgets/preferences_dialog.py:277
+#: ../norka/widgets/preferences_dialog.py:288
 msgid "Logged as {}."
 msgstr "Войти как {}."
 
-#: ../norka/widgets/preview.py:82
+#: ../norka/widgets/preview.py:79
 msgid "Nothing to preview"
 msgstr "Нечего показать"
 
-#: ../norka/widgets/preview.py:83
+#: ../norka/widgets/preview.py:80
 msgid "To render preview open a document"
 msgstr "Откройте документ для предпросмотра"
 
@@ -425,112 +433,112 @@ msgstr ""
 msgid "Writeas"
 msgstr ""
 
-#: ../data/ui/shortcuts.ui:13
+#: ../data/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "General"
 msgstr "Общие"
 
-#: ../data/ui/shortcuts.ui:17
+#: ../data/ui/shortcuts.ui:18
 msgctxt "shortcut window"
 msgid "New"
 msgstr "Новый"
 
-#: ../data/ui/shortcuts.ui:24
+#: ../data/ui/shortcuts.ui:25
 msgctxt "shortcut window"
 msgid "Import"
 msgstr "Импорт"
 
-#: ../data/ui/shortcuts.ui:31
+#: ../data/ui/shortcuts.ui:32
 msgctxt "shortcut window"
 msgid "Export"
 msgstr "Экспорт"
 
-#: ../data/ui/shortcuts.ui:38
+#: ../data/ui/shortcuts.ui:39
 msgctxt "shortcut window"
 msgid "Close document"
 msgstr "Закрыть документ"
 
-#: ../data/ui/shortcuts.ui:45
+#: ../data/ui/shortcuts.ui:46
 msgctxt "shortcut window"
 msgid "Quit application"
 msgstr "Выйти из приложения"
 
-#: ../data/ui/shortcuts.ui:55 ../data/ui/shortcuts.ui:59
+#: ../data/ui/shortcuts.ui:56 ../data/ui/shortcuts.ui:60
 msgctxt "shortcut window"
 msgid "Find"
 msgstr "Найти"
 
-#: ../data/ui/shortcuts.ui:66
+#: ../data/ui/shortcuts.ui:67
 msgctxt "shortcut window"
 msgid "Find next"
 msgstr "Найти след."
 
-#: ../data/ui/shortcuts.ui:73
+#: ../data/ui/shortcuts.ui:74
 msgctxt "shortcut window"
 msgid "Find previous"
 msgstr "Найти пред."
 
-#: ../data/ui/shortcuts.ui:82
+#: ../data/ui/shortcuts.ui:83
 msgctxt "shortcut window"
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: ../data/ui/shortcuts.ui:86
+#: ../data/ui/shortcuts.ui:87
 msgctxt "shortcut window"
 msgid "Open Preview window"
 msgstr "Открыть окно Предпросмотра"
 
-#: ../data/ui/shortcuts.ui:95
+#: ../data/ui/shortcuts.ui:96
 msgctxt "shortcut window"
 msgid "Copy and paste"
 msgstr "Копирование и вставка"
 
-#: ../data/ui/shortcuts.ui:99
+#: ../data/ui/shortcuts.ui:100
 msgctxt "shortcut window"
 msgid "Copy selected text to clipboard"
 msgstr "Копировать выделенный текст"
 
-#: ../data/ui/shortcuts.ui:106
+#: ../data/ui/shortcuts.ui:107
 msgctxt "shortcut window"
 msgid "Cut selected text to clipboard"
 msgstr "Вырезать выделенный текст"
 
-#: ../data/ui/shortcuts.ui:113
+#: ../data/ui/shortcuts.ui:114
 msgctxt "shortcut window"
 msgid "Paste selected text from clipboard"
 msgstr "Вставить текст"
 
-#: ../data/ui/shortcuts.ui:124
+#: ../data/ui/shortcuts.ui:125
 msgctxt "shortcut window"
 msgid "Undo and redo"
 msgstr "Отмена и повтор"
 
-#: ../data/ui/shortcuts.ui:128
+#: ../data/ui/shortcuts.ui:129
 msgctxt "shortcut window"
 msgid "Undo previous command"
 msgstr "Отменить действие"
 
-#: ../data/ui/shortcuts.ui:135
+#: ../data/ui/shortcuts.ui:136
 msgctxt "shortcut window"
 msgid "Redo previous command"
 msgstr "Повторить действие"
 
-#: ../data/ui/shortcuts.ui:146
+#: ../data/ui/shortcuts.ui:147
 msgctxt "shortcut window"
 msgid "Selection"
 msgstr "Выделение"
 
-#: ../data/ui/shortcuts.ui:150
+#: ../data/ui/shortcuts.ui:151
 msgctxt "shortcut window"
 msgid "Select all text"
 msgstr "Выделить весь текст"
 
-#: ../data/ui/shortcuts.ui:161
+#: ../data/ui/shortcuts.ui:162
 msgctxt "shortcut window"
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../data/ui/shortcuts.ui:165
+#: ../data/ui/shortcuts.ui:166
 msgctxt "shortcut window"
 msgid "Open Preferences"
 msgstr "Открыть настройки"

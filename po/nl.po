@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.tenderowl.norka\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-04 13:30+CEST\n"
+"POT-Creation-Date: 2021-01-22 15:54+MSK\n"
 "PO-Revision-Date: 2020-10-04 13:32+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: \n"
@@ -248,68 +248,76 @@ msgstr "Spaties in plaats van tabs:"
 msgid "Tab width:"
 msgstr "Tabbreedte:"
 
-#: ../norka/widgets/preferences_dialog.py:109
+#: ../norka/widgets/preferences_dialog.py:114
+msgid "Appearance"
+msgstr ""
+
+#: ../norka/widgets/preferences_dialog.py:115
+msgid "Prefer dark theme:"
+msgstr ""
+
+#: ../norka/widgets/preferences_dialog.py:117
 msgid "Styles"
 msgstr "Stijlen"
 
-#: ../norka/widgets/preferences_dialog.py:120
+#: ../norka/widgets/preferences_dialog.py:128
 msgid "Behavior"
 msgstr "Gedrag"
 
-#: ../norka/widgets/preferences_dialog.py:121
+#: ../norka/widgets/preferences_dialog.py:129
 msgid "Interface"
 msgstr "Uiterlijk"
 
-#: ../norka/widgets/preferences_dialog.py:122
+#: ../norka/widgets/preferences_dialog.py:130
 msgid "Export"
 msgstr "Exporteren"
 
-#: ../norka/widgets/preferences_dialog.py:137
+#: ../norka/widgets/preferences_dialog.py:145
 msgid "Close"
 msgstr "Sluiten"
 
-#: ../norka/widgets/preferences_dialog.py:142
+#: ../norka/widgets/preferences_dialog.py:150
 msgid "Token"
 msgstr "Toegangssleutel"
 
-#: ../norka/widgets/preferences_dialog.py:147
+#: ../norka/widgets/preferences_dialog.py:155
 msgid "Create Integration token and copy it here"
 msgstr "Maak een integratietoegangssleutel aan en plak deze hier"
 
-#: ../norka/widgets/preferences_dialog.py:150
+#: ../norka/widgets/preferences_dialog.py:158
 msgid "Personal Token:"
 msgstr "Persoonlijke toegangssleutel:"
 
-#: ../norka/widgets/preferences_dialog.py:155
-#: ../norka/widgets/preferences_dialog.py:157
+#: ../norka/widgets/preferences_dialog.py:163
+#: ../norka/widgets/preferences_dialog.py:165
 msgid "Login"
 msgstr "Inloggen"
 
-#: ../norka/widgets/preferences_dialog.py:156
+#: ../norka/widgets/preferences_dialog.py:164
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: ../norka/widgets/preferences_dialog.py:159
+#: ../norka/widgets/preferences_dialog.py:167
 msgid "Logout"
 msgstr "Uitloggen"
 
-#: ../norka/widgets/preferences_dialog.py:167
+#: ../norka/widgets/preferences_dialog.py:175
 msgid "Login:"
 msgstr "Gebruikersnaam:"
 
-#: ../norka/widgets/preferences_dialog.py:169
+#: ../norka/widgets/preferences_dialog.py:177
 msgid "Password:"
 msgstr "Wachtwoord:"
 
-#: ../norka/widgets/preferences_dialog.py:231
+#: ../norka/widgets/preferences_dialog.py:242
 msgid "Something goes wrong!"
 msgstr "Er is iets misgegaan!"
 
-#: ../norka/widgets/preferences_dialog.py:272
+#: ../norka/widgets/preferences_dialog.py:283
 msgid "Login failed."
 msgstr "Inloggen mislukt."
 
-#: ../norka/widgets/preferences_dialog.py:277
+#: ../norka/widgets/preferences_dialog.py:288
 msgid "Logged as {}."
 msgstr "Ingelogd als {}"
 
@@ -419,12 +427,10 @@ msgid "Unarchive"
 msgstr "De-archiveren"
 
 #: ../data/ui/documents_grid_context_menu.ui:201
-#| msgid "To Medium"
 msgid "Medium.com"
 msgstr "Medium.com"
 
 #: ../data/ui/documents_grid_context_menu.ui:215
-#| msgid "To Write.as"
 msgid "Writeas"
 msgstr "Writeas"
 
