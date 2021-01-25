@@ -31,6 +31,7 @@ from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.define import TARGET_ENTRY_TEXT
+from norka.services.settings import Settings
 from norka.services.storage import storage
 from norka.utils import find_child
 
@@ -43,8 +44,11 @@ class DocumentGrid(Gtk.Grid):
         'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
     }
 
-    def __init__(self):
+    def __init__(self, settings: Settings):
         super().__init__()
+
+        self.settings = settings
+        self.settings.connect("changed", self.on_settings_changed)
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
 
@@ -77,9 +81,14 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
+    def on_settings_changed(self, settings, key):
+        if key == "sort-desc":
+            self.reload_items(self)
+
     def reload_items(self, sender: Gtk.Widget = None) -> None:
+        order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
-        for document in storage.all(self.show_archived):
+        for document in storage.all(with_archived=self.show_archived, desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 

@@ -127,10 +127,12 @@ class Storage(object):
         self.conn.commit()
         return cursor.lastrowid
 
-    def all(self, with_archived: bool = False) -> list:
-        query = "SELECT * FROM documents"
+    def all(self, with_archived: bool = False, desc: bool = False) -> list:
+        query = "SELECT * FROM documents "
         if not with_archived:
-            query += " WHERE archived=0"
+            query += "WHERE archived=0 "
+
+        query += f"ORDER BY ID {'desc' if desc else 'asc'}"
 
         cursor = self.conn.cursor().execute(query)
         rows = cursor.fetchall()

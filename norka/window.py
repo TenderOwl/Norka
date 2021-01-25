@@ -83,7 +83,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.welcome_grid.connect('activated', self.on_welcome_activated)
         self.welcome_grid.connect('document-import', self.on_document_import)
 
-        self.document_grid = DocumentGrid()
+        self.document_grid = DocumentGrid(self.settings)
         self.document_grid.connect('document-create', self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)

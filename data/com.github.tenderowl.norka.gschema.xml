@@ -16,6 +16,11 @@
 			<summary>Last opened document id</summary>
 			<description>Last opened document id</description>
 		</key>
+		<key type="b" name="sort-desc">
+			<default>false</default>
+			<summary>Sort documents backwards.</summary>
+			<description>Toggle documents sorting in Asc or Desc order.</description>
+		</key>
 		<key type="b" name="autosave">
 			<default>true</default>
 			<summary>Autosave document</summary>

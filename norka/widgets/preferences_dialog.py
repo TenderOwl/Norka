@@ -59,6 +59,10 @@ class PreferencesDialog(Gtk.Dialog):
         indent_width.set_value(self.settings.get_int('indent-width'))
         indent_width.connect('value-changed', self.on_indent_width)
 
+        self.sort_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        self.sort_switch.set_state(self.settings.get_boolean('sort-desc'))
+        self.sort_switch.connect("state-set", self.on_sort_desc)
+
         self.spellcheck_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.spellcheck_switch.set_state(self.settings.get_boolean('spellcheck'))
         self.spellcheck_switch.connect("state-set", self.on_spellcheck)
@@ -80,16 +84,18 @@ class PreferencesDialog(Gtk.Dialog):
         general_grid.attach(Granite.HeaderLabel(_("General")), 0, 0, 3, 1)
         general_grid.attach(Gtk.Label(_("Save files when changed:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         general_grid.attach(self.autosave_switch, 1, 1, 1, 1)
-        general_grid.attach(Gtk.Label(_("Spell checking:"), halign=Gtk.Align.END), 0, 2, 1, 1)
-        general_grid.attach(self.spellcheck_switch, 1, 2, 1, 1)
+        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), halign=Gtk.Align.END), 0, 2, 1, 1)
+        general_grid.attach(self.sort_switch, 1, 2, 1, 1)
+        general_grid.attach(Gtk.Label(_("Spell checking:"), halign=Gtk.Align.END), 0, 3, 1, 1)
+        general_grid.attach(self.spellcheck_switch, 1, 3, 1, 1)
 
-        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 3, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), halign=Gtk.Align.END), 0, 4, 1, 1)
-        general_grid.attach(self.autoindent_switch, 1, 4, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), halign=Gtk.Align.END), 0, 5, 1, 1)
-        general_grid.attach(self.spaces_tabs_switch, 1, 5, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), halign=Gtk.Align.END), 0, 6, 1, 1)
-        general_grid.attach(indent_width, 1, 6, 2, 1)
+        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 4, 3, 1)
+        general_grid.attach(Gtk.Label(_("Automatic indentation:"), halign=Gtk.Align.END), 0, 5, 1, 1)
+        general_grid.attach(self.autoindent_switch, 1, 5, 1, 1)
+        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), halign=Gtk.Align.END), 0, 6, 1, 1)
+        general_grid.attach(self.spaces_tabs_switch, 1, 6, 1, 1)
+        general_grid.attach(Gtk.Label(_("Tab width:"), halign=Gtk.Align.END), 0, 7, 1, 1)
+        general_grid.attach(indent_width, 1, 7, 2, 1)
 
         # Interface grid
         interface_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
@@ -194,6 +200,10 @@ class PreferencesDialog(Gtk.Dialog):
 
     def on_spellcheck(self, sender: Gtk.Widget, state):
         self.settings.set_boolean("spellcheck", state)
+        return False
+
+    def on_sort_desc(self, sender: Gtk.Widget, state):
+        self.settings.set_boolean("sort-desc", state)
         return False
 
     def on_autosave(self, sender: Gtk.Widget, state):
