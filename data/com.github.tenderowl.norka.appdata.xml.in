@@ -35,6 +35,15 @@
   </screenshots>
 
   <releases>
+    <release date="2021-02-13" version="0.7.0">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Dark mode</li>
+          <li>Document ordering</li>
+        </ul>
+      </description>
+    </release>
     <release date="2021-01-20" version="0.6.3">
       <description>
         <p>Improvements</p>

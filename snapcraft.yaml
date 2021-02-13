@@ -1,10 +1,11 @@
 name: norka
-version: 0.6.3
+version: 0.7.0
 title: Norka
 summary: Text editor baked for simplicity.
 description: |
   Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or accidentally deleted notes.
   Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about you.
+  - Dark mode
   - All your notes inside
   - Automatically saved in place
   - Can be easily exported to files in one click
