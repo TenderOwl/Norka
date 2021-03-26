@@ -31,6 +31,7 @@ from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSpell', '3.0')
+gi.require_version('Handy', '1')
 
 from gi.repository import Gtk, Gio, Gdk
 
@@ -48,7 +49,7 @@ class Application(Gtk.Application):
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.HANDLES_OPEN)
+                         flags=Gio.ApplicationFlags.FLAGS_NONE)
 
         self.version = version
 
@@ -101,7 +102,7 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
 
         builder = Gtk.Builder.new_from_resource('/com/github/tenderowl/norka/ui/app_menu.xml')
-        self.set_app_menu(builder.get_object('app-menu'))
+        # self.set_app_menu(builder.get_object('app-menu'))
         self.settings.connect("changed", self.on_settings_changed)
 
     def do_activate(self):
