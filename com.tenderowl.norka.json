@@ -51,43 +51,43 @@
             ]
         },
         {
-	    "name": "elementary-theme",
-	    "buildsystem": "meson",
-	    "sources": [
-	      {
-		"type": "archive",
-		"url": "https://github.com/elementary/stylesheet/archive/5.4.2.tar.gz",
-		"sha256": "3bc37723daf4ce0b7c9ce4c125ef0055affe8d6654981388ec87d4a23a1ae0ec"
-	      }
-	    ]
-	  },
-	  {
-	    "name": "elementary-icons",
-	    "buildsystem": "meson",
-	    "config-opts": [
-	      "-Dpalettes=false"
-	    ],
-	    "sources": [
-	      {
-		"type": "archive",
-		"url": "https://github.com/elementary/icons/archive/5.3.1.tar.gz",
-		"sha256": "67b349453f8990e399521bb8d96f4caf4c23a27cf22cbc18ddacf0e817c59e12"
-	      }
-	    ],
-	    "modules": [
-	      {
-		"name": "xcursorgen",
-		"cleanup": "*",
-		"sources": [
-		  {
-		    "type": "archive",
-		    "url": "https://gitlab.freedesktop.org/xorg/app/xcursorgen/-/archive/xcursorgen-1.0.7/xcursorgen-xcursorgen-1.0.7.tar.gz",
-		    "sha256": "7fb30a052b63e3ed02c9e43bd70fe1bf8189f2f3d702ab43b5b0726a2dbafccd"
-		  }
-		]
-	      }
-	    ]
-	  }
+            "name" : "elementary-theme",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://github.com/elementary/stylesheet/archive/5.4.2.tar.gz",
+                    "sha256" : "3bc37723daf4ce0b7c9ce4c125ef0055affe8d6654981388ec87d4a23a1ae0ec"
+                }
+            ]
+        },
+        {
+            "name" : "elementary-icons",
+            "buildsystem" : "meson",
+            "config-opts" : [
+                "-Dpalettes=false"
+            ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://github.com/elementary/icons/archive/5.3.1.tar.gz",
+                    "sha256" : "67b349453f8990e399521bb8d96f4caf4c23a27cf22cbc18ddacf0e817c59e12"
+                }
+            ],
+            "modules" : [
+                {
+                    "name" : "xcursorgen",
+                    "cleanup" : "*",
+                    "sources" : [
+                        {
+                            "type" : "archive",
+                            "url" : "https://gitlab.freedesktop.org/xorg/app/xcursorgen/-/archive/xcursorgen-1.0.7/xcursorgen-xcursorgen-1.0.7.tar.gz",
+                            "sha256" : "7fb30a052b63e3ed02c9e43bd70fe1bf8189f2f3d702ab43b5b0726a2dbafccd"
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "name" : "gtksourceview",
             "config-opts" : [
