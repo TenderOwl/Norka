@@ -39,6 +39,15 @@
   </screenshots>
 
   <releases>
+    <release date="2021-04-08" version="0.7.2">
+      <description>
+        <p>New app page and</p>
+        <ul>
+          <li>New app screenshots</li>
+          <li>Update libraries</li>
+        </ul>
+      </description>
+    </release>
     <release date="2021-02-13" version="0.7.0">
       <description>
         <p>Improvements</p>
