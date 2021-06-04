@@ -7,7 +7,7 @@
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
     <child>
-      <object class="HdyDeck">
+      <object class="HdyDeck" id="screens">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <child>

@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys
+from typing import List
 
 import gi
 
@@ -31,7 +32,9 @@ from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('GtkSpell', '3.0')
+gi.require_version('GtkSource', '3.0')
 gi.require_version('Handy', '1')
+gi.require_version("WebKit2", "4.0")
 
 from gi.repository import Gtk, Gio, Gdk
 
@@ -114,7 +117,7 @@ class Application(Gtk.Application):
             self.window = NorkaWindow(application=self, settings=self.settings)
         self.window.present()
 
-    def do_open(self, files: [Gio.File], n_files: int, hint: str):
+    def do_open(self, files: List[Gio.File], n_files: int, hint: str):
         """Opens the given files.
 
         :param files: an array of Gio.Files to open
