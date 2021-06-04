@@ -26,12 +26,10 @@ from gettext import gettext as _
 
 import gi
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
 from gi.repository import Gtk, Granite
 
 
-class FormatShortcutsDialog(Gtk.Dialog):
+class FormatShortcutsDialog(Granite.Dialog):
 
     def __init__(self):
         super().__init__(title=_('Markup Help'))

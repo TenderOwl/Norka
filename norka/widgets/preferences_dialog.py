@@ -25,17 +25,13 @@ from gettext import gettext as _
 
 import gi
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-gi.require_version('GtkSource', '3.0')
-
 from gi.repository import Gtk, Granite, GtkSource, Gdk
 from norka.services.medium import Medium
 from norka.gobject_worker import GObjectWorker
 from norka.services.writeas import Writeas
 
 
-class PreferencesDialog(Gtk.Dialog):
+class PreferencesDialog(Granite.Dialog):
     __gtype_name__ = 'SettingsDialog'
 
     def __init__(self, transient_for, settings):

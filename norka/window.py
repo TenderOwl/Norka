@@ -54,9 +54,8 @@ class NorkaWindow(Handy.ApplicationWindow):
     content_box = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, **kwargs):
-        super().__init__(**kwargs)
-
         Handy.init()
+        super().__init__(**kwargs)
 
         self.set_default_icon(Pixbuf.new_from_resource_at_scale(
             '/com/github/tenderowl/norka/icons/com.github.tenderowl.norka.svg',

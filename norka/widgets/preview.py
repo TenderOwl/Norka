@@ -29,7 +29,6 @@ import gi
 from norka.gobject_worker import GObjectWorker
 from norka.services.export import Exporter
 
-gi.require_version("WebKit2", "4.0")
 from gi.repository import WebKit2, Gtk, Granite
 
 

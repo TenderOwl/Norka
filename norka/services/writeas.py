@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Tuple
 from norka.models.document import Document
 from norka.writeasapi.writeas import client
 
@@ -29,7 +30,7 @@ class Writeas:
     def __init__(self):
         self.client = client()
 
-    def login(self, login: str, password: str) -> (dict, str):
+    def login(self, login: str, password: str) -> Tuple[dict, str]:
         result = self.client.login(login, password)
         if isinstance(result, str):
             return None, result
