@@ -69,6 +69,11 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         self.current_size = (786, 520)
         self.resize(*self.settings.get_value('window-size'))
+
+        hints = Gdk.Geometry()
+        hints.min_width = 554
+        hints.min_height = 435
+        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
         self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
