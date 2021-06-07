@@ -34,6 +34,7 @@ class FormatShortcutsDialog(Granite.Dialog):
     def __init__(self):
         super().__init__(title=_('Markup Help'))
         self.set_default_size(300, 340)
+        self.set_border_width(5)
 
         h1_label = Gtk.Label(label=f'{self.span_text("#")} {_("Header")} 1',
                              halign=Gtk.Align.START,
@@ -139,6 +140,10 @@ class FormatShortcutsDialog(Granite.Dialog):
 
         self.get_content_area().add(grid)
 
+        close_button = Gtk.Button(label=_("Close"))
+        close_button.connect('clicked', self.on_close_activated)
+        self.add_action_widget(close_button, 0)
+
         self.show_all()
 
     @staticmethod
@@ -150,3 +155,6 @@ class FormatShortcutsDialog(Granite.Dialog):
     @staticmethod
     def span_text(text):
         return f'<span alpha="40%" weight="bold">{text}</span>'
+
+    def on_close_activated(self, sender: Gtk.Widget):
+        self.destroy()
