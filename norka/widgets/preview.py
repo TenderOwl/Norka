@@ -50,6 +50,9 @@ class Preview(Handy.Window):
         self.set_default_size(800, 600)
         self.set_transient_for(parent)
 
+        self.header_overlay.add_overlay(self.header_revealer)
+        self.header_revealer.set_reveal_child(True)
+
         # print_button = Gtk.Button.new_from_icon_name('document-print', Gtk.IconSize.LARGE_TOOLBAR)
         # print_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Print document')))
         # print_button.connect('clicked', lambda x: self.emit('print'))
