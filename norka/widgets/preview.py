@@ -29,15 +29,21 @@ import gi
 from norka.gobject_worker import GObjectWorker
 from norka.services.export import Exporter
 
-from gi.repository import WebKit2, Gtk, Granite
+from gi.repository import WebKit2, Gtk, Granite, Handy, Gdk, GLib
 
 
-class Preview(Gtk.Window):
+@Gtk.Template(resource_path="/com/github/tenderowl/norka/ui/preview_window.ui")
+class Preview(Handy.Window):
     __gtype_name__ = 'PreviewWindow'
 
     # __gsignals__ = {
     #     'print': (GObject.SIGNAL_RUN_FIRST, None, ()),
     # }
+    header_overlay: Gtk.Overlay = Gtk.Template.Child()
+    header_revealer: Gtk.Revealer = Gtk.Template.Child()
+    header_bar: Handy.HeaderBar = Gtk.Template.Child()
+    spinner: Gtk.Spinner = Gtk.Template.Child()
+    content_deck: Handy.Deck = Gtk.Template.Child()
 
     def __init__(self, parent: Gtk.Widget, text: str = None):
         super().__init__(modal=False)
@@ -48,17 +54,17 @@ class Preview(Gtk.Window):
         # print_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Print document')))
         # print_button.connect('clicked', lambda x: self.emit('print'))
 
-        self.spinner = Gtk.Spinner(visible=False)
-
-        header = Gtk.HeaderBar(title=_("Preview"))
-        header.set_has_subtitle(False)
-        header.set_show_close_button(True)
-        header.get_style_context().add_class('norka-header')
-
-        header.pack_start(self.spinner)
+        # self.spinner = Gtk.Spinner(visible=False)
+        #
+        # header = Gtk.HeaderBar(title=_("Preview"))
+        # header.set_has_subtitle(False)
+        # header.set_show_close_button(True)
+        # header.get_style_context().add_class('norka-header')
+        #
+        # header.pack_start(self.spinner)
         # header.pack_end(print_button)
 
-        self.set_titlebar(header)
+        # self.set_titlebar(header)
 
         self.temp_file = tempfile.NamedTemporaryFile(prefix='norka-', delete=False)
 
@@ -78,11 +84,15 @@ class Preview(Gtk.Window):
         self.empty.set_title(_('Nothing to preview'))
         self.empty.set_subtitle(_('To render preview open a document'))
 
-        self.stack = Gtk.Stack()
-        self.stack.add_named(self.empty, 'empty-page')
-        self.stack.add_named(self.web, 'preview-page')
+        # self.stack = Gtk.Stack()
+        # self.stack.add_named(self.empty, 'empty-page')
+        # self.stack.add_named(self.web, 'preview-page')
 
-        self.add(self.stack)
+        self.content_deck.add(self.empty)
+        self.content_deck.add(self.web)
+
+        self.connect('enter-notify-event', self.on_enter_notify)
+        self.connect('leave-notify-event', self.on_leave_notify)
 
     def buffer_changed(self, buffer: Gtk.TextBuffer):
         self.show_spinner(True)
@@ -106,10 +116,16 @@ class Preview(Gtk.Window):
         self.spinner.set_visible(state)
 
     def show_preview(self, sender=None, event=None):
-        self.stack.set_visible_child_name('preview-page')
+        self.content_deck.set_visible_child(self.web)
 
     def show_empty_page(self, sender=None, event=None):
-        self.stack.set_visible_child_name('empty-page')
+        self.content_deck.set_visible_child(self.empty)
 
     def scroll_to(self, percent: float):
         self.web.run_javascript(f'scrollTo({percent});', None, print)
+
+    def on_enter_notify(self, widget: Gtk.Widget, event: Gdk.EventMotion):
+        self.header_revealer.set_reveal_child(True)
+
+    def on_leave_notify(self, widget: Gtk.Widget, event: Gdk.EventCrossing):
+        self.header_revealer.set_reveal_child(False)
