@@ -35,7 +35,6 @@ from norka.services.storage import storage
 from norka.widgets.editor import Editor
 from norka.widgets.search_bar import SearchBar
 
-gi.require_version('GtkSource', '3.0')
 from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
 
 

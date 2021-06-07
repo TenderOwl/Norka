@@ -24,7 +24,7 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite
+from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
@@ -47,10 +47,14 @@ from norka.widgets.rename_dialog import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
-class NorkaWindow(Gtk.ApplicationWindow):
+@Gtk.Template(resource_path="/com/github/tenderowl/norka/ui/window.ui")
+class NorkaWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
+    content_box = Gtk.Template.Child()
+
     def __init__(self, settings: Gio.Settings, **kwargs):
+        Handy.init()
         super().__init__(**kwargs)
 
         self.set_default_icon(Pixbuf.new_from_resource_at_scale(
@@ -65,6 +69,11 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         self.current_size = (786, 520)
         self.resize(*self.settings.get_value('window-size'))
+
+        hints = Gdk.Geometry()
+        hints.min_width = 554
+        hints.min_height = 435
+        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
         self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
@@ -75,7 +84,7 @@ class NorkaWindow(Gtk.ApplicationWindow):
 
         # Make a header
         self.header = Header(self.settings)
-        self.set_titlebar(self.header)
+        # self.set_titlebar(self.header)
         self.header.show()
 
         # Init screens
@@ -107,7 +116,8 @@ class NorkaWindow(Gtk.ApplicationWindow):
         self.overlay.add_overlay(self.toast)
         self.overlay.show_all()
 
-        self.add(self.overlay)
+        self.content_box.pack_start(self.header, False, False, 0)
+        self.content_box.pack_end(self.overlay, True, True, 0)
 
         # Init actions
         self.init_actions()

@@ -24,29 +24,25 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gdk, Gio, GObject
+from gi.repository import Gtk, Gdk, Gio, GObject, Granite
 
 from norka.models.document import Document
 from norka.services.storage import storage
 
 
-class QuickFindDialog(Gtk.Dialog):
+class QuickFindDialog(Granite.Dialog):
     __gtype_name__ = 'QuickFindDialog'
 
     def __init__(self):
-        super().__init__(deletable=False,
-                         destroy_with_parent=True,
-                         use_header_bar=1,
-                         title=_("Quick Find"),
-                         )
+        super().__init__(title=_("Quick Find"))
 
         # Store document_id to response
         self.document_id = None
 
         self.get_style_context().add_class("quick-find-dialog")
 
-        self.get_header_bar().set_visible(False)
-        self.get_header_bar().set_no_show_all(True)
+        # self.get_header_bar().set_visible(False)
+        # self.get_header_bar().set_no_show_all(True)
 
         self.set_default_size(400, 200)
         self.set_modal(True)
@@ -97,7 +93,7 @@ class QuickFindDialog(Gtk.Dialog):
         box.set_spacing(6)
         box.pack_start(self.search_entry, False, True, 0)
         box.pack_end(scrolled, True, True, 0)
-        self.set_titlebar(None)
+        # self.set_titlebar(None)
 
         self.connect('key_release_event', self.on_key_release_event)
 

@@ -24,14 +24,14 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk, Granite, Handy
 
 from norka.define import APP_TITLE, APP_SUBTITLE
 from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
 
 
-class Header(Gtk.HeaderBar):
+class Header(Handy.HeaderBar):
     __gtype_name__ = 'Header'
 
     def __init__(self, settings):

@@ -1,10 +1,10 @@
 {
-    "app-id": "com.github.tenderowl.norka",
-    "runtime": "org.gnome.Platform",
-    "sdk": "org.gnome.Sdk",
-    "runtime-version": "3.38",
-    "command": "com.github.tenderowl.norka",
-    "finish-args": [
+    "app-id" : "com.github.tenderowl.norka",
+    "runtime" : "io.elementary.Platform",
+    "sdk" : "io.elementary.Sdk",
+    "runtime-version" : "daily",
+    "command" : "com.github.tenderowl.norka",
+    "finish-args" : [
         "--filesystem=home",
         "--share=ipc",
         "--share=network",
@@ -12,7 +12,7 @@
         "--socket=wayland",
         "--device=dri"
     ],
-    "cleanup": [
+    "cleanup" : [
         "/include",
         "/lib/pkgconfig",
         "/man",
@@ -23,158 +23,173 @@
         "*.la",
         "*.a"
     ],
-    "modules": [
+    "modules" : [
         {
-            "name": "granite",
-            "buildsystem": "meson",
-            "sources": [
+            "name" : "libhandy",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "config-opts" : [
+                "-Dexamples=false",
+                "-Dtests=false"
+            ],
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://github.com/elementary/granite.git",
-                    "tag": "6.0.0"
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git"
                 }
             ]
         },
         {
-            "name": "elementary-theme",
-            "buildsystem": "meson",
-            "sources": [
+            "name" : "granite",
+            "buildsystem" : "meson",
+            "sources" : [
                 {
-                    "type": "archive",
-                    "url": "https://github.com/elementary/stylesheet/archive/5.4.2.tar.gz",
-                    "sha256": "3bc37723daf4ce0b7c9ce4c125ef0055affe8d6654981388ec87d4a23a1ae0ec"
+                    "type" : "git",
+                    "url" : "https://github.com/elementary/granite.git",
+                    "tag" : "6.0.0"
                 }
             ]
         },
         {
-            "name": "elementary-icons",
-            "buildsystem": "meson",
-            "config-opts": [
+            "name" : "gtksourceview",
+            "config-opts" : [
+                "--disable-Werror"
+            ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.11.tar.xz",
+                    "sha256" : "691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd"
+                }
+            ]
+        },
+        {
+            "name" : "intltool",
+            "cleanup" : [
+                "*"
+            ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+                    "sha256" : "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
+                }
+            ]
+        },
+        {
+            "name" : "gtkspell",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://downloads.sourceforge.net/project/gtkspell/3.0.10/gtkspell3-3.0.10.tar.xz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fgtkspell%2Ffiles%2F3.0.10%2Fgtkspell3-3.0.10.tar.xz%2Fdownload&ts=1572946840",
+                    "sha256" : "b040f63836b347eb344f5542443dc254621805072f7141d49c067ecb5a375732"
+                }
+            ]
+        },
+        {
+            "name" : "python3-mistune",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"mistune==2.0.0a6\""
+            ],
+            "sources" : [
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/26/e1/68d7f644f19598d466b176e649df88b9052aaa96372d133dbed86db27c8a/mistune-2.0.0a6.tar.gz",
+                    "sha256" : "5747cbb16fb50cd2ddd25d44d93b2c414a3b75875f6d9d58be8afbae67234ec9"
+                }
+            ]
+        },
+        {
+            "name" : "python3-requests",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"requests\" --no-build-isolation"
+            ],
+            "sources" : [
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/6b/47/c14abc08432ab22dc18b9892252efaf005ab44066de871e72a38d6af464b/requests-2.25.1.tar.gz",
+                    "sha256" : "27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"
+                },
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/6d/78/f8db8d57f520a54f0b8a438319c342c61c22759d8f9a1cd2e2180b5e5ea9/certifi-2021.5.30.tar.gz",
+                    "sha256" : "2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"
+                },
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/94/40/c396b5b212533716949a4d295f91a4c100d51ba95ea9e2d96b6b0517e5a5/urllib3-1.26.5.tar.gz",
+                    "sha256" : "a7acd0977125325f516bda9735fa7142b909a8d01e8b2e4c8108d0984e6e0098"
+                },
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/ee/2d/9cdc2b527e127b4c9db64b86647d567985940ac3698eeabc7ffaccb4ea61/chardet-4.0.0.tar.gz",
+                    "sha256" : "0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"
+                },
+                {
+                    "type" : "file",
+                    "url" : "https://files.pythonhosted.org/packages/ea/b7/e0e3c1c467636186c39925827be42f16fee389dc404ac29e930e9136be70/idna-2.10.tar.gz",
+                    "sha256" : "b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"
+                }
+            ]
+        },
+        {
+            "name" : "elementary-theme",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://github.com/elementary/stylesheet/archive/5.4.2.tar.gz",
+                    "sha256" : "3bc37723daf4ce0b7c9ce4c125ef0055affe8d6654981388ec87d4a23a1ae0ec"
+                }
+            ]
+        },
+        {
+            "name" : "elementary-icons",
+            "buildsystem" : "meson",
+            "config-opts" : [
                 "-Dpalettes=false"
             ],
-            "sources": [
+            "sources" : [
                 {
-                    "type": "archive",
-                    "url": "https://github.com/elementary/icons/archive/5.3.1.tar.gz",
-                    "sha256": "67b349453f8990e399521bb8d96f4caf4c23a27cf22cbc18ddacf0e817c59e12"
+                    "type" : "archive",
+                    "url" : "https://github.com/elementary/icons/archive/5.3.1.tar.gz",
+                    "sha256" : "67b349453f8990e399521bb8d96f4caf4c23a27cf22cbc18ddacf0e817c59e12"
                 }
             ],
-            "modules": [
+            "modules" : [
                 {
-                    "name": "xcursorgen",
-                    "cleanup": "*",
-                    "sources": [
+                    "name" : "xcursorgen",
+                    "cleanup" : "*",
+                    "sources" : [
                         {
-                            "type": "archive",
-                            "url": "https://gitlab.freedesktop.org/xorg/app/xcursorgen/-/archive/xcursorgen-1.0.7/xcursorgen-xcursorgen-1.0.7.tar.gz",
-                            "sha256": "7fb30a052b63e3ed02c9e43bd70fe1bf8189f2f3d702ab43b5b0726a2dbafccd"
+                            "type" : "archive",
+                            "url" : "https://gitlab.freedesktop.org/xorg/app/xcursorgen/-/archive/xcursorgen-1.0.7/xcursorgen-xcursorgen-1.0.7.tar.gz",
+                            "sha256" : "7fb30a052b63e3ed02c9e43bd70fe1bf8189f2f3d702ab43b5b0726a2dbafccd"
                         }
                     ]
                 }
             ]
         },
         {
-            "name": "gtksourceview",
-            "config-opts": [
-                "--disable-Werror"
-            ],
-            "sources": [
+            "name" : "norka",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
                 {
-                    "type": "archive",
-                    "url": "https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.11.tar.xz",
-                    "sha256": "691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd"
-                }
-            ]
-        },
-        {
-            "name": "intltool",
-            "cleanup": [
-                "*"
-            ],
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
-                    "sha256": "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
-                }
-            ]
-        },
-        {
-            "name": "gtkspell",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://downloads.sourceforge.net/project/gtkspell/3.0.10/gtkspell3-3.0.10.tar.xz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fgtkspell%2Ffiles%2F3.0.10%2Fgtkspell3-3.0.10.tar.xz%2Fdownload&ts=1572946840",
-                    "sha256": "b040f63836b347eb344f5542443dc254621805072f7141d49c067ecb5a375732"
-                }
-            ]
-        },
-        {
-            "name": "python3-mistune",
-            "buildsystem": "simple",
-            "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"mistune==2.0.0a6\""
-            ],
-            "sources": [
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/26/e1/68d7f644f19598d466b176e649df88b9052aaa96372d133dbed86db27c8a/mistune-2.0.0a6.tar.gz",
-                    "sha256": "5747cbb16fb50cd2ddd25d44d93b2c414a3b75875f6d9d58be8afbae67234ec9"
-                }
-            ]
-        },
-        {
-            "name": "python3-requests",
-            "buildsystem": "simple",
-            "build-commands": [
-                "pip3 install --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"requests\""
-            ],
-            "sources": [
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/6b/47/c14abc08432ab22dc18b9892252efaf005ab44066de871e72a38d6af464b/requests-2.25.1.tar.gz",
-                    "sha256": "27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/ee/2d/9cdc2b527e127b4c9db64b86647d567985940ac3698eeabc7ffaccb4ea61/chardet-4.0.0.tar.gz",
-                    "sha256": "0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/29/e6/d1a1d78c439cad688757b70f26c50a53332167c364edb0134cadd280e234/urllib3-1.26.2.tar.gz",
-                    "sha256": "19188f96923873c92ccb987120ec4acaa12f0461fa9ce5d3d0772bc965a39e08"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/ea/b7/e0e3c1c467636186c39925827be42f16fee389dc404ac29e930e9136be70/idna-2.10.tar.gz",
-                    "sha256": "b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/06/a9/cd1fd8ee13f73a4d4f491ee219deeeae20afefa914dfb4c130cfc9dc397a/certifi-2020.12.5.tar.gz",
-                    "sha256": "1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c"
-                }
-            ]
-        },
-        {
-            "name": "norka",
-            "builddir": true,
-            "buildsystem": "meson",
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://github.com/TenderOwl/Norka.git"
+                    "type" : "git",
+                    "url" : "https://github.com/TenderOwl/Norka.git"
                 }
             ]
         }
     ],
-    "build-options": {
-        "env": {
-            "GOBJECT_DEBUG": "instance-count",
-            "GTK_DEBUG": "interactive",
-            "LANGUAGE": "RU",
-            "LC_TIME": "ru_RU.UTF-8"
+    "build-options" : {
+        "env" : {
+            "LANGUAGE" : "RU",
+            "GOBJECT_DEBUG" : "instance-count",
+            "LC_TIME" : "ru_RU.UTF-8",
+            "GTK_DEBUG" : "interactive"
         }
     }
 }
