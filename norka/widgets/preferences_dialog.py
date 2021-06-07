@@ -115,7 +115,7 @@ class PreferencesDialog(Granite.Dialog):
 
         interface_grid.attach(Granite.HeaderLabel(_("Appearance")), 0, 0, 3, 1)
         interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), halign=Gtk.Align.END), 0, 1, 2, 1)
-        interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
+        interface_grid.attach(self.dark_theme_switch, 2, 1, 2, 1)
         interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
         interface_grid.attach(scrolled, 0, 3, 3, 1)
 

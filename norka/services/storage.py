@@ -33,14 +33,20 @@ from gi.repository import GLib
 from norka.define import APP_TITLE
 from norka.models.document import Document
 from norka.services.logger import Logger
+from norka.services.settings import Settings
 
 
 class Storage(object):
-    def __init__(self):
-        self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
-        self.file_path = os.path.join(self.base_path, 'storage.db')
+    def __init__(self, settings: Settings):
         self.conn = None
         self.version = None
+        self.settings = settings
+        self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
+        self.file_path = self.settings.get_string("storage-path")
+        if not self.file_path:
+            self.file_path = os.path.join(self.base_path, 'storage.db')
+
+            self.settings.set_string("storage-path", self.file_path)
 
     def init(self):
         if not os.path.exists(self.base_path):
@@ -199,6 +205,3 @@ class Storage(object):
             docs.append(Document.new_with_row(row))
 
         return docs
-
-
-storage = Storage()

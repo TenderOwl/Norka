@@ -32,7 +32,7 @@ from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.define import TARGET_ENTRY_TEXT
 from norka.services.settings import Settings
-from norka.services.storage import storage
+from norka.services.storage import Storage
 from norka.utils import find_child
 
 
@@ -44,10 +44,11 @@ class DocumentGrid(Gtk.Grid):
         'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
     }
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings, storage: Storage):
         super().__init__()
 
         self.settings = settings
+        self.storage = storage
         self.settings.connect("changed", self.on_settings_changed)
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
@@ -88,7 +89,7 @@ class DocumentGrid(Gtk.Grid):
     def reload_items(self, sender: Gtk.Widget = None) -> None:
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
-        for document in storage.all(with_archived=self.show_archived, desc=order_desc):
+        for document in self.storage.all(with_archived=self.show_archived, desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 
@@ -179,7 +180,7 @@ class DocumentGrid(Gtk.Grid):
         if event.button == Gdk.BUTTON_SECONDARY:
             self.view.select_path(self.selected_path)
 
-            self.selected_document = storage.get(self.model.get_value(
+            self.selected_document = self.storage.get(self.model.get_value(
                 self.model.get_iter(self.selected_path), 3
             ))
 

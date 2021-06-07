@@ -1,85 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="norka">
-	<schema id="com.github.tenderowl.norka" path="/com/github/tenderowl/norka/">
-		<key type="ai" name="window-size">
-			<default>[960, 600]</default>
-			<summary>Window size in px</summary>
-			<description>Window size (width and height).</description>
-		</key>
-		<key type="ai" name="window-position">
-			<default>[-1, -1 ]</default>
-			<summary>Window position on screen in px</summary>
-			<description>Window position on screen.</description>
-		</key>
-		<key type="i" name="last-document-id">
-			<default>-1</default>
-			<summary>Last opened document id</summary>
-			<description>Last opened document id</description>
-		</key>
-		<key type="b" name="sort-desc">
-			<default>false</default>
-			<summary>Sort documents backwards.</summary>
-			<description>Toggle documents sorting in Asc or Desc order.</description>
-		</key>
-		<key type="b" name="autosave">
-			<default>true</default>
-			<summary>Autosave document</summary>
-			<description>Toggle autosave for documents</description>
-		</key>
-		<key type="b" name="spellcheck">
-			<default>true</default>
-			<summary>Spellchecking</summary>
-			<description>Toggle auto spellchecking</description>
-		</key>
-		<key type="b" name="spaces-instead-of-tabs">
-			<default>true</default>
-			<summary>Spaces instead of tabs</summary>
-			<description>Insert spaces instead of tabs</description>
-		</key>
-		<key type="b" name="autoindent">
-			<default>true</default>
-			<summary>Autoindent</summary>
-			<description>Set autoindent mode</description>
-		</key>
-		<key type="i" name="indent-width">
-			<default>4</default>
-			<summary>Indent width</summary>
-			<description>Indent width</description>
-		</key>
-		<key type="b" name="prefer-dark-theme">
-			<default>false</default>
-			<summary>Prefer dark theme</summary>
-			<description>Whether the application prefers to use a dark theme</description>
-		</key>
-		<key type="s" name="stylescheme">
-			<default>"norka"</default>
-			<summary>Editor style scheme</summary>
-			<description>Style scheme</description>
-		</key>
-	  	<key name="zoom" type="i">
-			<default>100</default>
-			<summary>Font Zoom</summary>
-			<description>Set the zoom of the font</description>
-		</key>
-		<key type="s" name="font">
-			<default>'Noto Sans Mono 10'</default>
-			<summary>Preferred Font</summary>
-			<description>Set the preferred font</description>
-		</key>
-	  <key type="s" name="medium-personal-token">
-	    <default>""</default>
-	    <summary>Medium.com access token</summary>
-	    <description>Personal access token to Medium.com</description>
-	  </key>
-	  <key type="s" name="medium-user-id">
-	    <default>""</default>
-	    <summary>Medium.com user ID</summary>
-	    <description>Medium.com user ID for personal access token</description>
-	  </key>
-	  <key type="s" name="writeas-access-token">
-	    <default>""</default>
-	    <summary>Write.as access token</summary>
-	    <description>Write.as access token for authenticated users</description>
-	  </key>
-	</schema>
+    <schema id="com.github.tenderowl.norka" path="/com/github/tenderowl/norka/">
+        <!-- Window params -->
+        <key name="window-size" type="ai">
+            <default>[960, 600]</default>
+            <summary>Window size in px</summary>
+            <description>Window size (width and height).</description>
+        </key>
+        <key name="window-position" type="ai">
+            <default>[-1, -1 ]</default>
+            <summary>Window position on screen in px</summary>
+            <description>Window position on screen.</description>
+        </key>
+        <!-- Storage settings -->
+        <key name="storage-path" type="s">
+            <default>""</default>
+            <summary>Storage path</summary>
+            <description>Where the database placed.</description>
+        </key>
+        <!-- Display settings -->
+        <key name="last-document-id" type="i">
+            <default>-1</default>
+            <summary>Last opened document id</summary>
+            <description>Last opened document id</description>
+        </key>
+        <key name="sort-desc" type="b">
+            <default>false</default>
+            <summary>Sort documents backwards.</summary>
+            <description>Toggle documents sorting in Asc or Desc order.</description>
+        </key>
+        <key name="autosave" type="b">
+            <default>true</default>
+            <summary>Autosave document</summary>
+            <description>Toggle autosave for documents</description>
+        </key>
+        <key name="spellcheck" type="b">
+            <default>true</default>
+            <summary>Spellchecking</summary>
+            <description>Toggle auto spellchecking</description>
+        </key>
+        <key name="spaces-instead-of-tabs" type="b">
+            <default>true</default>
+            <summary>Spaces instead of tabs</summary>
+            <description>Insert spaces instead of tabs</description>
+        </key>
+        <key name="autoindent" type="b">
+            <default>true</default>
+            <summary>Autoindent</summary>
+            <description>Set autoindent mode</description>
+        </key>
+        <key name="indent-width" type="i">
+            <default>4</default>
+            <summary>Indent width</summary>
+            <description>Indent width</description>
+        </key>
+        <key name="prefer-dark-theme" type="b">
+            <default>false</default>
+            <summary>Prefer dark theme</summary>
+            <description>Whether the application prefers to use a dark theme</description>
+        </key>
+        <key name="stylescheme" type="s">
+            <default>"norka"</default>
+            <summary>Editor style scheme</summary>
+            <description>Style scheme</description>
+        </key>
+        <key name="zoom" type="i">
+            <default>100</default>
+            <summary>Font Zoom</summary>
+            <description>Set the zoom of the font</description>
+        </key>
+        <key name="font" type="s">
+            <default>'Noto Sans Mono 10'</default>
+            <summary>Preferred Font</summary>
+            <description>Set the preferred font</description>
+        </key>
+        <!-- Integrations -->
+        <key name="medium-personal-token" type="s">
+            <default>""</default>
+            <summary>Medium.com access token</summary>
+            <description>Personal access token to Medium.com</description>
+        </key>
+        <key name="medium-user-id" type="s">
+            <default>""</default>
+            <summary>Medium.com user ID</summary>
+            <description>Medium.com user ID for personal access token</description>
+        </key>
+        <key name="writeas-access-token" type="s">
+            <default>""</default>
+            <summary>Write.as access token</summary>
+            <description>Write.as access token for authenticated users</description>
+        </key>
+
+    </schema>
 </schemalist>

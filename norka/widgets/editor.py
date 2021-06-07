@@ -23,27 +23,27 @@
 # SOFTWARE.
 
 import re
+from typing import Tuple
 
 import gi
+from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
 
 from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.markup_formatter import MarkupFormatter
 from norka.services.stats_handler import StatsHandler
-from norka.services.storage import storage
+from norka.services.storage import Storage
 from norka.widgets.image_link_popover import ImageLinkPopover
 from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
-
-from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
 
 
 class Editor(Gtk.Grid):
     __gtype_name__ = 'Editor'
 
     __gsignals__ = {
-        'document-load': (GObject.SignalFlags.ACTION, None, (int, )),
-        'document-close': (GObject.SignalFlags.ACTION, None, (int, )),
+        'document-load': (GObject.SignalFlags.ACTION, None, (int,)),
+        'document-close': (GObject.SignalFlags.ACTION, None, (int,)),
         'insert-italic': (GObject.SignalFlags.ACTION, None, ()),
         'insert-bold': (GObject.SignalFlags.ACTION, None, ()),
         'insert-code': (GObject.SignalFlags.ACTION, None, ()),
@@ -58,10 +58,11 @@ class Editor(Gtk.Grid):
         'insert-image': (GObject.SignalFlags.ACTION, None, ()),
     }
 
-    def __init__(self):
+    def __init__(self, storage: Storage):
         super().__init__()
 
         self.document = None
+        self.storage = storage
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
@@ -139,7 +140,8 @@ class Editor(Gtk.Grid):
         self.spellchecker = GtkSpell.Checker()
 
         self.search_settings = GtkSource.SearchSettings(wrap_around=True)
-        self.search_context = GtkSource.SearchContext(buffer=self.buffer, settings=self.search_settings)
+        self.search_context = GtkSource.SearchContext(buffer=self.buffer,
+                                                      settings=self.search_settings)
         self.search_iter = None
 
     def create_document(self, title: str = 'Nameless') -> None:
@@ -160,7 +162,7 @@ class Editor(Gtk.Grid):
         :type doc_id: int
         :return: None
         """
-        self.document = storage.get(doc_id)
+        self.document = self.storage.get(doc_id)
 
         self.buffer.set_text(self.document.content)
         self.buffer.end_not_undoable_action()
@@ -228,9 +230,10 @@ class Editor(Gtk.Grid):
 
         # Save new document to get ID before continue
         if self.document.document_id == -1:
-            self.document.document_id = storage.add(self.document)
+            self.document.document_id = self.storage.add(self.document)
 
-        if storage.update(self.document.document_id, {"content": text, 'title': self.document.title}):
+        if self.storage.update(self.document.document_id,
+                               {"content": text, 'title': self.document.title}):
             self.document.content = text
             Logger.debug('Document %s saved', self.document.document_id)
             return True
@@ -307,7 +310,8 @@ class Editor(Gtk.Grid):
 
         css_provider = Gtk.CssProvider()
         css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
-        self.scrolled.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        self.scrolled.get_style_context().add_provider(css_provider,
+                                                       Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def update_font(self, font: str) -> None:
         self.font_desc = Pango.FontDescription.from_string(font)
@@ -359,13 +363,13 @@ class Editor(Gtk.Grid):
 
         return True
 
-    def search_for_iter(self, start_iter) -> (bool, Gtk.TextIter):
+    def search_for_iter(self, start_iter) -> Tuple[bool, Gtk.TextIter]:
         found, start_iter, end_iter, has_wrapped = self.search_context.forward2(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
         return found, end_iter
 
-    def search_for_iter_backward(self, start_iter) -> (bool, Gtk.TextIter):
+    def search_for_iter_backward(self, start_iter) -> Tuple[bool, Gtk.TextIter]:
         found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
