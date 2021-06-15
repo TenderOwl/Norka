@@ -34,7 +34,7 @@ from norka.services import distro
 from norka.services.export import Exporter
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
-from norka.services.storage import storage
+from norka.services.storage import Storage
 from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
@@ -53,7 +53,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     content_box = Gtk.Template.Child()
 
-    def __init__(self, settings: Gio.Settings, **kwargs):
+    def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         Handy.init()
         super().__init__(**kwargs)
 
@@ -62,6 +62,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             128, 128, True
         ))
         self.settings = settings
+        self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
 
@@ -92,12 +93,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.welcome_grid.connect('activated', self.on_welcome_activated)
         self.welcome_grid.connect('document-import', self.on_document_import)
 
-        self.document_grid = DocumentGrid(self.settings)
+        self.document_grid = DocumentGrid(self.settings, storage=self.storage)
         self.document_grid.connect('document-create', self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
-        self.editor = Editor()
+        self.editor = Editor(self.storage)
 
         self.screens = Gtk.Stack()
         self.screens.set_transition_duration(400)
@@ -308,7 +309,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         whether there is at least one document or not.
 
         """
-        if storage.count() > 0:
+        if self.storage.count() > 0:
             self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
@@ -430,7 +431,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 filename = os.path.basename(file_path)[:file_path.rfind('.')]
 
                 _doc = Document(title=filename, content='\r\n'.join(lines))
-                _doc_id = storage.add(_doc)
+                _doc_id = self.storage.add(_doc)
 
                 self.document_grid.reload_items()
             return True
@@ -466,7 +467,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         if not doc:
             return
 
-        if storage.update(doc_id=doc.document_id, data={'title': title}):
+        if self.storage.update(doc_id=doc.document_id, data={'title': title}):
             self.document_grid.reload_items()
 
     def on_document_archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -478,7 +479,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(doc_id=doc.document_id, data={'archived': True}):
+            if self.storage.update(doc_id=doc.document_id, data={'archived': True}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -491,7 +492,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
         if doc:
-            if storage.update(doc_id=doc.document_id, data={'archived': False}):
+            if self.storage.update(doc_id=doc.document_id, data={'archived': False}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -514,7 +515,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and storage.delete(doc.document_id):
+            if result == Gtk.ResponseType.APPLY and self.storage.delete(doc.document_id):
                 self.document_grid.reload_items()
                 self.check_documents_count()
 
@@ -729,7 +730,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        dialog = QuickFindDialog()
+        dialog = QuickFindDialog(self.storage)
         response = dialog.run()
 
         if response == Gtk.ResponseType.APPLY and dialog.document_id:
@@ -806,7 +807,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 
-        self.toggle_welcome(not show_archived and storage.count(with_archived=show_archived) == 0)
+        self.toggle_welcome(not show_archived and self.storage.count(with_archived=show_archived) == 0)
 
     def open_uri(self, event):
         if self.uri_to_open:

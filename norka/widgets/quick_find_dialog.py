@@ -27,14 +27,16 @@ from gettext import gettext as _
 from gi.repository import Gtk, Gdk, Gio, GObject, Granite
 
 from norka.models.document import Document
-from norka.services.storage import storage
+from norka.services.storage import Storage
 
 
 class QuickFindDialog(Granite.Dialog):
     __gtype_name__ = 'QuickFindDialog'
 
-    def __init__(self):
+    def __init__(self, storage: Storage):
         super().__init__(title=_("Quick Find"))
+
+        self.storage = storage
 
         # Store document_id to response
         self.document_id = None
@@ -113,7 +115,7 @@ class QuickFindDialog(Granite.Dialog):
         if not search_text:
             return
 
-        documents = storage.find(search_text=search_text)
+        documents = self.storage.find(search_text=search_text)
         for document in documents:
             self.result_store.append(document)
 

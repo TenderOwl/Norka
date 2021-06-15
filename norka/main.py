@@ -41,7 +41,7 @@ from gi.repository import Gtk, Gio, Gdk
 from norka.define import APP_ID
 from norka.services.logger import Logger
 from norka.services.settings import Settings
-from norka.services.storage import storage
+from norka.services.storage import Storage
 from norka.widgets.about_dialog import AboutDialog
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
@@ -63,8 +63,9 @@ class Application(Gtk.Application):
         self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
+        self.storage = Storage(self.settings)
         try:
-            storage.init()
+            self.storage.init()
         except Exception as e:
             sys.exit(e)
 
@@ -114,7 +115,7 @@ class Application(Gtk.Application):
         """
         self.window = self.props.active_window
         if not self.window:
-            self.window = NorkaWindow(application=self, settings=self.settings)
+            self.window = NorkaWindow(application=self, settings=self.settings, storage=self.storage)
         self.window.present()
 
     def do_open(self, files: List[Gio.File], n_files: int, hint: str):
@@ -149,8 +150,8 @@ class Application(Gtk.Application):
         elif key == 'font':
             self.window.editor.update_font(settings.get_string('font'))
         elif key == 'prefer-dark-theme':
-            Gtk.Settings.get_default()\
-                .props\
+            Gtk.Settings.get_default() \
+                .props \
                 .gtk_application_prefer_dark_theme = settings.get_boolean('prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
