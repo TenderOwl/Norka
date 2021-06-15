@@ -27,6 +27,7 @@ from gettext import gettext as _
 from gi.repository import Gtk, Granite, Handy
 
 from norka.define import RESOURCE_PREFIX
+from norka.services.stats_handler import DocumentStats
 from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
 
@@ -98,8 +99,8 @@ class Header(Gtk.Box):
     def update_title(self, title: str = None) -> None:
         self.editor_header.set_title(title)
 
-    def update_stats(self):
-        self.editor_header.set_subtitle(f"")
+    def update_stats(self, stats: DocumentStats):
+        self.editor_header.set_subtitle(f"{stats.characters} chars | {stats.words} words | {stats.sentences} sentences")
 
     def show_spinner(self, state: bool = False) -> None:
         if state:

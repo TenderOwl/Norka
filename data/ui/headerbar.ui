@@ -39,7 +39,7 @@
         <child>
           <object class="GtkButton" id="add_button">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.create</property>
             <property name="image">document-new</property>
@@ -72,7 +72,7 @@
         <child>
           <object class="GtkMenuButton" id="grid_menu_button">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
             <child>
@@ -87,7 +87,7 @@
         <child>
           <object class="GtkToggleButton" id="archived_button">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.toggle_archived</property>
             <property name="image">user-trash</property>

@@ -99,6 +99,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor(self.storage)
+        self.editor.connect('update-document-stats', self.update_document_stats)
 
         self.screens = Gtk.Stack()
         self.screens.set_transition_duration(400)
@@ -143,7 +144,6 @@ class NorkaWindow(Handy.ApplicationWindow):
                                                     Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
                                                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             self.get_style_context().add_class('elementary')
-
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -361,6 +361,7 @@ class NorkaWindow(Handy.ApplicationWindow):
     def document_activate(self, doc_id):
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
+        editor.connect('update-document-stats', self.update_document_stats)
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=editor.document.title)
@@ -854,6 +855,10 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_preview_close(self, sender):
         self.preview = None
+
+    def update_document_stats(self, editor):
+        stats = self.editor.stats
+        self.header.update_stats(stats)
 
     # def on_print(self, sender, event=None):
     #     print(sender, event)

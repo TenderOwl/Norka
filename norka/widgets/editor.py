@@ -24,6 +24,7 @@
 
 import re
 from typing import Tuple
+from gettext import gettext as _
 
 import gi
 from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
@@ -56,6 +57,7 @@ class Editor(Gtk.Grid):
         'insert-quote': (GObject.SignalFlags.ACTION, None, ()),
         'insert-link': (GObject.SignalFlags.ACTION, None, ()),
         'insert-image': (GObject.SignalFlags.ACTION, None, ()),
+        'update-document-stats': (GObject.SignalFlags.ACTION, None, ()),
     }
 
     def __init__(self, storage: Storage):
@@ -131,8 +133,11 @@ class Editor(Gtk.Grid):
         self.overlay.add(content_grid)
         self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
 
-        self.stats_handler = StatsHandler(overlay_bar=self.stats_overlay, buffer=self.buffer)
-        self.stats_handler.update_default_stat()
+        # Initialize stats calculations and connect `destroy` event
+        self.stats_handler = StatsHandler(buffer=self.buffer)
+        self.stats_overlay.connect('destroy', lambda x: self.stats_handler.on_destroy(self))
+        self.stats_handler.connect('update-document-stats', self.update_stats)
+        self.stats = self.stats_handler.stats
 
         self.add(self.overlay)
 
@@ -316,6 +321,11 @@ class Editor(Gtk.Grid):
     def update_font(self, font: str) -> None:
         self.font_desc = Pango.FontDescription.from_string(font)
         self.view.override_font(self.font_desc)
+
+    def update_stats(self, stats_handler: StatsHandler):
+        self.stats = stats_handler.stats
+        self.stats_overlay.set_label(_("{:d}:{:02d}:{:02d} Read Time").format(*self.stats.read_time))
+        self.emit('update-document-stats')
 
     def do_stop_search(self, event: Gdk.Event = None) -> None:
         self.search_revealer.set_reveal_child(False)

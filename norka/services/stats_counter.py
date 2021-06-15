@@ -106,10 +106,10 @@ class StatsCounter:
             for regexp in self.MARKUP_REGEXP_REMOVE:
                 text = re.sub(regexp, "", text)
 
-            character_count = 0  # len(re.findall(self.CHARACTERS, text))
+            character_count = len(re.findall(self.CHARACTERS, text))
             word_count = len(re.findall(self.WORDS, text))
-            sentence_count = 0  # len(re.findall(self.SENTENCES, text))
-            paragraph_count = 0  # len(re.findall(self.PARAGRAPHS, text))
+            sentence_count = len(re.findall(self.SENTENCES, text))
+            paragraph_count = len(re.findall(self.PARAGRAPHS, text))
 
             read_m, read_s = divmod(word_count / 200 * 60, 60)
             read_h, read_m = divmod(read_m, 60)
