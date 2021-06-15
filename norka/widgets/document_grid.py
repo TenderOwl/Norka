@@ -30,7 +30,7 @@ import cairo
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
-from norka.define import TARGET_ENTRY_TEXT
+from norka.define import TARGET_ENTRY_TEXT, RESOURCE_PREFIX
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
@@ -187,7 +187,7 @@ class DocumentGrid(Gtk.Grid):
             found, rect = self.view.get_cell_rect(self.selected_path)
 
             builder = Gtk.Builder()
-            builder.add_from_resource('/com/github/tenderowl/norka/ui/documents_grid_context_menu.ui')
+            builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
 
             menu_popover: Gtk.PopoverMenu = builder.get_object('popover-menu')
             find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)

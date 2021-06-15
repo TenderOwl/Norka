@@ -38,7 +38,7 @@ gi.require_version("WebKit2", "4.0")
 
 from gi.repository import Gtk, Gio, Gdk
 
-from norka.define import APP_ID
+from norka.define import APP_ID, RESOURCE_PREFIX
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
@@ -93,7 +93,7 @@ class Application(Gtk.Application):
 
     def init_style(self):
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource('/com/github/tenderowl/norka/css/application.css')
+        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
         screen = Gdk.Screen.get_default()
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(
@@ -105,7 +105,7 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
-        builder = Gtk.Builder.new_from_resource('/com/github/tenderowl/norka/ui/app_menu.xml')
+        builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
         self.settings.connect("changed", self.on_settings_changed)
 
@@ -169,7 +169,7 @@ class Application(Gtk.Application):
         about_dialog.present()
 
     def on_shortcuts(self, action, param):
-        builder = Gtk.Builder.new_from_resource("/com/github/tenderowl/norka/ui/shortcuts.ui")
+        builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")
         dialog = builder.get_object("shortcuts")
         dialog.set_transient_for(self.window)
         dialog.show()

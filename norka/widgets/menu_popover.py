@@ -29,7 +29,7 @@ from gi.repository import Gtk, Granite
 class MenuPopover(Gtk.Popover):
     def __init__(self, settings):
         super().__init__()
-        self.set_relative_to(None)
+        self.set_constrain_to(Gtk.PopoverConstraint.NONE)
 
         self.settings = settings
 

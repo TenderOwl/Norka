@@ -27,6 +27,7 @@ from gettext import gettext as _
 APP_ID = 'com.github.tenderowl.norka'
 APP_TITLE = 'Norka'
 APP_SUBTITLE = _('continuous text editor')
+RESOURCE_PREFIX = "/com/github/tenderowl/norka"
 
 DEBUG = False
 

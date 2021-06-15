@@ -26,11 +26,13 @@ from gettext import gettext as _
 
 from gi.repository import Gtk, Granite
 
+from norka.define import RESOURCE_PREFIX
+
 
 class MenuExport(Gtk.Popover):
     def __init__(self, settings):
         super().__init__()
-        self.set_relative_to(None)
+        self.set_constrain_to(Gtk.PopoverConstraint.NONE)
 
         self.settings = settings
 
@@ -42,7 +44,7 @@ class MenuExport(Gtk.Popover):
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
         self.export_plain.set_image(
-            Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text.svg"))
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text.svg"))
 
         self.export_markdown = Gtk.Button(
             label=_("Markdown"),
@@ -53,7 +55,7 @@ class MenuExport(Gtk.Popover):
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
         self.export_markdown.set_image(
-            Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text-markdown.svg"))
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-markdown.svg"))
 
         self.export_html = Gtk.Button(
             _("Html"),
@@ -64,7 +66,7 @@ class MenuExport(Gtk.Popover):
             image_position=Gtk.PositionType.TOP)
         self.export_html.set_tooltip_text(_("Export document to HTML"))
         self.export_html.set_image(
-            Gtk.Image.new_from_resource("/com/github/tenderowl/norka/icons/text-html.svg"))
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
 
         self.export_file = Gtk.ModelButton()
         self.export_file.get_child().destroy()

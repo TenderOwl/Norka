@@ -26,13 +26,15 @@ from gettext import gettext as _
 
 import gi
 
+
+from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.services.export import Exporter
 
 from gi.repository import WebKit2, Gtk, Granite, Handy, Gdk, GLib
 
 
-@Gtk.Template(resource_path="/com/github/tenderowl/norka/ui/preview_window.ui")
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/preview_window.ui")
 class Preview(Handy.Window):
     __gtype_name__ = 'PreviewWindow'
 

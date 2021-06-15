@@ -27,7 +27,7 @@ from gettext import gettext as _
 from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
 from gi.repository.GdkPixbuf import Pixbuf
 
-from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT
+from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services import distro
@@ -47,7 +47,7 @@ from norka.widgets.rename_dialog import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
-@Gtk.Template(resource_path="/com/github/tenderowl/norka/ui/window.ui")
+@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/window.ui"))
 class NorkaWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
@@ -58,7 +58,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         super().__init__(**kwargs)
 
         self.set_default_icon(Pixbuf.new_from_resource_at_scale(
-            '/com/github/tenderowl/norka/icons/com.github.tenderowl.norka.svg',
+            f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg',
             128, 128, True
         ))
         self.settings = settings

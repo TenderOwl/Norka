@@ -26,76 +26,62 @@ from gettext import gettext as _
 
 from gi.repository import Gtk, Granite, Handy
 
-from norka.define import APP_TITLE, APP_SUBTITLE
+from norka.define import RESOURCE_PREFIX
 from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
 
 
-class Header(Handy.HeaderBar):
+class Header(Gtk.Box):
     __gtype_name__ = 'Header'
 
-    def __init__(self, settings):
-        super().__init__()
+    def __init__(self, settings, **kwargs):
+        super().__init__(**kwargs)
+
+        self.builder = Gtk.Builder.new_from_resource(
+            f'{RESOURCE_PREFIX}/ui/headerbar.ui'
+        )
+        self.header_box: Gtk.Stack = self.builder.get_object('header_box')
+        self.grid_header: Handy.HeaderBar = self.builder.get_object('grid_header')
+        self.editor_header: Handy.HeaderBar = self.builder.get_object('editor_header')
+        self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
+        self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')
 
         self.document_mode_active = False
         self.settings = settings
 
-        self.set_title(_("Norka"))
-        self.set_subtitle(APP_SUBTITLE)
-        self.set_has_subtitle(True)
-        self.set_show_close_button(True)
-        self.get_style_context().add_class('norka-header')
+        self.header_box.set_visible_child_name("grid_header")
+        self.add(self.header_box)
 
-        self.spinner = Gtk.Spinner(visible=False)
-
-        self.import_button = Gtk.Button.new_from_icon_name('document-open', Gtk.IconSize.LARGE_TOOLBAR)
-        self.import_button.set_visible(True)
+        self.import_button: Gtk.Button= self.builder.get_object("import_button")
         self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), _('Import file to Norka')))
-        self.import_button.set_action_name('document.import')
-
-        self.add_button = Gtk.Button.new_from_icon_name('document-new', Gtk.IconSize.LARGE_TOOLBAR)
-        self.add_button.set_visible(True)
+        #
+        self.add_button: Gtk.Button = self.builder.get_object("add_button")
         self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), _('Create new document')))
-        self.add_button.set_action_name('document.create')
 
-        self.back_button = Gtk.Button.new_with_label(_('Documents'))
-        self.back_button.set_valign(Gtk.Align.CENTER)
-        self.back_button.get_style_context().add_class('back-button')
+        self.back_button: Gtk.Button = self.builder.get_object("back_button")
         self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(
             ('<Control>w',),
             _('Save document and return to documents list')))
-        self.back_button.set_visible(False)
-        self.back_button.set_action_name('document.close')
 
-        # self.search_button = Gtk.ToggleButton()
-        # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
-        # self.search_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>f',), 'Find text'))
-        # self.search_button.set_action_name('document.search_text')
-        # self.search_button.set_visible(False)
+        # # self.search_button = Gtk.ToggleButton()
+        # # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
+        # # self.search_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>f',), 'Find text'))
+        # # self.search_button.set_action_name('document.search_text')
+        # # self.search_button.set_visible(False)
 
-        self.share_app_menu = Gtk.MenuButton(tooltip_text=_("Share"))
+        self.share_app_menu: Gtk.MenuButton = self.builder.get_object("share_app_menu")
         self.share_app_menu.set_image(Gtk.Image.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR))
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))
 
-        self.archived_button = Gtk.ToggleButton()
-        self.archived_button.set_image(Gtk.Image.new_from_icon_name('user-trash', Gtk.IconSize.LARGE_TOOLBAR))
+        self.archived_button: Gtk.ToggleButton() = self.builder.get_object("archived_button")
         self.archived_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Show Archived files')))
-        self.archived_button.set_action_name('document.toggle_archived')
-        self.archived_button.set_visible(True)
 
-        self.menu_button = Gtk.MenuButton(tooltip_text=_("Menu"))
-        self.menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
-        self.menu_button.set_popover(MenuPopover(settings=self.settings))
-        self.menu_button.set_visible(True)
-
-        self.pack_start(self.back_button)
-        self.pack_start(self.add_button)
-        self.pack_start(self.import_button)
-        self.pack_start(self.spinner)
-        self.pack_end(self.menu_button)
-        self.pack_end(self.share_app_menu)
-        self.pack_end(self.archived_button)
-        # self.pack_end(self.search_button)
+        self.grid_menu_button: Gtk.MenuButton = self.builder.get_object("grid_menu_button")
+        self.grid_menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
+        self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
+        self.editor_menu_button: Gtk.MenuButton = self.builder.get_object("editor_menu_button")
+        self.editor_menu_button.set_image(Gtk.Image.new_from_icon_name('open-menu', Gtk.IconSize.LARGE_TOOLBAR))
+        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions
@@ -104,19 +90,22 @@ class Header(Handy.HeaderBar):
         """
         self.document_mode_active = not self.document_mode_active
 
-        self.back_button.set_visible(self.document_mode_active)
-        # self.search_button.set_visible(self.document_mode_active)
-        self.share_app_menu.set_visible(self.document_mode_active)
-        self.add_button.set_visible(not self.document_mode_active)
-        self.import_button.set_visible(not self.document_mode_active)
-        self.archived_button.set_visible(not self.document_mode_active)
+        if self.document_mode_active:
+            self.header_box.set_visible_child_name("editor_header")
+        else:
+            self.header_box.set_visible_child_name("grid_header")
 
     def update_title(self, title: str = None) -> None:
-        self.set_title(title or APP_TITLE)
+        self.editor_header.set_title(title)
+
+    def update_stats(self):
+        self.editor_header.set_subtitle(f"")
 
     def show_spinner(self, state: bool = False) -> None:
         if state:
-            self.spinner.start()
+            self.loader_spinner.start()
+            self.editor_spinner.start()
         else:
-            self.spinner.stop()
+            self.editor_spinner.stop()
+            self.loader_spinner.stop()
         self.spinner.set_visible(state)
