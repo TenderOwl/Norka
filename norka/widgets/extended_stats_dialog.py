@@ -36,10 +36,11 @@ class ExtendedStatsDialog(Granite.Dialog):
 
     _document: Document = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, window, **kwargs):
         super().__init__(**kwargs)
         self.set_default_size(300, 340)
         self.set_border_width(6)
+        # self.set_transient_for(window)
 
         self.builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/stats.ui")
         self.main_box = self.builder.get_object("main_box")
@@ -50,6 +51,13 @@ class ExtendedStatsDialog(Granite.Dialog):
         self.paragraphs_count_label: Gtk.Label = self.builder.get_object("paragraphs_count_label")
         self.created_date_label: Gtk.Label = self.builder.get_object("created_date_label")
         self.modified_date_label: Gtk.Label = self.builder.get_object("modified_date_label")
+        self.export_text: Gtk.Button = self.builder.get_object("export_text")
+        self.export_markdown: Gtk.Button = self.builder.get_object("export_markdown")
+        self.export_html: Gtk.Button = self.builder.get_object("export_html")
+
+        self.export_text.connect('clicked', window.on_export_plaintext)
+        self.export_markdown.connect('clicked', window.on_export_markdown)
+        self.export_html.connect('clicked', window.on_export_html)
 
         self.get_content_area().add(self.main_box)
 

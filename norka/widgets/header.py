@@ -106,10 +106,12 @@ class Header(Gtk.Box):
         self.editor_header.set_subtitle(f"{stats.characters} chars | {stats.words} words | {stats.sentences} sentences")
 
     def show_spinner(self, state: bool = False) -> None:
+        # Gonna fix this double spinners
         if state:
             self.loader_spinner.start()
             self.editor_spinner.start()
         else:
             self.editor_spinner.stop()
             self.loader_spinner.stop()
-        self.spinner.set_visible(state)
+        self.loader_spinner.set_visible(state)
+        self.editor_spinner.set_visible(state)

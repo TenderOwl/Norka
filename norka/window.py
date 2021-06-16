@@ -823,7 +823,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_show_extended_stats(self, action: Gio.SimpleAction, name: str = None) -> None:
         if not self.extended_stats_dialog:
-            self.extended_stats_dialog = ExtendedStatsDialog()
+            self.extended_stats_dialog = ExtendedStatsDialog(window=self)
             self.extended_stats_dialog.connect('destroy', self.on_extended_stats_dialog_close)
 
         if self.extended_stats_dialog and self.editor.document:

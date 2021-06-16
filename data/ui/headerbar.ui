@@ -177,7 +177,7 @@
         <child>
           <object class="GtkButton" id="extended_stats_button">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.show_extended_stats</property>
             <property name="image">extended-stats</property>
