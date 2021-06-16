@@ -1,10 +1,13 @@
 data/ui/documents_grid_context_menu.ui
+data/ui/headerbar.ui
 data/ui/shortcuts.ui
+data/ui/stats.ui
 norka/define.py
-norka/services/stats_handler.py
 norka/widgets/about_dialog.py
 norka/widgets/document_grid.py
+norka/widgets/editor.py
 norka/widgets/export_dialog.py
+norka/widgets/extended_stats_dialog.py
 norka/widgets/format_shortcuts_dialog.py
 norka/widgets/header.py
 norka/widgets/image_link_popover.py
