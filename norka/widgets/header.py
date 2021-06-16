@@ -70,6 +70,9 @@ class Header(Gtk.Box):
         # # self.search_button.set_action_name('document.search_text')
         # # self.search_button.set_visible(False)
 
+        self.extended_stats_button: Gtk.ToggleButton() = self.builder.get_object("extended_stats_button")
+        self.extended_stats_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Show document info')))
+
         self.share_app_menu: Gtk.MenuButton = self.builder.get_object("share_app_menu")
         self.share_app_menu.set_image(Gtk.Image.new_from_icon_name('document-save-as', Gtk.IconSize.LARGE_TOOLBAR))
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))

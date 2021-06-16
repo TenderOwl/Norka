@@ -39,6 +39,7 @@ from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
+from norka.widgets.extended_stats_dialog import ExtendedStatsDialog
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
@@ -65,6 +66,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
+        self.extended_stats_dialog = None
 
         self.apply_styling()
 
@@ -266,6 +268,11 @@ class NorkaWindow(Handy.ApplicationWindow):
                     'action': self.on_toggle_archive,
                     'accels': (None,)
                 },
+                {
+                    'name': 'show_extended_stats',
+                    'action': self.on_show_extended_stats,
+                    'accels': (None,)
+                },
             ]
         }
 
@@ -336,6 +343,10 @@ class NorkaWindow(Handy.ApplicationWindow):
         if self.screens.get_visible_child_name() == 'editor-grid':
             self.screens.set_visible_child_name('document-grid')
             self.editor.unload_document(save=self.autosave)
+            if self.extended_stats_dialog:
+                self.extended_stats_dialog.close()
+                self.extended_stats_dialog = None
+
             self.document_grid.reload_items()
             self.header.toggle_document_mode()
             self.header.update_title()
@@ -803,14 +814,27 @@ class NorkaWindow(Handy.ApplicationWindow):
         font = self.settings.get_string("font")
         return float(font[font.rfind(" ") + 1:])
 
-    def on_toggle_archive(self, action: Gio.SimpleAction, name: str = None):
+    def on_toggle_archive(self, action: Gio.SimpleAction, name: str = None) -> None:
         show_archived = self.header.archived_button.get_active()
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 
         self.toggle_welcome(not show_archived and self.storage.count(with_archived=show_archived) == 0)
 
-    def open_uri(self, event):
+    def on_show_extended_stats(self, action: Gio.SimpleAction, name: str = None) -> None:
+        if not self.extended_stats_dialog:
+            self.extended_stats_dialog = ExtendedStatsDialog()
+            self.extended_stats_dialog.connect('destroy', self.on_extended_stats_dialog_close)
+
+        if self.extended_stats_dialog and self.editor.document:
+            self.extended_stats_dialog.document = self.editor.document
+        self.extended_stats_dialog.present()
+        self.update_document_stats(None)
+
+    def on_extended_stats_dialog_close(self):
+        self.extended_stats_dialog = None
+
+    def open_uri(self, event) -> None:
         if self.uri_to_open:
             Gtk.show_uri_on_window(None, self.uri_to_open, Gdk.CURRENT_TIME)
             self.uri_to_open = None
@@ -859,6 +883,8 @@ class NorkaWindow(Handy.ApplicationWindow):
     def update_document_stats(self, editor):
         stats = self.editor.stats
         self.header.update_stats(stats)
+        if self.extended_stats_dialog:
+            self.extended_stats_dialog.update_stats(stats)
 
     # def on_print(self, sender, event=None):
     #     print(sender, event)

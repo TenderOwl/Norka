@@ -34,7 +34,7 @@ class FormatShortcutsDialog(Granite.Dialog):
     def __init__(self):
         super().__init__(title=_('Markup Help'))
         self.set_default_size(300, 340)
-        self.set_border_width(5)
+        self.set_border_width(6)
 
         h1_label = Gtk.Label(label=f'{self.span_text("#")} {_("Header")} 1',
                              halign=Gtk.Align.START,

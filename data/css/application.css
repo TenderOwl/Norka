@@ -43,3 +43,19 @@
     border-radius: 4px;
 }
 
+@define-color label_color #5299EA;
+
+.stat_title_label {
+  font-size: 200%;
+  color: darker(@label_color);
+}
+
+.stat_label_data {
+  font-size: 150%;
+  font-weight: semibold;
+  color: darker(@label_color);
+}
+
+.stat_label {
+  color: shade(@fg_color, 1.5);
+}
