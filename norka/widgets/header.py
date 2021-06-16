@@ -103,7 +103,7 @@ class Header(Gtk.Box):
         self.editor_header.set_title(title)
 
     def update_stats(self, stats: DocumentStats):
-        self.editor_header.set_subtitle(f"{stats.characters} chars | {stats.words} words | {stats.sentences} sentences")
+        self.editor_header.set_subtitle(f"{stats.characters} chars | {stats.words} words")
 
     def show_spinner(self, state: bool = False) -> None:
         # Gonna fix this double spinners
