@@ -308,7 +308,7 @@ class Editor(Gtk.Grid):
         self.spell_view.set_inline_spell_checking(value)
 
     def set_style_scheme(self, scheme_id: str) -> None:
-        scheme = GtkSource.StyleSchemeManager().get_scheme(scheme_id)
+        scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(scheme_id)
         self.buffer.set_style_scheme(scheme)
 
         try:
@@ -377,13 +377,13 @@ class Editor(Gtk.Grid):
         return True
 
     def search_for_iter(self, start_iter) -> Tuple[bool, Gtk.TextIter]:
-        found, start_iter, end_iter, has_wrapped = self.search_context.forward2(start_iter)
+        found, start_iter, end_iter, has_wrapped = self.search_context.forward(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
         return found, end_iter
 
     def search_for_iter_backward(self, start_iter) -> Tuple[bool, Gtk.TextIter]:
-        found, start_iter, end_iter, has_wrapped = self.search_context.backward2(start_iter)
+        found, start_iter, end_iter, has_wrapped = self.search_context.backward(start_iter)
         if found:
             self.scroll_to(start_iter, end_iter)
         return found, start_iter

@@ -68,15 +68,15 @@ message('Installing style schemes')
 
 install_data(
     join_paths('schemes', 'norka.xml'),
-    install_dir: join_paths(get_option('datadir'), 'gtksourceview-3.0', 'styles')
+    install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
 )
 
 install_data(
     join_paths('schemes', 'norka-sepia.xml'),
-    install_dir: join_paths(get_option('datadir'), 'gtksourceview-3.0', 'styles')
+    install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
 )
 
 install_data(
     join_paths('schemes', 'norka-dark.xml'),
-    install_dir: join_paths(get_option('datadir'), 'gtksourceview-3.0', 'styles')
+    install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
 )

@@ -39,9 +39,9 @@
   font-family: 'Open Sans', sans-serif;
 }
 
-.quick-dialog entry {
+/*.quick-dialog entry {
     border-radius: 4px;
-}
+}*/
 
 @define-color label_color #5299EA;
 
@@ -52,7 +52,7 @@
 
 .stat_label_data {
   font-size: 150%;
-  font-weight: semibold;
+  font-weight: bold;
   color: darker(@label_color);
 }
 

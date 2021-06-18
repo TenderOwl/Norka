@@ -105,7 +105,7 @@ class PreferencesDialog(Granite.Dialog):
         style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
         scrolled.add(style_chooser)
 
-        scheme = GtkSource.StyleSchemeManager().get_scheme(
+        scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(
             self.settings.get_string('stylescheme')
         )
         if not scheme:
