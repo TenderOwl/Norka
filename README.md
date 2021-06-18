@@ -66,12 +66,12 @@ Build time requirements:
 - intltool
 - libgranite-dev
 - libgtk-3-dev (>= 3.10)
-- libgtkspell3-3-dev
+- libgspell-1-dev
 - libgtksourceview-3.0-dev (>= 3.24.3)
 - libwebkit2gtk-4.0
 - python3-gi
 - python3-gi-cairo
-- gir1.2-gtkspell3-3.0
+- gir1.2-gspell-1
 - gir1.2-gtksource-3.0
 - gir1.2-granite-1.0
 - gir1.2-webkit2-4.0

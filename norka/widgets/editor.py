@@ -27,7 +27,7 @@ from typing import Tuple
 from gettext import gettext as _
 
 import gi
-from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
+from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject
 
 from norka.models.document import Document
 from norka.services.logger import Logger
@@ -141,8 +141,14 @@ class Editor(Gtk.Grid):
 
         self.add(self.overlay)
 
+        # SpellChecker
         self.font_desc = Pango.FontDescription()
-        self.spellchecker = GtkSpell.Checker()
+        self.spellchecker = Gspell.Checker()
+        self.spell_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(self.view.get_buffer())
+        self.spell_buffer.set_spell_checker(self.spellchecker)
+
+        self.spell_view = Gspell.TextView.get_from_gtk_text_view(self.view)
+        self.spell_view.set_enable_language_menu(False)
 
         self.search_settings = GtkSource.SearchSettings(wrap_around=True)
         self.search_context = GtkSource.SearchContext(buffer=self.buffer,
@@ -298,11 +304,8 @@ class Editor(Gtk.Grid):
             self.search_revealer.set_reveal_child(True)
             self.search_bar.search_entry.grab_focus()
 
-    def set_spellcheck(self, spellcheck: bool) -> None:
-        if spellcheck:
-            self.spellchecker.attach(self.view)
-        else:
-            self.spellchecker.detach()
+    def set_spellcheck(self, value: bool) -> None:
+        self.spell_view.set_inline_spell_checking(value)
 
     def set_style_scheme(self, scheme_id: str) -> None:
         scheme = GtkSource.StyleSchemeManager().get_scheme(scheme_id)

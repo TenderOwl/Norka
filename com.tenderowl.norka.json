@@ -77,12 +77,12 @@
             ]
         },
         {
-            "name" : "gtkspell",
+            "name" : "gspell",
             "sources" : [
                 {
                     "type" : "archive",
-                    "url" : "https://downloads.sourceforge.net/project/gtkspell/3.0.10/gtkspell3-3.0.10.tar.xz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fgtkspell%2Ffiles%2F3.0.10%2Fgtkspell3-3.0.10.tar.xz%2Fdownload&ts=1572946840",
-                    "sha256" : "b040f63836b347eb344f5542443dc254621805072f7141d49c067ecb5a375732"
+                    "url" : "https://gitlab.gnome.org/GNOME/gspell/-/archive/1.9.1/gspell-1.9.1.tar.gz",
+                    "sha256" : "231511e8ff832f2b539f25eada592cbc40b557863cf98c1384d71a184975c76e"
                 }
             ]
         },
