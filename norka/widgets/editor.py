@@ -93,6 +93,7 @@ class Editor(Gtk.Grid):
         self.view.get_style_context().add_class('norka-editor')
 
         self.view.connect('key-release-event', self.on_key_release_event)
+        self.view.connect('move-cursor', self.on_view_move_cursor)
 
         # Connect markup handler
         self.markup_formatter = MarkupFormatter(self.buffer)
@@ -291,6 +292,10 @@ class Editor(Gtk.Grid):
                     buffer.insert_at_cursor(sign + ' ')
 
             buffer.end_user_action()
+
+    def on_view_move_cursor(self, text_view, step, count, extend_selection):
+        cursor_mark = self.buffer.get_insert()
+        self.view.scroll_to_mark(cursor_mark, 0, False, 0, 0)
 
     def on_search_text_activated(self, sender: Gtk.Widget = None, event=None):
         state = self.search_revealer.get_child_revealed()
