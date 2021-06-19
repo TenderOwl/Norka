@@ -24,7 +24,7 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk, Granite, Handy
 
 from norka.define import RESOURCE_PREFIX
 
@@ -68,6 +68,42 @@ class MenuExport(Gtk.Popover):
         self.export_html.set_image(
             Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
 
+        self.export_pdf = Gtk.Button(
+            _("Pdf"),
+            action_name="document.export-docx",
+            tooltip_text=_("Export document to PDF"),
+            relief=Gtk.ReliefStyle.NONE,
+            always_show_image=True,
+            image_position=Gtk.PositionType.TOP)
+        self.export_pdf.set_tooltip_text(_("Export document to PDF"))
+        self.export_pdf.set_image(
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
+
+        self.export_docx = Gtk.Button(
+            _("Docx"),
+            action_name="document.export-docx",
+            tooltip_text=_("Export document to Docx"),
+            relief=Gtk.ReliefStyle.NONE,
+            always_show_image=True,
+            image_position=Gtk.PositionType.TOP)
+        self.export_docx.set_tooltip_text(_("Export document to Docx"))
+        self.export_docx.set_image(
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
+
+        export_grid_1 = Gtk.Grid()
+        export_grid_1.attach(self.export_plain, 0, 1, 1, 1)
+        export_grid_1.attach(self.export_markdown, 1, 1, 1, 1)
+        export_grid_1.attach(self.export_html, 2, 1, 1, 1)
+
+        export_grid_2 = Gtk.Grid()
+        export_grid_2.attach(self.export_pdf, 0, 1, 1, 1)
+        export_grid_2.attach(self.export_docx, 1, 1, 1, 1)
+
+        self.carousel = Handy.Carousel()
+        self.carousel_indicator = Handy.CarouselIndicatorLines(carousel=self.carousel)
+        self.carousel.insert(export_grid_1, 0)
+        self.carousel.insert(export_grid_2, 1)
+
         self.export_file = Gtk.ModelButton()
         self.export_file.get_child().destroy()
         self.export_file.add(Granite.AccelLabel(label=_("Export to file"), accel_string='<Control><Shift>s'))
@@ -85,9 +121,8 @@ class MenuExport(Gtk.Popover):
 
         menu_grid = Gtk.Grid(margin_bottom=3, margin_top=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
         menu_grid.attach(Granite.HeaderLabel(_("Files"), margin_left=12, margin_right=12), 0, 0, 3, 1)
-        menu_grid.attach(self.export_plain, 0, 1, 1, 1)
-        menu_grid.attach(self.export_markdown, 1, 1, 1, 1)
-        menu_grid.attach(self.export_html, 2, 1, 1, 1)
+        menu_grid.attach(self.carousel, 0, 1, 3, 1)
+        menu_grid.attach(self.carousel_indicator, 0, 2, 3, 1)
 
         menu_grid.attach(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, margin_top=12), 0, 2, 3, 1)
         menu_grid.attach(Granite.HeaderLabel(_("Internet"), margin_left=12, margin_right=12), 0, 3, 3, 1)

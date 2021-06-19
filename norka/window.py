@@ -209,6 +209,11 @@ class NorkaWindow(Handy.ApplicationWindow):
                     'accels': (None,)
                 },
                 {
+                    'name': 'export-docx',
+                    'action': self.on_export_docx,
+                    'accels': (None,)
+                },
+                {
                     'name': 'export-medium',
                     'action': self.on_export_medium,
                     'accels': (None,)
@@ -625,6 +630,39 @@ class NorkaWindow(Handy.ApplicationWindow):
                 ext = export_format[1][0][1:]
 
             GObjectWorker.call(Exporter.export_html,
+                               (basename + ext, doc),
+                               callback=self.on_export_callback)
+
+        dialog.destroy()
+
+    def on_export_docx(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Export document from storage to local files or web-services.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        dialog = ExportFileDialog(
+            _("Export document to file"),
+            self,
+            Gtk.FileChooserAction.SAVE
+        )
+        dialog.set_current_name(doc.title)
+        export_format = ExportFormat.Docx
+        dialog.set_format(export_format)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            self.header.show_spinner(True)
+            basename, ext = os.path.splitext(dialog.get_filename())
+            if ext not in export_format[1]:
+                ext = export_format[1][0][1:]
+
+            GObjectWorker.call(Exporter.export_docx,
                                (basename + ext, doc),
                                callback=self.on_export_callback)
 

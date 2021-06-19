@@ -30,6 +30,8 @@ class ExportFormat:
     PlainText = (_("Plain text"), ("*.txt",))
     Markdown = (_("Markdown"), ("*.md", "*.markdown",))
     Html = (_("HTML"), ("*.html", "*.htm"))
+    Pdf = (_("PDF"), ("*.pdf",))
+    Docx = (_("Docx"), ("*.docx",))
 
 
 class ExportFileDialog(Gtk.FileChooserNative):

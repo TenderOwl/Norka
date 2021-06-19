@@ -105,7 +105,7 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
-        builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
+        # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
         self.settings.connect("changed", self.on_settings_changed)
 
@@ -150,9 +150,8 @@ class Application(Gtk.Application):
         elif key == 'font':
             self.window.editor.update_font(settings.get_string('font'))
         elif key == 'prefer-dark-theme':
-            Gtk.Settings.get_default() \
-                .props \
-                .gtk_application_prefer_dark_theme = settings.get_boolean('prefer-dark-theme')
+            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = \
+                settings.get_boolean('prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
