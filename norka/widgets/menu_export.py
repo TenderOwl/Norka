@@ -77,7 +77,7 @@ class MenuExport(Gtk.Popover):
             image_position=Gtk.PositionType.TOP)
         self.export_pdf.set_tooltip_text(_("Export document to PDF"))
         self.export_pdf.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-pdf.svg"))
 
         self.export_docx = Gtk.Button(
             _("Docx"),
@@ -88,7 +88,7 @@ class MenuExport(Gtk.Popover):
             image_position=Gtk.PositionType.TOP)
         self.export_docx.set_tooltip_text(_("Export document to Docx"))
         self.export_docx.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
+            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-msword.svg"))
 
         export_grid_1 = Gtk.Grid()
         export_grid_1.attach(self.export_plain, 0, 1, 1, 1)

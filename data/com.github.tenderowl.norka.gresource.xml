@@ -13,5 +13,7 @@
 		<file>icons/text.svg</file>
 		<file>icons/text-html.svg</file>
 		<file>icons/text-markdown.svg</file>
+		<file>icons/application-msword.svg</file>
+		<file>icons/application-pdf.svg</file>
 	</gresource>
 </gresources>
