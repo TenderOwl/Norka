@@ -4,6 +4,7 @@
 build
 builddir
 dist
+venv
 
 *.pyc
 __pycache__

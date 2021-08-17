@@ -1,7 +1,7 @@
 # Norka
 
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
-[![Build Status](https://travis-ci.com/TenderOwl/Norka.svg?branch=master)](https://travis-ci.com/TenderOwl/Norka)
+[![Build Status](https://github.com/tenderowl/Norka/workflows/CI/badge.svg)](https://github.com/tenderowl/Norka/action)
 [![norka](https://snapcraft.io//norka/badge.svg)](https://snapcraft.io/norka)
 [![norka](https://snapcraft.io//norka/trending.svg?name=0)](https://snapcraft.io/norka)
 
@@ -90,12 +90,6 @@ To install, use `ninja install`, then execute with `com.github.tenderowl.norka`:
 sudo ninja -C build install
 com.github.tenderowl.norka
 ```
-
-## Support
-
-If you want to support me
-
-<a href="https://www.buymeacoffee.com/tenderowl" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg" alt="Buy Me A Coffee" ></a>
 
 
 ## Afterword
