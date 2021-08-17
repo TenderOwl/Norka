@@ -71,6 +71,7 @@
             <property name="label" translatable="yes">0m 0s</property>
             <style>
               <class name="stat_label_data"/>
+              <class name="accent"/>
             </style>
           </object>
           <packing>
@@ -88,6 +89,7 @@
             <property name="label" translatable="yes">0</property>
             <style>
               <class name="stat_label_data"/>
+              <class name="accent"/>
             </style>
           </object>
           <packing>
@@ -171,6 +173,7 @@
             <property name="label" translatable="yes">0</property>
             <style>
               <class name="stat_label_data"/>
+              <class name="accent"/>
             </style>
           </object>
           <packing>
@@ -188,6 +191,7 @@
             <property name="label" translatable="yes">0</property>
             <style>
               <class name="stat_label_data"/>
+              <class name="accent"/>
             </style>
           </object>
           <packing>
@@ -224,6 +228,7 @@
         <property name="margin-end">6</property>
         <style>
           <class name="stat_label_data"/>
+          <class name="accent"/>
         </style>
       </object>
       <packing>
@@ -262,6 +267,7 @@
         <property name="margin-top">14</property>
         <style>
           <class name="stat_label_data"/>
+          <class name="accent"/>
         </style>
       </object>
       <packing>
