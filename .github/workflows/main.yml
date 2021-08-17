@@ -16,7 +16,7 @@ jobs:
     - name: Install Dependencies
       run: |
         apt update
-        apt install -y meson libgtksourceview-4-dev libwebkit2gtk-4.0-dev libgspell-1-dev meson gir1.2-gspell-1 gir1.2-gtksource-4 gir1.2-webkit2-4.0
+        apt install -y meson libgtksourceview-4-0 libgtksourceview-4-dev libwebkit2gtk-4.0-dev libgspell-1-dev meson gir1.2-gspell-1 gir1.2-gtksource-4 gir1.2-webkit2-4.0 
     - name: Build
       env:
         DESTDIR: out
