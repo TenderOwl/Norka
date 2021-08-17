@@ -19,6 +19,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so the job can access it
     - uses: actions/checkout@v2
+    
+    - name: Install Dependencies
+      run: |
+        apt update
+        apt install -y libgtksourceview-4-dev libgspell1-dev meson
 
       # Builds your flatpak manifest using the Flatpak Builder action
     - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v3
