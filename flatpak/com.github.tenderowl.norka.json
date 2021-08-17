@@ -1,0 +1,109 @@
+{
+    "app-id" : "com.github.tenderowl.norka",
+    "runtime" : "io.elementary.Platform",
+    "sdk" : "io.elementary.Sdk",
+    "runtime-version" : "6",
+    "command" : "com.github.tenderowl.norka",
+    "finish-args" : [
+        "--filesystem=home",
+        "--share=ipc",
+        "--share=network",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--system-talk-name=org.freedesktop.Accounts"
+    ],
+    "cleanup" : [
+        "/include",
+        "/lib/pkgconfig",
+        "/man",
+        "/share/doc",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "*.la",
+        "*.a"
+    ],
+    "modules" : [
+        {
+            "name" : "libhandy",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "config-opts" : [
+                "-Dexamples=false",
+                "-Dtests=false"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git"
+                }
+            ]
+        },
+        {
+            "name" : "granite",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/elementary/granite.git",
+                    "tag" : "6.1.0"
+                }
+            ]
+        },
+        {
+            "name" : "gtksourceview",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/4.8.1/gtksourceview-4.8.1.tar.gz",
+                    "sha256" : "cbfde42161662525805be4a38102b085db5e991fe1263171a28a78c7da253760"
+                }
+            ]
+        },
+        {
+            "name" : "intltool",
+            "cleanup" : [
+                "*"
+            ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+                    "sha256" : "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
+                }
+            ]
+        },
+        {
+            "name" : "gspell",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://gitlab.gnome.org/GNOME/gspell/-/archive/1.9.1/gspell-1.9.1.tar.gz",
+                    "sha256" : "231511e8ff832f2b539f25eada592cbc40b557863cf98c1384d71a184975c76e"
+                }
+            ]
+        },
+        "python3-markdown2.json",
+        "python3-requests.json",
+        "python3-htmldocx.json",
+        {
+            "name" : "norka",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/TenderOwl/Norka.git"
+                }
+            ]
+        }
+    ],
+    "build-options" : {
+        "env" : {
+            "LANGUAGE" : "RU",
+            "GOBJECT_DEBUG" : "instance-count",
+            "LC_TIME" : "ru_RU.UTF-8"
+        }
+    }
+}
