@@ -5,26 +5,6 @@ on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    container:
-      image: elementary/docker:unstable
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install Dependencies
-      run: |
-        apt update
-        apt install -y meson libgtksourceview-4-0 libgtksourceview-4-dev libwebkit2gtk-4.0-dev libgspell-1-dev meson gir1.2-gspell-1 gir1.2-gtksource-4 gir1.2-webkit2-4.0 
-    - name: Build
-      env:
-        DESTDIR: out
-      run: |
-        meson build
-        ninja -C build
-        ninja -C build install
-
   # This workflow contains a single job called "flatpak"
   flatpak:
     # The type of runner that the job will run on
@@ -39,7 +19,11 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so the job can access it
     - uses: actions/checkout@v2
-    
+
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: dnf install -y meson gtksourceview4 gtksourceview4-devel webkit2gtk3-devel gspell-devel
+        
     # Builds your flatpak manifest using the Flatpak Builder action
     - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v3
       with:
