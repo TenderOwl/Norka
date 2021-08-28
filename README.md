@@ -67,7 +67,7 @@ Build time requirements:
 - libgranite-dev
 - libgtk-3-dev (>= 3.10)
 - libgspell-1-dev
-- libgtksourceview-3.0-dev (>= 3.24.3)
+- libgtksourceview-4.0-dev (>= 3.24.3)
 - libwebkit2gtk-4.0
 - python3-gi
 - python3-gi-cairo
