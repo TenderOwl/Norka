@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2021 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -75,33 +75,33 @@ class PreferencesDialog(Granite.Dialog):
         self.spaces_tabs_switch.set_state(self.settings.get_boolean('spaces-instead-of-tabs'))
         self.spaces_tabs_switch.connect("state-set", self.on_spaces_tabs)
 
-        general_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+        general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
 
         general_grid.attach(Granite.HeaderLabel(_("General")), 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label(_("Save files when changed:"), halign=Gtk.Align.END), 0, 1, 2, 1)
+        general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
         general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
-        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), halign=Gtk.Align.END), 0, 2, 2, 1)
+        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
         general_grid.attach(self.sort_switch, 2, 2, 1, 1)
-        general_grid.attach(Gtk.Label(_("Spell checking:"), halign=Gtk.Align.END), 0, 3, 2, 1)
+        general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
         general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
 
         general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 4, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), halign=Gtk.Align.END), 0, 5, 2, 1)
+        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 5, 2, 1)
         general_grid.attach(self.autoindent_switch, 2, 5, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), halign=Gtk.Align.END), 0, 6, 2, 1)
+        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
         general_grid.attach(self.spaces_tabs_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), halign=Gtk.Align.END), 0, 7, 2, 1)
+        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2, 1)
         general_grid.attach(indent_width, 2, 7, 2, 1)
 
         # Interface grid
-        interface_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+        interface_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
         scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
 
         self.dark_theme_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.dark_theme_switch.set_state(self.settings.get_boolean('prefer-dark-theme'))
         self.dark_theme_switch.connect("state-set", self.on_dark_theme)
 
-        style_chooser = GtkSource.StyleSchemeChooserWidget()
+        style_chooser = GtkSource.StyleSchemeChooserWidget(hexpand=True, vexpand=True)
         style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
         scrolled.add(style_chooser)
 
@@ -114,13 +114,13 @@ class PreferencesDialog(Granite.Dialog):
         style_chooser.set_style_scheme(scheme)
 
         interface_grid.attach(Granite.HeaderLabel(_("Appearance")), 0, 0, 3, 1)
-        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), halign=Gtk.Align.END), 0, 1, 2, 1)
-        interface_grid.attach(self.dark_theme_switch, 2, 1, 2, 1)
+        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
         interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
         interface_grid.attach(scrolled, 0, 3, 3, 1)
 
         # Export grid
-        export_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
+        export_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
 
         self.render_medium(export_grid)
         self.render_writeas(export_grid)
@@ -131,7 +131,7 @@ class PreferencesDialog(Granite.Dialog):
         main_stack.add_titled(interface_grid, "interface", _("Interface"))
         main_stack.add_titled(export_grid, "export", _("Export"))
 
-        main_stackswitcher = Gtk.StackSwitcher()
+        main_stackswitcher = Gtk.StackSwitcher(homogeneous=True)
         main_stackswitcher.set_stack(main_stack)
         main_stackswitcher.set_halign(Gtk.Align.CENTER)
 
