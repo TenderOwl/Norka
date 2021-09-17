@@ -36,7 +36,7 @@ gi.require_version('GtkSource', '4')
 gi.require_version('Handy', '1')
 gi.require_version("WebKit2", "4.0")
 
-from gi.repository import Gtk, Gio, Gdk
+from gi.repository import Gtk, Gio, Gdk, Granite
 
 from norka.define import APP_ID, RESOURCE_PREFIX
 from norka.services.logger import Logger
@@ -49,6 +49,9 @@ from norka.window import NorkaWindow
 
 class Application(Gtk.Application):
     __gtype_name__ = 'NorkaApplication'
+
+    granite_settings: Granite.Settings
+    gtk_settings: Gtk.Settings
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
@@ -113,6 +116,21 @@ class Application(Gtk.Application):
         """Activates the application.
 
         """
+        self.granite_settings = Granite.Settings.get_default()
+        self.gtk_settings = Gtk.Settings.get_default()
+
+        # Setup default theme mode
+        if self.settings.get_boolean('prefer-dark-theme'):
+            self.gtk_settings.props.gtk_application_prefer_dark_theme = True
+        else:
+            # Then, we check if the user's preference is for the dark style and set it if it is
+            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+
+        # Finally, we listen to changes in Granite.Settings and update our app if the user changes their preference
+        self.granite_settings.connect("notify::prefers-color-scheme",
+                                      self.color_scheme_changed)
+
         self.window = self.props.active_window
         if not self.window:
             self.window = NorkaWindow(application=self, settings=self.settings, storage=self.storage)
@@ -166,6 +184,12 @@ class Application(Gtk.Application):
     def on_about(self, action, param):
         about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
         about_dialog.present()
+
+    def color_scheme_changed(self, _old, _new):
+        dark_mode = self.settings.get_boolean('prefer-dark-theme')
+        if not dark_mode:
+            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")
