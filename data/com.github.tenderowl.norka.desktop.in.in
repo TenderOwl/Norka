@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=Norka
-GenericName=Norka
+GenericName=Text Editor
 Comment=Continuous text editor with autosaving
-Exec=@project_name@
+Exec=@project_name@ %u
 Icon=@icon@
 Terminal=false
 Type=Application
 Categories=Utility;TextEditor;WordProcessor;GTK;Office;
-Keywords=Norka;TenderOwl;Tender;Markdown;
+Keywords=text;editor;markdown;notes;pdf;word;html;
 MimeType=text/markdown;text/x-markdown;text/plain;
