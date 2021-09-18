@@ -27,6 +27,7 @@ import os
 import sqlite3
 import traceback
 from datetime import datetime
+from typing import List
 
 from gi.repository import GLib
 
@@ -48,15 +49,19 @@ class Storage(object):
 
             self.settings.set_string("storage-path", self.file_path)
 
-    def init(self):
+    def connect(self):
+        self.conn = sqlite3.connect(self.file_path,
+                                    detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+                                    check_same_thread=False)
+
+    def init(self) -> None:
         if not os.path.exists(self.base_path):
             os.mkdir(self.base_path)
             Logger.info('Storage folder created at %s', self.base_path)
 
         Logger.info(f'Storage located at %s', self.file_path)
 
-        self.conn = sqlite3.connect(self.file_path,
-                                    detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        self.connect()
 
         self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS `documents` (
@@ -88,7 +93,7 @@ class Storage(object):
         if not version or version[0] < 1:
             self.v1_upgrade()
 
-    def v1_upgrade(self):
+    def v1_upgrade(self) -> bool:
         """Upgrade databse to version 1.
 
         Add fields:
@@ -133,7 +138,7 @@ class Storage(object):
         self.conn.commit()
         return cursor.lastrowid
 
-    def all(self, with_archived: bool = False, desc: bool = False) -> list:
+    def all(self, with_archived: bool = False, desc: bool = False) -> List[Document]:
         query = "SELECT * FROM documents "
         if not with_archived:
             query += "WHERE archived=0 "
@@ -194,7 +199,7 @@ class Storage(object):
 
         return True
 
-    def find(self, search_text: str) -> list:
+    def find(self, search_text: str) -> List[Document]:
         query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
         cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))

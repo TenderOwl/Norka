@@ -33,6 +33,7 @@ from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SI
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services import distro
+from norka.services.backup import BackupService
 from norka.services.export import Exporter, PDFExporter
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
@@ -228,6 +229,11 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'export-writeas',
                     'action': self.on_export_writeas,
+                    'accels': (None,)
+                },
+                {
+                    'name': 'backup',
+                    'action': self.on_backup,
                     'accels': (None,)
                 },
                 {
@@ -802,6 +808,40 @@ class NorkaWindow(Handy.ApplicationWindow):
         else:
             self.toast.set_title(_("Export failed."))
             self.toast.set_default_action(None)
+        self.toast.send_notification()
+
+    def on_backup(self, sender: Gtk.Widget = None, event=None) -> None:
+        dialog: Gtk.FileChooserNative = Gtk.FileChooserNative.new(
+            _("Select folder to store backup"),
+            self,
+            Gtk.FileChooserAction.SELECT_FOLDER,
+            _("Select"),
+        )
+        dialog.set_create_folders(True)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            self.header.show_spinner(True)
+
+            backup_service = BackupService(settings=self.settings)
+            GObjectWorker.call(backup_service.save,
+                               args=(dialog.get_filename(),),
+                               callback=self.on_backup_finished)
+
+            self.toast.set_title(_("Backup started."))
+            self.toast.send_notification()
+
+        dialog.destroy()
+
+    def on_backup_finished(self, result):
+        self.header.show_spinner(False)
+        if result:
+            self.toast.set_title(_("All documents saved."))
+            self.toast.set_default_action(_("Open folder"))
+            self.uri_to_open = f"file://{result}"
+            self.toast.connect("default-action", self.open_uri)
+        else:
+            self.toast.set_title(_("Backup failed."))
         self.toast.send_notification()
 
     def search_activated(self, sender, event=None):
