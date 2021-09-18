@@ -55,7 +55,7 @@ class Application(Gtk.Application):
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
+                         flags=Gio.ApplicationFlags.HANDLES_OPEN)
 
         self.version = version
 
@@ -145,6 +145,7 @@ class Application(Gtk.Application):
         """
         if n_files and not self.window:
             self.do_activate()
+
         for gfile in files:
             path = gfile.get_path()
             if not path:

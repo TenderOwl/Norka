@@ -442,8 +442,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         """Import files from filesystem.
         Creates new document in storage and fill it with file's contents.
 
-        :param sender:
-        :param filepath: path to file to import
+        :param file_path: path to file to import
         """
         if not os.path.exists(file_path):
             return False
