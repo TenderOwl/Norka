@@ -33,9 +33,10 @@
   <releases>
     <release date="2021-09-18" version="0.8.0" timestamp="1631926383">
       <description>
-        <p>Updated UI, new spell checker and export options.</p>
+        <p>Backup, export to Docx and PDF and more.</p>
         <ul>
-          <li>Updated UI with system-wide dark mode support</li>
+          <li>Backup option available in the main menu</li>
+          <li>Updated UI with support of the system-wide dark mode</li>
           <li>UI updated with libhandy</li>
           <li>New SpellChecker, more accurate and performant</li>
           <li>Now you can export your documents to Docx and PDF</li>
