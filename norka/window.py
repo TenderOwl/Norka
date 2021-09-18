@@ -23,6 +23,8 @@
 # SOFTWARE.
 import os
 from gettext import gettext as _
+from io import StringIO
+from tempfile import TemporaryFile
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
 from gi.repository.GdkPixbuf import Pixbuf
@@ -31,7 +33,7 @@ from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SI
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services import distro
-from norka.services.export import Exporter
+from norka.services.export import Exporter, PDFExporter
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import Storage
@@ -206,6 +208,11 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'export-html',
                     'action': self.on_export_html,
+                    'accels': (None,)
+                },
+                {
+                    'name': 'export-pdf',
+                    'action': self.on_export_pdf,
                     'accels': (None,)
                 },
                 {
@@ -665,6 +672,39 @@ class NorkaWindow(Handy.ApplicationWindow):
             GObjectWorker.call(Exporter.export_docx,
                                (basename + ext, doc),
                                callback=self.on_export_callback)
+
+        dialog.destroy()
+
+    def on_export_pdf(self, sender: Gtk.Widget = None, event=None) -> None:
+        """Export document from storage to local files or web-services.
+
+        :param sender:
+        :param event:
+        :return:
+        """
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        dialog = ExportFileDialog(
+            _("Export document to file"),
+            self,
+            Gtk.FileChooserAction.SAVE
+        )
+        dialog.set_current_name(doc.title)
+        export_format = ExportFormat.Pdf
+        dialog.set_format(export_format)
+        dialog_result = dialog.run()
+
+        if dialog_result == Gtk.ResponseType.ACCEPT:
+            self.header.show_spinner(True)
+            basename, ext = os.path.splitext(dialog.get_filename())
+            if ext not in export_format[1]:
+                ext = export_format[1][0][1:]
+
+            pdf_exporter = PDFExporter(basename + ext, doc)
+            pdf_exporter.connect('finished', lambda x, path: self.on_export_callback(path))
+            pdf_exporter.print()
 
         dialog.destroy()
 

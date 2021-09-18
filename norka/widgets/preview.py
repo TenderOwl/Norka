@@ -75,7 +75,7 @@ class Preview(Handy.Window):
 
         # Render in thread
         if text:
-            GObjectWorker.call(Exporter.export_html_preview, (self.temp_file.name, text,), self.update_html)
+            GObjectWorker.call(Exporter.export_html_preview, (self.temp_file.name, text, True), self.update_html)
 
         ctx = WebKit2.WebContext.get_default()
         self.web: WebKit2.WebView = WebKit2.WebView.new_with_context(ctx)
@@ -111,7 +111,8 @@ class Preview(Handy.Window):
             self.show_spinner(False)
 
     def update_html(self, html: str):
-        self.web.load_uri('file://' + html)
+        # self.web.load_uri('file://' + html)
+        self.web.load_html(html)
 
     def show_spinner(self, state: bool = False) -> None:
         if state:

@@ -70,7 +70,7 @@ class MenuExport(Gtk.Popover):
 
         self.export_pdf = Gtk.Button(
             _("Pdf"),
-            action_name="document.export-docx",
+            action_name="document.export-pdf",
             tooltip_text=_("Export document to PDF"),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
