@@ -56,12 +56,19 @@ class MenuPopover(Gtk.Popover):
         preferences_menuitem = Gtk.ModelButton(
             text=_("Preferences"),
             action_name='app.preferences')
+        preferences_menuitem.get_child().destroy()
+        preferences_menuitem.add(Granite.AccelLabel.from_action_name("Preferences", "app.preferences"))
+
         about_menuitem = Gtk.ModelButton(
             text=_("About"),
             action_name='app.about')
+
         preview_menuitem = Gtk.ModelButton(
             text=_("Preview"),
             action_name='document.preview')
+        preview_menuitem.get_child().destroy()
+        preview_menuitem.add(Granite.AccelLabel.from_action_name("Preview", "document.preview"))
+
         shortcuts_menuitem = Gtk.ModelButton(
             text=_("Shortcuts"),
             action_name='app.shortcuts')
@@ -71,6 +78,8 @@ class MenuPopover(Gtk.Popover):
         quit_menuitem = Gtk.ModelButton(
             text=_("Quit"),
             action_name='app.quit')
+        quit_menuitem.get_child().destroy()
+        quit_menuitem.add(Granite.AccelLabel.from_action_name("Quit", "app.quit"))
 
         menu_grid = Gtk.Grid(margin_bottom=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
         menu_grid.attach(font_size_grid, 0, 0, 3, 1)
