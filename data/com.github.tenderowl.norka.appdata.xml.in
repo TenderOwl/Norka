@@ -11,8 +11,8 @@
     <ul>
       <li>All your notes inside</li>
       <li>Automatically saved in place</li>
-      <li>Can be easily exported to files in one click</li>
-      <li>If you neet markup - use markdown</li>
+      <li>Can be easily exported to HTML, Docx and event PDF in one click</li>
+      <li>If you need markup - use markdown</li>
       <li>Don't like the default theme - choose different</li>
     </ul>
   </description>
@@ -39,7 +39,19 @@
   </screenshots>
 
   <releases>
-    <release date="2021-04-08" version="0.7.2">
+    <release date="2021-09-18" version="0.8.0" timestamp="1631926383">
+      <description>
+        <p>Updated UI, new spell checker and export options.</p>
+        <ul>
+          <li>Updated UI with system-wide dark mode support</li>
+          <li>UI updated with libhandy</li>
+          <li>New SpellChecker, more accurate and performant</li>
+          <li>Now you can export your documents to Docx and PDF</li>
+          <li>Import files from the Files's context menu</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2021-04-08" version="0.7.2" timestamp="1619570988">
       <description>
         <p>New app page and</p>
         <ul>
@@ -48,7 +60,7 @@
         </ul>
       </description>
     </release>
-    <release date="2021-02-13" version="0.7.0">
+    <release date="2021-02-13" version="0.7.0" timestamp="1613177388">
       <description>
         <p>Improvements</p>
         <ul>
@@ -57,7 +69,7 @@
         </ul>
       </description>
     </release>
-    <release date="2021-01-20" version="0.6.3">
+    <release date="2021-01-20" version="0.6.3" timestamp="1611103788">
       <description>
         <p>Improvements</p>
         <ul>
@@ -66,7 +78,7 @@
         </ul>
       </description>
     </release>
-    <release date="2020-10-07" version="0.6.2">
+    <release date="2020-10-07" version="0.6.2" timestamp="1602031788">
       <description>
         <p>Improvements</p>
         <ul>
@@ -78,22 +90,22 @@
         </ul>
       </description>
     </release>
-    <release date="2020-08-31" version="0.5.1">
+    <release date="2020-08-31" version="0.5.1" timestamp="1598834988">
       <description>
         <p>Update app translation.</p>
       </description>
     </release>
-    <release date="2020-08-29" version="0.5.0">
+    <release date="2020-08-29" version="0.5.0" timestamp="1598662188">
       <description>
         <p>A new fancy way to search through your documents is available. And Norka is fully localizable now. You are welcome :)</p>
       </description>
     </release>
-    <release date="2020-08-13" version="0.4.7">
+    <release date="2020-08-13" version="0.4.7" timestamp="1597279788">
       <description>
         <p>Update metadata.</p>
       </description>
     </release>
-    <release date="2020-08-12" version="0.4.6">
+    <release date="2020-08-12" version="0.4.6" timestamp="1597193388">
       <description>
         <p>Improvements</p>
         <ul>
@@ -102,7 +114,7 @@
         </ul>
       </description>
     </release>
-    <release date="2020-07-21" version="0.4.3">
+    <release date="2020-07-21" version="0.4.3" timestamp="1595292588">
       <description>
         <p>Some fixes:</p>
         <ul>
@@ -112,7 +124,7 @@
         </ul>
       </description>
     </release>
-    <release date="2020-07-17" version="0.4.2">
+    <release date="2020-07-17" version="0.4.2" timestamp="1594946988">
       <description>
         <p>Yet another update: small but valuable.</p>
         <p>What it brings to us:</p>
@@ -125,7 +137,7 @@
         </ul>
       </description>
     </release>
-    <release date="2020-07-16" version="0.3.0">
+    <release date="2020-07-16" version="0.3.0" timestamp="1594860588">
       <description>
         <p>TenderOwl thinks a living project is better than enormous updates yet we created a new little one!</p>
         <p>This release brings a new feature - export to Medium. All you need is open preferences and put the integration token from your Medium account. All documents exports as Draft in case you misclicked once :)</p>
@@ -133,7 +145,7 @@
         <p>Stay tuned!</p>
       </description>
     </release>
-    <release date="2020-06-28" version="0.2.0">
+    <release date="2020-06-28" version="0.2.0" timestamp="1593305388">
       <description>
         <p>Norka grows up and learn new tricks like import files to Norka's documents! 
           You could use any methods you like: drag-n-drop, keyboard shortcut (Ctrl+O) or Headerbar button. And from command line of course!</p>
@@ -142,7 +154,7 @@
         <p>Every document will have its own face. I mean preview. Documents list now shows a preview of documents instead of dummy icons.</p>
       </description>
     </release>
-    <release date="2020-06-12" version="0.1.4">
+    <release date="2020-06-12" version="0.1.4" timestamp="1591922988">
       <description>
         <p>
           Search and Shortcuts. 
@@ -155,7 +167,7 @@
           </ul>
       </description>
     </release>
-    <release date="2020-06-07" version="0.1.0">
+    <release date="2020-06-07" version="0.1.0" timestamp="1591490988">
       <description>
         <p>Initial release of Norka. Young yet ready to provide you with editing functions and Markdown formatter, even export but who needs it.</p>
       </description>
