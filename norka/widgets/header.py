@@ -70,6 +70,9 @@ class Header(Gtk.Box):
         # # self.search_button.set_action_name('document.search_text')
         # # self.search_button.set_visible(False)
 
+        self.print_button: Gtk.ToggleButton() = self.builder.get_object("print_button")
+        self.print_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>p',), _('Print the document')))
+
         self.extended_stats_button: Gtk.ToggleButton() = self.builder.get_object("extended_stats_button")
         self.extended_stats_button.set_tooltip_markup(Granite.markup_accel_tooltip(None, _('Show document info')))
 

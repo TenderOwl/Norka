@@ -21,6 +21,18 @@
     <property name="icon-name">dialog-information</property>
     <property name="icon_size">3</property>
   </object>
+  <object class="GtkImage" id="extended-stats1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-information</property>
+    <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">document-print</property>
+    <property name="icon_size">3</property>
+  </object>
   <object class="GtkImage" id="user-trash">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -185,6 +197,19 @@
           <packing>
             <property name="pack-type">end</property>
             <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="print_button">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">document.print</property>
+            <property name="image">image1</property>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

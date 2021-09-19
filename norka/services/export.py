@@ -136,7 +136,34 @@ class PDFExporter(GObject.GObject):
         self.web_view.load_html(self.html)
         print('webview loading text')
 
-    # class PlaintextRenderer(mistune.HTMLRenderer):
+
+class Printer(GObject.GObject):
+    __gtype_name__ = 'Printer'
+    __gsignals__ = {
+        'finished': (GObject.SignalFlags.ACTION, None, ()),
+    }
+    web_view: WebKit2.WebView
+
+    def __init__(self, document: Document):
+        GObject.GObject.__init__(self)
+        self.html = Exporter.render_html(document.content, document.title)
+        self.web_view = WebKit2.WebView()
+
+    def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
+        # When html is fully loaded then setup PrintOperation and print to PDF.
+        if event == WebKit2.LoadEvent.FINISHED:
+            operation: WebKit2.PrintOperation = WebKit2.PrintOperation.new(self.web_view)
+            operation.connect('finished', lambda op: self.emit('finished'))
+            if operation.run_dialog() == WebKit2.PrintOperationResponse.CANCEL:
+                self.emit('finished')
+
+    def print(self):
+        self.web_view.connect('load-changed', self.on_load_changed)
+        print('webview created')
+        self.web_view.load_html(self.html)
+        print('webview loading text')
+
+# class PlaintextRenderer(mistune.HTMLRenderer):
 #
 #     @staticmethod
 #     def get_block(text):

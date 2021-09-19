@@ -26,7 +26,7 @@ from gettext import gettext as _
 from io import StringIO
 from tempfile import TemporaryFile
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
+from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy, WebKit2
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
@@ -34,7 +34,7 @@ from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services import distro
 from norka.services.backup import BackupService
-from norka.services.export import Exporter, PDFExporter
+from norka.services.export import Exporter, PDFExporter, Printer
 from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import Storage
@@ -241,11 +241,11 @@ class NorkaWindow(Handy.ApplicationWindow):
                     'action': self.on_preview,
                     'accels': ('<Control><Shift>p',)
                 },
-                # {
-                #     'name': 'print',
-                #     'action': self.on_print,
-                #     'accels': ('<Control>p',)
-                # },
+                {
+                    'name': 'print',
+                    'action': self.on_print,
+                    'accels': ('<Control>p',)
+                },
                 # {
                 #     'name': 'search',
                 #     'action': self.search_activated,
@@ -976,7 +976,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             text = doc.content if doc else None
             self.preview = Preview(parent=self, text=text)
             # connect signal handlers
-            # self.editor.scrolled.get_vscrollbar().connect('value-changed', self.scroll_preview)
+            self.editor.scrolled.get_vscrollbar().connect('value-changed', self.scroll_preview)
             self.editor.buffer.connect('changed', self.preview.buffer_changed)
             self.editor.connect('document-load', self.preview.show_preview)
             self.editor.connect('document-close', self.preview.show_empty_page)
@@ -1003,23 +1003,11 @@ class NorkaWindow(Handy.ApplicationWindow):
         if self.extended_stats_dialog:
             self.extended_stats_dialog.update_stats(stats)
 
-    # def on_print(self, sender, event=None):
-    #     print(sender, event)
-    #     doc = self.document_grid.selected_document or self.editor.document
-    #     if not doc:
-    #         return
-    #     printing = Printing(parent=self, document=doc)
-    #     # print(.)
-    #     printing.run_dialog()
-    #
-    #     if result == Gtk.PrintOperationResult.ERROR:
-    #         message = printing.
-    #
-    #         dialog = Gtk.MessageDialog(self,
-    #                                    0,
-    #                                    Gtk.MessageType.ERROR,
-    #                                    Gtk.ButtonsType.CLOSE,
-    #                                    message)
-    #
-    #         dialog.run()
-    #         dialog.destroy()
+    def on_print(self, sender, event=None):
+        doc = self.document_grid.selected_document or self.editor.document
+        if not doc:
+            return
+
+        printer = Printer(doc)
+        printer.connect('finished', self.on_printer_callback)
+        printer.print()
