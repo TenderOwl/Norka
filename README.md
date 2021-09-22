@@ -4,6 +4,7 @@
 [![Build Status](https://github.com/tenderowl/Norka/workflows/CI/badge.svg)](https://github.com/tenderowl/Norka/action)
 [![norka](https://snapcraft.io//norka/badge.svg)](https://snapcraft.io/norka)
 [![norka](https://snapcraft.io//norka/trending.svg?name=0)](https://snapcraft.io/norka)
+<a href="https://liberapay.com/tenderowl/donate"><img src="https://img.shields.io/liberapay/patrons/tenderowl.svg?logo=liberapay"></a>
 
 <div align="center">
   <span align="center"> <img width="80" height="70" class="center" src="https://github.com/tenderowl/norka/blob/master/data/icons/com.github.tenderowl.norka.svg" alt="Icon"></span>
@@ -50,6 +51,10 @@ Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
 
 ### elementary OS AppCenter
 <a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
+
+## :tada: Support
+If you like Norka and you want to support its development, consider donating via Liberapay:  
+<a href="https://liberapay.com/tenderowl/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
 
 
 ## Tech part
