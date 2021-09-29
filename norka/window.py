@@ -1011,3 +1011,6 @@ class NorkaWindow(Handy.ApplicationWindow):
         printer = Printer(doc)
         printer.connect('finished', self.on_printer_callback)
         printer.print()
+
+    def on_printer_callback(self, printer: Printer) -> None:
+        print('printer callback resulted: ')
