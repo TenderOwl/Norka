@@ -117,6 +117,7 @@ class PDFExporter(GObject.GObject):
 
     def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
         # When html is fully loaded then setup PrintOperation and print to PDF.
+        print('PDFPrinter event: ', event)
         if event == WebKit2.LoadEvent.FINISHED:
             print_settings = Gtk.PrintSettings()
             print_settings.set(Gtk.PRINT_SETTINGS_OUTPUT_BASENAME, self.basename)
