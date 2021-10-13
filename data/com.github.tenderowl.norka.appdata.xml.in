@@ -31,6 +31,11 @@
   </screenshots>
 
   <releases>
+    <release date="2021-10-13" version="0.8.2" timestamp="1634110181">
+      <description>
+        <p>Bugfixes and UI impovements.</p>
+      </description>
+    </release>
     <release date="2021-09-18" version="0.8.0" timestamp="1631926383">
       <description>
         <p>Backup, export to Docx and PDF and more.</p>
