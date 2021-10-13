@@ -88,7 +88,8 @@ class PreferencesDialog(Granite.Dialog):
         general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 4, 3, 1)
         general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 5, 2, 1)
         general_grid.attach(self.autoindent_switch, 2, 5, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
+        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
+                            1)
         general_grid.attach(self.spaces_tabs_switch, 2, 6, 1, 1)
         general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2, 1)
         general_grid.attach(indent_width, 2, 7, 2, 1)
@@ -164,7 +165,11 @@ class PreferencesDialog(Granite.Dialog):
     def render_writeas(self, content_grid):
         self.writeas_login = Gtk.Entry(hexpand=True, placeholder_text=_("Login"))
         self.writeas_password = Gtk.Entry(hexpand=True, placeholder_text=_("Password"), visibility=False)
-        self.writeas_login_button = Gtk.Button(label=_("Login"))
+        # Check for emptiness
+        self.writeas_login.connect('changed', self.writeas_entry_changed)
+        self.writeas_password.connect('changed', self.writeas_entry_changed)
+
+        self.writeas_login_button = Gtk.Button(label=_("Login"), sensitive=False)
         self.writeas_login_button.connect("clicked", self.on_writeas_login)
         self.writeas_logout_button = Gtk.Button(label=_("Logout"), hexpand=True)
         self.writeas_logout_button.connect("clicked", self.on_writeas_logout)
@@ -248,6 +253,11 @@ class PreferencesDialog(Granite.Dialog):
         self.toast.set_title(_("Something goes wrong!"))
         self.toast.send_notification()
         self.settings.set_string("medium-user-id", "")
+
+    def writeas_entry_changed(self, entry: Gtk.Entry):
+        state = (self.writeas_login.get_text().strip() != ""
+                 and self.writeas_password.get_text().strip() != "")
+        self.writeas_login_button.set_sensitive(state)
 
     def on_writeas_login(self, button: Gtk.Button):
         """Login to write.as and save token on success
