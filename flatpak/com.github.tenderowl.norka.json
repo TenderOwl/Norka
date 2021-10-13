@@ -5,7 +5,7 @@
     "runtime-version" : "6",
     "command" : "com.github.tenderowl.norka",
     "finish-args" : [
-        "--filesystem=home",
+        "--filesystem=xdg-documents",
         "--share=ipc",
         "--share=network",
         "--socket=fallback-x11",
@@ -23,9 +23,6 @@
         "/share/pkgconfig",
         "*.la",
         "*.a"
-    ],
-    "x-run-args" : [
-        "./README.md"
     ],
     "modules" : [
         {
@@ -76,12 +73,5 @@
                 }
             ]
         }
-    ],
-    "build-options" : {
-        "env" : {
-            "LANGUAGE" : "RU",
-            "GOBJECT_DEBUG" : "instance-count",
-            "LC_TIME" : "ru_RU.UTF-8"
-        }
-    }
+    ]
 }
