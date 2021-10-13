@@ -74,7 +74,7 @@ class MenuExport(Gtk.Popover):
             tooltip_text=_("Export document to PDF"),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
-            image_position=Gtk.PositionType.TOP)
+            image_position=Gtk.PositionType.TOP,)
         self.export_pdf.set_tooltip_text(_("Export document to PDF"))
         self.export_pdf.set_image(
             Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-pdf.svg"))
@@ -132,3 +132,4 @@ class MenuExport(Gtk.Popover):
         self.add(menu_grid)
 
         menu_grid.show_all()
+        self.export_pdf.set_visible(False)
