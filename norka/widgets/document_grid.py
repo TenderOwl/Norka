@@ -93,7 +93,8 @@ class DocumentGrid(Gtk.Grid):
 
         # For non-root path add virtual "upper" folder.
         if path != '/':
-            self.create_folder_model(title='..', path='/')
+            folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
+            self.create_folder_model(title='..', path='/', icon=folder_open_icon)
 
         # Load folders first
         for folder in self.storage.get_folders(path=path):
@@ -129,8 +130,8 @@ class DocumentGrid(Gtk.Grid):
         if self.selected_path:
             self.view.select_path(self.selected_path)
 
-    def create_folder_model(self, title: str, path: str, tooltip: str = None):
-        icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder.svg')
+    def create_folder_model(self, title: str, path: str, tooltip: str = None, icon: Pixbuf = None):
+        icon = icon or Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder.svg')
         self.model.append([icon,
                            title,
                            path,
