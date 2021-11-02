@@ -33,6 +33,7 @@ from gi.repository import GLib
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
+from norka.models.folder import Folder
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 
@@ -93,8 +94,11 @@ class Storage(object):
         if not version or version[0] < 1:
             self.v1_upgrade()
 
+        if not version or version[0] < 2:
+            self.v2_upgrade()
+
     def v1_upgrade(self) -> bool:
-        """Upgrade databse to version 1.
+        """Upgrade database to version 1.
 
         Add fields:
             - created - timestamp document was modified
@@ -104,15 +108,52 @@ class Storage(object):
 
         :return:
         """
+        version = 1
         with self.conn:
             try:
-                Logger.info(f'Upgrading storage to version: {1}')
+                Logger.info(f'Upgrading storage to version: {version}')
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `created` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `modified` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `tags` TEXT""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `order` INTEGER DEFAULT 0""")
-                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (1, datetime.now(),))
-                Logger.info('Successfully upgraded to v1')
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
+                Logger.info(f'Successfully upgraded to v{version}')
+                return True
+            except Exception:
+                Logger.error(traceback.format_exc())
+                return False
+
+    def v2_upgrade(self) -> bool:
+        """Upgrade database to version 2.
+
+        Add tables:
+            - folders - store folders :)
+
+        Add fields:
+            - path - timestamp document was modified
+            - encrypted - timestamp document was modified
+
+        :return:
+        """
+        version = 2
+        with self.conn:
+            try:
+                self.conn.execute("""
+                    CREATE TABLE IF NOT EXISTS `folders` (
+                        "path" Text NOT NULL DEFAULT '/',
+                        "title" Text NOT NULL,
+                        `archived` INTEGER NOT NULL DEFAULT 0,
+                        `created` timestamp,
+                        `modified` timestamp,
+                        CONSTRAINT "newUnique" UNIQUE ( "path", "title" )
+                    )
+                """)
+                
+                Logger.info(f'Upgrading storage to version: {version}')
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `path` TEXT default '/'""")
+                self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
+                Logger.info(f'Successfully upgraded to v{version}')
                 return True
             except Exception:
                 Logger.error(traceback.format_exc())
@@ -126,11 +167,12 @@ class Storage(object):
         row = cursor.fetchone()
         return row[0]
 
-    def add(self, document: Document) -> int:
+    def add(self, document: Document, path: str = '/') -> int:
         cursor = self.conn.cursor().execute(
-            "INSERT INTO documents(title, content, archived, created, modified) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
             (document.title,
              document.content,
+             path,
              document.archived,
              datetime.now(),
              datetime.now()
@@ -138,14 +180,14 @@ class Storage(object):
         self.conn.commit()
         return cursor.lastrowid
 
-    def all(self, with_archived: bool = False, desc: bool = False) -> List[Document]:
-        query = "SELECT * FROM documents "
+    def all(self, path: str = '/', with_archived: bool = False, desc: bool = False) -> List[Document]:
+        query = "SELECT * FROM documents WHERE path LIKE ?"
         if not with_archived:
-            query += "WHERE archived=0 "
+            query += " AND archived=0"
 
-        query += f"ORDER BY ID {'desc' if desc else 'asc'}"
+        query += f" ORDER BY ID {'desc' if desc else 'asc'}"
 
-        cursor = self.conn.cursor().execute(query)
+        cursor = self.conn.cursor().execute(query, (f'{path}',))
         rows = cursor.fetchall()
 
         docs = []
@@ -188,7 +230,28 @@ class Storage(object):
         return True
 
     def delete(self, doc_id: int) -> bool:
+        """Permanently deletes document with `doc_id`
+
+        :param doc_id: Document Id
+        """
         query = f"DELETE FROM documents WHERE id=?"
+
+        try:
+            self.conn.execute(query, (doc_id,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
+    def move(self, doc_id: int, path: str = '/'):
+        """Moves document to another `folder` at given path.
+
+        :param doc_id: Document Id
+        :param path: Path where document should be moved.
+        """
+        query = 'UPDATE documents SET path=? WHERE id=?'
 
         try:
             self.conn.execute(query, (doc_id,))
@@ -210,3 +273,17 @@ class Storage(object):
             docs.append(Document.new_with_row(row))
 
         return docs
+
+    def get_folders(self, path: str = '/', desc: bool = False):
+        query = "SELECT * FROM folders WHERE path LIKE ?"
+
+        query += f" ORDER BY title {'desc' if desc else 'asc'}"
+
+        cursor = self.conn.cursor().execute(query, (f'{path}',))
+        rows = cursor.fetchall()
+
+        folders = []
+        for row in rows:
+            folders.append(Folder.new_with_row(row))
+
+        return folders
