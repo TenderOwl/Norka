@@ -155,6 +155,13 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         """
         action_items = {
+            'folder': [
+                {
+                    'name': 'create',
+                    'action': self.on_folder_create_activated,
+                    'accels': ('<Control><Shift>n',)
+                },
+            ],
             'document': [
                 {
                     'name': 'create',
@@ -408,6 +415,10 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.header.toggle_document_mode()
         self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
+
+    def on_folder_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+        self.storage.add_folder(_('New Folder'), path=self.document_grid.current_path)
+        self.document_grid.reload_items()
 
     def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Create new document named 'Nameless' :) and activate it in editor.

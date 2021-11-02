@@ -58,6 +58,9 @@ class DocumentGrid(Gtk.Grid):
         self.selected_path = None
         self.selected_document = None
 
+        # Store current virtual files path.
+        self.current_path = '/'
+
         self.view = Gtk.IconView()
         self.view.set_model(self.model)
         self.view.set_pixbuf_column(0)
@@ -93,6 +96,7 @@ class DocumentGrid(Gtk.Grid):
 
         # For non-root path add virtual "upper" folder.
         if path != '/':
+            self.current_path = path
             folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
             self.create_folder_model(title='..', path='/', icon=folder_open_icon)
 

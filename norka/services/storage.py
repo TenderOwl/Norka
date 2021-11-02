@@ -148,7 +148,7 @@ class Storage(object):
                         CONSTRAINT "newUnique" UNIQUE ( "path", "title" )
                     )
                 """)
-                
+
                 Logger.info(f'Upgrading storage to version: {version}')
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `path` TEXT default '/'""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
@@ -166,6 +166,17 @@ class Storage(object):
         cursor = self.conn.cursor().execute(query)
         row = cursor.fetchone()
         return row[0]
+
+    def add_folder(self, title: str, path: str = '/'):
+        cursor = self.conn.cursor().execute(
+            "INSERT INTO folders(title, path, created, modified) VALUES (?, ?, ?, ?)",
+            (title,
+             path,
+             datetime.now(),
+             datetime.now()
+             ), )
+        self.conn.commit()
+        return cursor.lastrowid
 
     def add(self, document: Document, path: str = '/') -> int:
         cursor = self.conn.cursor().execute(

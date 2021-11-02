@@ -12,7 +12,7 @@
   <object class="GtkImage" id="document-open">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">document-open</property>
+    <property name="icon-name">document-import</property>
     <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="extended-stats">
@@ -27,10 +27,22 @@
     <property name="icon-name">dialog-information</property>
     <property name="icon_size">3</property>
   </object>
+  <object class="GtkImage" id="folder-new">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">folder-new</property>
+    <property name="icon_size">3</property>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-print</property>
+    <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">folder-new</property>
     <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="user-trash">
@@ -58,11 +70,26 @@
           <object class="GtkButton" id="add_button">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.create</property>
             <property name="image">document-new</property>
             <property name="always-show-image">True</property>
           </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="add_folder_button">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="focus-on-click">False</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">folder.create</property>
+            <property name="image">image2</property>
+            <property name="always-show-image">True</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
         </child>
         <child>
           <object class="GtkButton" id="import_button">
@@ -73,15 +100,6 @@
             <property name="action-name">document.import</property>
             <property name="image">document-open</property>
             <property name="always-show-image">True</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinner" id="loader_spinner">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
           </object>
           <packing>
             <property name="position">2</property>
@@ -103,6 +121,15 @@
           </packing>
         </child>
         <child>
+          <object class="GtkSpinner" id="loader_spinner">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkToggleButton" id="archived_button">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -113,7 +140,7 @@
           </object>
           <packing>
             <property name="pack-type">end</property>
-            <property name="position">4</property>
+            <property name="position">5</property>
           </packing>
         </child>
         <style>
