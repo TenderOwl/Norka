@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+import random
 from datetime import datetime
 from gettext import gettext as _
 from urllib.parse import urlparse, unquote_plus
@@ -86,10 +87,20 @@ class DocumentGrid(Gtk.Grid):
         if key == "sort-desc":
             self.reload_items(self)
 
-    def reload_items(self, sender: Gtk.Widget = None) -> None:
+    def reload_items(self, sender: Gtk.Widget = None, path: str = '/') -> None:
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
-        for document in self.storage.all(with_archived=self.show_archived, desc=order_desc):
+
+        # For non-root path add virtual "upper" folder.
+        if path != '/':
+            self.create_folder_model(title='..', path='/')
+
+        # Load folders first
+        for folder in self.storage.get_folders(path=path):
+            self.create_folder_model(title=folder.title, path=folder.path)
+
+        # Then load documents, not before foldes.
+        for document in self.storage.all(path=path, with_archived=self.show_archived, desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 
@@ -117,6 +128,14 @@ class DocumentGrid(Gtk.Grid):
 
         if self.selected_path:
             self.view.select_path(self.selected_path)
+
+    def create_folder_model(self, title: str, path: str, tooltip: str = None):
+        icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder.svg')
+        self.model.append([icon,
+                           title,
+                           path,
+                           -1,
+                           tooltip or title])
 
     @staticmethod
     def gen_preview(text, size=9, opacity=1) -> Pixbuf:

@@ -383,9 +383,22 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         model_iter = self.document_grid.model.get_iter(path)
         doc_id = self.document_grid.model.get_value(model_iter, 3)
-        Logger.debug('Activated Document.Id %s', doc_id)
+        print(doc_id)
+        if doc_id == -1:  # Folder selected
+            folder_title: str = self.document_grid.model.get_value(model_iter, 1)
+            folder_path: str = self.document_grid.model.get_value(model_iter, 2)
+            if not folder_path.endswith('/'):
+                folder_path = folder_path + '/'
+            self.folder_activate(f'{folder_path}{folder_title}')
+            Logger.debug(f'Activated Folder {folder_path}')
+        else:
+            Logger.debug(f'Activated Document.Id {doc_id}')
+            self.document_activate(doc_id)
 
-        self.document_activate(doc_id)
+    def folder_activate(self, folder_path: str) -> None:
+        if folder_path.endswith('..'):
+            folder_path = folder_path[:-2]
+        self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
         editor = self.screens.get_child_by_name('editor-grid')
