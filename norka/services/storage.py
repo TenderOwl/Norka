@@ -159,13 +159,25 @@ class Storage(object):
                 Logger.error(traceback.format_exc())
                 return False
 
-    def count(self, with_archived: bool = False) -> int:
-        query = 'SELECT COUNT (1) AS count FROM documents'
+    def count_documents(self, path: str = '/', with_archived: bool = False) -> int:
+        query = 'SELECT COUNT (1) AS count FROM documents WHERE path=?'
         if not with_archived:
-            query += " WHERE archived=0"
-        cursor = self.conn.cursor().execute(query)
+            query += " AND archived=0"
+        cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
         return row[0]
+
+    def count_folders(self, path: str = '/', with_archived: bool = False) -> int:
+        query = 'SELECT COUNT (1) AS count FROM folders WHERE path=?'
+        cursor = self.conn.cursor().execute(query, (path,))
+        row = cursor.fetchone()
+        return row[0]
+
+    def count_all(self, path: str = '/', with_archived: bool = False) -> int:
+        folders = self.count_folders(path, with_archived)
+        documents = self.count_documents(path, with_archived)
+        print(f'{folders} folders + {documents} documents')
+        return folders + documents
 
     def add_folder(self, title: str, path: str = '/'):
         cursor = self.conn.cursor().execute(

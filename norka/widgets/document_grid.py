@@ -32,7 +32,7 @@ import cairo
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
-from norka.define import TARGET_ENTRY_TEXT, RESOURCE_PREFIX
+from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.models.folder import Folder
 from norka.services.settings import Settings
@@ -71,15 +71,24 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_tooltip_column(4)
         self.view.set_item_width(80)
         self.view.set_activate_on_single_click(True)
-        self.view.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.view.connect('show', self.reload_items)
         self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
-        enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
-        self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
-                                [enforce_target], Gdk.DragAction.COPY)
+        import_dnd_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        reorder_dnd_target = Gtk.TargetEntry.new('reorder', Gtk.TargetFlags.SAME_APP, TARGET_ENTRY_REORDER)
+        # self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
+        #                         [import_dnd_target], Gdk.DragAction.COPY)
+
+        self.view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
+                                           [import_dnd_target, reorder_dnd_target],
+                                           Gdk.DragAction.MOVE)
+        self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target], Gdk.DragAction.DEFAULT)
+
+        self.view.connect("drag-motion", self.on_drag_motion)
+        # self.view.connect("drag-data-get", self.on_drag_data_get)
         self.view.connect('drag-data-received', self.on_drag_data_received)
 
         scrolled = Gtk.ScrolledWindow()
@@ -146,7 +155,7 @@ class DocumentGrid(Gtk.Grid):
         # For non-root path add virtual "upper" folder.
         if self.current_folder_path != '/':
             # /folder 1/folder 2 -> /folder 1
-            folder_path = self.current_folder_path[:self.current_folder_path[:-1].rfind('/')]
+            folder_path = self.current_folder_path[:self.current_folder_path[:-1].rfind('/')] or '/'
             folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
             self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon)
 
@@ -155,7 +164,8 @@ class DocumentGrid(Gtk.Grid):
             self.create_folder_model(title=folder.title, path=folder.path)
 
         # Then load documents, not before foldes.
-        for document in self.storage.all(path=self.current_folder_path, with_archived=self.show_archived, desc=order_desc):
+        for document in self.storage.all(path=self.current_folder_path, with_archived=self.show_archived,
+                                         desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 
@@ -279,6 +289,19 @@ class DocumentGrid(Gtk.Grid):
 
         self.view.unselect_all()
 
+    def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
+        model_path = self.view.get_path_at_pos(x, y)
+        if not model_path:
+            return False
+        model_iter = self.model.get_iter(model_path)
+        item_title = self.model.get_value(model_iter, 1)
+        item_id = self.model.get_value(model_iter, 3)
+        if item_id == -1:
+            Gdk.drag_status(context, Gdk.DragAction.MOVE, time)
+        else:
+            Gdk.drag_status(context, Gdk.DragAction.COPY, time)
+        return True
+
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
@@ -294,3 +317,22 @@ class DocumentGrid(Gtk.Grid):
                 filename = os.path.abspath(os.path.join(p.netloc, p.path))
 
                 self.emit('document-import', filename)
+        elif info == TARGET_ENTRY_REORDER:
+            dest_path = self.view.get_path_at_pos(x, y)
+            if not dest_path:
+                return
+
+            dest_iter = self.model.get_iter(dest_path)
+            dest_item_id = self.model.get_value(dest_iter, 3)
+            # If drop target is folder
+            if dest_item_id != -1:
+                return print('You can only move documents to folders, no other documents.')
+
+            dest_item = Folder(
+                title=self.model.get_value(dest_iter, 1),
+                path=self.model.get_value(dest_iter, 2)
+            )
+            target_item = self.selected_folder if self.is_folder_selected else self.selected_document
+            if self.storage.update(target_item.document_id, {'path': dest_item.normalized_path}):
+                print(f'Moved {target_item.title} to {dest_item.normalized_path}')
+                self.reload_items()

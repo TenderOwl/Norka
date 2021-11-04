@@ -131,7 +131,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         # If here's at least one document in storage
         # then show documents grid
-        self.check_documents_count()
+        self.check_grid_items()
 
         # Pull the Settings
         self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
@@ -336,12 +336,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.current_size = window.get_size()
         self.current_position = window.get_position()
 
-    def check_documents_count(self) -> None:
+    def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
         whether there is at least one document or not.
 
         """
-        if self.storage.count() > 0:
+        if self.storage.count_all(path=self.document_grid.current_folder_path) > 0:
             self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
@@ -391,12 +391,8 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         folder = self.document_grid.selected_folder
         if folder:
-            folder_path = folder.path
-            if not folder_path.endswith('/'):
-                folder_path = folder_path + '/'
-
-            self.folder_activate(f'{folder_path}{folder.title}')
-            Logger.debug(f'Activated Folder {folder_path}')
+            self.folder_activate(folder.normalized_path)
+            Logger.debug(f'Activated Folder {folder.normalized_path}')
 
         else:
             doc_id = self.document_grid.selected_document_id
@@ -474,7 +470,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
         if self.import_document(file_path=file_path):
-            self.check_documents_count()
+            self.check_grid_items()
 
     def import_document(self, file_path: str) -> bool:
         """Import files from filesystem.
@@ -505,15 +501,16 @@ class NorkaWindow(Handy.ApplicationWindow):
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
 
-        self.storage.add_folder(title, path=self.document_grid.current_path)
-        self.document_grid.reload_items(path=self.document_grid.current_path)
+        self.storage.add_folder(title, path=self.document_grid.current_folder_path)
+        self.document_grid.reload_items(path=self.document_grid.current_folder_path)
+        self.check_grid_items()
 
     def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
 
         folder = self.document_grid.selected_folder
         if folder and self.storage.rename_folder(folder, title):
-            self.document_grid.reload_items(path=self.document_grid.current_path)
+            self.document_grid.reload_items(path=self.document_grid.current_folder_path)
 
     def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
         """Renames selected document.
@@ -559,7 +556,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         doc_id = self.document_grid.selected_document_id
         if doc_id:
             if self.storage.update(doc_id=doc_id, data={'archived': True}):
-                self.check_documents_count()
+                self.check_grid_items()
                 self.document_grid.reload_items()
 
     def on_document_unarchive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -572,7 +569,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         doc_id = self.document_grid.selected_document_id
         if doc_id:
             if self.storage.update(doc_id=doc_id, data={'archived': False}):
-                self.check_documents_count()
+                self.check_grid_items()
                 self.document_grid.reload_items()
 
     def on_document_delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -605,7 +602,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 else:
                     self.storage.delete(item.document_id)
                 self.document_grid.reload_items()
-                self.check_documents_count()
+                self.check_grid_items()
 
     def on_export_plaintext(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -995,7 +992,8 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 
-        self.toggle_welcome(not show_archived and self.storage.count(with_archived=show_archived) == 0)
+        self.toggle_welcome(not show_archived and self.storage.count_all(path=self.document_grid.current_folder_path,
+                                                                         with_archived=show_archived) == 0)
 
     def on_show_extended_stats(self, action: Gio.SimpleAction, name: str = None) -> None:
         if not self.extended_stats_dialog:
