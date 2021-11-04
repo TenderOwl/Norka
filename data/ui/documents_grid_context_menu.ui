@@ -270,7 +270,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
-            <property name="action-name">folder.delete</property>
+            <property name="action-name">document.delete</property>
             <property name="text" translatable="yes">Delete</property>
           </object>
           <packing>

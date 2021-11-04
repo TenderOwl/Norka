@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import datetime
+import os.path
 
 from gi.repository import GObject
 
@@ -59,6 +60,10 @@ class Folder(GObject.GObject):
             # created=row[4],
             # modified=row[5]
         )
+
+    @property
+    def normalized_path(self):
+        return os.path.join(self.path, self.title)
 
     def __repr__(self) -> str:
         return f"{self.path} : {self.title}"

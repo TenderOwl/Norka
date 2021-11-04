@@ -516,9 +516,8 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.document_grid.reload_items(path=self.document_grid.current_path)
 
     def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
-        """Rename currently selected document.
-        Show rename dialog and update document's title
-        if user puts new one in the entry.
+        """Renames selected document.
+        Show rename dialog and update document title if a user puts a new one in the entry.
 
         :param sender:
         :param event:
@@ -583,11 +582,14 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
+        if self.document_grid.is_folder_selected:
+            item = self.document_grid.selected_folder
+        else:
+            item = self.document_grid.selected_document
 
-        if doc:
+        if item:
             prompt = MessageDialog(
-                f"Permanently delete “{doc.title}”?",
+                f"Permanently delete “{item.title}”?",
                 "Deleted items are not sent to Archive and not recoverable at all",
                 "dialog-warning",
             )
@@ -595,7 +597,13 @@ class NorkaWindow(Handy.ApplicationWindow):
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and self.storage.delete(doc.document_id):
+            if result == Gtk.ResponseType.APPLY:
+                if self.document_grid.is_folder_selected:
+                    self.storage.delete_documents(item.normalized_path)
+                    self.storage.delete_folders(item.normalized_path)
+                    self.storage.delete_folder(item)
+                else:
+                    self.storage.delete(item.document_id)
                 self.document_grid.reload_items()
                 self.check_documents_count()
 

@@ -190,6 +190,36 @@ class Storage(object):
 
         return True
 
+    def delete_folders(self, path: str) -> bool:
+        """Permanently deletes folder under given path
+        """
+        query = f"DELETE FROM folders WHERE path LIKE ?"
+
+        try:
+            self.conn.execute(query, (f'{path}%',))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
+    def delete_folder(self, folder: Folder) -> bool:
+        """Permanently deletes folder
+
+        :param folder: Folder to be deleted.
+        """
+        query = f"DELETE FROM folders WHERE path=? AND title=?"
+
+        try:
+            self.conn.execute(query, (folder.path, folder.title,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
     def add(self, document: Document, path: str = '/') -> int:
         cursor = self.conn.cursor().execute(
             "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
@@ -261,6 +291,17 @@ class Storage(object):
 
         try:
             self.conn.execute(query, (doc_id,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
+    def delete_documents(self, path: str) -> bool:
+        query = 'DELETE FROM documents WHERE path LIKE ?'
+        try:
+            self.conn.execute(query, (f'{path}%',))
             self.conn.commit()
         except Exception as e:
             Logger.error(e)
