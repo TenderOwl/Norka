@@ -63,6 +63,8 @@ class Folder(GObject.GObject):
 
     @property
     def normalized_path(self):
+        if self.title == '..':
+            self.title = ''
         return os.path.join(self.path, self.title)
 
     def __repr__(self) -> str:
