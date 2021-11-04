@@ -158,7 +158,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             'folder': [
                 {
                     'name': 'create',
-                    'action': self.on_folder_create_activated,
+                    'action': self.on_folder_create,
                     'accels': ('<Control><Shift>n',)
                 },
             ],
@@ -417,10 +417,10 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
 
-    def on_folder_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_folder_create(self, sender: Gtk.Widget = None, event=None) -> None:
         popover = RenamePopover(self.header.add_folder_button, '', label_title=_('Name folder with:'))
         popover.rename_button.set_label(_('Create'))
-        popover.connect('activate', self.on_folder_rename_activated)
+        popover.connect('activate', self.on_folder_create_activated)
         popover.popup()
 
     def on_folder_rename(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -502,11 +502,18 @@ class NorkaWindow(Handy.ApplicationWindow):
         finally:
             self.header.show_spinner(False)
 
-    def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
+    def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
 
         self.storage.add_folder(title, path=self.document_grid.current_path)
         self.document_grid.reload_items(path=self.document_grid.current_path)
+
+    def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
+        sender.destroy()
+
+        folder = self.document_grid.selected_folder
+        if folder and self.storage.rename_folder(folder, title):
+            self.document_grid.reload_items(path=self.document_grid.current_path)
 
     def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
@@ -517,14 +524,20 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document or self.editor.document
-        if not doc:
+        if self.document_grid.is_folder_selected:
+            item = self.document_grid.selected_folder
+        else:
+            item = self.document_grid.selected_document
+        if not item:
             return
 
         found, rect = self.document_grid.view.get_cell_rect(self.document_grid.selected_path)
-        popover = RenamePopover(self.overlay, doc.title)
+        popover = RenamePopover(self.overlay, item.title)
         popover.set_pointing_to(rect)
-        popover.connect('activate', self.on_document_rename_activated)
+        if self.document_grid.is_folder_selected:
+            popover.connect('activate', self.on_folder_rename_activated)
+        else:
+            popover.connect('activate', self.on_document_rename_activated)
         popover.popup()
 
     def on_document_rename_activated(self, sender: Gtk.Widget, title: str):

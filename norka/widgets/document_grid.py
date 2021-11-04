@@ -263,9 +263,13 @@ class DocumentGrid(Gtk.Grid):
             builder = Gtk.Builder()
             builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
 
-            menu_popover: Gtk.PopoverMenu = builder.get_object('popover-menu')
-            find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
-            find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
+            # Switch between folder's and document's menus
+            if self.is_folder_selected:
+                menu_popover: Gtk.PopoverMenu = builder.get_object('folder-popover-menu')
+            else:
+                menu_popover: Gtk.PopoverMenu = builder.get_object('document-popover-menu')
+                find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
+                find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
 
             menu_popover.set_relative_to(self.view)
             menu_popover.set_pointing_to(rect)

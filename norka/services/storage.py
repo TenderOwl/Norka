@@ -178,6 +178,18 @@ class Storage(object):
         self.conn.commit()
         return cursor.lastrowid
 
+    def rename_folder(self, folder: Folder, title: str) -> bool:
+        query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
+
+        try:
+            self.conn.execute(query, (title, folder.path, folder.title,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
     def add(self, document: Document, path: str = '/') -> int:
         cursor = self.conn.cursor().execute(
             "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
