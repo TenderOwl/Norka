@@ -341,7 +341,8 @@ class NorkaWindow(Handy.ApplicationWindow):
         whether there is at least one document or not.
 
         """
-        if self.storage.count_all(path=self.document_grid.current_folder_path) > 0:
+        if self.storage.count_all(path=self.document_grid.current_folder_path) > 0 \
+                or self.document_grid.current_folder_path != '/':
             self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
@@ -391,8 +392,8 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         folder = self.document_grid.selected_folder
         if folder:
-            self.folder_activate(folder.normalized_path)
-            Logger.debug(f'Activated Folder {folder.normalized_path}')
+            self.folder_activate(folder.absolute_path)
+            Logger.debug(f'Activated Folder {folder.absolute_path}')
 
         else:
             doc_id = self.document_grid.selected_document_id
@@ -597,8 +598,8 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             if result == Gtk.ResponseType.APPLY:
                 if self.document_grid.is_folder_selected:
-                    self.storage.delete_documents(item.normalized_path)
-                    self.storage.delete_folders(item.normalized_path)
+                    self.storage.delete_documents(item.absolute_path)
+                    self.storage.delete_folders(item.absolute_path)
                     self.storage.delete_folder(item)
                 else:
                     self.storage.delete(item.document_id)

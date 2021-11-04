@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import datetime
+import os
 
 from gi.repository import GObject
 
@@ -66,6 +67,10 @@ class Document(GObject.GObject):
             folder=row[6],
             encrypted=row[7],
         )
+
+    @property
+    def absolute_path(self):
+        return os.path.join(self.folder, self.title)
 
     def __repr__(self) -> str:
         return f"{self.document_id}: {self.title}"

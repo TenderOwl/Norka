@@ -150,14 +150,15 @@ class DocumentGrid(Gtk.Grid):
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
 
-        self.current_path = path
+        self.current_path = path or self.current_folder_path
 
         # For non-root path add virtual "upper" folder.
         if self.current_folder_path != '/':
             # /folder 1/folder 2 -> /folder 1
             folder_path = self.current_folder_path[:self.current_folder_path[:-1].rfind('/')] or '/'
             folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
-            self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon)
+            self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon,
+                                     tooltip=_('Go to the upper folder'))
 
         # Load folders first
         for folder in self.storage.get_folders(path=self.current_folder_path):
@@ -333,6 +334,10 @@ class DocumentGrid(Gtk.Grid):
                 path=self.model.get_value(dest_iter, 2)
             )
             target_item = self.selected_folder if self.is_folder_selected else self.selected_document
-            if self.storage.update(target_item.document_id, {'path': dest_item.normalized_path}):
-                print(f'Moved {target_item.title} to {dest_item.normalized_path}')
-                self.reload_items()
+            # For folders we have to move folder and its content to destination
+            if target_item.document_id == -1:
+                print(f'Folder {target_item.absolute_path} should be moved to {dest_item.absolute_path}')
+            else:
+                if self.storage.update(target_item.document_id, {'path': dest_item.absolute_path}):
+                    print(f'Moved {target_item.title} to {dest_item.absolute_path}')
+                    self.reload_items()

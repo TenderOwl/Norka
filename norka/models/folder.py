@@ -62,7 +62,7 @@ class Folder(GObject.GObject):
         )
 
     @property
-    def normalized_path(self):
+    def absolute_path(self):
         if self.title == '..':
             self.title = ''
         return os.path.join(self.path, self.title)
