@@ -183,7 +183,7 @@ class Storage(object):
             "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
             (document.title,
              document.content,
-             path,
+             document.folder or path,
              document.archived,
              datetime.now(),
              datetime.now()

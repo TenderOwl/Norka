@@ -61,4 +61,4 @@ class Folder(GObject.GObject):
         )
 
     def __repr__(self) -> str:
-        return f"{self.path}: {self.title}"
+        return f"{self.path} : {self.title}"

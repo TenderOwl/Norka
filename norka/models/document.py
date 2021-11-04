@@ -27,20 +27,25 @@ from gi.repository import GObject
 
 
 class Document(GObject.GObject):
-
     document_id = GObject.property(type=int, default=-1)
     title = GObject.property(type=str)
     content = GObject.property(type=str)
     archived = GObject.property(type=bool, default=False)
     created = GObject.property(type=str)
     modified = GObject.property(type=str)
+    folder = GObject.property(type=str)
+    encrypted = GObject.property(type=bool, default=False)
 
-    def __init__(self, title: str, content: str = '', _id: int = -1, archived=False, created=-1, modified=-1):
+    def __init__(self, title: str, content: str = '', folder: str = '/', _id: int = -1,
+                 archived=False, encrypted: bool = False,
+                 created: str = '-1', modified: str = '-1'):
         GObject.GObject.__init__(self)
         self.document_id = _id
         self.title = title
         self.content = content
+        self.folder = folder
         self.archived = archived
+        self.encrypted = encrypted
         self.created = created
         self.modified = modified
 
@@ -57,7 +62,9 @@ class Document(GObject.GObject):
             content=row[2],
             archived=row[3],
             created=row[4],
-            modified=row[5]
+            modified=row[5],
+            folder=row[6],
+            encrypted=row[7],
         )
 
     def __repr__(self) -> str:

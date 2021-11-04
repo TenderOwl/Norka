@@ -59,6 +59,9 @@ class Header(Gtk.Box):
         self.add_button: Gtk.Button = self.builder.get_object("add_button")
         self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), _('Create new document')))
 
+        self.add_folder_button: Gtk.Button = self.builder.get_object("add_folder_button")
+        self.add_folder_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control><Shift>n',), _('Create new folder')))
+
         self.back_button: Gtk.Button = self.builder.get_object("back_button")
         self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(
             ('<Control>w',),

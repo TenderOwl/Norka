@@ -34,7 +34,7 @@ class RenamePopover(Gtk.Popover):
         'activate': (GObject.SignalFlags.ACTION, None, (str,)),
     }
 
-    def __init__(self, relative_to: Gtk.Widget, origin_title: str):
+    def __init__(self, relative_to: Gtk.Widget, origin_title: str, label_title: str = None):
         super().__init__()
 
         self.set_relative_to(relative_to)
@@ -43,7 +43,7 @@ class RenamePopover(Gtk.Popover):
         self.origin_title = origin_title
 
         label = Gtk.Label()
-        label.set_markup(f"<b>{_('Rename')} {self.origin_title}:</b>")
+        label.set_markup(label_title or f"<b>{_('Rename')} {self.origin_title}:</b>")
         label.set_halign(Gtk.Align.START)
         label.set_margin_bottom(6)
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)

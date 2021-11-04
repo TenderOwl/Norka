@@ -25,6 +25,7 @@ import os
 import random
 from datetime import datetime
 from gettext import gettext as _
+from typing import Optional
 from urllib.parse import urlparse, unquote_plus
 
 import cairo
@@ -32,6 +33,8 @@ from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.define import TARGET_ENTRY_TEXT, RESOURCE_PREFIX
+from norka.models.document import Document
+from norka.models.folder import Folder
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
@@ -56,7 +59,7 @@ class DocumentGrid(Gtk.Grid):
 
         self.show_archived = False
         self.selected_path = None
-        self.selected_document = None
+        # self.selected_document = None
 
         # Store current virtual files path.
         self.current_path = '/'
@@ -86,26 +89,73 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
+    @property
+    def current_folder_path(self):
+        return self.current_path or '/'
+
+    @property
+    def is_folder_selected(self) -> bool:
+        model_iter = self.model.get_iter(self.selected_path)
+        doc_id = self.model.get_value(model_iter, 3)
+        return doc_id == -1
+
+    @property
+    def selected_document_id(self) -> Optional[int]:
+        """Returns Id of the selected document or `None`
+        """
+        if self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        return self.model.get_value(model_iter, 3)
+
+    @property
+    def selected_document(self) -> Optional[Document]:
+        """Returns selected :model:`Document` or `None`
+        """
+        if self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        doc_id = self.model.get_value(model_iter, 3)
+        return self.storage.get(doc_id)
+
+    @property
+    def selected_folder(self) -> Optional[Folder]:
+        """Returns selected :model:`Folder` or `None` if :model:`Document` selected.
+        """
+        if not self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        return Folder(
+            title=self.model.get_value(model_iter, 1),
+            path=self.model.get_value(model_iter, 2)
+        )
+
     def on_settings_changed(self, settings, key):
         if key == "sort-desc":
             self.reload_items(self)
 
-    def reload_items(self, sender: Gtk.Widget = None, path: str = '/') -> None:
+    def reload_items(self, sender: Gtk.Widget = None, path: str = None) -> None:
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
 
+        self.current_path = path
+
         # For non-root path add virtual "upper" folder.
-        if path != '/':
-            self.current_path = path
+        if self.current_folder_path != '/':
+            # /folder 1/folder 2 -> /folder 1
+            folder_path = self.current_folder_path[:self.current_folder_path[:-1].rfind('/')]
             folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
-            self.create_folder_model(title='..', path='/', icon=folder_open_icon)
+            self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon)
 
         # Load folders first
-        for folder in self.storage.get_folders(path=path):
+        for folder in self.storage.get_folders(path=self.current_folder_path):
             self.create_folder_model(title=folder.title, path=folder.path)
 
         # Then load documents, not before foldes.
-        for document in self.storage.all(path=path, with_archived=self.show_archived, desc=order_desc):
+        for document in self.storage.all(path=self.current_folder_path, with_archived=self.show_archived, desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 
@@ -197,16 +247,16 @@ class DocumentGrid(Gtk.Grid):
         self.selected_path = self.view.get_path_at_pos(event.x, event.y)
 
         if not self.selected_path:
-            self.selected_document = None
+            # self.selected_document = None
             self.view.unselect_all()
             return True
 
         if event.button == Gdk.BUTTON_SECONDARY:
             self.view.select_path(self.selected_path)
 
-            self.selected_document = self.storage.get(self.model.get_value(
-                self.model.get_iter(self.selected_path), 3
-            ))
+            # self.selected_document = self.storage.get(self.model.get_value(
+            #     self.model.get_iter(self.selected_path), 3
+            # ))
 
             found, rect = self.view.get_cell_rect(self.selected_path)
 
@@ -224,7 +274,6 @@ class DocumentGrid(Gtk.Grid):
             return True
 
         self.view.unselect_all()
-        self.selected_document = None
 
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,

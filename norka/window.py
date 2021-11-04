@@ -372,7 +372,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 self.extended_stats_dialog.close()
                 self.extended_stats_dialog = None
 
-            self.document_grid.reload_items()
+            self.document_grid.reload_items(path=self.document_grid.current_folder_path)
             self.header.toggle_document_mode()
             self.header.update_title()
             self.settings.set_int('last-document-id', -1)
@@ -388,23 +388,24 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param path:
         :return:
         """
-        model_iter = self.document_grid.model.get_iter(path)
-        doc_id = self.document_grid.model.get_value(model_iter, 3)
-        print(doc_id)
-        if doc_id == -1:  # Folder selected
-            folder_title: str = self.document_grid.model.get_value(model_iter, 1)
-            folder_path: str = self.document_grid.model.get_value(model_iter, 2)
+
+        folder = self.document_grid.selected_folder
+        if folder:
+            folder_path = folder.path
             if not folder_path.endswith('/'):
                 folder_path = folder_path + '/'
-            self.folder_activate(f'{folder_path}{folder_title}')
+
+            self.folder_activate(f'{folder_path}{folder.title}')
             Logger.debug(f'Activated Folder {folder_path}')
+
         else:
+            doc_id = self.document_grid.selected_document_id
             Logger.debug(f'Activated Document.Id {doc_id}')
             self.document_activate(doc_id)
 
     def folder_activate(self, folder_path: str) -> None:
         if folder_path.endswith('..'):
-            folder_path = folder_path[:-2]
+            folder_path = folder_path[:-3]
         self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
@@ -417,8 +418,15 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.settings.set_int('last-document-id', doc_id)
 
     def on_folder_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
-        self.storage.add_folder(_('New Folder'), path=self.document_grid.current_path)
-        self.document_grid.reload_items()
+        popover = RenamePopover(self.header.add_folder_button, '', label_title=_('Name folder with:'))
+        popover.rename_button.set_label(_('Create'))
+        popover.connect('activate', self.on_folder_rename_activated)
+        popover.popup()
+
+    def on_folder_rename(self, sender: Gtk.Widget = None, event=None) -> None:
+        popover = RenamePopover(self.header.add_folder_button, '')
+        popover.connect('activate', self.on_folder_rename_activated)
+        popover.popup()
 
     def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Create new document named 'Nameless' :) and activate it in editor.
@@ -431,7 +439,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         if self.editor.document:
             self.on_document_close_activated(sender, event)
 
-        self.editor.create_document()
+        self.editor.create_document(folder_path=self.document_grid.current_folder_path)
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=self.editor.document.title)
@@ -494,6 +502,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         finally:
             self.header.show_spinner(False)
 
+    def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
+        sender.destroy()
+
+        self.storage.add_folder(title, path=self.document_grid.current_path)
+        self.document_grid.reload_items(path=self.document_grid.current_path)
+
     def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
         """Rename currently selected document.
         Show rename dialog and update document's title
@@ -516,11 +530,11 @@ class NorkaWindow(Handy.ApplicationWindow):
     def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
 
-        doc = self.document_grid.selected_document or self.editor.document
-        if not doc:
+        doc_id = self.document_grid.selected_document_id
+        if not doc_id:
             return
 
-        if self.storage.update(doc_id=doc.document_id, data={'title': title}):
+        if self.storage.update(doc_id=doc_id, data={'title': title}):
             self.document_grid.reload_items()
 
     def on_document_archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -530,9 +544,9 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
-        if doc:
-            if self.storage.update(doc_id=doc.document_id, data={'archived': True}):
+        doc_id = self.document_grid.selected_document_id
+        if doc_id:
+            if self.storage.update(doc_id=doc_id, data={'archived': True}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -543,9 +557,9 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
-        if doc:
-            if self.storage.update(doc_id=doc.document_id, data={'archived': False}):
+        doc_id = self.document_grid.selected_document_id
+        if doc_id:
+            if self.storage.update(doc_id=doc_id, data={'archived': False}):
                 self.check_documents_count()
                 self.document_grid.reload_items()
 
@@ -558,13 +572,13 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         doc = self.document_grid.selected_document
 
-        prompt = MessageDialog(
-            f"Permanently delete “{doc.title}”?",
-            "Deleted items are not sent to Archive and not recoverable at all",
-            "dialog-warning",
-        )
-
         if doc:
+            prompt = MessageDialog(
+                f"Permanently delete “{doc.title}”?",
+                "Deleted items are not sent to Archive and not recoverable at all",
+                "dialog-warning",
+            )
+
             result = prompt.run()
             prompt.destroy()
 
