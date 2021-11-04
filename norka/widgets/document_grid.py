@@ -291,6 +291,8 @@ class DocumentGrid(Gtk.Grid):
         self.view.unselect_all()
 
     def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
+        # Change cursor icon based on drop target.
+        # if the user move mouse over the folder - it becomes MOVE action
         model_path = self.view.get_path_at_pos(x, y)
         if not model_path:
             return False
@@ -306,6 +308,8 @@ class DocumentGrid(Gtk.Grid):
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
+
+        # Handle normal dnd from other apps with files as a target
         if info == TARGET_ENTRY_TEXT:
             uris = data.get_text().split('\n')
 
@@ -316,8 +320,9 @@ class DocumentGrid(Gtk.Grid):
 
                 p = urlparse(unquote_plus(uri))
                 filename = os.path.abspath(os.path.join(p.netloc, p.path))
-
                 self.emit('document-import', filename)
+
+        # Handle reordering and moving inside Norka's virtual filesystem
         elif info == TARGET_ENTRY_REORDER:
             dest_path = self.view.get_path_at_pos(x, y)
             if not dest_path:
@@ -325,18 +330,22 @@ class DocumentGrid(Gtk.Grid):
 
             dest_iter = self.model.get_iter(dest_path)
             dest_item_id = self.model.get_value(dest_iter, 3)
-            # If drop target is folder
+
+            # decline processing if the drop target is not folder
+            # Maybe we should create folders for such action but it requires a lot of UI interactions
             if dest_item_id != -1:
-                return print('You can only move documents to folders, no other documents.')
+                return print('You can only move documents to folders, no to other documents :)')
 
             dest_item = Folder(
                 title=self.model.get_value(dest_iter, 1),
                 path=self.model.get_value(dest_iter, 2)
             )
             target_item = self.selected_folder if self.is_folder_selected else self.selected_document
+
             # For folders we have to move folder and its content to destination
             if target_item.document_id == -1:
                 print(f'Folder {target_item.absolute_path} should be moved to {dest_item.absolute_path}')
+            # For regular documents it is easy to move - just update the `path`.
             else:
                 if self.storage.update(target_item.document_id, {'path': dest_item.absolute_path}):
                     print(f'Moved {target_item.title} to {dest_item.absolute_path}')
