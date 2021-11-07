@@ -425,7 +425,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         popover.connect('activate', self.on_folder_rename_activated)
         popover.popup()
 
-    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None, title: str=None) -> None:
         """Create new document named 'Nameless' :) and activate it in editor.
 
         :param sender:
@@ -436,7 +436,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         if self.editor.document:
             self.on_document_close_activated(sender, event)
 
-        self.editor.create_document(folder_path=self.document_grid.current_folder_path)
+        self.editor.create_document(title=title, folder_path=self.document_grid.current_folder_path)
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=self.editor.document.title)
