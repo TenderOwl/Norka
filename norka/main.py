@@ -162,7 +162,7 @@ class Application(Gtk.Application):
         options = options.end().unpack()
         if 'new' in options:
             new_arg_value = options['new']
-            if new_arg_value:
+            if new_arg_value and not self.window.is_document_editing:
                 self.window.on_document_create_activated(title=new_arg_value)
                 return 1
         return 0
