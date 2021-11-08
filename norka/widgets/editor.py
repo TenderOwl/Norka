@@ -23,10 +23,9 @@
 # SOFTWARE.
 
 import re
-from typing import Tuple
 from gettext import gettext as _
+from typing import Tuple
 
-import gi
 from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject
 
 from norka.models.document import Document
@@ -156,12 +155,14 @@ class Editor(Gtk.Grid):
                                                       settings=self.search_settings)
         self.search_iter = None
 
-    def create_document(self, title: str = 'Nameless', folder_path: str = '/') -> None:
+    def create_document(self, title: str = None, folder_path: str = '/') -> None:
         """Create new document and put it to storage
 
         :param title: title of the document. Defaults to 'Nameless'
         :param folder_path: path to parent folder to store the document id. Defaults to root.
         """
+        if not title:
+            title = _('Nameless')
         self.document = Document(title=title, folder=folder_path)
         self.view.grab_focus()
         self.emit('document-load', self.document.document_id)
