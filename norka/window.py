@@ -459,7 +459,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 lines = _file.readlines()
                 filename = os.path.basename(file_path)[:file_path.rfind('.')]
 
-                _doc = Document(title=filename, content='\r\n'.join(lines))
+                _doc = Document(title=filename, content=''.join(lines))
                 _doc_id = self.storage.add(_doc)
 
                 self.document_grid.reload_items()
