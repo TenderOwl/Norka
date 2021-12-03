@@ -36,7 +36,7 @@ Markdown for markup; No files until you need it; Your notes always saved and can
 * Document archiving
 * And of course, you can delete them permanently
 
-Read more on [tenderowl.com/norka](https://tenderowl.com/norka).
+Read more on [tenderowl.com/work/norka](https://tenderowl.com/work/norka).
 
 ## Installation
 
