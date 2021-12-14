@@ -39,6 +39,10 @@ from norka.services.settings import Settings
 
 
 class Storage(object):
+    """Class intented to handle data storage operations.
+
+    Current implementation uses SQLite3 database.
+    """
     def __init__(self, settings: Settings):
         self.conn = None
         self.version = None
@@ -51,11 +55,20 @@ class Storage(object):
             self.settings.set_string("storage-path", self.file_path)
 
     def connect(self):
+        """Connect to the database.
+        """
         self.conn = sqlite3.connect(self.file_path,
                                     detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
                                     check_same_thread=False)
 
     def init(self) -> None:
+        """Initialize database and create tables.
+
+        Database path is based on the XDG Base Directory Specification.
+        If it not exists then it will be created.
+
+        Also this method checks if database is up to date and apply updates.
+        """
         if not os.path.exists(self.base_path):
             os.mkdir(self.base_path)
             Logger.info('Storage folder created at %s', self.base_path)
@@ -98,7 +111,7 @@ class Storage(object):
             self.v2_upgrade()
 
     def v1_upgrade(self) -> bool:
-        """Upgrade database to version 1.
+        """Upgrades database to version 1.
 
         Add fields:
             - created - timestamp document was modified
@@ -124,16 +137,16 @@ class Storage(object):
                 return False
 
     def v2_upgrade(self) -> bool:
-        """Upgrade database to version 2.
+        """Upgrades database to version 2.
 
         Add tables:
             - folders - store folders :)
 
         Add fields:
-            - path - timestamp document was modified
-            - encrypted - timestamp document was modified
+            - path - internal path to the document, default to "/"
+            - encrypted - indicates whether document is encrypted or not
 
-        :return:
+        :return: True if upgrade was successful, otherwise False
         """
         version = 2
         with self.conn:
@@ -160,26 +173,44 @@ class Storage(object):
                 return False
 
     def count_documents(self, path: str = '/', with_archived: bool = False) -> int:
+        """Counts documents in the given path.
+
+        If `with_archived` is True then archived documents will be counted too.
+        """
         query = 'SELECT COUNT (1) AS count FROM documents WHERE path=?'
         if not with_archived:
             query += " AND archived=0"
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
+        Logger.debug(f'{row[0]} documents found in {path}')
         return row[0]
 
     def count_folders(self, path: str = '/', with_archived: bool = False) -> int:
+        """Counts folders in the given path.
+
+        If `with_archived` is True then archived folders will be counted too. Not yet implemented.
+        """
         query = 'SELECT COUNT (1) AS count FROM folders WHERE path=?'
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
+        Logger.debug(f'{row[0]} folders found in {path}')
         return row[0]
 
     def count_all(self, path: str = '/', with_archived: bool = False) -> int:
+        """Counts all documents and folders in the given path.
+        
+        If `with_archived` is True then archived documents and folders will be counted too.
+        """
         folders = self.count_folders(path, with_archived)
         documents = self.count_documents(path, with_archived)
-        print(f'{folders} folders + {documents} documents')
+        Logger.debug(f'{folders} folders + {documents} documents found in {path}')
         return folders + documents
 
     def add_folder(self, title: str, path: str = '/'):
+        """Creates new folder in the given `path`.
+
+        By default folder is created in the root folder.
+        """
         cursor = self.conn.cursor().execute(
             "INSERT INTO folders(title, path, created, modified) VALUES (?, ?, ?, ?)",
             (title,
@@ -191,6 +222,8 @@ class Storage(object):
         return cursor.lastrowid
 
     def rename_folder(self, folder: Folder, title: str) -> bool:
+        """Renames folder with given `folder` to `title`.
+        """
         query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
 
         try:
@@ -203,7 +236,7 @@ class Storage(object):
         return True
 
     def delete_folders(self, path: str) -> bool:
-        """Permanently deletes folder under given path
+        """Permanently deletes folders under given `path`
         """
         query = f"DELETE FROM folders WHERE path LIKE ?"
 
@@ -217,9 +250,9 @@ class Storage(object):
         return True
 
     def delete_folder(self, folder: Folder) -> bool:
-        """Permanently deletes folder
+        """Permanently deletes `folder`
 
-        :param folder: Folder to be deleted.
+        :param folder: :class:`Folder` to be deleted.
         """
         query = f"DELETE FROM folders WHERE path=? AND title=?"
 
@@ -233,6 +266,10 @@ class Storage(object):
         return True
 
     def add(self, document: Document, path: str = '/') -> int:
+        """Creates new document in the given `path`.
+
+        By default document is created in the root folder.
+        """
         cursor = self.conn.cursor().execute(
             "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
             (document.title,
@@ -246,6 +283,11 @@ class Storage(object):
         return cursor.lastrowid
 
     def all(self, path: str = '/', with_archived: bool = False, desc: bool = False) -> List[Document]:
+        """Returns all documents in the given `path`.
+
+        If `with_archived` is True then archived documents will be returned too.
+        `desc` indicates whether to return documents in descending order or not.
+        """
         query = "SELECT * FROM documents WHERE path LIKE ?"
         if not with_archived:
             query += " AND archived=0"
@@ -262,6 +304,9 @@ class Storage(object):
         return docs
 
     def get(self, doc_id: int) -> Document:
+        """Returns document with given `doc_id`.
+
+        """
         query = "SELECT * FROM documents WHERE id=?"
         cursor = self.conn.cursor().execute(query, (doc_id,))
         row = cursor.fetchone()
@@ -269,6 +314,9 @@ class Storage(object):
         return Document.new_with_row(row)
 
     def save(self, document: Document) -> bool:
+        """Saves `document` to the database.
+
+        """
         query = "UPDATE documents SET title=?, content=?, archived=?, modified=? WHERE id=?"
 
         try:
@@ -281,6 +329,18 @@ class Storage(object):
         return True
 
     def update(self, doc_id: int, data: dict) -> bool:
+        """Updates document with given `doc_id` with given `data`.
+
+        `data` can contain any of the following keys:
+        - title
+        - content
+        - archived
+        - tags
+        - path
+        - encrypted
+
+        However, if you need to move document to another folder, you should use :func:`move` method.
+        """
         fields = {field: value for field, value in data.items()}
 
         query = f"UPDATE documents SET {','.join(f'{key}=?' for key in fields.keys())}, modified=? WHERE id=?"
@@ -295,9 +355,9 @@ class Storage(object):
         return True
 
     def delete(self, doc_id: int) -> bool:
-        """Permanently deletes document with `doc_id`
+        """Permanently deletes document with given `doc_id`.
 
-        :param doc_id: Document Id
+        Returns True if document was deleted successfully.
         """
         query = f"DELETE FROM documents WHERE id=?"
 
@@ -311,6 +371,10 @@ class Storage(object):
         return True
 
     def delete_documents(self, path: str) -> bool:
+        """Permenantly deletes documents under given `path`.
+
+        Returns True if documents were deleted successfully.
+        """
         query = 'DELETE FROM documents WHERE path LIKE ?'
         try:
             self.conn.execute(query, (f'{path}%',))
@@ -321,11 +385,10 @@ class Storage(object):
 
         return True
 
-    def move(self, doc_id: int, path: str = '/'):
-        """Moves document to another `folder` at given path.
+    def move(self, doc_id: int, path: str = '/') -> bool:
+        """Moves document to the given `path`.
 
-        :param doc_id: Document Id
-        :param path: Path where document should be moved.
+        Returns True if document was moved successfully.
         """
         query = 'UPDATE documents SET path=? WHERE id=?'
 
@@ -339,6 +402,8 @@ class Storage(object):
         return True
 
     def find(self, search_text: str) -> List[Document]:
+        """Finds documents with given `search_text`.
+        """
         query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
         cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
@@ -351,6 +416,10 @@ class Storage(object):
         return docs
 
     def get_folders(self, path: str = '/', desc: bool = False):
+        """Returns all folders under given `path`.
+
+        If `desc` is True then folders will be returned in descending order.
+        """
         query = "SELECT * FROM folders WHERE path LIKE ?"
 
         query += f" ORDER BY title {'desc' if desc else 'asc'}"
