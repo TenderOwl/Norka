@@ -2,7 +2,7 @@
 
 # norka.in
 #
-# Copyright 2020 Andrey Maksimov
+# Copyright 2020-2021 Andrey Maksimov
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -49,7 +49,6 @@ locale.bindtextdomain(project_name, localedir)
 gettext.textdomain(project_name)
 gettext.bindtextdomain(project_name, localedir)
 
-print('GETTEXT: ', localedir, project_name, gettext.find(project_name, localedir))
 
 if __name__ == '__main__':
     import gi
