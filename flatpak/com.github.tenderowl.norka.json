@@ -2,7 +2,7 @@
     "app-id" : "com.github.tenderowl.norka",
     "runtime" : "io.elementary.Platform",
     "sdk" : "io.elementary.Sdk",
-    "runtime-version" : "6",
+    "runtime-version" : "6.1",
     "command" : "com.github.tenderowl.norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
