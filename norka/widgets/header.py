@@ -165,7 +165,7 @@ class Header(Gtk.Box):
         if self.stats_mode == StatsMode.STATS:
             label = f"{self.stats.characters} chars | {self.stats.words} words"
         elif self.stats_mode == StatsMode.PATH:
-            label = self.document_path
+            label = _('Path') + ': ' +self.document_path
         else:
             label = ""
 
