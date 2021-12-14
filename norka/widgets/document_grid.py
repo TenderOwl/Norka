@@ -22,15 +22,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
+import random
 from datetime import datetime
 from gettext import gettext as _
+from typing import Optional
 from urllib.parse import urlparse, unquote_plus
 
 import cairo
 from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
-from norka.define import TARGET_ENTRY_TEXT, RESOURCE_PREFIX
+from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
+from norka.models.document import Document
+from norka.models.folder import Folder
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
@@ -55,7 +59,10 @@ class DocumentGrid(Gtk.Grid):
 
         self.show_archived = False
         self.selected_path = None
-        self.selected_document = None
+        # self.selected_document = None
+
+        # Store current virtual files path.
+        self.current_path = '/'
 
         self.view = Gtk.IconView()
         self.view.set_model(self.model)
@@ -64,15 +71,24 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_tooltip_column(4)
         self.view.set_item_width(80)
         self.view.set_activate_on_single_click(True)
-        self.view.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.view.connect('show', self.reload_items)
         self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
-        enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
-        self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
-                                [enforce_target], Gdk.DragAction.COPY)
+        import_dnd_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        reorder_dnd_target = Gtk.TargetEntry.new('reorder', Gtk.TargetFlags.SAME_APP, TARGET_ENTRY_REORDER)
+        # self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
+        #                         [import_dnd_target], Gdk.DragAction.COPY)
+
+        self.view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
+                                           [import_dnd_target, reorder_dnd_target],
+                                           Gdk.DragAction.MOVE)
+        self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target], Gdk.DragAction.DEFAULT)
+
+        self.view.connect("drag-motion", self.on_drag_motion)
+        # self.view.connect("drag-data-get", self.on_drag_data_get)
         self.view.connect('drag-data-received', self.on_drag_data_received)
 
         scrolled = Gtk.ScrolledWindow()
@@ -82,14 +98,75 @@ class DocumentGrid(Gtk.Grid):
 
         self.add(scrolled)
 
+    @property
+    def current_folder_path(self):
+        return self.current_path or '/'
+
+    @property
+    def is_folder_selected(self) -> bool:
+        model_iter = self.model.get_iter(self.selected_path)
+        doc_id = self.model.get_value(model_iter, 3)
+        return doc_id == -1
+
+    @property
+    def selected_document_id(self) -> Optional[int]:
+        """Returns Id of the selected document or `None`
+        """
+        if self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        return self.model.get_value(model_iter, 3)
+
+    @property
+    def selected_document(self) -> Optional[Document]:
+        """Returns selected :model:`Document` or `None`
+        """
+        if self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        doc_id = self.model.get_value(model_iter, 3)
+        return self.storage.get(doc_id)
+
+    @property
+    def selected_folder(self) -> Optional[Folder]:
+        """Returns selected :model:`Folder` or `None` if :model:`Document` selected.
+        """
+        if not self.is_folder_selected:
+            return None
+
+        model_iter = self.model.get_iter(self.selected_path)
+        return Folder(
+            title=self.model.get_value(model_iter, 1),
+            path=self.model.get_value(model_iter, 2)
+        )
+
     def on_settings_changed(self, settings, key):
         if key == "sort-desc":
             self.reload_items(self)
 
-    def reload_items(self, sender: Gtk.Widget = None) -> None:
+    def reload_items(self, sender: Gtk.Widget = None, path: str = None) -> None:
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
-        for document in self.storage.all(with_archived=self.show_archived, desc=order_desc):
+
+        self.current_path = path or self.current_folder_path
+
+        # For non-root path add virtual "upper" folder.
+        if self.current_folder_path != '/':
+            # /folder 1/folder 2 -> /folder 1
+            folder_path = self.current_folder_path[:self.current_folder_path[:-1].rfind('/')] or '/'
+            folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
+            self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon,
+                                     tooltip=_('Go to the upper folder'))
+
+        # Load folders first
+        for folder in self.storage.get_folders(path=self.current_folder_path):
+            self.create_folder_model(title=folder.title, path=folder.path)
+
+        # Then load documents, not before foldes.
+        for document in self.storage.all(path=self.current_folder_path, with_archived=self.show_archived,
+                                         desc=order_desc):
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
             opacity = 0.2 if document.archived else 1
 
@@ -117,6 +194,14 @@ class DocumentGrid(Gtk.Grid):
 
         if self.selected_path:
             self.view.select_path(self.selected_path)
+
+    def create_folder_model(self, title: str, path: str, tooltip: str = None, icon: Pixbuf = None):
+        icon = icon or Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder.svg')
+        self.model.append([icon,
+                           title,
+                           path,
+                           -1,
+                           tooltip or title])
 
     @staticmethod
     def gen_preview(text, size=9, opacity=1) -> Pixbuf:
@@ -173,25 +258,29 @@ class DocumentGrid(Gtk.Grid):
         self.selected_path = self.view.get_path_at_pos(event.x, event.y)
 
         if not self.selected_path:
-            self.selected_document = None
+            # self.selected_document = None
             self.view.unselect_all()
             return True
 
         if event.button == Gdk.BUTTON_SECONDARY:
             self.view.select_path(self.selected_path)
 
-            self.selected_document = self.storage.get(self.model.get_value(
-                self.model.get_iter(self.selected_path), 3
-            ))
+            # self.selected_document = self.storage.get(self.model.get_value(
+            #     self.model.get_iter(self.selected_path), 3
+            # ))
 
             found, rect = self.view.get_cell_rect(self.selected_path)
 
             builder = Gtk.Builder()
             builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
 
-            menu_popover: Gtk.PopoverMenu = builder.get_object('popover-menu')
-            find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
-            find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
+            # Switch between folder's and document's menus
+            if self.is_folder_selected:
+                menu_popover: Gtk.PopoverMenu = builder.get_object('folder-popover-menu')
+            else:
+                menu_popover: Gtk.PopoverMenu = builder.get_object('document-popover-menu')
+                find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
+                find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
 
             menu_popover.set_relative_to(self.view)
             menu_popover.set_pointing_to(rect)
@@ -200,11 +289,27 @@ class DocumentGrid(Gtk.Grid):
             return True
 
         self.view.unselect_all()
-        self.selected_document = None
+
+    def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
+        # Change cursor icon based on drop target.
+        # if the user move mouse over the folder - it becomes MOVE action
+        model_path = self.view.get_path_at_pos(x, y)
+        if not model_path:
+            return False
+        model_iter = self.model.get_iter(model_path)
+        item_title = self.model.get_value(model_iter, 1)
+        item_id = self.model.get_value(model_iter, 3)
+        if item_id == -1:
+            Gdk.drag_status(context, Gdk.DragAction.MOVE, time)
+        else:
+            Gdk.drag_status(context, Gdk.DragAction.COPY, time)
+        return True
 
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
+
+        # Handle normal dnd from other apps with files as a target
         if info == TARGET_ENTRY_TEXT:
             uris = data.get_text().split('\n')
 
@@ -215,5 +320,33 @@ class DocumentGrid(Gtk.Grid):
 
                 p = urlparse(unquote_plus(uri))
                 filename = os.path.abspath(os.path.join(p.netloc, p.path))
-
                 self.emit('document-import', filename)
+
+        # Handle reordering and moving inside Norka's virtual filesystem
+        elif info == TARGET_ENTRY_REORDER:
+            dest_path = self.view.get_path_at_pos(x, y)
+            if not dest_path:
+                return
+
+            dest_iter = self.model.get_iter(dest_path)
+            dest_item_id = self.model.get_value(dest_iter, 3)
+
+            # decline processing if the drop target is not folder
+            # Maybe we should create folders for such action but it requires a lot of UI interactions
+            if dest_item_id != -1:
+                return print('You can only move documents to folders, no to other documents :)')
+
+            dest_item = Folder(
+                title=self.model.get_value(dest_iter, 1),
+                path=self.model.get_value(dest_iter, 2)
+            )
+            target_item = self.selected_folder if self.is_folder_selected else self.selected_document
+
+            # For folders we have to move folder and its content to destination
+            if target_item.document_id == -1:
+                print(f'Folder {target_item.absolute_path} should be moved to {dest_item.absolute_path}')
+            # For regular documents it is easy to move - just update the `path`.
+            else:
+                if self.storage.update(target_item.document_id, {'path': dest_item.absolute_path}):
+                    print(f'Moved {target_item.title} to {dest_item.absolute_path}')
+                    self.reload_items()

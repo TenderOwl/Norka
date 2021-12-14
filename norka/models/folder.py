@@ -1,8 +1,8 @@
-# document.py
+# folder.py
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2021 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,55 +22,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import datetime
-import os
+import os.path
 
 from gi.repository import GObject
 
 
-class Document(GObject.GObject):
-    document_id = GObject.property(type=int, default=-1)
+class Folder(GObject.GObject):
+    path = GObject.property(type=str)
     title = GObject.property(type=str)
-    content = GObject.property(type=str)
-    archived = GObject.property(type=bool, default=False)
-    created = GObject.property(type=str)
-    modified = GObject.property(type=str)
-    folder = GObject.property(type=str)
-    encrypted = GObject.property(type=bool, default=False)
 
-    def __init__(self, title: str, content: str = '', folder: str = '/', _id: int = -1,
-                 archived=False, encrypted: bool = False,
-                 created: str = '-1', modified: str = '-1'):
+    # color = GObject.property(type=str)
+    # archived = GObject.property(type=bool, default=False)
+    # created = GObject.property(type=str)
+    # modified = GObject.property(type=str)
+
+    def __init__(self, title: str, path: str = '/'):
         GObject.GObject.__init__(self)
-        self.document_id = _id
+        self.path = path
         self.title = title
-        self.content = content
-        self.folder = folder
-        self.archived = archived
-        self.encrypted = encrypted
-        self.created = created
-        self.modified = modified
+        # self.content = content
+        # self.archived = archived
+        # self.created = created
+        # self.modified = modified
 
     @classmethod
     def new_with_row(cls, row: list):
-        """Create :class:`Document` instance from sqlite row.
+        """Create :class:`Document` instance from sqlite row
 
         :param row: row with data from sqlite storage
         :type row: list
         """
         return cls(
-            _id=row[0],
+            path=row[0],
             title=row[1],
-            content=row[2],
-            archived=row[3],
-            created=row[4],
-            modified=row[5],
-            folder=row[8],
-            encrypted=row[9],
+            # content=row[2],
+            # archived=row[3],
+            # created=row[4],
+            # modified=row[5]
         )
 
     @property
     def absolute_path(self):
-        return os.path.join(self.folder, self.title)
+        if self.title == '..':
+            self.title = ''
+        return os.path.join(self.path, self.title)
 
     def __repr__(self) -> str:
-        return f"{self.document_id}: {self.folder}/{self.title}"
+        return f"{self.path} : {self.title}"

@@ -23,10 +23,8 @@
 # SOFTWARE.
 import os
 from gettext import gettext as _
-from io import StringIO
-from tempfile import TemporaryFile
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy, WebKit2
+from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
@@ -131,7 +129,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         # If here's at least one document in storage
         # then show documents grid
-        self.check_documents_count()
+        self.check_grid_items()
 
         # Pull the Settings
         self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
@@ -141,6 +139,11 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.set_indent_width(self.settings.get_int('indent-width'))
         self.set_style_scheme(self.settings.get_string('stylescheme'))
         self.editor.update_font(self.settings.get_string('font'))
+
+    @property
+    def is_document_editing(self) -> bool:
+        """Returns if Norka is on editor screen or not"""
+        return self.screens.get_visible_child_name() == 'editor-grid'
 
     def apply_styling(self):
         """Apply elementary OS header styling only for elementary OS"""
@@ -155,6 +158,13 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         """
         action_items = {
+            'folder': [
+                {
+                    'name': 'create',
+                    'action': self.on_folder_create,
+                    'accels': ('<Control><Shift>n',)
+                },
+            ],
             'document': [
                 {
                     'name': 'create',
@@ -329,12 +339,13 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.current_size = window.get_size()
         self.current_position = window.get_position()
 
-    def check_documents_count(self) -> None:
+    def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
         whether there is at least one document or not.
 
         """
-        if self.storage.count() > 0:
+        if self.storage.count_all(path=self.document_grid.current_folder_path) > 0 \
+                or self.document_grid.current_folder_path != '/':
             self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
@@ -365,7 +376,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 self.extended_stats_dialog.close()
                 self.extended_stats_dialog = None
 
-            self.document_grid.reload_items()
+            self.document_grid.reload_items(path=self.document_grid.current_folder_path)
             self.header.toggle_document_mode()
             self.header.update_title()
             self.settings.set_int('last-document-id', -1)
@@ -381,11 +392,21 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param path:
         :return:
         """
-        model_iter = self.document_grid.model.get_iter(path)
-        doc_id = self.document_grid.model.get_value(model_iter, 3)
-        Logger.debug('Activated Document.Id %s', doc_id)
 
-        self.document_activate(doc_id)
+        folder = self.document_grid.selected_folder
+        if folder:
+            self.folder_activate(folder.absolute_path)
+            Logger.debug(f'Activated Folder {folder.absolute_path}')
+
+        else:
+            doc_id = self.document_grid.selected_document_id
+            Logger.debug(f'Activated Document.Id {doc_id}')
+            self.document_activate(doc_id)
+
+    def folder_activate(self, folder_path: str) -> None:
+        if folder_path.endswith('..'):
+            folder_path = folder_path[:-3]
+        self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
         editor = self.screens.get_child_by_name('editor-grid')
@@ -396,7 +417,18 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
 
-    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None) -> None:
+    def on_folder_create(self, sender: Gtk.Widget = None, event=None) -> None:
+        popover = RenamePopover(self.header.add_folder_button, '', label_title=_('Name folder with:'))
+        popover.rename_button.set_label(_('Create'))
+        popover.connect('activate', self.on_folder_create_activated)
+        popover.popup()
+
+    def on_folder_rename(self, sender: Gtk.Widget = None, event=None) -> None:
+        popover = RenamePopover(self.header.add_folder_button, '')
+        popover.connect('activate', self.on_folder_rename_activated)
+        popover.popup()
+
+    def on_document_create_activated(self, sender: Gtk.Widget = None, event=None, title: str = None) -> None:
         """Create new document named 'Nameless' :) and activate it in editor.
 
         :param sender:
@@ -407,7 +439,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         if self.editor.document:
             self.on_document_close_activated(sender, event)
 
-        self.editor.create_document()
+        self.editor.create_document(title=title, folder_path=self.document_grid.current_folder_path)
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=self.editor.document.title)
@@ -442,7 +474,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
         if self.import_document(file_path=file_path):
-            self.check_documents_count()
+            self.check_grid_items()
 
     def import_document(self, file_path: str) -> bool:
         """Import files from filesystem.
@@ -459,7 +491,8 @@ class NorkaWindow(Handy.ApplicationWindow):
                 lines = _file.readlines()
                 filename = os.path.basename(file_path)[:file_path.rfind('.')]
 
-                _doc = Document(title=filename, content='\r\n'.join(lines))
+                _doc = Document(title=filename, content=''.join(lines),
+                                folder=self.document_grid.current_folder_path)
                 _doc_id = self.storage.add(_doc)
 
                 self.document_grid.reload_items()
@@ -470,33 +503,52 @@ class NorkaWindow(Handy.ApplicationWindow):
         finally:
             self.header.show_spinner(False)
 
+    def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
+        sender.destroy()
+
+        self.storage.add_folder(title, path=self.document_grid.current_folder_path)
+        self.document_grid.reload_items(path=self.document_grid.current_folder_path)
+        self.check_grid_items()
+
+    def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
+        sender.destroy()
+
+        folder = self.document_grid.selected_folder
+        if folder and self.storage.rename_folder(folder, title):
+            self.document_grid.reload_items(path=self.document_grid.current_folder_path)
+
     def on_document_rename(self, sender: Gtk.Widget = None, event=None) -> None:
-        """Rename currently selected document.
-        Show rename dialog and update document's title
-        if user puts new one in the entry.
+        """Renames selected document.
+        Show rename dialog and update document title if a user puts a new one in the entry.
 
         :param sender:
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document or self.editor.document
-        if not doc:
+        if self.document_grid.is_folder_selected:
+            item = self.document_grid.selected_folder
+        else:
+            item = self.document_grid.selected_document
+        if not item:
             return
 
         found, rect = self.document_grid.view.get_cell_rect(self.document_grid.selected_path)
-        popover = RenamePopover(self.overlay, doc.title)
+        popover = RenamePopover(self.overlay, item.title)
         popover.set_pointing_to(rect)
-        popover.connect('activate', self.on_document_rename_activated)
+        if self.document_grid.is_folder_selected:
+            popover.connect('activate', self.on_folder_rename_activated)
+        else:
+            popover.connect('activate', self.on_document_rename_activated)
         popover.popup()
 
     def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
 
-        doc = self.document_grid.selected_document or self.editor.document
-        if not doc:
+        doc_id = self.document_grid.selected_document_id
+        if not doc_id:
             return
 
-        if self.storage.update(doc_id=doc.document_id, data={'title': title}):
+        if self.storage.update(doc_id=doc_id, data={'title': title}):
             self.document_grid.reload_items()
 
     def on_document_archive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -506,10 +558,10 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
-        if doc:
-            if self.storage.update(doc_id=doc.document_id, data={'archived': True}):
-                self.check_documents_count()
+        doc_id = self.document_grid.selected_document_id
+        if doc_id:
+            if self.storage.update(doc_id=doc_id, data={'archived': True}):
+                self.check_grid_items()
                 self.document_grid.reload_items()
 
     def on_document_unarchive_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -519,10 +571,10 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
-        if doc:
-            if self.storage.update(doc_id=doc.document_id, data={'archived': False}):
-                self.check_documents_count()
+        doc_id = self.document_grid.selected_document_id
+        if doc_id:
+            if self.storage.update(doc_id=doc_id, data={'archived': False}):
+                self.check_grid_items()
                 self.document_grid.reload_items()
 
     def on_document_delete_activated(self, sender: Gtk.Widget = None, event=None) -> None:
@@ -532,21 +584,30 @@ class NorkaWindow(Handy.ApplicationWindow):
         :param event:
         :return:
         """
-        doc = self.document_grid.selected_document
+        if self.document_grid.is_folder_selected:
+            item = self.document_grid.selected_folder
+        else:
+            item = self.document_grid.selected_document
 
-        prompt = MessageDialog(
-            f"Permanently delete “{doc.title}”?",
-            "Deleted items are not sent to Archive and not recoverable at all",
-            "dialog-warning",
-        )
+        if item:
+            prompt = MessageDialog(
+                f"Permanently delete “{item.title}”?",
+                "Deleted items are not sent to Archive and not recoverable at all",
+                "dialog-warning",
+            )
 
-        if doc:
             result = prompt.run()
             prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY and self.storage.delete(doc.document_id):
+            if result == Gtk.ResponseType.APPLY:
+                if self.document_grid.is_folder_selected:
+                    self.storage.delete_documents(item.absolute_path)
+                    self.storage.delete_folders(item.absolute_path)
+                    self.storage.delete_folder(item)
+                else:
+                    self.storage.delete(item.document_id)
                 self.document_grid.reload_items()
-                self.check_documents_count()
+                self.check_grid_items()
 
     def on_export_plaintext(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -854,10 +915,6 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find a documents
-
-        :param sender:
-        :param event:
-        :return:
         """
         dialog = QuickFindDialog(self.storage)
         response = dialog.run()
@@ -936,7 +993,8 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 
-        self.toggle_welcome(not show_archived and self.storage.count(with_archived=show_archived) == 0)
+        self.toggle_welcome(not show_archived and self.storage.count_all(path=self.document_grid.current_folder_path,
+                                                                         with_archived=show_archived) == 0)
 
     def on_show_extended_stats(self, action: Gio.SimpleAction, name: str = None) -> None:
         if not self.extended_stats_dialog:
@@ -999,7 +1057,9 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def update_document_stats(self, editor):
         stats = self.editor.stats
-        self.header.update_stats(stats)
+        document_path = self.editor.document.folder if self.editor.document else None
+        print(self.editor.document.folder)
+        self.header.update_stats(stats, document_path=document_path)
         if self.extended_stats_dialog:
             self.extended_stats_dialog.update_stats(stats)
 

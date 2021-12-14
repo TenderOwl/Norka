@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys
+from gettext import gettext as _
 from typing import List
 
 import gi
@@ -36,7 +37,7 @@ gi.require_version('GtkSource', '4')
 gi.require_version('Handy', '1')
 gi.require_version("WebKit2", "4.0")
 
-from gi.repository import Gtk, Gio, Gdk, Granite
+from gi.repository import Gtk, Gio, Gdk, Granite, GLib
 
 from norka.define import APP_ID, RESOURCE_PREFIX
 from norka.services.logger import Logger
@@ -55,7 +56,10 @@ class Application(Gtk.Application):
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.HANDLES_OPEN)
+                         flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+
+        self.add_main_option('new', 110, GLib.OptionFlags.OPTIONAL_ARG, GLib.OptionArg.STRING,
+                             _('Open new document on start.'))
 
         self.version = version
 
@@ -151,6 +155,17 @@ class Application(Gtk.Application):
             if not path:
                 continue
             self.window.import_document(file_path=path)
+
+    def do_command_line(self, command_line):
+        self.activate()
+        options = command_line.get_options_dict()
+        options = options.end().unpack()
+        if 'new' in options:
+            new_arg_value = options['new']
+            if new_arg_value and not self.window.is_document_editing:
+                self.window.on_document_create_activated(title=new_arg_value)
+                return 1
+        return 0
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)

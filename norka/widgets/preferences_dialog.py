@@ -35,7 +35,7 @@ class PreferencesDialog(Granite.Dialog):
     __gtype_name__ = 'SettingsDialog'
 
     def __init__(self, transient_for, settings):
-        super().__init__(transient_for=transient_for, modal=False)
+        super().__init__(transient_for=transient_for, modal=True)
 
         self.settings = settings
         self.set_default_size(340, 340)
