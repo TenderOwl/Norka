@@ -52,7 +52,7 @@ class Document(GObject.GObject):
 
     @classmethod
     def new_with_row(cls, row: list):
-        """Create :class:`Document` instance from sqlite row
+        """Create :class:`Document` instance from sqlite row.
 
         :param row: row with data from sqlite storage
         :type row: list
@@ -64,8 +64,8 @@ class Document(GObject.GObject):
             archived=row[3],
             created=row[4],
             modified=row[5],
-            folder=row[6],
-            encrypted=row[7],
+            folder=row[8],
+            encrypted=row[9],
         )
 
     @property
@@ -73,4 +73,4 @@ class Document(GObject.GObject):
         return os.path.join(self.folder, self.title)
 
     def __repr__(self) -> str:
-        return f"{self.document_id}: {self.title}"
+        return f"{self.document_id}: {self.folder}/{self.title}"
