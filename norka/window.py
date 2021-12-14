@@ -136,19 +136,20 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
         self.autosave = self.settings.get_boolean('autosave')
         self.set_autoindent(self.settings.get_boolean('autoindent'))
-        self.set_tabs_spaces(
-            self.settings.get_boolean('spaces-instead-of-tabs'))
+        self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
         self.set_indent_width(self.settings.get_int('indent-width'))
         self.set_style_scheme(self.settings.get_string('stylescheme'))
         self.editor.update_font(self.settings.get_string('font'))
 
     @property
     def is_document_editing(self) -> bool:
-        """Returns if Norka is on editor screen or not"""
+        """Returns if Norka is on editor screen or not
+        """
         return self.screens.get_visible_child_name() == 'editor-grid'
 
     def apply_styling(self):
-        """Apply elementary OS header styling only for elementary OS"""
+        """Apply elementary OS header styling only for elementary OS
+        """
         if distro.id() == 'elementary':
             Granite.widgets_utils_set_color_primary(
                 self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
@@ -419,6 +420,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
+        Logger.info(f'Document {doc_id} activated')
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
         editor.connect('update-document-stats', self.update_document_stats)
@@ -1068,6 +1070,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
+            Logger.debug('Not in edit mode')
             return
 
         doc = self.document_grid.selected_document or self.editor.document
@@ -1094,6 +1097,9 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.preview.show_preview(self)
 
     def scroll_preview(self, range: Gtk.Range):
+        if not self.preview:
+            return
+
         adjustment = range.get_adjustment()
         percent = adjustment.get_value() / adjustment.get_upper()
         print(

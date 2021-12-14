@@ -35,6 +35,7 @@ from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.models.folder import Folder
+from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
@@ -101,10 +102,18 @@ class DocumentGrid(Gtk.Grid):
 
     @property
     def current_folder_path(self):
-        return self.current_path or '/'
+        current_folder_path = self.current_path or '/'
+        if current_folder_path !=  '/' and current_folder_path.endswith('/'):
+            current_folder_path = current_folder_path[:-1]
+        return current_folder_path
 
     @property
     def is_folder_selected(self) -> bool:
+        Logger.info(f"is_folder_selected: {self.selected_path}")
+  
+        if self.selected_path is None:
+            return False
+  
         model_iter = self.model.get_iter(self.selected_path)
         doc_id = self.model.get_value(model_iter, 3)
         return doc_id == -1
@@ -123,9 +132,13 @@ class DocumentGrid(Gtk.Grid):
     def selected_document(self) -> Optional[Document]:
         """Returns selected :model:`Document` or `None`
         """
+        Logger.info('DocumentGrid.selected_document')
         if self.is_folder_selected:
             return None
 
+        if self.selected_path is None:
+            return None
+        
         model_iter = self.model.get_iter(self.selected_path)
         doc_id = self.model.get_value(model_iter, 3)
         return self.storage.get(doc_id)
@@ -167,6 +180,7 @@ class DocumentGrid(Gtk.Grid):
         self.emit('path-changed', _old_path, self.current_path)
 
         # Load folders first
+        Logger.info(f"reload_items: {self.current_folder_path}")
         for folder in self.storage.get_folders(path=self.current_folder_path):
             self.create_folder_model(title=folder.title, path=folder.path)
 
@@ -261,6 +275,8 @@ class DocumentGrid(Gtk.Grid):
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
     def on_button_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
+        """Handle mouse button press event and display context menu if needed.
+        """
         self.selected_path = self.view.get_path_at_pos(event.x, event.y)
 
         if not self.selected_path:
