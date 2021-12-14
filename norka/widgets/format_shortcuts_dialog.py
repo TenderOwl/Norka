@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2021 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 from gettext import gettext as _
 
 import gi
-gi.require_version('Granite', '1.0')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Granite
 
 
