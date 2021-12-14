@@ -44,6 +44,7 @@ class DocumentGrid(Gtk.Grid):
     __gtype_name__ = 'DocumentGrid'
 
     __gsignals__ = {
+        'path-changed': (GObject.SIGNAL_RUN_FIRST, None, (str, str)),
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
     }
@@ -150,6 +151,8 @@ class DocumentGrid(Gtk.Grid):
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
 
+        _old_path = self.current_path
+
         self.current_path = path or self.current_folder_path
 
         # For non-root path add virtual "upper" folder.
@@ -159,6 +162,9 @@ class DocumentGrid(Gtk.Grid):
             folder_open_icon = Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg')
             self.create_folder_model(title='..', path=folder_path, icon=folder_open_icon,
                                      tooltip=_('Go to the upper folder'))
+
+        # Emit "path-changed" signal.
+        self.emit('path-changed', _old_path, self.current_path)
 
         # Load folders first
         for folder in self.storage.get_folders(path=self.current_folder_path):

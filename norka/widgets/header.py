@@ -44,22 +44,16 @@ class Header(Gtk.Box):
     def __init__(self, settings, **kwargs):
         super().__init__(**kwargs)
 
-        self.builder = Gtk.Builder.new_from_resource(
-            f'{RESOURCE_PREFIX}/ui/headerbar.ui')
+        self.builder = Gtk.Builder.new_from_resource(f'{RESOURCE_PREFIX}/ui/headerbar.ui')
         self.header_box: Gtk.Stack = self.builder.get_object('header_box')
-        self.grid_header: Handy.HeaderBar = self.builder.get_object(
-            'grid_header')
-        self.editor_header: Handy.HeaderBar = self.builder.get_object(
-            'editor_header')
-        self.loader_spinner: Gtk.Spinner = self.builder.get_object(
-            'loader_spinner')
-        self.editor_spinner: Gtk.Spinner = self.builder.get_object(
-            'editor_spinner')
+        self.grid_header: Handy.HeaderBar = self.builder.get_object('grid_header')
+        self.editor_header: Handy.HeaderBar = self.builder.get_object('editor_header')
+        self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
+        self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')
+        self.subtitle_path_label: Gtk.Label = self.builder.get_object('subtitle_path_label')
         self.title_label: Gtk.Label = self.builder.get_object('title_label')
-        self.subtitle_label: Gtk.Label = self.builder.get_object(
-            'subtitle_label')
-        self.subtitle_eventbox: Gtk.EventBox = self.builder.get_object(
-            'subtitle_eventbox')
+        self.subtitle_label: Gtk.Label = self.builder.get_object('subtitle_label')
+        self.subtitle_eventbox: Gtk.EventBox = self.builder.get_object('subtitle_eventbox')
 
         self.stats_mode = StatsMode.STATS
 
@@ -152,6 +146,9 @@ class Header(Gtk.Box):
             self.header_box.set_visible_child_name("editor_header")
         else:
             self.header_box.set_visible_child_name("grid_header")
+
+    def update_path_label(self, path: str = "/") -> None:
+        self.subtitle_path_label.set_label(_('Path') + ': ' + path)
 
     def update_title(self, title: str = "") -> None:
         self.title_label.set_label(title)

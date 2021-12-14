@@ -96,15 +96,13 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.welcome_grid.connect('document-import', self.on_document_import)
 
         self.document_grid = DocumentGrid(self.settings, storage=self.storage)
-        self.document_grid.connect('document-create',
-                                   self.on_document_create_activated)
+        self.document_grid.connect('path-changed', self.on_path_changed)
+        self.document_grid.connect('document-create',self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
-        self.document_grid.view.connect('item-activated',
-                                        self.on_document_item_activated)
+        self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor(self.storage)
-        self.editor.connect('update-document-stats',
-                            self.update_document_stats)
+        self.editor.connect('update-document-stats', self.update_document_stats)
 
         self.screens = Gtk.Stack()
         self.screens.set_transition_duration(400)
@@ -428,6 +426,9 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.header.toggle_document_mode()
         self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
+
+    def on_path_changed(self, grid: DocumentGrid, old_path: str, new_path: str) -> None:
+        self.header.update_path_label(new_path)
 
     def on_folder_create(self, sender: Gtk.Widget = None, event=None) -> None:
         popover = RenamePopover(self.header.add_folder_button,
