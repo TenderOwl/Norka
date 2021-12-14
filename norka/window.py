@@ -915,10 +915,6 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_document_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find a documents
-
-        :param sender:
-        :param event:
-        :return:
         """
         dialog = QuickFindDialog(self.storage)
         response = dialog.run()
@@ -1061,7 +1057,9 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def update_document_stats(self, editor):
         stats = self.editor.stats
-        self.header.update_stats(stats)
+        document_path = self.editor.document.folder if self.editor.document else None
+        print(self.editor.document.folder)
+        self.header.update_stats(stats, document_path=document_path)
         if self.extended_stats_dialog:
             self.extended_stats_dialog.update_stats(stats)
 

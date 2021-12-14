@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2021 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from enum import Enum
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite, Handy
+from gi.repository import Gtk, Gdk, Granite, Handy
 
 from norka.define import RESOURCE_PREFIX
 from norka.services.stats_handler import DocumentStats
 from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
+
+
+class StatsMode(Enum):
+    STATS = 1
+    PATH = 2
 
 
 class Header(Gtk.Box):
@@ -46,21 +52,32 @@ class Header(Gtk.Box):
         self.editor_header: Handy.HeaderBar = self.builder.get_object('editor_header')
         self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
         self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')
+        self.title_label: Gtk.Label = self.builder.get_object('title_label')
+        self.subtitle_label: Gtk.Label = self.builder.get_object('subtitle_label')
+        self.subtitle_eventbox: Gtk.EventBox = self.builder.get_object('subtitle_eventbox')
+
+        self.stats_mode = StatsMode.STATS
 
         self.document_mode_active = False
         self.settings = settings
 
+        self.stats = None
+        self.document_path = "/"
+
         self.header_box.set_visible_child_name("grid_header")
         self.add(self.header_box)
 
-        self.import_button: Gtk.Button= self.builder.get_object("import_button")
+        self.subtitle_eventbox.connect('button-release-event', self.change_subtitle_mode)
+
+        self.import_button: Gtk.Button = self.builder.get_object("import_button")
         self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), _('Import file to Norka')))
         #
         self.add_button: Gtk.Button = self.builder.get_object("add_button")
         self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), _('Create new document')))
 
         self.add_folder_button: Gtk.Button = self.builder.get_object("add_folder_button")
-        self.add_folder_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control><Shift>n',), _('Create new folder')))
+        self.add_folder_button.set_tooltip_markup(
+            Granite.markup_accel_tooltip(('<Control><Shift>n',), _('Create new folder')))
 
         self.back_button: Gtk.Button = self.builder.get_object("back_button")
         self.back_button.set_tooltip_markup(Granite.markup_accel_tooltip(
@@ -105,11 +122,21 @@ class Header(Gtk.Box):
         else:
             self.header_box.set_visible_child_name("grid_header")
 
-    def update_title(self, title: str = None) -> None:
-        self.editor_header.set_title(title)
+    def update_title(self, title: str = "") -> None:
+        self.title_label.set_label(title)
 
-    def update_stats(self, stats: DocumentStats):
-        self.editor_header.set_subtitle(f"{stats.characters} chars | {stats.words} words")
+    def update_stats(self, stats: DocumentStats = None, document_path: str = None):
+        self.stats = stats or self.stats
+        self.document_path = document_path or self.document_path
+
+        if self.stats_mode == StatsMode.STATS:
+            label = f"{self.stats.characters} chars | {self.stats.words} words"
+        elif self.stats_mode == StatsMode.PATH:
+            label = self.document_path
+        else:
+            label = ""
+
+        self.subtitle_label.set_label(label)
 
     def show_spinner(self, state: bool = False) -> None:
         # Gonna fix this double spinners
@@ -121,3 +148,9 @@ class Header(Gtk.Box):
             self.loader_spinner.stop()
         self.loader_spinner.set_visible(state)
         self.editor_spinner.set_visible(state)
+
+    def change_subtitle_mode(self, sender: Gtk.Label, button: Gdk.EventButton) -> bool:
+        if button.button == Gdk.BUTTON_PRIMARY:
+            self.stats_mode = StatsMode.PATH if self.stats_mode == StatsMode.STATS else StatsMode.STATS
+            self.update_stats()
+        return True
