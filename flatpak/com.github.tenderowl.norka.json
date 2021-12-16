@@ -10,8 +10,7 @@
         "--share=network",
         "--socket=fallback-x11",
         "--socket=wayland",
-        "--socket=cups",
-        "--system-talk-name=org.freedesktop.Accounts"
+        "--socket=cups"
     ],
     "cleanup" : [
         "/include",
