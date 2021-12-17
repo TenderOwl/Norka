@@ -265,13 +265,13 @@ class Editor(Gtk.Grid):
             return buffer.get_text(start, end, True)
 
     def on_key_release_event(self, text_view: GtkSource.View, event: Gdk.EventKey) -> None:
-        """Handle release event and iterate markdown list markup
+        """Handle release event and iterate Markdown list markup
 
         :param text_view: widget emitted the event
         :param event: key release event
         :return:
         """
-        buffer = text_view.get_buffer()
+        buffer: Gtk.TextBuffer = text_view.get_buffer()
         if event.keyval == Gdk.KEY_Return and event.get_state() != Gdk.ModifierType.SHIFT_MASK:
             buffer.begin_user_action()
             curr_iter = buffer.get_iter_at_mark(buffer.get_insert())
@@ -282,14 +282,25 @@ class Editor(Gtk.Grid):
                 prev_iter = buffer.get_iter_at_line(prev_line)
                 prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
                 # Check if prev line starts from markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s+", prev_line_text)
+                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
                 if match:
-                    sign = match.group(2)
-                    if re.match(r'^[0-9]+.', sign):
-                        # ordered list should increment number
-                        sign = str(int(sign[:-1]) + 1) + '.'
+                    if match.group(3):
+                        sign = match.group(2)
+                        if re.match(r'^[0-9]+.', sign):
+                            # ordered list should increment number
+                            sign = str(int(sign[:-1]) + 1) + '.'
 
-                    buffer.insert_at_cursor(sign + ' ')
+                        buffer.insert_at_cursor(sign + ' ')
+                    else:
+                        # If user don't wanna insert new list item then go back and delete prev empty li sign - `-`
+                        mark: Gtk.TextMark = buffer.get_insert()
+                        curr_iter: Gtk.TextIter = buffer.get_iter_at_mark(mark)
+                        curr_iter.backward_line()
+                        end_iter = curr_iter.copy()
+                        end_iter.forward_to_line_end()
+                        buffer.delete(curr_iter, end_iter)
+
+                        buffer.place_cursor(curr_iter)
 
             buffer.end_user_action()
 
