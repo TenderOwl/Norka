@@ -27,6 +27,8 @@ from contextlib import contextmanager
 
 from gi.repository import Gtk
 
+from norka.services.logger import Logger
+
 
 @contextmanager
 def user_action(buffer: Gtk.TextBuffer):
@@ -162,7 +164,7 @@ class MarkupFormatter:
 
     def toggle_heading(self, text_view: Gtk.TextView, size: int) -> None:
         """Apply heading markup to currently selected line.
-        If line starts with markup and it matches required header size,
+        If line starts with markup, and it matches required header size,
         it removes it.
 
         :param text_view: Gtk.TextView widget
@@ -182,6 +184,8 @@ class MarkupFormatter:
             origin: str = self.buffer.get_text(start, end, True)
             markup = (size * '#') + ' '
 
+            Logger.info(f'origin: {origin}')
+
             pattern = re.compile(r'^(#{1,6})\s')
             match = pattern.match(origin)
 
@@ -196,7 +200,8 @@ class MarkupFormatter:
                 text = markup + origin
 
             self.buffer.delete(start, end)
-            self.buffer.insert_at_cursor(text, len(text))
+
+            self.buffer.insert(start, text)
 
     def toggle_line(self, text_view: Gtk.TextView, markup: str) -> None:
         """Apply heading markup to currently selected line.
