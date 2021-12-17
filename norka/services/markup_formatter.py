@@ -77,13 +77,13 @@ class MarkupFormatter:
             if self.buffer.get_has_selection():
                 (start, end) = self.buffer.get_selection_bounds()
                 text = self.buffer.get_text(start, end, True)
-
                 self.buffer.delete(start, end)
+                self.buffer.insert(start, f'[{text}]({link})')
+            else:
+                self.buffer.insert_at_cursor(f'[{text}]({link})')
 
-            self.buffer.insert_at_cursor(f'[{text}]({link})')
-
-            if widget:
-                widget.destroy()
+        if widget:
+            widget.destroy()
 
     def insert_image_link(self, widget: Gtk.Widget = None, link: str = None):
         if not link:
@@ -95,10 +95,10 @@ class MarkupFormatter:
             if self.buffer.get_has_selection():
                 (start, end) = self.buffer.get_selection_bounds()
                 text = self.buffer.get_text(start, end, True)
-
                 self.buffer.delete(start, end)
-
-            self.buffer.insert_at_cursor(f'![{text}]({link})')
+                self.buffer.insert(start, f'[{text}]({link})')
+            else:
+                self.buffer.insert_at_cursor(f'[{text}]({link})')
 
             if widget:
                 widget.destroy()
