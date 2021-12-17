@@ -158,7 +158,7 @@ class Storage(object):
                         `archived` INTEGER NOT NULL DEFAULT 0,
                         `created` timestamp,
                         `modified` timestamp,
-                        CONSTRAINT "newUnique" UNIQUE ( "path", "title" )
+                        CONSTRAINT "uniq_full_path" UNIQUE ( "path", "title" )
                     )
                 """)
 
