@@ -21,8 +21,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
 from os import path
-from typing import List, Dict, Optional
+from typing import Optional
 
 from gi.repository import GObject
 
@@ -49,11 +50,27 @@ class BackupService(GObject.GObject):
         if not path.exists(backup_dir):
             return None
 
-        docs = self.storage.all(with_archived=True)
+        # We have to implement the same folder structure as we have inside our storage.
+        # Thus, we need to:
+        # - export all documents from the root `/`
+        # - find all folders and recreate them on the real filesystem
+        # - export all the documents inside
+        self.emit('started', backup_dir, -1)
 
-        self.emit('started', backup_dir, len(docs))
+        docs = self.storage.all(path='/', with_archived=True)
+
         for doc in docs:
             self._write_document(doc, backup_dir)
+
+        folders = self.storage.get_folders(path='%')
+        for folder in folders:
+            folder_path = os.path.join(backup_dir, folder.absolute_path[1:])
+            os.makedirs(folder_path, exist_ok=True)
+
+            docs = self.storage.all(path=folder.absolute_path, with_archived=True)
+
+            for doc in docs:
+                self._write_document(doc, folder_path)
 
         self.emit('finished')
         return backup_dir
