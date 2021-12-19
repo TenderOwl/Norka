@@ -148,7 +148,8 @@ class Header(Gtk.Box):
             self.header_box.set_visible_child_name("grid_header")
 
     def update_path_label(self, path: str = "/") -> None:
-        self.subtitle_path_label.set_label(_('Path') + ': ' + path)
+        path = path.replace('/',' > ') if path != '/' else ''
+        self.subtitle_path_label.set_label(_('root') + path)
 
     def update_title(self, title: str = "") -> None:
         self.title_label.set_label(title)
@@ -162,7 +163,9 @@ class Header(Gtk.Box):
         if self.stats_mode == StatsMode.STATS:
             label = f"{self.stats.characters} chars | {self.stats.words} words"
         elif self.stats_mode == StatsMode.PATH:
-            label = _('Path') + ': ' +self.document_path
+
+            path = self.document_path.replace('/',' > ') if self.document_path != '/' else ''
+            label = _('root') + path
         else:
             label = ""
 
