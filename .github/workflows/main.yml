@@ -5,26 +5,13 @@ on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
-#  build:
-#    runs-on: ubuntu-latest
-#
-#    container:
-#      image: elementary/docker:unstable
-#
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Install Dependencies
-#      run: |
-#        apt update
-#        apt install -y libgranite-dev libgtk-3-dev libgtksourceview-4-dev libgspell-1-dev libwebkit2gtk-4.0-dev libhandy-1-dev meson
-#    - name: Build
-#      #env:
-#      #  DESTDIR: out
-#      run: |
-#        meson build
-#        ninja -C build
-#        ninja -C build install
+  test:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Prepare repo
+       uses: actions/checkout@master
+     - name: Test
+       uses: onichandame/python-test-action@master
         
   # This workflow contains a single job called "flatpak"
   flatpak:
