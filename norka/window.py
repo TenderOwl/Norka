@@ -636,8 +636,6 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             if result == Gtk.ResponseType.APPLY:
                 if self.document_grid.is_folder_selected:
-                    self.storage.delete_documents(item.absolute_path)
-                    self.storage.delete_folders(item.absolute_path)
                     self.storage.delete_folder(item)
                 else:
                     self.storage.delete(item.document_id)

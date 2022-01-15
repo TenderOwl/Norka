@@ -266,6 +266,9 @@ class Storage(object):
         try:
             self.conn.execute(query, (folder.path, folder.title,))
             self.conn.commit()
+
+            self.delete_documents(folder.absolute_path)
+            self.delete_folders(folder.absolute_path)
         except Exception as e:
             Logger.error(e)
             return False
@@ -275,7 +278,7 @@ class Storage(object):
     def add(self, document: Document, path: str = '/') -> int:
         """Creates new document in the given `path`.
 
-        By default document is created in the root folder.
+        By default, document is created in the root folder.
         """
         cursor = self.conn.cursor().execute(
             "INSERT INTO documents(title, content, path, archived, created, modified) VALUES (?, ?, ?, ?, ?, ?)",
@@ -381,7 +384,7 @@ class Storage(object):
         return True
 
     def delete_documents(self, path: str) -> bool:
-        """Permenantly deletes documents under given `path`.
+        """Permanently deletes documents under given `path`.
 
         Returns True if documents were deleted successfully.
         """
