@@ -21,7 +21,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import datetime
 import os.path
 
 from gi.repository import GObject
@@ -65,7 +64,12 @@ class Folder(GObject.GObject):
     def absolute_path(self):
         if self.title == '..':
             self.title = ''
-        return os.path.join(self.path, self.title)
+
+        abs_path = os.path.join(self.path, self.title)
+        if abs_path != "/" and abs_path.endswith('/'):
+            abs_path = abs_path[:-1]
+
+        return abs_path
 
     def __repr__(self) -> str:
         return f"{self.path} : {self.title}"
