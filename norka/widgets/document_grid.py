@@ -354,21 +354,29 @@ class DocumentGrid(Gtk.Grid):
             dest_item_id = self.model.get_value(dest_iter, 3)
 
             # decline processing if the drop target is not folder
-            # Maybe we should create folders for such action but it requires a lot of UI interactions
+            # Maybe we should create folders for such action, but it requires a lot of UI interactions
             if dest_item_id != -1:
-                return print('You can only move documents to folders, no to other documents :)')
+                return print('You can move documents to folders, no to other documents :)')
 
             dest_item = Folder(
                 title=self.model.get_value(dest_iter, 1),
                 path=self.model.get_value(dest_iter, 2)
             )
-            target_item = self.selected_folder if self.is_folder_selected else self.selected_document
+            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
 
-            # For folders we have to move folder and its content to destination
-            if target_item.document_id == -1:
-                print(f'Folder {target_item.absolute_path} should be moved to {dest_item.absolute_path}')
+            # For folders, we have to move folder and its content to destination
+            if isinstance(origin_item, Folder):
+                print(f'Folder "{origin_item.title}": "{origin_item.path}" -> "{dest_item.absolute_path}"')
+
+                # Don't move item to itself :)
+                if origin_item.absolute_path == dest_item.absolute_path:
+                    print("Don't move item to itself")
+                    return
+
+                self.storage.move_folder(origin_item, dest_item.absolute_path)
+                self.reload_items()
             # For regular documents it is easy to move - just update the `path`.
             else:
-                if self.storage.update(target_item.document_id, {'path': dest_item.absolute_path}):
-                    print(f'Moved {target_item.title} to {dest_item.absolute_path}')
+                if self.storage.update(origin_item.document_id, {'path': dest_item.absolute_path}):
+                    print(f'Moved {origin_item.title} to {dest_item.absolute_path}')
                     self.reload_items()

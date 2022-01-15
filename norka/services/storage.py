@@ -396,6 +396,32 @@ class Storage(object):
 
         return True
 
+    def move_folder(self, folder: Folder, path: str = '/') -> bool:
+        """Moves folder to the given `path`.
+
+        Returns True if folder was moved successfully.
+        """
+        query = 'UPDATE folders SET path=? WHERE path=? AND title=?'
+
+        try:
+            self.conn.execute(query, (path, folder.path, folder.title))
+            self.conn.commit()
+
+            # Store old path
+            old_path = folder.absolute_path
+            # Set new title to get the new path
+            folder.path = path
+            new_path = folder.absolute_path
+
+            self.move_folders(old_path, new_path)
+            self.move_documents(old_path, new_path)
+
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
     def move(self, doc_id: int, path: str = '/') -> bool:
         """Moves document to the given `path`.
 
