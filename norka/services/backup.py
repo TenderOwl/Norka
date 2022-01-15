@@ -27,6 +27,7 @@ from typing import Optional
 
 from gi.repository import GObject
 
+from norka.define import STORAGE_NAME
 from norka.models.document import Document
 from norka.services.settings import Settings
 from norka.services.storage import Storage
@@ -43,7 +44,16 @@ class BackupService(GObject.GObject):
 
     def __init__(self, settings: Settings):
         GObject.GObject.__init__(self)
-        self.storage = Storage(settings)
+
+        self.settings = settings
+
+        # Init storage location and SQL structure
+        storage_path = self.settings.get_string("storage-path")
+        if not storage_path:
+            storage_path = os.path.join(self.base_path, STORAGE_NAME)
+            self.settings.set_string("storage-path", storage_path)
+
+        self.storage = Storage(storage_path)
         self.storage.connect()
 
     def save(self, backup_dir: str) -> Optional[str]:

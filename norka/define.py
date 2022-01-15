@@ -40,4 +40,5 @@ TARGET_ENTRY_TEXT = 1
 TARGET_ENTRY_REORDER = 2
 
 # DB Structure version
-DB_VERSION = 1
+STORAGE_NAME = 'storage.db'
+DB_VERSION = 2

@@ -27,7 +27,7 @@ import os
 import sqlite3
 import traceback
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from gi.repository import GLib
 
@@ -35,7 +35,6 @@ from norka.define import APP_TITLE
 from norka.models.document import Document
 from norka.models.folder import Folder
 from norka.services.logger import Logger
-from norka.services.settings import Settings
 
 
 class Storage(object):
@@ -44,16 +43,11 @@ class Storage(object):
     Current implementation uses SQLite3 database.
     """
 
-    def __init__(self, settings: Settings):
+    def __init__(self, storage_path: str):
         self.conn = None
         self.version = None
-        self.settings = settings
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
-        self.file_path = self.settings.get_string("storage-path")
-        if not self.file_path:
-            self.file_path = os.path.join(self.base_path, 'storage.db')
-
-            self.settings.set_string("storage-path", self.file_path)
+        self.file_path = storage_path
 
     def connect(self):
         """Connect to the database.
@@ -132,6 +126,7 @@ class Storage(object):
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `order` INTEGER DEFAULT 0""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
                 Logger.info(f'Successfully upgraded to v{version}')
+                self.version = version
                 return True
             except Exception:
                 Logger.error(traceback.format_exc())
@@ -168,6 +163,7 @@ class Storage(object):
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
                 Logger.info(f'Successfully upgraded to v{version}')
+                self.version = version
                 return True
             except Exception:
                 Logger.error(traceback.format_exc())
@@ -314,13 +310,16 @@ class Storage(object):
 
         return docs
 
-    def get(self, doc_id: int) -> Document:
+    def get(self, doc_id: int) -> Optional[Document]:
         """Returns document with given `doc_id`.
 
         """
         query = "SELECT * FROM documents WHERE id=?"
         cursor = self.conn.cursor().execute(query, (doc_id,))
         row = cursor.fetchone()
+
+        if not row:
+            return None
 
         return Document.new_with_row(row)
 
@@ -410,7 +409,7 @@ class Storage(object):
             # Store old path
             old_path = folder.absolute_path
             # Set new title to get the new path
-            folder.path = path
+            folder.path = title
             new_path = folder.absolute_path
 
             self.move_folders(old_path, new_path)
@@ -430,7 +429,7 @@ class Storage(object):
         query = 'UPDATE documents SET path=? WHERE id=?'
 
         try:
-            self.conn.execute(query, (doc_id,))
+            self.conn.execute(query, (path, doc_id,))
             self.conn.commit()
         except Exception as e:
             Logger.error(e)
