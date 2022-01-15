@@ -43,6 +43,7 @@ class Storage(object):
 
     Current implementation uses SQLite3 database.
     """
+
     def __init__(self, settings: Settings):
         self.conn = None
         self.version = None
@@ -229,6 +230,16 @@ class Storage(object):
         try:
             self.conn.execute(query, (title, folder.path, folder.title,))
             self.conn.commit()
+
+            # Store old path
+            old_path = folder.absolute_path
+            # Set new title to get the new path
+            folder.title = title
+            new_path = folder.absolute_path
+
+            self.move_folders(old_path, new_path)
+            self.move_documents(old_path, new_path)
+
         except Exception as e:
             Logger.error(e)
             return False
@@ -394,6 +405,30 @@ class Storage(object):
 
         try:
             self.conn.execute(query, (doc_id,))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
+    def move_documents(self, old_path: str, new_path: str) -> bool:
+        query = f"UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
+
+        try:
+            self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
+            self.conn.commit()
+        except Exception as e:
+            Logger.error(e)
+            return False
+
+        return True
+
+    def move_folders(self, old_path: str, new_path: str) -> bool:
+        query = f"UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
+
+        try:
+            self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
             self.conn.commit()
         except Exception as e:
             Logger.error(e)
