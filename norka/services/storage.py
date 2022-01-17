@@ -149,6 +149,7 @@ class Storage(object):
             try:
                 self.conn.execute("""
                     CREATE TABLE IF NOT EXISTS `folders` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
                         "path" Text NOT NULL DEFAULT '/',
                         "title" Text NOT NULL,
                         `archived` INTEGER NOT NULL DEFAULT 0,
@@ -203,10 +204,10 @@ class Storage(object):
         Logger.debug(f'{folders} folders + {documents} documents found in {path}')
         return folders + documents
 
-    def add_folder(self, title: str, path: str = '/'):
-        """Creates new folder in the given `path`.
+    def add_folder(self, title: str, path: str = '/') -> int:
+        """Creates new folder in the given `path`. Returns ID of created folder.
 
-        By default folder is created in the root folder.
+        By default, folder is created in the root folder.
         """
         cursor = self.conn.cursor().execute(
             "INSERT INTO folders(title, path, created, modified) VALUES (?, ?, ?, ?)",
@@ -477,6 +478,18 @@ class Storage(object):
             docs.append(Document.new_with_row(row))
 
         return docs
+
+    def get_folder(self, folder_id: int) -> Optional[Folder]:
+        """Returns folder with given `folder_id`.
+        """
+        query = "SELECT * FROM folders WHERE id=?"
+        cursor = self.conn.cursor().execute(query, (folder_id,))
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return Folder.new_with_row(row)
 
     def get_folders(self, path: str = '/', desc: bool = False):
         """Returns all folders under given `path`.

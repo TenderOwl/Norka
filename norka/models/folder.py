@@ -35,8 +35,9 @@ class Folder(GObject.GObject):
     # created = GObject.property(type=str)
     # modified = GObject.property(type=str)
 
-    def __init__(self, title: str, path: str = '/'):
+    def __init__(self, title: str, path: str = '/', _id: int = -1):
         GObject.GObject.__init__(self)
+        self.folder_id = _id
         self.path = path
         self.title = title
         # self.content = content
@@ -52,8 +53,9 @@ class Folder(GObject.GObject):
         :type row: list
         """
         return cls(
-            path=row[0],
-            title=row[1],
+            _id=row[0],
+            path=row[1],
+            title=row[2],
             # content=row[2],
             # archived=row[3],
             # created=row[4],
