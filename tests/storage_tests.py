@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from norka.define import STORAGE_NAME, DB_VERSION
 from norka.models.document import Document
+from norka.models.folder import Folder
 from norka.services.storage import Storage
 
 
@@ -20,7 +21,7 @@ class StorageTests(TestCase):
         print(f'Unlinking {self.storage.file_path}')
         os.remove(self.storage.file_path)
 
-    def _insert_document(self, path: str = "/"):
+    def _create_document(self, path: str = "/"):
         document = Document('Test Document', "# Simple test content", path)
         return self.storage.add(document)
 
@@ -30,35 +31,35 @@ class StorageTests(TestCase):
     def test_upgrade(self):
         self.assertEqual(self.storage.version, DB_VERSION)
 
-    def test_insert_document(self):
-        doc_id = self._insert_document()
+    def test_create_document(self):
+        doc_id = self._create_document()
         self.assertIsNotNone(doc_id)
         doc = self.storage.get(doc_id)
         self.assertEqual(doc.title, 'Test Document')
         self.assertEqual(doc.content, "# Simple test content")
         self.assertEqual(doc.folder, "/")
 
-    def test_insert_document_at_path(self):
-        doc_id = self._insert_document('/non-root')
+    def test_create_document_at_path(self):
+        doc_id = self._create_document('/non-root')
         doc = self.storage.get(doc_id)
         self.assertEqual(doc.title, 'Test Document')
         self.assertEqual(doc.content, "# Simple test content")
         self.assertEqual(doc.folder, "/non-root")
 
     def test_delete_document(self):
-        doc_id = self._insert_document()
+        doc_id = self._create_document()
         self.storage.delete(doc_id)
         self.assertIsNone(self.storage.get(doc_id))
 
     def test_update_document(self):
-        doc_id = self._insert_document()
+        doc_id = self._create_document()
         self.assertEqual(self.storage.get(doc_id).title, 'Test Document')
 
         self.storage.update(doc_id, {'title': 'Updated title'})
         self.assertEqual(self.storage.get(doc_id).title, 'Updated title')
 
     def test_move_document(self):
-        doc_id = self._insert_document()
+        doc_id = self._create_document()
         moved = self.storage.move(doc_id, '/non/root/path')
 
         self.assertTrue(moved)
@@ -67,14 +68,14 @@ class StorageTests(TestCase):
         self.assertEqual(doc.folder, '/non/root/path')
 
     def test_archive_document(self):
-        doc_id = self._insert_document()
+        doc_id = self._create_document()
         self.storage.update(doc_id, {'archived': True})
 
         doc = self.storage.get(doc_id)
         self.assertTrue(doc.archived)
 
     def test_unarchive_document(self):
-        doc_id = self._insert_document()
+        doc_id = self._create_document()
         self.storage.update(doc_id, {'archived': True})
         self.storage.update(doc_id, {'archived': False})
 
@@ -82,17 +83,23 @@ class StorageTests(TestCase):
         self.assertFalse(doc.archived)
 
     def test_count_documents(self):
-        self._insert_document()
-        self._insert_document('/non/root')
+        self._create_document()
+        self._create_document('/non/root')
 
         count = self.storage.count_documents()
         self.assertEqual(count, 1)
 
     def test_count_documents_with_archived(self):
-        self._insert_document()
-        doc2_id = self._insert_document()
+        self._create_document()
+        doc2_id = self._create_document()
 
         self.storage.update(doc2_id, {'archived': True})
 
         count = self.storage.count_documents(with_archived=True)
         self.assertEqual(count, 2)
+
+    def test_create_folder(self):
+        folder_id = self.storage.add_folder('Test Folder')
+        folder = self.storage.get_folder(folder_id)
+        self.assertEqual(folder.title, 'Test Folder')
+        self.assertEqual(folder.path, '/')
