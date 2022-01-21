@@ -204,11 +204,13 @@ class Storage(object):
         Logger.debug(f'{folders} folders + {documents} documents found in {path}')
         return folders + documents
 
-    def add_folder(self, title: str, path: str = '/') -> int:
+    def add_folder(self, title: str, path: str = '/') -> Optional[int]:
         """Creates new folder in the given `path`. Returns ID of created folder.
 
         By default, folder is created in the root folder.
         """
+        if title == '..':
+            return None
         cursor = self.conn.cursor().execute(
             "INSERT INTO folders(title, path, created, modified) VALUES (?, ?, ?, ?)",
             (title,
@@ -222,6 +224,9 @@ class Storage(object):
     def rename_folder(self, folder: Folder, title: str) -> bool:
         """Renames folder with given `folder` to `title`.
         """
+        if title == '..':
+            return False
+
         query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
 
         try:
