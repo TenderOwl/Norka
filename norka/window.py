@@ -45,7 +45,7 @@ from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
-from norka.widgets.rename_dialog import RenamePopover
+from norka.widgets.rename_popover import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
@@ -97,8 +97,9 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         self.document_grid = DocumentGrid(self.settings, storage=self.storage)
         self.document_grid.connect('path-changed', self.on_path_changed)
-        self.document_grid.connect('document-create',self.on_document_create_activated)
+        self.document_grid.connect('document-create', self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
+        self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor(self.storage, self.settings)

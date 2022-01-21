@@ -38,6 +38,7 @@ from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
+from norka.widgets.folder_create_dialog import FolderCreateDialog
 
 
 class DocumentGrid(Gtk.Grid):
@@ -47,6 +48,7 @@ class DocumentGrid(Gtk.Grid):
         'path-changed': (GObject.SIGNAL_RUN_FIRST, None, (str, str)),
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
+        'rename-folder': (GObject.SIGNAL_RUN_LAST, None, (str,)),
     }
 
     def __init__(self, settings: Settings, storage: Storage):
@@ -286,6 +288,11 @@ class DocumentGrid(Gtk.Grid):
         if event.button == Gdk.BUTTON_SECONDARY:
             self.view.select_path(self.selected_path)
 
+            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+            if isinstance(origin_item, Folder) and origin_item.title == "..":
+                print('System @UP folder. Action declined.')
+                return
+
             # self.selected_document = self.storage.get(self.model.get_value(
             #     self.model.get_iter(self.selected_path), 3
             # ))
@@ -367,21 +374,20 @@ class DocumentGrid(Gtk.Grid):
                 print("Don't move item to itself")
                 return
 
-            # decline processing if the drop target is not folder
-            # Maybe we should create folders for such action, but it requires a lot of UI interactions
+            # Create folders when doc dropped onto doc
+            # After creation rename dialog should appear
             if isinstance(dest_item, Document):
-                path = self.current_folder_path
-                title1 = origin_item.title.split(' ')[0]
-                title2 = dest_item.title.split(' ')[0]
+                folder_id = self.create_folder(f'{origin_item.title} + {dest_item.title}',
+                                               self.current_folder_path)
 
-                folder_id = self.storage.add_folder(title=f'{title1} & {title2}...', path=path)
-                folder = self.storage.get_folder(folder_id)
-                self.storage.move(origin_item.document_id, folder.absolute_path)
-                self.storage.move(dest_item.document_id, folder.absolute_path)
-                self.reload_items()
+                if folder_id:
+                    folder = self.storage.get_folder(folder_id)
+                    self.storage.move(origin_item.document_id, folder.absolute_path)
+                    self.storage.move(dest_item.document_id, folder.absolute_path)
+                    self.reload_items()
                 return
 
-            # For folders, we have to move folder and its content to destination
+                # For folders, we have to move folder and its content to destination
             if isinstance(origin_item, Folder):
                 print(f'Folder "{origin_item.title}": "{origin_item.path}" -> "{dest_item.absolute_path}"')
 
@@ -392,3 +398,22 @@ class DocumentGrid(Gtk.Grid):
                 if self.storage.update(origin_item.document_id, {'path': dest_item.absolute_path}):
                     print(f'Moved {origin_item.title} to {dest_item.absolute_path}')
                     self.reload_items()
+
+    def create_folder(self, title: str, path: str) -> Optional[int]:
+        dialog = FolderCreateDialog(title)
+        result = dialog.run()
+        folder_path = dialog.folder_title
+        dialog.destroy()
+        if result == Gtk.ResponseType.ACCEPT:
+            print(f'Folder "{folder_path}" created')
+            return self.storage.add_folder(folder_path, path)
+
+    def on_folder_rename_activated(self, sender: Gtk.Widget, title: str) -> None:
+        sender.destroy()
+
+        folder = self.document_grid.selected_folder
+        if folder and self.storage.rename_folder(folder, title):
+            self.document_grid.reload_items()
+
+    def filter_model_by_value(self, model, path, iter):
+        print(f'filter_model_by_value: {model}; {path}; {iter};')

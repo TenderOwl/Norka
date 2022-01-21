@@ -1,4 +1,4 @@
-# rename_dialog.py
+# rename_popover.py
 #
 # MIT License
 #
