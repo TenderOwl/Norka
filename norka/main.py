@@ -178,19 +178,21 @@ class Application(Gtk.Application):
         Logger.debug(f'SETTINGS: %s changed', key)
         if key == "autosave":
             self.window.autosave = settings.get_boolean(key)
-        elif key == "spellcheck":
+        if key == "spellcheck":
             self.window.toggle_spellcheck(settings.get_boolean(key))
-        elif key == 'stylescheme':
+        if key == "spellcheck-language":
+            self.window.set_spellcheck_language(settings.get_string(key))
+        if key == 'stylescheme':
             self.window.set_style_scheme(settings.get_string(key))
-        elif key == 'autoindent':
+        if key == 'autoindent':
             self.window.set_autoindent(settings.get_boolean('autoindent'))
-        elif key == 'spaces-instead-of-tabs':
+        if key == 'spaces-instead-of-tabs':
             self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
-        elif key == 'indent-width':
+        if key == 'indent-width':
             self.window.set_indent_width(settings.get_int('indent-width'))
-        elif key == 'font':
+        if key == 'font':
             self.window.editor.update_font(settings.get_string('font'))
-        elif key == 'prefer-dark-theme':
+        if key == 'prefer-dark-theme':
             Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = \
                 settings.get_boolean('prefer-dark-theme')
 
