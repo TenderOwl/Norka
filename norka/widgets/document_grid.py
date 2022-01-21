@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import os
-import random
 from datetime import datetime
 from gettext import gettext as _
 from typing import Optional
@@ -103,17 +102,17 @@ class DocumentGrid(Gtk.Grid):
     @property
     def current_folder_path(self):
         current_folder_path = self.current_path or '/'
-        if current_folder_path !=  '/' and current_folder_path.endswith('/'):
+        if current_folder_path != '/' and current_folder_path.endswith('/'):
             current_folder_path = current_folder_path[:-1]
         return current_folder_path
 
     @property
     def is_folder_selected(self) -> bool:
         Logger.info(f"is_folder_selected: {self.selected_path}")
-  
+
         if self.selected_path is None:
             return False
-  
+
         model_iter = self.model.get_iter(self.selected_path)
         doc_id = self.model.get_value(model_iter, 3)
         return doc_id == -1
@@ -138,7 +137,7 @@ class DocumentGrid(Gtk.Grid):
 
         if self.selected_path is None:
             return None
-        
+
         model_iter = self.model.get_iter(self.selected_path)
         doc_id = self.model.get_value(model_iter, 3)
         return self.storage.get(doc_id)
@@ -346,6 +345,8 @@ class DocumentGrid(Gtk.Grid):
 
         # Handle reordering and moving inside Norka's virtual filesystem
         elif info == TARGET_ENTRY_REORDER:
+            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+
             dest_path = self.view.get_path_at_pos(x, y)
             if not dest_path:
                 return
@@ -353,25 +354,36 @@ class DocumentGrid(Gtk.Grid):
             dest_iter = self.model.get_iter(dest_path)
             dest_item_id = self.model.get_value(dest_iter, 3)
 
+            if dest_item_id == -1:
+                dest_item = Folder(
+                    title=self.model.get_value(dest_iter, 1),
+                    path=self.model.get_value(dest_iter, 2)
+                )
+            else:
+                dest_item = self.storage.get(dest_item_id)
+
+            # Don't move item to itself :)
+            if origin_item.absolute_path == dest_item.absolute_path:
+                print("Don't move item to itself")
+                return
+
             # decline processing if the drop target is not folder
             # Maybe we should create folders for such action, but it requires a lot of UI interactions
-            if dest_item_id != -1:
-                return print('You can move documents to folders, no to other documents :)')
+            if isinstance(dest_item, Document):
+                path = self.current_folder_path
+                title1 = origin_item.title.split(' ')[0]
+                title2 = dest_item.title.split(' ')[0]
 
-            dest_item = Folder(
-                title=self.model.get_value(dest_iter, 1),
-                path=self.model.get_value(dest_iter, 2)
-            )
-            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+                folder_id = self.storage.add_folder(title=f'{title1} & {title2}...', path=path)
+                folder = self.storage.get_folder(folder_id)
+                self.storage.move(origin_item.document_id, folder.absolute_path)
+                self.storage.move(dest_item.document_id, folder.absolute_path)
+                self.reload_items()
+                return
 
             # For folders, we have to move folder and its content to destination
             if isinstance(origin_item, Folder):
                 print(f'Folder "{origin_item.title}": "{origin_item.path}" -> "{dest_item.absolute_path}"')
-
-                # Don't move item to itself :)
-                if origin_item.absolute_path == dest_item.absolute_path:
-                    print("Don't move item to itself")
-                    return
 
                 self.storage.move_folder(origin_item, dest_item.absolute_path)
                 self.reload_items()
