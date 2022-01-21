@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2021 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -101,7 +101,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
-        self.editor = Editor(self.storage)
+        self.editor = Editor(self.storage, self.settings)
         self.editor.connect('update-document-stats', self.update_document_stats)
 
         self.screens = Gtk.Stack()
@@ -983,6 +983,9 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def toggle_spellcheck(self, state: bool) -> None:
         self.editor.set_spellcheck(state)
+
+    def set_spellcheck_language(self, language_code: str) -> None:
+        self.editor.set_spellcheck_language(language_code)
 
     def set_style_scheme(self, scheme_id: str) -> None:
         self.editor.set_style_scheme(scheme_id)

@@ -39,6 +39,11 @@
             <summary>Spellchecking</summary>
             <description>Toggle auto spellchecking</description>
         </key>
+        <key name="spellcheck-language" type="s">
+            <default>"en_US"</default>
+            <summary>Language to spellscheck</summary>
+            <description>Language to spellscheck</description>
+        </key>
         <key name="spaces-instead-of-tabs" type="b">
             <default>true</default>
             <summary>Spaces instead of tabs</summary>
@@ -70,7 +75,7 @@
             <description>Set the zoom of the font</description>
         </key>
         <key name="font" type="s">
-            <default>'Noto Sans Mono 10'</default>
+            <default>'"iA Writer Duospace" 14'</default>
             <summary>Preferred Font</summary>
             <description>Set the preferred font</description>
         </key>

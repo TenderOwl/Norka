@@ -22,12 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from gettext import gettext as _
+from typing import List
 
-import gi
+from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell
 
-from gi.repository import Gtk, Granite, GtkSource, Gdk
-from norka.services.medium import Medium
 from norka.gobject_worker import GObjectWorker
+from norka.services.medium import Medium
 from norka.services.writeas import Writeas
 
 
@@ -49,6 +49,11 @@ class PreferencesDialog(Granite.Dialog):
         self.set_deletable(False)
         self.set_title(_('Preferences'))
 
+        langs_available: List[Gspell.Language] = Gspell.language_get_available()
+        langs_available_model = Gtk.ListStore(str, str)
+        for lang in langs_available:
+            langs_available_model.append((lang.get_code(), lang.get_name()))
+
         self.toast = Granite.WidgetsToast(title=_("Toast"))
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
@@ -62,6 +67,16 @@ class PreferencesDialog(Granite.Dialog):
         self.spellcheck_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.spellcheck_switch.set_state(self.settings.get_boolean('spellcheck'))
         self.spellcheck_switch.connect("state-set", self.on_spellcheck)
+
+        self.spellcheck_language_chooser = Gtk.ComboBox()
+        self.spellcheck_language_chooser.set_model(langs_available_model)
+        self.spellcheck_language_chooser.set_id_column(0)
+        self.spellcheck_language_chooser.set_entry_text_column(1)
+        renderer_text = Gtk.CellRendererText()
+        self.spellcheck_language_chooser.pack_start(renderer_text, True)
+        self.spellcheck_language_chooser.add_attribute(renderer_text, "text", 1)
+        self.spellcheck_language_chooser.set_active_id(self.settings.get_string('spellcheck-language'))
+        self.spellcheck_language_chooser.connect('changed', self.on_spellcheck_language)
 
         self.autosave_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.autosave_switch.set_state(self.settings.get_boolean('autosave'))
@@ -84,15 +99,17 @@ class PreferencesDialog(Granite.Dialog):
         general_grid.attach(self.sort_switch, 2, 2, 1, 1)
         general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
         general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
+        general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
+        general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
 
-        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 4, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 5, 2, 1)
-        general_grid.attach(self.autoindent_switch, 2, 5, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
+        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 5, 3, 1)
+        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
+        general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
+        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
                             1)
-        general_grid.attach(self.spaces_tabs_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2, 1)
-        general_grid.attach(indent_width, 2, 7, 2, 1)
+        general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
+        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
+        general_grid.attach(indent_width, 2, 8, 2, 1)
 
         # Interface grid
         interface_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
@@ -202,6 +219,13 @@ class PreferencesDialog(Granite.Dialog):
     def on_spellcheck(self, sender: Gtk.Widget, state):
         self.settings.set_boolean("spellcheck", state)
         return False
+
+    def on_spellcheck_language(self, sender: Gtk.Widget):
+        tree_iter = sender.get_active_iter()
+        if tree_iter is not None:
+            model = sender.get_model()
+            code = model[tree_iter][0]
+            self.settings.set_string('spellcheck-language', code)
 
     def on_sort_desc(self, sender: Gtk.Widget, state):
         self.settings.set_boolean("sort-desc", state)

@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject
 from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.markup_formatter import MarkupFormatter
+from norka.services.settings import Settings
 from norka.services.stats_handler import StatsHandler
 from norka.services.storage import Storage
 from norka.widgets.image_link_popover import ImageLinkPopover
@@ -59,11 +60,12 @@ class Editor(Gtk.Grid):
         'update-document-stats': (GObject.SignalFlags.ACTION, None, ()),
     }
 
-    def __init__(self, storage: Storage):
+    def __init__(self, storage: Storage, settings: Settings):
         super().__init__()
 
         self.document = None
         self.storage = storage
+        self.settings = settings
 
         self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
@@ -78,7 +80,7 @@ class Editor(Gtk.Grid):
         self.view.set_smart_home_end(True)
         self.view.set_insert_spaces_instead_of_tabs(True)
         self.view.set_tab_width(4)
-        self.view.props.width_request = 800
+        self.view.props.width_request = 920
         self.view.set_halign(Gtk.Align.CENTER)
 
         self.view.set_pixels_above_lines(2)
@@ -146,6 +148,9 @@ class Editor(Gtk.Grid):
         self.spellchecker = Gspell.Checker()
         self.spell_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(self.view.get_buffer())
         self.spell_buffer.set_spell_checker(self.spellchecker)
+        spell_language = Gspell.Language.lookup(self.settings.get_string('spellcheck-language'))
+        if spell_language:
+            self.spellchecker.set_language(spell_language)
 
         self.spell_view = Gspell.TextView.get_from_gtk_text_view(self.view)
         self.spell_view.set_enable_language_menu(False)
@@ -322,6 +327,11 @@ class Editor(Gtk.Grid):
 
     def set_spellcheck(self, value: bool) -> None:
         self.spell_view.set_inline_spell_checking(value)
+
+    def set_spellcheck_language(self, language_code: str) -> None:
+        spell_language = Gspell.Language.lookup(language_code)
+        if spell_language:
+            self.spellchecker.set_language(spell_language)
 
     def set_style_scheme(self, scheme_id: str) -> None:
         scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(scheme_id)
