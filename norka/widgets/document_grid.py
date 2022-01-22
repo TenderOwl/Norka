@@ -54,6 +54,7 @@ class DocumentGrid(Gtk.Grid):
     def __init__(self, settings: Settings, storage: Storage):
         super().__init__()
 
+        self.last_selected_path = None
         self.settings = settings
         self.storage = storage
         self.settings.connect("changed", self.on_settings_changed)
@@ -90,6 +91,7 @@ class DocumentGrid(Gtk.Grid):
                                            Gdk.DragAction.MOVE)
         self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target], Gdk.DragAction.DEFAULT)
 
+        self.view.connect("drag-begin", self.on_drag_begin)
         self.view.connect("drag-motion", self.on_drag_motion)
         self.view.connect("drag-leave", self.on_drag_leave)
         self.view.connect("drag-end", self.on_drag_end)
@@ -112,8 +114,6 @@ class DocumentGrid(Gtk.Grid):
 
     @property
     def is_folder_selected(self) -> bool:
-        Logger.info(f"is_folder_selected: {self.selected_path}")
-
         if self.selected_path is None:
             return False
 
@@ -135,7 +135,7 @@ class DocumentGrid(Gtk.Grid):
     def selected_document(self) -> Optional[Document]:
         """Returns selected :model:`Document` or `None`
         """
-        Logger.info('DocumentGrid.selected_document')
+        Logger.debug('DocumentGrid.selected_document')
         if self.is_folder_selected:
             return None
 
@@ -320,6 +320,9 @@ class DocumentGrid(Gtk.Grid):
 
         self.view.unselect_all()
 
+    def on_drag_begin(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
+        self.last_selected_path = self.selected_path
+
     def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
         # Change cursor icon based on drop target.
         # if the user move mouse over the folder - it becomes MOVE action
@@ -348,7 +351,9 @@ class DocumentGrid(Gtk.Grid):
 
     def on_drag_end(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
         # print('on_drag_end')
-        pass
+        if self.last_selected_path:
+            self.view.select_path(self.last_selected_path)
+            self.last_selected_path = None
 
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
