@@ -91,6 +91,8 @@ class DocumentGrid(Gtk.Grid):
         self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target], Gdk.DragAction.DEFAULT)
 
         self.view.connect("drag-motion", self.on_drag_motion)
+        self.view.connect("drag-leave", self.on_drag_leave)
+        self.view.connect("drag-end", self.on_drag_end)
         # self.view.connect("drag-data-get", self.on_drag_data_get)
         self.view.connect('drag-data-received', self.on_drag_data_received)
 
@@ -325,13 +327,28 @@ class DocumentGrid(Gtk.Grid):
         if not model_path:
             return False
         model_iter = self.model.get_iter(model_path)
-        item_title = self.model.get_value(model_iter, 1)
         item_id = self.model.get_value(model_iter, 3)
+
+        # Select hover cell, make it interactive for the user
+        self.view.select_path(model_path)
+
+        # Folder could have an ID, so this condition going to change
         if item_id == -1:
             Gdk.drag_status(context, Gdk.DragAction.MOVE, time)
+            # TODO: Change folder icon on hover
+            # self.model.set_value(model_iter, 0, Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg'))
         else:
             Gdk.drag_status(context, Gdk.DragAction.COPY, time)
+
         return True
+
+    def on_drag_leave(self, widget: Gtk.Widget, context: Gdk.DragContext, time: int) -> None:
+        # print('on_drag_leave')
+        pass
+
+    def on_drag_end(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
+        # print('on_drag_end')
+        pass
 
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
