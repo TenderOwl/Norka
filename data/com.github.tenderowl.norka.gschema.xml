@@ -75,7 +75,7 @@
             <description>Set the zoom of the font</description>
         </key>
         <key name="font" type="s">
-            <default>'"iA Writer Duospace" 14'</default>
+            <default>'iA Writer Duospace 11'</default>
             <summary>Preferred Font</summary>
             <description>Set the preferred font</description>
         </key>

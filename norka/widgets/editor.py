@@ -348,6 +348,7 @@ class Editor(Gtk.Grid):
                                                        Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def update_font(self, font: str) -> None:
+        # pass
         self.font_desc = Pango.FontDescription.from_string(font)
         self.view.override_font(self.font_desc)
 
