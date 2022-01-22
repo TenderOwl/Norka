@@ -92,7 +92,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         # Init screens
         self.welcome_grid = Welcome()
-        self.welcome_grid.connect('activated', self.on_welcome_activated)
+        # self.welcome_grid.connect('activated', self.on_welcome_activated)
         self.welcome_grid.connect('document-import', self.on_document_import)
 
         self.document_grid = DocumentGrid(self.settings, storage=self.storage)
@@ -354,7 +354,8 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         if self.storage.count_all(path=self.document_grid.current_folder_path) > 0 \
                 or self.document_grid.current_folder_path != '/':
-            self.screens.set_visible_child_name('document-grid')
+            self.toggle_welcome(False)
+            # self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
             if last_doc_id and last_doc_id != -1:
@@ -392,12 +393,9 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.header.update_title()
             self.settings.set_int('last-document-id', -1)
 
-    def on_welcome_activated(self, sender: Welcome, index: int) -> None:
-        if index == 0:
-            self.on_document_create_activated(sender, index)
+            self.check_grid_items()
 
-    def on_document_item_activated(self, sender: Gtk.Widget,
-                                   path: Gtk.TreePath) -> None:
+    def on_document_item_activated(self, sender: Gtk.Widget, path: Gtk.TreePath) -> None:
         """Activate currently selected document in grid and open it in editor.
 
         :param sender:
@@ -525,6 +523,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             print(e)
             return False
         finally:
+            self.check_grid_items()
             self.header.show_spinner(False)
 
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):

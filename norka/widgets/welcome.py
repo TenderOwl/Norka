@@ -43,13 +43,25 @@ class Welcome(Granite.WidgetsWelcome):
         self.set_title(_('No documents yet'))
         self.set_subtitle(_('Create one and start writing'))
         self.append('document-new', _('New document'), _('Create empty document'))
-        self.get_button_from_index(0).set_can_focus(False)
+        self.append('document-import', _('Import document'), _('Import document'))
+        self.get_button_from_index(0).set_action_name('document.create')
+        self.get_button_from_index(1).set_action_name('document.import')
 
         # Enable drag-drop
         enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
         self.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
                            [enforce_target], Gdk.DragAction.COPY)
         self.connect('drag-data-received', self.on_drag_data_received)
+
+        # self.connect('activated', self.on_activated)
+
+    # def on_activated(self, sender: 'Welcome', index: int) -> None:
+    #     if index == 0:
+    #         # self.on_document_create_activated(sender, index)
+    #         self.emit('document.create')
+    #
+    #     if index == 1:
+    #         self.emit('document.import', sender)
 
     # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
