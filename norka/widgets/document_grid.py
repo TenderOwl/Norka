@@ -47,8 +47,8 @@ class DocumentGrid(Gtk.Grid):
     __gsignals__ = {
         'path-changed': (GObject.SIGNAL_RUN_FIRST, None, (str, str)),
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'document-import': (GObject.SIGNAL_RUN_LAST, None, (str,)),
-        'rename-folder': (GObject.SIGNAL_RUN_LAST, None, (str,)),
+        'document-import': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        'rename-folder': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
     }
 
     def __init__(self, settings: Settings, storage: Storage):
@@ -83,13 +83,11 @@ class DocumentGrid(Gtk.Grid):
         # Enable drag-drop
         import_dnd_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
         reorder_dnd_target = Gtk.TargetEntry.new('reorder', Gtk.TargetFlags.SAME_APP, TARGET_ENTRY_REORDER)
-        # self.view.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
-        #                         [import_dnd_target], Gdk.DragAction.COPY)
-
         self.view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
                                            [import_dnd_target, reorder_dnd_target],
                                            Gdk.DragAction.MOVE)
-        self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target], Gdk.DragAction.DEFAULT)
+        self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target],
+                                         Gdk.DragAction.COPY | Gdk.DragAction.COPY)
 
         self.view.connect("drag-begin", self.on_drag_begin)
         self.view.connect("drag-motion", self.on_drag_motion)
@@ -359,10 +357,13 @@ class DocumentGrid(Gtk.Grid):
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
 
+        print(f'Drag info: {info}')
+
         # Handle normal dnd from other apps with files as a target
         if info == TARGET_ENTRY_TEXT:
             uris = data.get_text().split('\n')
 
+            print(data.get_text())
             for uri in uris:
                 # Skip empty items
                 if not uri:
@@ -378,6 +379,7 @@ class DocumentGrid(Gtk.Grid):
 
             dest_path = self.view.get_path_at_pos(x, y)
             if not dest_path:
+                print("No dest path")
                 return
 
             dest_iter = self.model.get_iter(dest_path)
@@ -420,6 +422,8 @@ class DocumentGrid(Gtk.Grid):
                 if self.storage.update(origin_item.document_id, {'path': dest_item.absolute_path}):
                     print(f'Moved {origin_item.title} to {dest_item.absolute_path}')
                     self.reload_items()
+
+        Gtk.drag_finish(drag_context, True, drag_context.get_selected_action() == Gdk.DragAction.MOVE, time)
 
     def create_folder(self, title: str, path: str) -> Optional[int]:
         dialog = FolderCreateDialog(title)
