@@ -7,5 +7,10 @@ Icon=@icon@
 Terminal=false
 Type=Application
 Categories=Utility;TextEditor;WordProcessor;GTK;Office;
-Keywords=text;editor;markdown;notes;pdf;word;html;
+Keywords=text;editor;markdown;notes;pdf;word;html;writer;
 MimeType=text/markdown;text/x-markdown;text/plain;
+
+[Desktop Action NewNote]
+Name=New Note
+Exec=@project_name@ --new="New Note"
+
