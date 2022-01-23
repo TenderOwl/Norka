@@ -6,9 +6,11 @@ Exec=@project_name@ %u
 Icon=@icon@
 Terminal=false
 Type=Application
-Categories=Utility;TextEditor;WordProcessor;GTK;Office;
+Categories=TextEditor;GTK;
 Keywords=text;editor;markdown;notes;pdf;word;html;writer;
 MimeType=text/markdown;text/x-markdown;text/plain;
+StartupNotify=true
+Actions=NewNote;
 
 [Desktop Action NewNote]
 Name=New Note
