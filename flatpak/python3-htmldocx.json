@@ -2,7 +2,7 @@
     "name": "python3-htmldocx",
     "buildsystem": "simple",
     "build-commands": [
-        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"htmldocx\" --no-build-isolation"
+        "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"htmldocx\" --ignore-installed --no-build-isolation"
     ],
     "sources": [
         {
