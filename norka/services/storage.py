@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -418,7 +418,7 @@ class Storage(object):
             # Store old path
             old_path = folder.absolute_path
             # Set new title to get the new path
-            folder.path = title
+            folder.path = path
             new_path = folder.absolute_path
 
             self.move_folders(old_path, new_path)
