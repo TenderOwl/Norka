@@ -2,17 +2,20 @@
 Name=Norka
 GenericName=Text Editor
 Comment=Continuous text editor with autosaving
+Comment[ru_RU]=Непрерывный текстовый редактор с автосохранением
 Exec=@project_name@ %u
 Icon=@icon@
 Terminal=false
 Type=Application
 Categories=TextEditor;GTK;
-Keywords=text;editor;markdown;notes;pdf;word;html;writer;
+Keywords=text;editor;markdown;notes;pdf;word;html;writer;document;
+Keywords[ru_RU]=текст;редактор;маркдаун;заметки;pdf;word;html;писать;документ;
 MimeType=text/markdown;text/x-markdown;text/plain;
 StartupNotify=true
 Actions=NewNote;
 
 [Desktop Action NewNote]
 Name=New Note
+Name[ru_RU]=Новый документ
 Exec=@project_name@ --new="New Note"
 
