@@ -1,16 +1,21 @@
 <style-scheme name="Norka" id="norka" version="1.0">
   <author>Andrey Maksimov</author>
   <description>Stay focused.</description>
+  
+  <color name="Background" value="#f7f7f7"/>
+  <color name="Foreground" value="#212121"/>
+  <color name="Accent" value="#009ec9"/>
+  <color name="Selection" value="#cdebf6"/>
 
-  <style name="text" foreground="#494F52" background="#F7F7F7" />
+  <style name="text" foreground="Foreground" background="Background" />
   <style name="cursor" foreground="#287a82" />
   <style name="current-line" background="#81B2EA" />
   <style name="search-match" foreground="#494F52" background="#ffbb4a" />
-  <style name="selection" foreground="#f7f7f7" background="#5299EA" />
+  <style name="selection" foreground="Foreground" background="Selection" />
 
   <!-- Bold -->
   <style name="def:statement" bold="true" />
-  <style name="def:bracket-match" foreground="#409aea" italic="true" />
+  <style name="def:bracket-match" foreground="Accent" italic="true" />
 
   <!-- Italic -->
   <style name="def:doc-comment-element" foreground="#555" italic="true" />
@@ -43,8 +48,8 @@
   <style name="markdown:blockquote-marker" foreground="#b8bbbe" italic="true" />
   <style name="markdown:definition-list-marker" foreground="#FFFFFF" background="#575757" bold="true" />
   <style name="markdown:emphasis" italic="true" />
-  <style name="markdown:header" foreground="#409aea" bold="true" />
-  <style name="markdown:horizontal-rule" foreground="#409aea" bold="true" />
+  <style name="markdown:header" foreground="Accent" bold="true" />
+  <style name="markdown:horizontal-rule" foreground="Accent" bold="true" />
   <style name="markdown:label" bold="true" />
   <style name="markdown:list-marker" foreground="#C43E2C" bold="true" />
   <style name="markdown:strong-emphasis" bold="true" />
