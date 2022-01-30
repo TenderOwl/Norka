@@ -65,18 +65,23 @@ message('Making a list of icons')
 subdir('icons')
 
 message('Installing style schemes')
-install_subdir(
-    join_paths('schemes',),
-    install_dir : join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
-)
+color_schemes = ['norka-dark', 'norka-sepia', 'norka']
+
+foreach i : color_schemes
+    install_data(
+        join_paths('schemes', i + '.xml'),
+       install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
+    )
+endforeach
+
 
 message('Installing custom fonts')
 install_subdir(
     join_paths('fonts', 'IBMPlexMono'),
-    install_dir :join_paths(get_option('datadir'), meson.project_name(), 'fonts')
+    install_dir :join_paths('share','fonts')
 )
 
 install_subdir(
     join_paths('fonts', 'iA Writer Duospace'),
-    install_dir : join_paths(get_option('datadir'), meson.project_name(), 'fonts')
+    install_dir : join_paths('share','fonts')
 )
