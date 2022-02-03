@@ -41,7 +41,7 @@
     </screenshots>
 
     <releases>
-        <release date="2022-01-23" version="1.0.0">
+        <release date="2022-02-03" version="1.0.0">
             <description>
                 <p>New</p>
                 <ul>
@@ -70,7 +70,7 @@
                 <ul>
                     <li>Backup option available in the main menu</li>
                     <li>Updated UI with support of the system-wide dark mode</li>
-                    <li>UI updated with libhandy</li>
+                    <li>UI updated and fonts</li>
                     <li>New SpellChecker, more accurate and performant</li>
                     <li>Now you can export your documents to Docx and PDF</li>
                     <li>Import files from the Files's context menu</li>
