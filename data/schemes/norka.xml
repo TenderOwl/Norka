@@ -2,7 +2,7 @@
   <author>Andrey Maksimov</author>
   <description>Stay focused.</description>
   
-  <color name="Background" value="#f7f7f7"/>
+  <color name="Background" value="#f4f4f4"/>
   <color name="Foreground" value="#212121"/>
   <color name="Accent" value="#009ec9"/>
   <color name="Selection" value="#cdebf6"/>
