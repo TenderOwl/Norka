@@ -35,7 +35,13 @@
         </screenshot>
         <screenshot>
             <caption>Welcome screen</caption>
-            <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/app_screenshot_1.png
+            <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/norka-welcome.png
+            </image>
+        </screenshot>
+        </screenshot>
+        <screenshot>
+            <caption>Documents and Folders</caption>
+            <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/norka-grid.png
             </image>
         </screenshot>
     </screenshots>
@@ -50,6 +56,7 @@
                     <li>Full backup for every doc in every folder</li>
                     <li>Current path displayed in the header</li>
                     <li>Set the language for spell-checking in the preferences window</li>
+                    <li>CLI option to use Norka as quick notes editor. See website for more.</li>
                 </ul>
                 <p>Fixes</p>
                 <ul>
