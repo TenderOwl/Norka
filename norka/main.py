@@ -39,7 +39,7 @@ gi.require_version("WebKit2", "4.0")
 
 from gi.repository import Gtk, Gio, Gdk, Granite, GLib, Handy
 
-from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME
+from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
@@ -72,6 +72,7 @@ class Application(Gtk.Application):
         self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
+        self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         storage_path = self.settings.get_string("storage-path")
         if not storage_path:
             storage_path = os.path.join(self.base_path, STORAGE_NAME)
