@@ -46,6 +46,12 @@
     </screenshots>
 
     <releases>
+        <release date="2022-03-08" version="1.0.1">
+            <description>
+                <p>Fix issue when doesn't start Norka at the first launch.</p>
+                <p>Updated Russian translation.</p>
+            </description>
+        </release>
         <release date="2022-02-03" version="1.0.0">
             <description>
                 <p>New</p>
@@ -205,7 +211,7 @@
             <description>
                 <p>
                     Search and Shortcuts.
-                    Now you can use Text Searh via keyboard shortcuts:
+                    Now you can use Text Search via keyboard shortcuts:
                 </p>
                 <ul>
                     <li>Control+F - to start search</li>
