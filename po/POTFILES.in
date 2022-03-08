@@ -1,13 +1,17 @@
+data/com.github.tenderowl.norka.appdata.xml.in
+data/com.github.tenderowl.norka.desktop.in.in
 data/ui/documents_grid_context_menu.ui
 data/ui/headerbar.ui
 data/ui/shortcuts.ui
 data/ui/stats.ui
 norka/define.py
+norka/main.py
 norka/widgets/about_dialog.py
 norka/widgets/document_grid.py
 norka/widgets/editor.py
 norka/widgets/export_dialog.py
 norka/widgets/extended_stats_dialog.py
+norka/widgets/folder_create_dialog.py
 norka/widgets/format_shortcuts_dialog.py
 norka/widgets/header.py
 norka/widgets/image_link_popover.py
@@ -18,7 +22,7 @@ norka/widgets/message_dialog.py
 norka/widgets/preferences_dialog.py
 norka/widgets/preview.py
 norka/widgets/quick_find_dialog.py
-norka/widgets/rename_dialog.py
+norka/widgets/rename_popover.py
 norka/widgets/search_bar.py
 norka/widgets/welcome.py
 norka/window.py
