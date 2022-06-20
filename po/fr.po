@@ -1,0 +1,1073 @@
+# Russian translations for PACKAGE package.
+# Copyright (C) 2020 ORGANIZATION
+# Andrey Maksimov <andrey@tenderowl.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-08 14:10+0300\n"
+"PO-Revision-Date: 2022-06-20 23:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: ../norka/widgets/image_link_popover.py:41
+msgid "Image link to insert:"
+msgstr "Lien de l’image à insérer :"
+
+#: ../norka/widgets/image_link_popover.py:43
+#: ../norka/widgets/link_popover.py:43
+msgid "https://tenderowl.com"
+msgstr "https://tenderowl.com"
+
+#: ../norka/widgets/image_link_popover.py:46
+msgid "Choose"
+msgstr "Choisir"
+
+#: ../norka/widgets/image_link_popover.py:76
+msgid "Select image to insert"
+msgstr "Sélectionnez une image à insérer"
+
+#: ../norka/widgets/image_link_popover.py:82
+msgid "Images"
+msgstr "Images"
+
+#: ../norka/widgets/link_popover.py:41
+msgid "Link to insert:"
+msgstr "Lien à insérer :"
+
+#: ../norka/widgets/message_dialog.py:45
+#: ../norka/widgets/folder_create_dialog.py:51
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ../norka/widgets/message_dialog.py:46
+msgid "Delete"
+msgstr "Supprimer"
+
+#: ../norka/widgets/quick_find_dialog.py:37
+msgid "Quick Find"
+msgstr "Recherche rapide"
+
+#: ../norka/widgets/quick_find_dialog.py:64
+msgid "Quickly find documents, just start typing its name."
+msgstr ""
+"Trouvez rapidement des documents en commençant simplement à écrire leur nom."
+
+#: ../norka/widgets/quick_find_dialog.py:87
+msgid "Jump to..."
+msgstr "Aller à..."
+
+#: ../norka/widgets/search_bar.py:45
+msgid "Find"
+msgstr "Trouver"
+
+#: ../norka/widgets/welcome.py:43
+msgid "No documents yet"
+msgstr "Aucun document pour l’instant"
+
+#: ../norka/widgets/welcome.py:44
+msgid "Create one and start writing"
+msgstr "Créez-en un et commencez à écrire"
+
+#: ../norka/widgets/welcome.py:45
+msgid "New document"
+msgstr "Nouveau document"
+
+#: ../norka/widgets/welcome.py:45
+msgid "Create empty document"
+msgstr "Créer un document vide"
+
+#: ../norka/widgets/welcome.py:46
+msgid "Import document"
+msgstr "Importer un document"
+
+#: ../norka/widgets/export_dialog.py:30
+msgid "Plain text"
+msgstr "Texte brut"
+
+#: ../norka/widgets/export_dialog.py:31 ../norka/widgets/menu_export.py:50
+msgid "Markdown"
+msgstr "Markdown"
+
+#: ../norka/widgets/export_dialog.py:32
+msgid "HTML"
+msgstr "HTML"
+
+#: ../norka/widgets/export_dialog.py:33
+msgid "PDF"
+msgstr "PDF"
+
+#: ../norka/widgets/export_dialog.py:34 ../norka/widgets/menu_export.py:83
+msgid "Docx"
+msgstr "Docx"
+
+#: ../norka/widgets/extended_stats_dialog.py:64
+#: ../norka/widgets/preferences_dialog.py:165
+#: ../norka/widgets/format_shortcuts_dialog.py:159
+msgid "Close"
+msgstr "Fermer"
+
+#: ../norka/widgets/extended_stats_dialog.py:88
+msgid "{:d}h {:02d}m {:02d}s"
+msgstr "{:d}h {:02d}m {:02d}s"
+
+#: ../norka/widgets/menu_popover.py:39
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+#: ../norka/widgets/menu_popover.py:43
+msgid "Zoom 1:1"
+msgstr "Zoom 1:1"
+
+#: ../norka/widgets/menu_popover.py:48
+msgid "Zoom In"
+msgstr "Zoomer"
+
+#: ../norka/widgets/menu_popover.py:62
+msgid "About"
+msgstr "À propos"
+
+#: ../norka/widgets/menu_popover.py:71
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+#: ../norka/widgets/menu_popover.py:74
+msgid "Markup Shortcuts"
+msgstr "Raccourcis de balisage"
+
+#: ../norka/widgets/menu_popover.py:83
+msgid "Quit"
+msgstr "Quitter"
+
+#: ../norka/widgets/about_dialog.py:36
+msgid "Continuous text editor"
+msgstr "Éditeur de texte continu"
+
+#: ../norka/widgets/about_dialog.py:39
+msgid "Learn more about Norka"
+msgstr "En savoir plus sur Norka"
+
+#: ../norka/widgets/preferences_dialog.py:50
+msgid "Preferences"
+msgstr "Paramètres"
+
+#: ../norka/widgets/preferences_dialog.py:57
+msgid "Toast"
+msgstr "Toast"
+
+#: ../norka/widgets/preferences_dialog.py:95
+msgid "General"
+msgstr "Général"
+
+#: ../norka/widgets/preferences_dialog.py:96
+msgid "Save files when changed:"
+msgstr "Enregistrer les fichiers quand ils sont modifiés :"
+
+#: ../norka/widgets/preferences_dialog.py:98
+msgid "Sort documents backwards:"
+msgstr "Trier les documents à l’envers :"
+
+#: ../norka/widgets/preferences_dialog.py:100
+msgid "Spell checking:"
+msgstr "Vérification orthographique :"
+
+#: ../norka/widgets/preferences_dialog.py:102
+msgid "Language:"
+msgstr "Langage :"
+
+#: ../norka/widgets/preferences_dialog.py:105
+msgid "Tabs"
+msgstr "Tabulations"
+
+#: ../norka/widgets/preferences_dialog.py:106
+msgid "Automatic indentation:"
+msgstr "Indentation automatique :"
+
+#: ../norka/widgets/preferences_dialog.py:108
+msgid "Insert spaces instead of tabs:"
+msgstr "Insérer des espaces à la place des tabulations :"
+
+#: ../norka/widgets/preferences_dialog.py:111
+msgid "Tab width:"
+msgstr "Largeur des tabulations :"
+
+#: ../norka/widgets/preferences_dialog.py:134
+msgid "Appearance"
+msgstr "Apparence"
+
+#: ../norka/widgets/preferences_dialog.py:135
+msgid "Prefer dark theme:"
+msgstr "Préférer le thème sombre"
+
+#: ../norka/widgets/preferences_dialog.py:137
+msgid "Styles"
+msgstr "Styles"
+
+#: ../norka/widgets/preferences_dialog.py:148
+msgid "Behavior"
+msgstr "Comportement"
+
+#: ../norka/widgets/preferences_dialog.py:149
+msgid "Interface"
+msgstr "Interface"
+
+#: ../norka/widgets/preferences_dialog.py:150
+msgid "Export"
+msgstr "Exportation"
+
+#: ../norka/widgets/preferences_dialog.py:170
+msgid "Token"
+msgstr "Jeton"
+
+#: ../norka/widgets/preferences_dialog.py:175
+msgid "Create Integration token and copy it here"
+msgstr "Créez un jeton d’intégration et copiez-le ici"
+
+#: ../norka/widgets/preferences_dialog.py:178
+msgid "Personal Token:"
+msgstr "Jeton personnel :"
+
+#: ../norka/widgets/preferences_dialog.py:183
+#: ../norka/widgets/preferences_dialog.py:189
+msgid "Login"
+msgstr "Connexion"
+
+#: ../norka/widgets/preferences_dialog.py:184
+msgid "Password"
+msgstr "Mot de passe"
+
+#: ../norka/widgets/preferences_dialog.py:191
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: ../norka/widgets/preferences_dialog.py:199
+msgid "Login:"
+msgstr "Identifiant :"
+
+#: ../norka/widgets/preferences_dialog.py:201
+msgid "Password:"
+msgstr "Mot de passe :"
+
+#: ../norka/widgets/preferences_dialog.py:277
+msgid "Something goes wrong!"
+msgstr "Quelque chose s’est mal passé !"
+
+#: ../norka/widgets/preferences_dialog.py:323
+msgid "Login failed."
+msgstr "Connexion échouée."
+
+#: ../norka/widgets/preferences_dialog.py:328
+msgid "Logged as {}."
+msgstr "Connecté en tant que {}."
+
+#: ../norka/widgets/format_shortcuts_dialog.py:37
+msgid "Markup Help"
+msgstr "Aide au balisage"
+
+#: ../norka/widgets/header.py:76
+msgid "Import file to Norka"
+msgstr "Importer un fichier dans Norka"
+
+#: ../norka/widgets/header.py:81
+msgid "Create new document"
+msgstr "Créer un nouveau document"
+
+#: ../norka/widgets/header.py:87
+msgid "Create new folder"
+msgstr "Créer un nouveau dossier"
+
+#: ../norka/widgets/header.py:93
+msgid "Save document and return to documents list"
+msgstr "Enregistrer le document et retourner à la liste des documents"
+
+#: ../norka/widgets/header.py:105
+msgid "Print the document"
+msgstr "Imprimer le document"
+
+#: ../norka/widgets/header.py:110
+msgid "Show document info"
+msgstr "Afficher les informations du document"
+
+#: ../norka/widgets/header.py:122
+msgid "Show Archived files"
+msgstr "Afficher les fichiers archivés"
+
+#: ../norka/widgets/header.py:152 ../norka/widgets/header.py:168
+msgid "root"
+msgstr "racine"
+
+#: ../norka/widgets/header.py:172
+msgid "Click to switch between <b>stats</b> and <b>path</b>"
+msgstr "Cliquez pour changer entre <b>stats</b> et <b>chemin</b>"
+
+#: ../norka/widgets/menu_export.py:40
+msgid "Text"
+msgstr "Texte"
+
+#: ../norka/widgets/menu_export.py:42
+msgid "Export document to plain text file"
+msgstr "Exporter le document en un fichier texte brut"
+
+#: ../norka/widgets/menu_export.py:53
+msgid "Export document to markdown"
+msgstr "Exporter le document en Markdown"
+
+#: ../norka/widgets/menu_export.py:61
+msgid "Html"
+msgstr "HTML"
+
+#: ../norka/widgets/menu_export.py:63 ../norka/widgets/menu_export.py:67
+msgid "Export document to HTML"
+msgstr "Exporter le document en HTML"
+
+#: ../norka/widgets/menu_export.py:72
+msgid "Pdf"
+msgstr "PDF"
+
+#: ../norka/widgets/menu_export.py:74 ../norka/widgets/menu_export.py:78
+msgid "Export document to PDF"
+msgstr "Exporter le document en PDF"
+
+#: ../norka/widgets/menu_export.py:85 ../norka/widgets/menu_export.py:89
+msgid "Export document to Docx"
+msgstr "Exporter le document en Docx"
+
+#: ../norka/widgets/menu_export.py:109
+msgid "Export to file"
+msgstr "Exporter en"
+
+#: ../norka/widgets/menu_export.py:114
+msgid "To Medium"
+msgstr "Vers Medium"
+
+#: ../norka/widgets/menu_export.py:119
+msgid "To Write.as"
+msgstr "Vers Write.as"
+
+#: ../norka/widgets/menu_export.py:123
+msgid "Files"
+msgstr "Fichiers"
+
+#: ../norka/widgets/menu_export.py:128
+msgid "Internet"
+msgstr "Internet"
+
+#: ../norka/widgets/preview.py:89
+msgid "Nothing to preview"
+msgstr "Rien à prévisualiser"
+
+#: ../norka/widgets/preview.py:90
+msgid "To render preview open a document"
+msgstr "Pour une prévisualisation, ouvrez un document"
+
+#: ../norka/widgets/editor.py:170
+msgid "Nameless"
+msgstr "Sans nom"
+
+#: ../norka/widgets/editor.py:357
+msgid "{:d}:{:02d}:{:02d} Read Time"
+msgstr "{:d}:{:02d}:{:02d} Temps de lecture"
+
+#: ../norka/widgets/folder_create_dialog.py:34
+#: ../norka/widgets/folder_create_dialog.py:40
+msgid "Create folder"
+msgstr "Créer un dossier"
+
+#: ../norka/widgets/folder_create_dialog.py:42
+msgid "Folder name"
+msgstr "Nom du dossier"
+
+#: ../norka/widgets/folder_create_dialog.py:53 ../norka/window.py:438
+msgid "Create"
+msgstr "Créer"
+
+#: ../norka/widgets/rename_popover.py:60
+msgid "Rename"
+msgstr "Renommer"
+
+#: ../norka/widgets/document_grid.py:178
+msgid "Go to the upper folder"
+msgstr "Aller au dossier supérieur"
+
+#: ../norka/widgets/document_grid.py:203
+msgid "Created"
+msgstr "Créé"
+
+#: ../norka/widgets/document_grid.py:208
+msgid "Modified"
+msgstr "Modifié"
+
+#: ../norka/define.py:29
+msgid "continuous text editor"
+msgstr "éditeur de texte continu"
+
+#: ../norka/main.py:64
+msgid "Open new document on start."
+msgstr "Ouvrir un nouveau document au démarrage"
+
+#: ../norka/window.py:437
+msgid "Name folder with:"
+msgstr "Nommer le dossier avec :"
+
+#: ../norka/window.py:479
+msgid "Import files into Norka"
+msgstr "Importer des fichiers dans Norka"
+
+#: ../norka/window.py:483
+msgid "Text Files"
+msgstr "Fichiers texte"
+
+#: ../norka/window.py:719 ../norka/window.py:748 ../norka/window.py:777
+msgid "Export document to file"
+msgstr "Exporter le document en un fichier"
+
+#: ../norka/window.py:801
+msgid "Document exported."
+msgstr "Document exporté."
+
+#: ../norka/window.py:802 ../norka/window.py:925
+msgid "Open folder"
+msgstr "Ouvrir le dossier"
+
+#: ../norka/window.py:807
+msgid "Export goes wrong."
+msgstr "L’exportation s’est mal passée."
+
+#: ../norka/window.py:827
+msgid "You need to set Medium token in Preferences -> Export"
+msgstr "Vous devez définir un jeton Medium dans Paramètres -> Export"
+
+#: ../norka/window.py:828
+msgid "Configure"
+msgstr "Configurer"
+
+#: ../norka/window.py:845 ../norka/window.py:888
+msgid "Document successfully exported!"
+msgstr "Document exporté avec succès"
+
+#: ../norka/window.py:846 ../norka/window.py:889
+msgid "View"
+msgstr "Voir"
+
+#: ../norka/window.py:851
+msgid "Export failed!"
+msgstr "Exportation échouée !"
+
+#: ../norka/window.py:894
+msgid "Export failed."
+msgstr "Exportation échouée."
+
+#: ../norka/window.py:900
+msgid "Select folder to store backup"
+msgstr "Sélectionnez un dossier pour stocker la sauvegarde"
+
+#: ../norka/window.py:903
+msgid "Select"
+msgstr "Sélectionner"
+
+#: ../norka/window.py:916
+msgid "Backup started."
+msgstr "Sauvegarde débutée"
+
+#: ../norka/window.py:924
+msgid "All documents saved."
+msgstr "Tous les documents sont enregistrés"
+
+#: ../norka/window.py:929
+msgid "Backup failed."
+msgstr "Sauvegarde échouée."
+
+#: ../data/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Général"
+
+#: ../data/ui/shortcuts.ui:18
+msgctxt "shortcut window"
+msgid "New"
+msgstr "Nouveau"
+
+#: ../data/ui/shortcuts.ui:25
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "Importer"
+
+#: ../data/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Exporter"
+
+#: ../data/ui/shortcuts.ui:39
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Fermer le document"
+
+#: ../data/ui/shortcuts.ui:46
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Quitter l’application"
+
+#: ../data/ui/shortcuts.ui:56 ../data/ui/shortcuts.ui:60
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Trouver"
+
+#: ../data/ui/shortcuts.ui:67
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Rechercher la correspondance suivante"
+
+#: ../data/ui/shortcuts.ui:74
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Rechercher la correspondance précédente"
+
+#: ../data/ui/shortcuts.ui:83
+msgctxt "shortcut window"
+msgid "Preview"
+msgstr "Prévisualisation"
+
+#: ../data/ui/shortcuts.ui:87
+msgctxt "shortcut window"
+msgid "Open Preview window"
+msgstr "Ouvrir l’aperçu"
+
+#: ../data/ui/shortcuts.ui:96
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Copier et coller"
+
+#: ../data/ui/shortcuts.ui:100
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Copier le texte sélectionné dans le presse-papiers"
+
+#: ../data/ui/shortcuts.ui:107
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Couper le texte sélectionné dans le presse-papiers"
+
+#: ../data/ui/shortcuts.ui:114
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Coller le texte depuis le presse-papiers"
+
+#: ../data/ui/shortcuts.ui:125
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Annuler et rétablir"
+
+#: ../data/ui/shortcuts.ui:129
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Annuler la dernière commande"
+
+#: ../data/ui/shortcuts.ui:136
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Rétablir la dernière commande"
+
+#: ../data/ui/shortcuts.ui:147
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Sélection"
+
+#: ../data/ui/shortcuts.ui:151
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Sélectionner tout le texte"
+
+#: ../data/ui/shortcuts.ui:162
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Paramètres"
+
+#: ../data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Ouvrir les paramètres"
+
+#: ../data/ui/stats.ui:30
+msgid "Document"
+msgstr "Document"
+
+#: ../data/ui/stats.ui:71
+msgid "0m 0s"
+msgstr "0m 0s"
+
+#: ../data/ui/stats.ui:89 ../data/ui/stats.ui:173 ../data/ui/stats.ui:191
+msgid "0"
+msgstr "0"
+
+#: ../data/ui/stats.ui:105
+msgid "READ TIME"
+msgstr "TEMPS DE LECTURE"
+
+#: ../data/ui/stats.ui:108
+msgid "label"
+msgstr "Étiquette"
+
+#: ../data/ui/stats.ui:126
+msgid "PARAGRAPHS"
+msgstr "PARAGRAPHES"
+
+#: ../data/ui/stats.ui:141
+msgid "CHARACTERS"
+msgstr "CARACTÈRES"
+
+#: ../data/ui/stats.ui:157
+msgid "WORDS"
+msgstr "MOTS"
+
+#: ../data/ui/stats.ui:249
+msgid "CREATION DATE"
+msgstr "DATE DE CRÉATION"
+
+#: ../data/ui/stats.ui:288
+msgid "MODIFICATION DATE"
+msgstr "DATE DE MODIFICATION"
+
+#: ../data/ui/headerbar.ui:66 ../data/ui/headerbar.ui:81
+#: ../data/ui/headerbar.ui:214
+msgid "Norka"
+msgstr "Norka"
+
+#: ../data/ui/headerbar.ui:191
+msgid "page0"
+msgstr "page0"
+
+#: ../data/ui/headerbar.ui:331
+msgid "page1"
+msgstr "page1"
+
+#: ../data/ui/documents_grid_context_menu.ui:47
+#: ../data/ui/documents_grid_context_menu.ui:130
+#: ../data/ui/documents_grid_context_menu.ui:303
+msgid "Export..."
+msgstr "Exporter..."
+
+#: ../data/ui/documents_grid_context_menu.ui:74
+msgid "Archive"
+msgstr "Archiver"
+
+#: ../data/ui/documents_grid_context_menu.ui:88
+msgid "Unarchive"
+msgstr "Désarchiver"
+
+#: ../data/ui/documents_grid_context_menu.ui:200
+#: ../data/ui/documents_grid_context_menu.ui:373
+msgid "Medium.com"
+msgstr "Medium.com"
+
+#: ../data/ui/documents_grid_context_menu.ui:214
+#: ../data/ui/documents_grid_context_menu.ui:387
+msgid "Writeas"
+msgstr "Writeas"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:4
+msgid "Text Editor"
+msgstr "Éditeur de texte"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:5
+msgid "Continuous text editor with autosaving"
+msgstr "Éditeur de texte continu avec sauvegarde automatique"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:8
+msgid "@icon@"
+msgstr "@icon@"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:12
+msgid "text;editor;markdown;notes;pdf;word;html;writer;document;"
+msgstr ""
+"text;editor;markdown;notes;pdf;word;html;writer;document;éditeur;docx;"
+"markdown;"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:19
+msgid "New Note"
+msgstr "Nouvelle Note"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:9
+msgid ""
+"Imagine text writing experience without the hassle. Don't worry about saving "
+"files, complex markup, or accidentally deleted notes."
+msgstr ""
+"Imaginez une expérience d’écriture sans encombres. Ne vous embarrassez pas à "
+"propos de la sauvegarde de vos documents, d’un balisage compliqué, ou d’une "
+"suppression accidentelle."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:12
+msgid ""
+"Do what you want to do - concentrate on beautiful stories, short notes, or "
+"documenting. Norka cares about you."
+msgstr ""
+"Faites ce que vous voulez faire - vous concentrer sur de belles histoires, "
+"des notes courtes, ou des documents. Norka s’occupe de vous."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:16
+msgid "All your notes inside"
+msgstr "Toutes vos notes à l’intérieur"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:17
+msgid "Automatically saved in place"
+msgstr "Automatiquement enregistrées sur place"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:18
+msgid "Can be easily exported to HTML, Docx and event PDF in one click"
+msgstr "Exportation facile en HTML, Docx et même PDF en un clic"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:19
+msgid "If you need markup - use markdown"
+msgstr "Si vous cherchez à utiliser un balisage, utilisez le Markdown"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:20
+msgid "Don't like the default theme - choose different"
+msgstr ""
+"Si vous n’aimez pas le thème par défaut, vous pouvez en choisir un différent"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:26
+msgid "Tender Owl"
+msgstr "Tender Owl"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:32
+msgid "Editing document"
+msgstr "Édition du document"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:37
+msgid "Welcome screen"
+msgstr "Écran de bienvenue"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:42
+msgid "Documents and Folders"
+msgstr "Documents et dossiers"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:51
+msgid "New"
+msgstr "Nouveau"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:53
+msgid "You can create folders to structure your notes"
+msgstr "Vous pouvez créer des dossiers pour structurer vos notes"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:54
+msgid "Move documents to folders in and out"
+msgstr "Déplacez des documents à l’intérieur et hors de vos dossiers"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:55
+msgid "Full backup for every doc in every folder"
+msgstr "Sauvegarde complète pour chaque document dans chaque dossier"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:56
+msgid "Current path displayed in the header"
+msgstr "Chemin actuel affiché dans la barre d’en-tête"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:57
+msgid "Set the language for spell-checking in the preferences window"
+msgstr ""
+"Définissez le langage pour la vérification orthographique dans la fenêtre "
+"des paramètres"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:58
+msgid "CLI option to use Norka as quick notes editor. See website for more."
+msgstr ""
+"Option CLI pour utiliser Norka comme un éditeur de notes rapide. Voir le "
+"site web pour en savoir plus"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:60
+msgid "Fixes"
+msgstr "Corrections"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:62
+msgid "Header now properly inserted for non-Latin languages"
+msgstr "Titre désormais correctement inséré pour les langages non-latins."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:63
+msgid "Autocompletion stops if no text is entered on list item"
+msgstr ""
+"Arrêt de l’auto-complétion si aucun texte n’est entré sur la liste des items"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:64
+msgid ""
+"Fix drag-n-drop import when the first event repeats for every next import"
+msgstr ""
+"Correction de l’importation par glisser-déposer quand le premier événement "
+"se répète pour chaque importation suivante"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:70
+msgid "Bugfixes and UI impovements."
+msgstr "Corrections de bogues et améliorations de l’interface"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:75
+msgid "Backup, export to Docx and PDF and more."
+msgstr "Sauvegarde, exportation en Docx et PDF et plus."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:77
+msgid "Backup option available in the main menu"
+msgstr "Option de sauvegarde disponible dans le menu principal"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:78
+msgid "Updated UI with support of the system-wide dark mode"
+msgstr "Mise à jour de l’interface avec support pour un mode sombre système"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:79
+msgid "UI updated and fonts"
+msgstr "Mise à jour de l’interface et des polices"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:80
+msgid "New SpellChecker, more accurate and performant"
+msgstr "Nouveau vérificateur orthographique, plus fiable et performant"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:81
+msgid "Now you can export your documents to Docx and PDF"
+msgstr "Maintenant vous pouvez exporter vos documents en Docx et PDF"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:82
+msgid "Import files from the Files's context menu"
+msgstr "Importation de fichiers depuis le menu contextuel des Fichiers"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:88
+msgid "New app page and"
+msgstr "Nouvelle page de l’application et"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:90
+msgid "New app screenshots"
+msgstr "Nouvelles captures d’écran de l’application"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:91
+msgid "Update libraries"
+msgstr "Mise à jour des bibliothèques"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:97
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:106
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:115
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:144
+msgid "Improvements"
+msgstr "Améliorations"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:99
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:100
+msgid "Document ordering"
+msgstr "Ordre des documents"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:108
+msgid "Fix extra dot for exported md files."
+msgstr ""
+"Correction pour les points supplémentaires dans les fichiers md exportés."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:109
+msgid "Add translations"
+msgstr "Ajout de traductions"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:117
+msgid "Editor width limited to 800 px for the best experience"
+msgstr "Largeur de l’éditeur limitée à 800 px pour la meilleure expérience"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:118
+msgid "Formatting shortcuts for easier editing"
+msgstr "Raccourcis de formatage pour une édition plus facile"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:119
+msgid "Preview documents before export"
+msgstr "Prévisualisation de documents avant l’export"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:120
+msgid "Export documents from grid"
+msgstr "Export de documents depuis la grille"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:121
+msgid "Modification and creation date in tooltips"
+msgstr "Dates de création et de modification dans l’infobulle"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:127
+msgid "Update app translation."
+msgstr "Traduction de l’application mise à jour"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:132
+msgid ""
+"A new fancy way to search through your documents is available. And Norka is "
+"fully localizable now. You are welcome :)"
+msgstr ""
+"Une nouvelle et chouette manière de rechercher dans vos documents est "
+"disponible. Et Norka est désormais entièrement traduisible. Vous êtes les "
+"bienvenus :)"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:139
+msgid "Update metadata."
+msgstr "Mise à jour des métadonnées."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:146
+msgid "Set the minimum size of the Preferences dialog"
+msgstr ""
+"Définition de la taille minimale de la fenêtre de dialogue des paramètres"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:147
+msgid "Set the title to nameless documents on saving"
+msgstr ""
+"Définition du titre pour des documents sans nom lors de l’enregistrement"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:153
+msgid "Some fixes:"
+msgstr "Quelques corrections"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:155
+msgid "Properly toggle welcome screen and show archived"
+msgstr "L’écran d’accueil et celui des archives basculent correctement"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:156
+msgid "Fix drag-n-drop on welcome screen"
+msgstr "Correction du glisser-déposer sur l’écran d’accueil"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:157
+msgid "Improve HeaderBar contrast"
+msgstr "Amélioration du contraste de la barre supérieure"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:163
+msgid "Yet another update: small but valuable."
+msgstr "Encore une autre mise à jour, petite mais intéressante."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:164
+msgid "What it brings to us:"
+msgstr "Ce qu’elle apporte :"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:166
+msgid "Redesigned Share menu"
+msgstr "Menu Partage redesigné"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:167
+msgid "Export to Write.as"
+msgstr "Exportation vers Write.as"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:168
+msgid ""
+"Extended export to local files, now with support of HTML and plaintext "
+"formats"
+msgstr ""
+"Support étendu au fichiers local, désormais avec support des formats HTML et "
+"texte brut"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:169
+msgid "Reading time to know your power"
+msgstr "Temps de lecture pour connaître votre pouvoir"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:170
+msgid ""
+"And in a case when you create a new document while edit another Norka will "
+"immediately switch to the created one"
+msgstr ""
+"Et dans le cas où vous créez un nouveau document alors que vous en éditiez "
+"un autre, Norka passera immédiatement à celui créé."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:178
+msgid ""
+"TenderOwl thinks a living project is better than enormous updates yet we "
+"created a new little one!"
+msgstr ""
+"TenderOwl pense qu’un projet vivant est mieux que d’énormes mises à jour, et "
+"en voici un petite nouvelle !"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:180
+msgid ""
+"This release brings a new feature - export to Medium. All you need is open "
+"preferences and put the integration token from your Medium account. All "
+"documents exports as Draft in case you misclicked once :)"
+msgstr ""
+"Cette version apporte une nouvelle fonctionnalité - l’export vers Medium. "
+"Tout ce dont vous avez besoin est d’ouvrir les paramètres et d’y mettre le "
+"jeton d’intégration de votre compte Medium. Tous les documents sont exportés "
+"en brouillons, au cas vous cliqueriez sur l’un par erreur :)"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:184
+msgid ""
+"Along with export we fixed some issues and make Norka more userfriendly: "
+"when something goes wrong - it lets you know."
+msgstr ""
+"En même temps que l’exportation, nous avons corrigé quelques erreurs et "
+"rendu Norka plus conviviale : quand quelque chose se passe mal - elle vous "
+"le fait désormais savoir."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:187
+msgid "Stay tuned!"
+msgstr "Restez informés !"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:192
+msgid ""
+"Norka grows up and learn new tricks like import files to Norka's documents! "
+"You could use any methods you like: drag-n-drop, keyboard shortcut (Ctrl+O) "
+"or Headerbar button. And from command line of course!"
+msgstr ""
+"Norka grandit et apprend de nouveau tours comme l’importation de fichiers "
+"dans les documents Norka ! Vous pouvez utiliser n’importe quelle méthode "
+"comme : glisser-déposer; raccourcis clavier (Ctrl + O) ou le bouton dans la "
+"barre supérieur. Et depuis la ligne de commande bien sûr !"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:196
+msgid ""
+"For a while, you were able only to archive documents, because delete "
+"archives its too :) Now you can see archived documents and delete 'em "
+"permanent or unarchive if you changed your mind."
+msgstr ""
+"Pendant longtemps, vous pouviez seulement archiver des documents, parce que "
+"supprimer archive également :) Désormais vous pouvez voir les documents "
+"archivés et les supprimer de manière permanente ou les désarchiver si vous "
+"avez changé d’avis"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:199
+msgid ""
+"Every document will have its own face. I mean preview. Documents list now "
+"shows a preview of documents instead of dummy icons."
+msgstr ""
+"Chaque document aura sa propre face. Je veux dire prévisualisation. La liste "
+"de documents affiche désormais une prévisualisation des documents à la place "
+"de stupides icônes."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:206
+msgid ""
+"Search and Shortcuts. Now you can use Text Searh via keyboard shortcuts:"
+msgstr ""
+"Recherche et Raccourcis. Désormais vous pouvez utiliser la recherche de "
+"texte via les raccourcis clavier :"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:211
+msgid "Control+F - to start search"
+msgstr "Ctrl + F - pour commencer la recherche"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:212
+msgid "Control+G - to find next"
+msgstr "Ctrl + G - pour trouver le suivant"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:213
+msgid "Shift+Control+G - to find previous"
+msgstr "Maj + Ctrl + G - pour trouver le précédent"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:219
+msgid ""
+"Initial release of Norka. Young yet ready to provide you with editing "
+"functions and Markdown formatter, even export but who needs it."
+msgstr ""
+"Première version de Norka. Jeune, mais prête à vous fournir des fonctions "
+"d’édition, de formatage Markdown, et même d’exportation."
+
+msgid "Preview"
+msgstr "Prévisualisation"
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Share"
+msgstr "Partager"
+
+msgid "Menu"
+msgstr "Мenu"
+
+msgid "<b>Rename {} to:</b>"
+msgstr "<b>Renommer {} en :</b>"
