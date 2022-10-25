@@ -9,7 +9,7 @@ description: |
   - All your notes inside
   - Automatically saved in place
   - Can be easily exported to files in one click
-  - If you neet markup - use markdown
+  - If you need markup - use markdown
   - Don't like the default theme - choose different
 
 grade: stable # must be 'stable' to release into candidate/stable channels
