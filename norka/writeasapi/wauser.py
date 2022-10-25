@@ -9,7 +9,7 @@ class user(object):
         pass
 
     def auth(self, user, password):
-    # This is how you will authenticate your Write.as account and retreive an access token for future requests
+    # This is how you will authenticate your Write.as account and retrieve an access token for future requests
         data = {"alias": user, "pass": password }
 
         r = requests.post(URI, data=json.dumps(data),

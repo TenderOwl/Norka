@@ -365,7 +365,7 @@ class Editor(Gtk.Grid):
 
         self.search_context.set_highlight(False)
 
-        # Can't search anything in an inexistant buffer and/or without anything to search.
+        # Can't search anything in an inexistent buffer and/or without anything to search.
         if any([not self.buffer, not self.get_text(), not text]):
             self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             return False

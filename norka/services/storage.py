@@ -38,7 +38,7 @@ from norka.services.logger import Logger
 
 
 class Storage(object):
-    """Class intented to handle data storage operations.
+    """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
     """
