@@ -48,14 +48,12 @@ class LinkPopover(Gtk.Popover):
                       width_request=200,
                       margin_bottom=12,
                       margin_top=12,
-                      margin_right=12,
-                      margin_left=12, )
-        box.add(link_label)
-        box.add(self.link_entry)
+                      margin_end=12,
+                      margin_start=12, )
+        box.append(link_label)
+        box.append(self.link_entry)
 
-        self.add(box)
-
-        self.show_all()
+        self.set_child(box)
 
     def set_link(self, link: str = None):
         self.link_entry.set_text(link or '')

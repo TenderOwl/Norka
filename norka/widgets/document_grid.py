@@ -41,7 +41,7 @@ from norka.utils import find_child
 from norka.widgets.folder_create_dialog import FolderCreateDialog
 
 
-class DocumentGrid(Gtk.Grid):
+class DocumentGrid(Gtk.Box):
     __gtype_name__ = 'DocumentGrid'
 
     __gsignals__ = {
@@ -78,30 +78,30 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.view.connect('show', self.reload_items)
-        self.view.connect('button-press-event', self.on_button_pressed)
+        # self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
-        import_dnd_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
-        reorder_dnd_target = Gtk.TargetEntry.new('reorder', Gtk.TargetFlags.SAME_APP, TARGET_ENTRY_REORDER)
-        self.view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
-                                           [import_dnd_target, reorder_dnd_target],
-                                           Gdk.DragAction.MOVE)
-        self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target],
-                                         Gdk.DragAction.COPY | Gdk.DragAction.COPY)
+        # import_dnd_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        # reorder_dnd_target = Gtk.TargetEntry.new('reorder', Gtk.TargetFlags.SAME_APP, TARGET_ENTRY_REORDER)
+        # self.view.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
+        #                                    [import_dnd_target, reorder_dnd_target],
+        #                                    Gdk.DragAction.MOVE)
+        # self.view.enable_model_drag_dest([import_dnd_target, reorder_dnd_target],
+        #                                  Gdk.DragAction.COPY | Gdk.DragAction.COPY)
 
-        self.view.connect("drag-begin", self.on_drag_begin)
-        self.view.connect("drag-motion", self.on_drag_motion)
-        self.view.connect("drag-leave", self.on_drag_leave)
-        self.view.connect("drag-end", self.on_drag_end)
+        # self.view.connect("drag-begin", self.on_drag_begin)
+        # self.view.connect("drag-motion", self.on_drag_motion)
+        # self.view.connect("drag-leave", self.on_drag_leave)
+        # self.view.connect("drag-end", self.on_drag_end)
         # self.view.connect("drag-data-get", self.on_drag_data_get)
-        self.view.connect('drag-data-received', self.on_drag_data_received)
+        # self.view.connect('drag-data-received', self.on_drag_data_received)
 
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_hexpand(True)
         scrolled.set_vexpand(True)
-        scrolled.add(self.view)
+        scrolled.set_child(self.view)
 
-        self.add(scrolled)
+        self.append(scrolled)
 
     @property
     def current_folder_path(self):
@@ -275,7 +275,7 @@ class DocumentGrid(Gtk.Grid):
         surface = context.get_target()
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
-    def on_button_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
+    def on_button_pressed(self, widget: Gtk.Widget, event):
         """Handle mouse button press event and display context menu if needed.
         """
         self.selected_path = self.view.get_path_at_pos(event.x, event.y)
@@ -310,7 +310,7 @@ class DocumentGrid(Gtk.Grid):
                 find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
                 find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
 
-            menu_popover.set_relative_to(self.view)
+            # menu_popover.set_relative_to(self.view)
             menu_popover.set_pointing_to(rect)
             menu_popover.popup()
 
@@ -318,116 +318,116 @@ class DocumentGrid(Gtk.Grid):
 
         self.view.unselect_all()
 
-    def on_drag_begin(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
-        self.last_selected_path = self.selected_path
+    # def on_drag_begin(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
+    #     self.last_selected_path = self.selected_path
 
-    def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
-        # Change cursor icon based on drop target.
-        # if the user move mouse over the folder - it becomes MOVE action
-        model_path = self.view.get_path_at_pos(x, y)
-        if not model_path:
-            return False
-        model_iter = self.model.get_iter(model_path)
-        item_id = self.model.get_value(model_iter, 3)
+    # def on_drag_motion(self, widget: Gtk.Widget, context: Gdk.DragContext, x: int, y: int, time: int) -> bool:
+    #     # Change cursor icon based on drop target.
+    #     # if the user move mouse over the folder - it becomes MOVE action
+    #     model_path = self.view.get_path_at_pos(x, y)
+    #     if not model_path:
+    #         return False
+    #     model_iter = self.model.get_iter(model_path)
+    #     item_id = self.model.get_value(model_iter, 3)
+    #
+    #     # Select hover cell, make it interactive for the user
+    #     self.view.select_path(model_path)
+    #
+    #     # Folder could have an ID, so this condition going to change
+    #     if item_id == -1:
+    #         Gdk.drag_status(context, Gdk.DragAction.MOVE, time)
+    #         # TODO: Change folder icon on hover
+    #         # self.model.set_value(model_iter, 0, Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg'))
+    #     else:
+    #         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
+    #
+    #     return True
 
-        # Select hover cell, make it interactive for the user
-        self.view.select_path(model_path)
+    # def on_drag_leave(self, widget: Gtk.Widget, context: Gdk.DragContext, time: int) -> None:
+    #     # print('on_drag_leave')
+    #     pass
 
-        # Folder could have an ID, so this condition going to change
-        if item_id == -1:
-            Gdk.drag_status(context, Gdk.DragAction.MOVE, time)
-            # TODO: Change folder icon on hover
-            # self.model.set_value(model_iter, 0, Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder-open.svg'))
-        else:
-            Gdk.drag_status(context, Gdk.DragAction.COPY, time)
-
-        return True
-
-    def on_drag_leave(self, widget: Gtk.Widget, context: Gdk.DragContext, time: int) -> None:
-        # print('on_drag_leave')
-        pass
-
-    def on_drag_end(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
-        # print('on_drag_end')
-        if self.last_selected_path:
-            self.view.select_path(self.last_selected_path)
-            self.last_selected_path = None
+    # def on_drag_end(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
+    #     # print('on_drag_end')
+    #     if self.last_selected_path:
+    #         self.view.select_path(self.last_selected_path)
+    #         self.last_selected_path = None
 
     # Move handler to window class
-    def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
-                              data: Gtk.SelectionData, info: int, time: int) -> None:
-
-        print(f'Drag info: {info}')
-
-        # Handle normal dnd from other apps with files as a target
-        if info == TARGET_ENTRY_TEXT:
-            uris = data.get_text().split('\n')
-
-            print(data.get_text())
-            for uri in uris:
-                # Skip empty items
-                if not uri:
-                    continue
-
-                p = urlparse(unquote_plus(uri))
-                filename = os.path.abspath(os.path.join(p.netloc, p.path))
-                self.emit('document-import', filename)
-
-        # Handle reordering and moving inside Norka's virtual filesystem
-        elif info == TARGET_ENTRY_REORDER:
-            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
-
-            dest_path = self.view.get_path_at_pos(x, y)
-            if not dest_path:
-                print("No dest path")
-                return
-
-            dest_iter = self.model.get_iter(dest_path)
-            dest_item_id = self.model.get_value(dest_iter, 3)
-
-            if dest_item_id == -1:
-                dest_item = Folder(
-                    title=self.model.get_value(dest_iter, 1),
-                    path=self.model.get_value(dest_iter, 2)
-                )
-            else:
-                dest_item = self.storage.get(dest_item_id)
-
-            # Don't move item to itself :)
-            if origin_item.absolute_path == dest_item.absolute_path:
-                print("Don't move item to itself")
-                return
-
-            # Create folders when doc dropped onto doc
-            # After creation rename dialog should appear
-            if isinstance(dest_item, Document):
-                folder_id = self.create_folder(f'{origin_item.title} + {dest_item.title}',
-                                               self.current_folder_path)
-
-                if folder_id:
-                    folder = self.storage.get_folder(folder_id)
-                    self.storage.move(origin_item.document_id, folder.absolute_path)
-                    self.storage.move(dest_item.document_id, folder.absolute_path)
-                    self.reload_items()
-                return
-
-                # For folders, we have to move folder and its content to destination
-            if isinstance(origin_item, Folder):
-                print(f'Folder "{origin_item.title}": "{origin_item.path}" -> "{dest_item.absolute_path}"')
-
-                self.storage.move_folder(origin_item, dest_item.absolute_path)
-                self.reload_items()
-            # For regular documents it is easy to move - just update the `path`.
-            else:
-                if self.storage.update(origin_item.document_id, {'path': dest_item.absolute_path}):
-                    print(f'Moved {origin_item.title} to {dest_item.absolute_path}')
-                    self.reload_items()
-
-        Gtk.drag_finish(drag_context, True, drag_context.get_selected_action() == Gdk.DragAction.MOVE, time)
+    # def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
+    #                           data: Gtk.SelectionData, info: int, time: int) -> None:
+    #
+    #     print(f'Drag info: {info}')
+    #
+    #     # Handle normal dnd from other apps with files as a target
+    #     if info == TARGET_ENTRY_TEXT:
+    #         uris = data.get_text().split('\n')
+    #
+    #         print(data.get_text())
+    #         for uri in uris:
+    #             # Skip empty items
+    #             if not uri:
+    #                 continue
+    #
+    #             p = urlparse(unquote_plus(uri))
+    #             filename = os.path.abspath(os.path.join(p.netloc, p.path))
+    #             self.emit('document-import', filename)
+    #
+    #     # Handle reordering and moving inside Norka's virtual filesystem
+    #     elif info == TARGET_ENTRY_REORDER:
+    #         origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+    #
+    #         dest_path = self.view.get_path_at_pos(x, y)
+    #         if not dest_path:
+    #             print("No dest path")
+    #             return
+    #
+    #         dest_iter = self.model.get_iter(dest_path)
+    #         dest_item_id = self.model.get_value(dest_iter, 3)
+    #
+    #         if dest_item_id == -1:
+    #             dest_item = Folder(
+    #                 title=self.model.get_value(dest_iter, 1),
+    #                 path=self.model.get_value(dest_iter, 2)
+    #             )
+    #         else:
+    #             dest_item = self.storage.get(dest_item_id)
+    #
+    #         # Don't move item to itself :)
+    #         if origin_item.absolute_path == dest_item.absolute_path:
+    #             print("Don't move item to itself")
+    #             return
+    #
+    #         # Create folders when doc dropped onto doc
+    #         # After creation rename dialog should appear
+    #         if isinstance(dest_item, Document):
+    #             folder_id = self.create_folder(f'{origin_item.title} + {dest_item.title}',
+    #                                            self.current_folder_path)
+    #
+    #             if folder_id:
+    #                 folder = self.storage.get_folder(folder_id)
+    #                 self.storage.move(origin_item.document_id, folder.absolute_path)
+    #                 self.storage.move(dest_item.document_id, folder.absolute_path)
+    #                 self.reload_items()
+    #             return
+    #
+    #             # For folders, we have to move folder and its content to destination
+    #         if isinstance(origin_item, Folder):
+    #             print(f'Folder "{origin_item.title}": "{origin_item.path}" -> "{dest_item.absolute_path}"')
+    #
+    #             self.storage.move_folder(origin_item, dest_item.absolute_path)
+    #             self.reload_items()
+    #         # For regular documents it is easy to move - just update the `path`.
+    #         else:
+    #             if self.storage.update(origin_item.document_id, {'path': dest_item.absolute_path}):
+    #                 print(f'Moved {origin_item.title} to {dest_item.absolute_path}')
+    #                 self.reload_items()
+    #
+    #     Gtk.drag_finish(drag_context, True, drag_context.get_selected_action() == Gdk.DragAction.MOVE, time)
 
     def create_folder(self, title: str, path: str) -> Optional[int]:
         dialog = FolderCreateDialog(title)
-        result = dialog.run()
+        result = dialog.present()
         folder_path = dialog.folder_title
         dialog.destroy()
         if result == Gtk.ResponseType.ACCEPT:
@@ -435,11 +435,11 @@ class DocumentGrid(Gtk.Grid):
             return self.storage.add_folder(folder_path, path)
 
     def on_folder_rename_activated(self, sender: Gtk.Widget, title: str) -> None:
-        sender.destroy()
+        # sender.()
 
-        folder = self.document_grid.selected_folder
+        folder = self.selected_folder
         if folder and self.storage.rename_folder(folder, title):
-            self.document_grid.reload_items()
+            self.reload_items()
 
     def filter_model_by_value(self, model, path, iter):
         print(f'filter_model_by_value: {model}; {path}; {iter};')

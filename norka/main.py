@@ -28,37 +28,32 @@ from typing import List
 
 import gi
 
-from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+# gi.require_version('Gspell', '1')
+gi.require_version('GtkSource', '5')
+gi.require_version('WebKit', '6.0')
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-gi.require_version('Gspell', '1')
-gi.require_version('GtkSource', '4')
-gi.require_version('Handy', '1')
-gi.require_version("WebKit2", "4.0")
-
-from gi.repository import Gtk, Gio, Gdk, Granite, GLib, Handy
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.widgets.about_dialog import AboutDialog
+from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
 
 
-class Application(Gtk.Application):
+class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
-    granite_settings: Granite.Settings
-    gtk_settings: Gtk.Settings
+    window: NorkaWindow
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
-
-        Handy.init()
 
         self.add_main_option('new', 110, GLib.OptionFlags.OPTIONAL_ARG, GLib.OptionArg.STRING,
                              _('Open new document on start.'))
@@ -67,9 +62,6 @@ class Application(Gtk.Application):
 
         # Init GSettings
         self.settings = Settings.new()
-
-        self.init_style()
-        self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
@@ -106,17 +98,6 @@ class Application(Gtk.Application):
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
 
-    def init_style(self):
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
-        screen = Gdk.Screen.get_default()
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(
-            screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-        if self.settings.get_boolean('prefer-dark-theme'):
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
-
     def do_startup(self):
         Gtk.Application.do_startup(self)
 
@@ -128,21 +109,6 @@ class Application(Gtk.Application):
         """Activates the application.
 
         """
-        self.granite_settings = Granite.Settings.get_default()
-        self.gtk_settings = Gtk.Settings.get_default()
-
-        # Setup default theme mode
-        if self.settings.get_boolean('prefer-dark-theme'):
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = True
-        else:
-            # Then, we check if the user's preference is for the dark style and set it if it is
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
-
-        # Finally, we listen to changes in Granite.Settings and update our app if the user changes their preference
-        self.granite_settings.connect("notify::prefers-color-scheme",
-                                      self.color_scheme_changed)
-
         self.window = self.props.active_window
         if not self.window:
             self.window = NorkaWindow(application=self, settings=self.settings, storage=self.storage)
@@ -174,6 +140,21 @@ class Application(Gtk.Application):
                 self.window.on_document_create_activated(title=new_arg_value)
                 return 1
         return 0
+    
+    def create_action(self, name, callback, shortcuts=None):
+        """Add an application action.
+
+        Args:
+            name: the name of the action
+            callback: the function to be called when the action is
+              activated
+            shortcuts: an optional list of accelerators
+        """
+        action = Gio.SimpleAction.new(name, None)
+        action.connect("activate", callback)
+        self.add_action(action)
+        if shortcuts:
+            self.set_accels_for_action(f"app.{name}", shortcuts)
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)
@@ -199,7 +180,6 @@ class Application(Gtk.Application):
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
-        preferences_dialog.show_all()
         preferences_dialog.present()
 
     def on_quit(self, action, param):
@@ -208,14 +188,15 @@ class Application(Gtk.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
-        about_dialog.present()
-
-    def color_scheme_changed(self, _old, _new):
-        dark_mode = self.settings.get_boolean('prefer-dark-theme')
-        if not dark_mode:
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        """Callback for the app.about action."""
+        about = Adw.AboutWindow(transient_for=self.props.active_window,
+                                application_name='Norka',
+                                application_icon='com.github.tenderowl.norka',
+                                developer_name='Andrey Maksimov',
+                                version='2.0.0',
+                                developers=['Andrey Maksimov'],
+                                copyright='© 2023 Andrey Maksimov')
+        about.present()
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")

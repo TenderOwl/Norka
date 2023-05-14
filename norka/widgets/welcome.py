@@ -26,12 +26,12 @@ import os
 from gettext import gettext as _
 from urllib.parse import urlparse, unquote_plus
 
-from gi.repository import Granite, Gtk, Gdk, GObject
+from gi.repository import Adw, Gtk, Gdk, GObject
 
 from norka.define import TARGET_ENTRY_TEXT
 
 
-class Welcome(Granite.WidgetsWelcome):
+class Welcome(Adw.Bin):
     __gtype_name__ = 'NorkaWelcome'
 
     __gsignals__ = {
@@ -40,18 +40,21 @@ class Welcome(Granite.WidgetsWelcome):
 
     def __init__(self):
         super().__init__()
-        self.set_title(_('No documents yet'))
-        self.set_subtitle(_('Create one and start writing'))
-        self.append('document-new', _('New document'), _('Create empty document'))
-        self.append('document-import', _('Import document'), _('Import document'))
-        self.get_button_from_index(0).set_action_name('document.create')
-        self.get_button_from_index(1).set_action_name('document.import')
+
+        self.status_page = Adw.StatusPage()
+        self.status_page.set_title(_('Create a new document and start writing'))
+        self.status_page.set_icon_name('document-new-symbolic')
+        # self.set_subtitle(_('Create one and start writing'))
+        # self.append('document-new', _('New document'), _('Create empty document'))
+        # self.append('document-import', _('Import document'), _('Import document'))
+        # self.get_button_from_index(0).set_action_name('document.create')
+        # self.get_button_from_index(1).set_action_name('document.import')
 
         # Enable drag-drop
-        enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
-        self.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
-                           [enforce_target], Gdk.DragAction.COPY)
-        self.connect('drag-data-received', self.on_drag_data_received)
+        # enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        # self.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
+        #                    [enforce_target], Gdk.DragAction.COPY)
+        # self.connect('drag-data-received', self.on_drag_data_received)
 
         # self.connect('activated', self.on_activated)
 
@@ -64,17 +67,17 @@ class Welcome(Granite.WidgetsWelcome):
     #         self.emit('document.import', sender)
 
     # Move handler to window class
-    def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
-                              data: Gtk.SelectionData, info: int, time: int) -> None:
-        if info == TARGET_ENTRY_TEXT:
-            uris = data.get_text().split('\n')
-
-            for uri in uris:
-                # Skip empty items
-                if not uri:
-                    continue
-
-                p = urlparse(unquote_plus(uri))
-                filename = os.path.abspath(os.path.join(p.netloc, p.path))
-
-                self.emit('document-import', filename)
+    # def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
+    #                           data: Gtk.SelectionData, info: int, time: int) -> None:
+    #     if info == TARGET_ENTRY_TEXT:
+    #         uris = data.get_text().split('\n')
+    #
+    #         for uri in uris:
+    #             # Skip empty items
+    #             if not uri:
+    #                 continue
+    #
+    #             p = urlparse(unquote_plus(uri))
+    #             filename = os.path.abspath(os.path.join(p.netloc, p.path))
+    #
+    #             self.emit('document-import', filename)

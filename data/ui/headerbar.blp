@@ -7,41 +7,49 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-new</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="document-open">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-import</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="extended-stats">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">dialog-information</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="extended-stats1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">dialog-information</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="folder-new">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">folder-new</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-print</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">folder-new</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkImage" id="user-trash">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">user-trash</property>
+    <property name="icon_size">3</property>
   </object>
   <object class="GtkStack" id="header_box">
     <property name="visible">True</property>
@@ -49,8 +57,15 @@
     <property name="transition-duration">50</property>
     <property name="transition-type">crossfade</property>
     <child>
-      <object class="AdwHeaderBar" id="grid_header">
+      <object class="HdyHeaderBar" id="grid_header">
         <property name="name">grid_header</property>
+        <property name="width-request">-1</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="title" translatable="yes">Norka</property>
+        <property name="subtitle" translatable="yes">continuous text editor</property>
+        <property name="show-close-button">True</property>
         <child type="title">
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -87,7 +102,8 @@
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.create</property>
-            <property name="icon-name">document-new</property>
+            <property name="image">document-new</property>
+            <property name="always-show-image">True</property>
           </object>
         </child>
         <child>
@@ -97,7 +113,8 @@
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">folder.create</property>
-            <property name="icon-name">image2</property>
+            <property name="image">image2</property>
+            <property name="always-show-image">True</property>
           </object>
         </child>
         <child>
@@ -107,7 +124,8 @@
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.import</property>
-            <property name="icon-name">document-open</property>
+            <property name="image">document-open</property>
+            <property name="always-show-image">True</property>
           </object>
         </child>
         <child>
@@ -133,7 +151,8 @@
             <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.toggle_archived</property>
-            <property name="icon-name">user-trash</property>
+            <property name="image">user-trash</property>
+            <property name="always-show-image">True</property>
           </object>
         </child>
         <style>
@@ -142,8 +161,13 @@
       </object>
     </child>
     <child>
-      <object class="AdwHeaderBar" id="editor_header">
+      <object class="HdyHeaderBar" id="editor_header">
         <property name="name">editor_header</property>
+        <property name="width-request">-1</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="show-close-button">True</property>
         <child type="title">
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -163,12 +187,20 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="subtitle_label">
+              <object class="GtkEventBox" id="subtitle_eventbox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <style>
-                  <class name="subtitle"/>
-                </style>
+                <property name="visible-window">False</property>
+                <property name="above-child">True</property>
+                <child>
+                  <object class="GtkLabel" id="subtitle_label">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -221,7 +253,7 @@
             <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.show_extended_stats</property>
-            <property name="icon-name">extended-stats</property>
+            <property name="image">extended-stats</property>
           </object>
         </child>
         <child>
@@ -230,7 +262,7 @@
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="action-name">document.print</property>
-            <property name="icon-name">image1</property>
+            <property name="image">image1</property>
           </object>
         </child>
       </object>

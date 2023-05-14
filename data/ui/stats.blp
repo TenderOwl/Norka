@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk" version="4.0"/>
-  <requires lib="Adw" version="1.0"/>
+  <requires lib="gtk+" version="3.24"/>
   <object class="GtkImage" id="export-html-icon">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -33,6 +33,11 @@
           <class name="stat_title_label"/>
         </style>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
@@ -41,6 +46,11 @@
         <property name="margin-top">14</property>
         <property name="margin-bottom">14</property>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
     </child>
     <child>
       <!-- n-columns=2 n-rows=4 -->
@@ -64,6 +74,10 @@
               <class name="accent"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">2</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="paragraphs_count_label">
@@ -78,6 +92,10 @@
               <class name="accent"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel">
@@ -94,6 +112,10 @@
               <class name="stat_label"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">3</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel">
@@ -106,6 +128,10 @@
               <class name="stat_label"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">3</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel">
@@ -117,6 +143,10 @@
               <class name="stat_label"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">1</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel">
@@ -129,6 +159,10 @@
               <class name="stat_label"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="characters_count_label">
@@ -142,6 +176,10 @@
               <class name="accent"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="words_count_label">
@@ -156,8 +194,17 @@
               <class name="accent"/>
             </style>
           </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
+          </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
@@ -166,6 +213,11 @@
         <property name="margin-top">14</property>
         <property name="margin-bottom">14</property>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel" id="created_date_label">
@@ -179,6 +231,11 @@
           <class name="accent"/>
         </style>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel">
@@ -194,6 +251,11 @@
           <class name="stat_label"/>
         </style>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">5</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel" id="modified_date_label">
@@ -208,6 +270,11 @@
           <class name="accent"/>
         </style>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">6</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel">
@@ -223,6 +290,11 @@
           <class name="stat_label"/>
         </style>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">7</property>
+      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
@@ -231,6 +303,11 @@
         <property name="margin-top">14</property>
         <property name="margin-bottom">14</property>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">8</property>
+      </packing>
     </child>
     <child>
       <!-- n-columns=3 n-rows=1 -->
@@ -248,10 +325,15 @@
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="tooltip-text" translatable="yes">Export document to plain text file</property>
-            <property name="icon-name">export-text-icon</property>
+            <property name="image">export-text-icon</property>
             <property name="relief">none</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkButton" id="export_markdown">
@@ -259,10 +341,15 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="icon-name">export-markdown-icon</property>
+            <property name="image">export-markdown-icon</property>
             <property name="relief">none</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
+          </packing>
         </child>
         <child>
           <object class="GtkButton" id="export_html">
@@ -271,12 +358,22 @@
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="tooltip-text" translatable="yes">Export document to HTML</property>
-            <property name="icon-name">export-html-icon</property>
+            <property name="image">export-html-icon</property>
             <property name="relief">none</property>
             <property name="image-position">top</property>
+            <property name="always-show-image">True</property>
           </object>
+          <packing>
+            <property name="left-attach">2</property>
+            <property name="top-attach">0</property>
+          </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">9</property>
+      </packing>
     </child>
   </object>
 </interface>

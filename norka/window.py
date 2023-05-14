@@ -24,7 +24,7 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
+from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
@@ -50,35 +50,30 @@ from norka.widgets.welcome import Welcome
 
 
 @Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/window.ui"))
-class NorkaWindow(Handy.ApplicationWindow):
+class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    content_box = Gtk.Template.Child()
+    content_box: Gtk.Box = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_icon(
-            Pixbuf.new_from_resource_at_scale(
-                f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
-                128, True))
+        self.set_icon_name('com.github.tenderowl.norka.svg')
         self.settings = settings
         self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.apply_styling()
-
         self.current_size = (786, 520)
-        self.resize(*self.settings.get_value('window-size'))
+        # self.resize(*self.settings.get_value('window-size'))
 
-        hints = Gdk.Geometry()
-        hints.min_width = 554
-        hints.min_height = 435
-        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        self.connect('configure-event', self.on_configure_event)
-        self.connect('destroy', self.on_window_delete_event)
+        # hints = Gdk.Geometry()
+        # hints.min_width = 554
+        # hints.min_height = 435
+        # self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
+        # self.connect('configure-event', self.on_configure_event)
+        # self.connect('destroy', self.on_window_delete_event)
 
         # Export clients
         self.medium_client = Medium()
@@ -114,17 +109,14 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
 
-        self.screens.show_all()
-
-        self.toast = Granite.WidgetsToast()
+        self.toast = Adw.Toast()
 
         self.overlay = Gtk.Overlay()
         self.overlay.add_overlay(self.screens)
-        self.overlay.add_overlay(self.toast)
-        self.overlay.show_all()
+        # self.overlay.add_overlay(self.toast)
 
-        self.content_box.pack_start(self.header, False, False, 0)
-        self.content_box.pack_end(self.overlay, True, True, 0)
+        self.content_box.append(self.header)
+        self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()
@@ -148,15 +140,6 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         return self.screens.get_visible_child_name() == 'editor-grid'
 
-    def apply_styling(self):
-        """Apply elementary OS header styling only for elementary OS
-        """
-        if distro.id() == 'elementary':
-            Granite.widgets_utils_set_color_primary(
-                self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            self.get_style_context().add_class('elementary')
-
     def init_actions(self) -> None:
         """Initialize app-wide actions.
 
@@ -166,99 +149,99 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'create',
                     'action': self.on_folder_create,
-                    'accels': ('<Control><Shift>n', )
+                    'accels': ('<Control><Shift>n',)
                 },
             ],
             'document': [
                 {
                     'name': 'create',
                     'action': self.on_document_create_activated,
-                    'accels': ('<Control>n', )
+                    'accels': ('<Control>n',)
                 },
                 {
                     'name': 'save',
                     'action': self.on_document_save_activated,
-                    'accels': ('<Control>s', )
+                    'accels': ('<Control>s',)
                 },
                 {
                     'name': 'close',
                     'action': self.on_document_close_activated,
-                    'accels': ('<Control>w', )
+                    'accels': ('<Control>w',)
                 },
                 {
                     'name': 'rename',
                     'action': self.on_document_rename,
-                    'accels': ('F2', )
+                    'accels': ('F2',)
                 },
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'unarchive',
                     'action': self.on_document_unarchive_activated,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
-                    'accels': ('<Shift>Delete', )
+                    'accels': ('<Shift>Delete',)
                 },
                 {
                     'name': 'import',
                     'action': self.on_document_import_activated,
-                    'accels': ('<Control>o', )
+                    'accels': ('<Control>o',)
                 },
                 {
                     'name': 'export',
                     'action': self.on_export_plaintext,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-markdown',
                     'action': self.on_export_markdown,
-                    'accels': ('<Control><Shift>s', )
+                    'accels': ('<Control><Shift>s',)
                 },
                 {
                     'name': 'export-html',
                     'action': self.on_export_html,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-pdf',
                     'action': self.on_export_pdf,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-docx',
                     'action': self.on_export_docx,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-medium',
                     'action': self.on_export_medium,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-writeas',
                     'action': self.on_export_writeas,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'backup',
                     'action': self.on_backup,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'preview',
                     'action': self.on_preview,
-                    'accels': ('<Control><Shift>p', )
+                    'accels': ('<Control><Shift>p',)
                 },
                 {
                     'name': 'print',
                     'action': self.on_print,
-                    'accels': ('<Control>p', )
+                    'accels': ('<Control>p',)
                 },
                 # {
                 #     'name': 'search',
@@ -273,37 +256,37 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'zoom_out',
                     'action': self.on_zoom_out,
-                    'accels': ('<Control>minus', )
+                    'accels': ('<Control>minus',)
                 },
                 {
                     'name': 'zoom_default',
                     'action': self.on_zoom_default,
-                    'accels': ('<Control>0', )
+                    'accels': ('<Control>0',)
                 },
                 {
                     'name': 'search_text',
                     'action': self.search_activated,
-                    'accels': ('<Control>f', )
+                    'accels': ('<Control>f',)
                 },
                 {
                     'name': 'search_text_next',
                     'action': self.on_text_search_forward,
-                    'accels': ('<Control>g', )
+                    'accels': ('<Control>g',)
                 },
                 {
                     'name': 'search_text_prev',
                     'action': self.on_text_search_backward,
-                    'accels': ('<Control><Shift>g', )
+                    'accels': ('<Control><Shift>g',)
                 },
                 {
                     'name': 'toggle_archived',
                     'action': self.on_toggle_archive,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'show_extended_stats',
                     'action': self.on_show_extended_stats,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
             ]
         }
@@ -340,7 +323,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         except Exception as e:
             Logger.error(e)
 
-    def on_configure_event(self, window, event: Gdk.EventConfigure):
+    def on_configure_event(self, window, event):
         if self._configure_timeout_id:
             GLib.source_remove(self._configure_timeout_id)
 
@@ -879,7 +862,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.header.show_spinner(True)
             self.writeas_client.set_token(access_token=token)
             GObjectWorker.call(self.writeas_client.create_post,
-                               args=(doc, ),
+                               args=(doc,),
                                callback=self.on_export_writeas_callback)
 
     def on_export_writeas_callback(self, result):
@@ -910,7 +893,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             backup_service = BackupService(settings=self.settings)
             GObjectWorker.call(backup_service.save,
-                               args=(dialog.get_filename(), ),
+                               args=(dialog.get_filename(),),
                                callback=self.on_backup_finished)
 
             self.toast.set_title(_("Backup started."))
@@ -1090,9 +1073,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.editor.connect('document-load', self.preview.show_preview)
             self.editor.connect('document-close', self.preview.show_empty_page)
             self.preview.connect('destroy', self.on_preview_close)
-            self.preview.show_all()
-        else:
-            self.preview.present()
 
         if doc:
             self.preview.show_preview(self)

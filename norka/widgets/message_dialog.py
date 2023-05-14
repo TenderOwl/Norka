@@ -23,12 +23,12 @@
 # SOFTWARE.
 from gettext import gettext as _
 
-from gi.repository import Granite, Gtk, Gio
+from gi.repository import Adw, Gtk, Gio
 
 from norka.define import APP_TITLE
 
 
-class MessageDialog(Granite.MessageDialog):
+class MessageDialog(Adw.MessageDialog):
     __gtype_name__ = 'DeleteDialog'
 
     def __init__(self, primary_text: str, secondary_text: str, image_icon_name: str,

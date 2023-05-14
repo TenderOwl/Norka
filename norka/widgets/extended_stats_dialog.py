@@ -24,14 +24,14 @@
 from datetime import datetime
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.services.stats_handler import DocumentStats
 
 
-class ExtendedStatsDialog(Granite.Dialog):
+class ExtendedStatsDialog(Adw.Window):
     __gtype_name__ = 'ExtendedStatsDialog'
 
     _document: Document = None
@@ -39,7 +39,6 @@ class ExtendedStatsDialog(Granite.Dialog):
     def __init__(self, window, **kwargs):
         super().__init__(**kwargs)
         self.set_default_size(300, 340)
-        self.set_border_width(6)
         # self.set_transient_for(window)
 
         self.builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/stats.ui")
@@ -59,11 +58,11 @@ class ExtendedStatsDialog(Granite.Dialog):
         self.export_markdown.connect('clicked', window.on_export_markdown)
         self.export_html.connect('clicked', window.on_export_html)
 
-        self.get_content_area().add(self.main_box)
+        self.set_content(self.main_box)
 
         close_button = Gtk.Button(label=_("Close"), visible=True)
         close_button.connect('clicked', self.on_close_activated)
-        self.add_action_widget(close_button, 0)
+        # self.add_action_widget(close_button, 0)
 
     @property
     def document(self):

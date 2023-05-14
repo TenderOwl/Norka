@@ -52,16 +52,15 @@ class ImageLinkPopover(Gtk.Popover):
                        width_request=200,
                        margin_bottom=12,
                        margin_top=12,
-                       margin_right=12,
-                       margin_left=12, )
+                       margin_end=12,
+                       margin_start=12, )
         box.attach(link_label, 0, 0, 2, 1)
         box.attach(self.link_entry, 0, 1, 1, 1)
         box.attach(select_button, 1, 1, 1, 1)
 
-        self.add(box)
+        self.set_child(box)
         self.link_entry.grab_focus_without_selecting()
 
-        self.show_all()
         select_button.grab_remove()
         self.link_entry.grab_focus_without_selecting()
 

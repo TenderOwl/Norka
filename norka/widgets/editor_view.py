@@ -35,7 +35,7 @@ from norka.services.storage import storage
 from norka.widgets.editor import Editor
 from norka.widgets.search_bar import SearchBar
 
-from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Granite, GObject
+from gi.repository import Gtk, GtkSource, Gdk, GtkSpell, Pango, Adw, GObject
 
 
 class EditorView(Gtk.Grid):
@@ -62,13 +62,12 @@ class EditorView(Gtk.Grid):
         self.search_bar.connect('stop-search', self.do_stop_search)
 
         content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        content_grid.pack_start(self.search_revealer, False, True, 0)
-        content_grid.pack_start(self.scrolled, True, True, 0)
-        content_grid.show_all()
+        content_grid.append(self.search_revealer)
+        content_grid.append(self.scrolled)
 
         self.overlay = Gtk.Overlay()
         self.overlay.add(content_grid)
-        self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
+        self.stats_overlay = Adw.WidgetsOverlayBar.new(self.overlay)
 
         self.stats_handler = StatsHandler(overlay_bar=self.stats_overlay, buffer=self.buffer)
         self.stats_handler.update_default_stat()
@@ -169,7 +168,7 @@ class EditorView(Gtk.Grid):
             True
         ).strip()
 
-    def on_key_release_event(self, text_view: GtkSource.View, event: Gdk.EventKey) -> None:
+    def on_key_release_event(self, text_view: GtkSource.View, event) -> None:
         """Handle release event and iterate markdown list markup
 
         :param text_view: widget emitted the event
@@ -231,7 +230,7 @@ class EditorView(Gtk.Grid):
 
     def update_font(self, font: str) -> None:
         self.font_desc = Pango.FontDescription.from_string(font)
-        self.view.override_font(self.font_desc)
+        # self.view.override_font(self.font_desc)
 
     def do_stop_search(self, event: Gdk.Event = None) -> None:
         self.search_revealer.set_reveal_child(False)

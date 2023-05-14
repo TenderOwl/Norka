@@ -80,7 +80,7 @@ color_schemes = ['norka-dark', 'norka-sepia', 'norka']
 foreach i : color_schemes
     install_data(
         join_paths('schemes', i + '.xml'),
-       install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
+       install_dir: join_paths(get_option('datadir'), 'gtksourceview-5', 'styles')
     )
 endforeach
 
