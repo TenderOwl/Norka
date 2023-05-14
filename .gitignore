@@ -1,6 +1,9 @@
 .idea
 .vscode
 
+/subprojects/blueprint-compiler
+
+.flatpak-builder
 build
 builddir
 dist

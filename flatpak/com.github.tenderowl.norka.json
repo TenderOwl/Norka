@@ -1,9 +1,9 @@
 {
     "app-id" : "com.github.tenderowl.norka",
-    "runtime" : "io.elementary.Platform",
-    "sdk" : "io.elementary.Sdk",
-    "runtime-version" : "6.1",
-    "command" : "com.github.tenderowl.norka",
+    "runtime" : "org.gnome.Platform",
+    "sdk" : "org.gnome.Sdk",
+    "runtime-version" : "44",
+    "command" : "norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
         "--share=ipc",
@@ -25,23 +25,12 @@
     ],
     "modules" : [
         {
-            "name" : "gtksourceview",
-            "buildsystem" : "meson",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/gtksourceview.git",
-                    "tag" : "4.8.2"
-                }
-            ]
-        },
-        {
             "name" : "gspell",
             "sources" : [
                 {
-                    "type" : "archive",
-                    "url" : "https://gitlab.gnome.org/GNOME/gspell/-/archive/1.9.1/gspell-1.9.1.tar.gz",
-                    "sha256" : "231511e8ff832f2b539f25eada592cbc40b557863cf98c1384d71a184975c76e"
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/otrocodigo/gspell.git",
+                    "tag" : "1.11.1"
                 }
             ]
         },

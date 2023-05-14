@@ -9,7 +9,7 @@
 		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/headerbar.ui</file>
 		<file preprocess="xml-stripblanks">ui/stats.ui</file>
-		<file preprocess="xml-stripblanks">icons/com.github.tenderowl.norka.svg</file>
+		<file>icons/com.github.tenderowl.norka.svg</file>
 		<file>icons/folder.svg</file>
 		<file>icons/folder-open.svg</file>
 		<file>icons/text.svg</file>

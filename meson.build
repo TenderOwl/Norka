@@ -1,42 +1,33 @@
-project('com.github.tenderowl.norka',
-  version: '1.0.0',
-  meson_version: '>= 0.49.0'
+project('norka',
+          version: '0.1.0',
+    meson_version: '>= 0.62.0',
+  default_options: [ 'warning_level=2', 'werror=false', ],
 )
 
-revision = run_command('bin/revision.sh').stdout().strip()
-if revision == ''
-  revision=meson.project_version()
-endif
+author = 'tenderowl'
+domain = 'com.github'
+gitrepo = 'https://github.com/'+author+'/'+meson.project_name()
+website = 'https://tenderowl.com'
+appid = '.'.join([domain, author, meson.project_name()])
 
 i18n = import('i18n')
-python = import('python3')
+pymod = import('python')
+gnome = import('gnome')
 
-message('Looking for dependencies')
-python3 = python.find_python()
-if not python3.found()
-    error('No valid python3 binary found')
-else
-    message('Found python3 binary')
-endif
+python = pymod.find_installation('python3')
 
 # Dependencies
-dependency('gtk+-3.0', version: '>= 3.22')
 dependency('glib-2.0')
-dependency('granite', version: '>= 4.0')
-dependency('gtksourceview-4')
-dependency('gspell-1')
-dependency('webkit2gtk-4.0')
+dependency('gtk4', version :'>=4.3.1')
+dependency('libadwaita-1', version :'>=1.2')
+dependency('gtksourceview-5')
 
-find_program('glib-compile-schemas', required: true)
-find_program('gtk-update-icon-cache', required: false)
-find_program('update-desktop-database', required: false)
-
-gettext_package = meson.project_name()
-localedir = join_paths(get_option('prefix'), get_option('localedir'))
-pythondir = join_paths(get_option('prefix'), python.sysconfig_path('purelib'))
+prefix = get_option('prefix')
+bindir = get_option('bindir')
 datadir = get_option('datadir')
-pkgdatadir = join_paths(get_option('prefix'), datadir, meson.project_name())
-podir = meson.source_root() / 'po'
+pkgdatadir = join_paths(prefix, datadir, meson.project_name())
+pythondir = join_paths(prefix, python.get_install_dir())
+localedir = join_paths(prefix, get_option('localedir'))
 
 conf = configuration_data()
 conf.set('PACKAGE_URL', 'https://tenderowl.com/norka/')
@@ -45,24 +36,17 @@ conf.set('LOCALE_DIR', localedir)
 conf.set('PYTHON_DIR', pythondir)
 conf.set('PROJECT_NAME', meson.project_name())
 conf.set('VERSION', meson.project_version())
-conf.set('REVISION', revision)
-conf.set('PYTHON', python3.path())
+conf.set('PYTHON', python.full_path())
 conf.set('PKGDATA_DIR', pkgdatadir)
+conf.set('appid', appid)
 
+subdir('bin')
 subdir('data')
 subdir('po')
 
 install_subdir(
-  'norka',
+  meson.project_name(),
   install_dir: pythondir
-)
-
-message('Preparing init file')
-configure_file(
-  input: 'norka/norka.in',
-  output: meson.project_name(),
-  configuration: conf,
-  install_dir: get_option('bindir')
 )
 
 meson.add_install_script('build-aux/meson/postinstall.py')

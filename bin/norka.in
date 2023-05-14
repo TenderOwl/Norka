@@ -36,10 +36,10 @@ import locale
 
 
 VERSION = '@VERSION@'
-REVISION = '@REVISION@'
 pkgdatadir = '@PKGDATA_DIR@'
 localedir = '@LOCALE_DIR@'
 project_name = '@PROJECT_NAME@'
+appid = '@appid@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -54,8 +54,8 @@ if __name__ == '__main__':
     import gi
 
     from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, project_name + '.gresource'))
+    resource = Gio.Resource.load(os.path.join(pkgdatadir, appid + '.gresource'))
     Gio.Resource._register(resource)
 
     from norka import main
-    sys.exit(main.main(REVISION))
+    sys.exit(main.main())
