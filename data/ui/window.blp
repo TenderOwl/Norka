@@ -1,28 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
-<interface>
-  <requires lib="gtk+" version="3.24"/>
-  <requires lib="libadwaita" version="1.0"/>
-  <template class="NorkaWindow" parent="AdwApplicationWindow">
-    <property name="can-focus">False</property>
-    <property name="window-position">center</property>
-    <child>
-      <object class="HdyDeck" id="screens">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <child>
-          <object class="GtkBox" id="content_box">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </template>
-</interface>
+using Gtk 4.0;
+using Adw 1;
+
+template NorkaWindow : Adw.ApplicationWindow {
+
+  default-height: 600;
+  default-width: 800;
+
+  Box screens {
+    orientation: vertical;
+
+    Box content_box {
+      orientation: vertical;
+    }
+  }
+
+}
