@@ -40,7 +40,7 @@ class SearchBar(Gtk.FlowBox):
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         self.set_column_spacing(6)
         self.set_max_children_per_line(1)
-        self.get_style_context().add_class("search-bar")
+        self.add_css_class("search-bar")
 
         self.search_entry = Gtk.SearchEntry(hexpand=True, placeholder_text=_("Find"))
         self.search_entry.connect("changed", self.on_find_changed)
@@ -84,6 +84,6 @@ class SearchBar(Gtk.FlowBox):
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST)
     def stop_search(self):
-        self.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-        self.search_entry.props.primary_icon_name = "edit-find-symbolic"
+        # self.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
+        # self.search_entry.props.primary_icon_name = "edit-find-symbolic"
         self.search_entry.set_text("")

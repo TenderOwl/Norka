@@ -38,22 +38,33 @@ class StatsMode(Enum):
     PATH = 2
 
 
-class Header(Gtk.Box):
-    __gtype_name__ = 'Header'
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/headerbar.ui')
+class NorkaHeader(Adw.Bin):
+    __gtype_name__ = 'NorkaHeader'
+
+    header_box: Gtk.Stack = Gtk.Template.Child()
+    grid_header: Adw.HeaderBar = Gtk.Template.Child()
+    import_button: Gtk.Button = Gtk.Template.Child()
+    add_button: Gtk.Button = Gtk.Template.Child()
+    add_folder_button: Gtk.Button = Gtk.Template.Child()
+    back_button: Gtk.Button = Gtk.Template.Child()
+    archived_button: Gtk.ToggleButton = Gtk.Template.Child()
+    grid_menu_button: Gtk.MenuButton = Gtk.Template.Child()
+
+    editor_header: Adw.HeaderBar = Gtk.Template.Child()
+    print_button: Gtk.ToggleButton = Gtk.Template.Child()
+    extended_stats_button: Gtk.ToggleButton = Gtk.Template.Child()
+    share_app_menu: Gtk.MenuButton = Gtk.Template.Child()
+    editor_menu_button: Gtk.MenuButton = Gtk.Template.Child()
+
+    loader_spinner: Gtk.Spinner = Gtk.Template.Child()
+    editor_spinner: Gtk.Spinner = Gtk.Template.Child()
+    # subtitle_path_label: Gtk.Label = Gtk.Template.Child()
+    title_label: Adw.WindowTitle = Gtk.Template.Child()
+    # subtitle_label: Gtk.Label = Gtk.Template.Child()
 
     def __init__(self, settings, **kwargs):
         super().__init__(**kwargs)
-
-        self.builder = Gtk.Builder.new_from_resource(f'{RESOURCE_PREFIX}/ui/headerbar.ui')
-        self.header_box: Gtk.Stack = self.builder.get_object('header_box')
-        self.grid_header: Adw.HeaderBar = self.builder.get_object('grid_header')
-        self.editor_header: Adw.HeaderBar = self.builder.get_object('editor_header')
-        self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
-        self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')
-        self.subtitle_path_label: Gtk.Label = self.builder.get_object('subtitle_path_label')
-        self.title_label: Gtk.Label = self.builder.get_object('title_label')
-        self.subtitle_label: Gtk.Label = self.builder.get_object('subtitle_label')
-        # self.subtitle_eventbox: Gtk.EventBox = self.builder.get_object('subtitle_eventbox')
 
         self.stats_mode = StatsMode.STATS
 
@@ -64,55 +75,38 @@ class Header(Gtk.Box):
         self.document_path = "/"
 
         self.header_box.set_visible_child_name("grid_header")
-        self.append(self.header_box)
 
         # self.subtitle_eventbox.connect('button-release-event',
         #                                self.change_subtitle_mode)
 
-        self.import_button: Gtk.Button = self.builder.get_object(
-            "import_button")
-        self.import_button.set_tooltip_text(_('Import file to Norka'))
-        #
-        self.add_button: Gtk.Button = self.builder.get_object("add_button")
-        self.add_button.set_tooltip_text(_('Create new document'))
+        # self.back_button: Gtk.Button = self.builder.get_object("back_button")
+        # self.back_button.set_tooltip_text(_('Save document and return to documents list'))
 
-        self.add_folder_button: Gtk.Button = self.builder.get_object(
-            "add_folder_button")
-        self.add_folder_button.set_tooltip_text(_('Create new folder'))
+        # self.search_button = Gtk.ToggleButton()
+        # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find')
+        # self.search_button.set_tooltip_markup(Adw.markup_accel_tooltip(('<Control>f',), 'Find text'))
+        # self.search_button.set_action_name('document.search_text')
+        # self.search_button.set_visible(False)
 
-        self.back_button: Gtk.Button = self.builder.get_object("back_button")
-        self.back_button.set_tooltip_text(_('Save document and return to documents list'))
+        # self.print_button: Gtk.ToggleButton
+        # self.print_button.set_tooltip_text(_('Print the document'))
 
-        # # self.search_button = Gtk.ToggleButton()
-        # # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find')
-        # # self.search_button.set_tooltip_markup(Adw.markup_accel_tooltip(('<Control>f',), 'Find text'))
-        # # self.search_button.set_action_name('document.search_text')
-        # # self.search_button.set_visible(False)
+        # self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
+        # self.extended_stats_button.set_tooltip_text(_('Show document info'))
 
-        self.print_button: Gtk.ToggleButton = self.builder.get_object(
-            "print_button")
-        self.print_button.set_tooltip_text(_('Print the document'))
+        # self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
+        #     "share_app_menu")
+        # self.share_app_menu.set_icon_name('document-save-as')
+        # self.share_app_menu.set_popover(MenuExport(settings=self.settings))
 
-        self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
-        self.extended_stats_button.set_tooltip_text(_('Show document info'))
-
-        self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
-            "share_app_menu")
-        self.share_app_menu.set_icon_name('document-save-as')
-        self.share_app_menu.set_popover(MenuExport(settings=self.settings))
-
-        self.archived_button: Gtk.ToggleButton = self.builder.get_object(
-            "archived_button")
-        self.archived_button.set_tooltip_text(_('Show Archived files'))
-
-        self.grid_menu_button: Gtk.MenuButton = self.builder.get_object(
-            "grid_menu_button")
-        self.grid_menu_button.set_icon_name('open-menu')
-        self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
-        self.editor_menu_button: Gtk.MenuButton = self.builder.get_object(
-            "editor_menu_button")
-        self.editor_menu_button.set_icon_name('open-menu')
-        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
+        # self.grid_menu_button: Gtk.MenuButton = self.builder.get_object(
+        #     "grid_menu_button")
+        # self.grid_menu_button.set_icon_name('open-menu')
+        # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
+        # self.editor_menu_button: Gtk.MenuButton = self.builder.get_object(
+        #     "editor_menu_button")
+        # self.editor_menu_button.set_icon_name('open-menu')
+        # self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions
@@ -128,10 +122,10 @@ class Header(Gtk.Box):
 
     def update_path_label(self, path: str = "/") -> None:
         path = path.replace('/', ' > ') if path != '/' else ''
-        self.subtitle_path_label.set_label(_('root') + path)
+        # self.subtitle_path_label.set_label(_('root') + path)
 
     def update_title(self, title: str = "") -> None:
-        self.title_label.set_label(title)
+        self.title_label.set_title(title)
 
     def update_stats(self,
                      stats: DocumentStats = None,
@@ -148,11 +142,11 @@ class Header(Gtk.Box):
         else:
             label = ""
 
-        tooltip_text = _('Click to switch between <b>stats</b> and <b>path</b>')
-        tooltip = f'\n<span weight="600" size="smaller" alpha="75%">{tooltip_text}</span>'
+        # tooltip_text = _('Click to switch between <b>stats</b> and <b>path</b>')
+        # tooltip = f'\n<span weight="600" size="smaller" alpha="75%">{tooltip_text}</span>'
 
-        self.subtitle_label.set_label(label)
-        self.subtitle_label.set_tooltip_markup(label + tooltip)
+        # self.subtitle_label.set_label(label)
+        # self.subtitle_label.set_tooltip_markup(label + tooltip)
 
     def show_spinner(self, state: bool = False) -> None:
         # Gonna fix this double spinners

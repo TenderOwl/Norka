@@ -41,7 +41,7 @@ from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsDialog
-from norka.widgets.header import Header
+from norka.widgets.header import NorkaHeader
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
@@ -81,9 +81,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.uri_to_open = None
 
         # Make a header
-        self.header = Header(self.settings)
+        self.header = NorkaHeader(self.settings)
         # self.set_titlebar(self.header)
-        self.header.show()
 
         # Init screens
         self.welcome_grid = Welcome()
@@ -111,7 +110,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         self.toast = Adw.Toast()
 
-        self.overlay = Gtk.Overlay()
+        self.overlay = Gtk.Overlay(vexpand=True)
         self.overlay.add_overlay(self.screens)
         # self.overlay.add_overlay(self.toast)
 

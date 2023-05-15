@@ -99,7 +99,7 @@ class Application(Adw.Application):
         self.add_action(format_shortcuts_action)
 
     def do_startup(self):
-        Gtk.Application.do_startup(self)
+        Adw.Application.do_startup(self)
 
         # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
