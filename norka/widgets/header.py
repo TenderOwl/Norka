@@ -79,20 +79,11 @@ class NorkaHeader(Adw.Bin):
         # self.subtitle_eventbox.connect('button-release-event',
         #                                self.change_subtitle_mode)
 
-        # self.back_button: Gtk.Button = self.builder.get_object("back_button")
-        # self.back_button.set_tooltip_text(_('Save document and return to documents list'))
-
         # self.search_button = Gtk.ToggleButton()
         # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find')
         # self.search_button.set_tooltip_markup(Adw.markup_accel_tooltip(('<Control>f',), 'Find text'))
         # self.search_button.set_action_name('document.search_text')
         # self.search_button.set_visible(False)
-
-        # self.print_button: Gtk.ToggleButton
-        # self.print_button.set_tooltip_text(_('Print the document'))
-
-        # self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
-        # self.extended_stats_button.set_tooltip_text(_('Show document info'))
 
         # self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
         #     "share_app_menu")
@@ -102,11 +93,11 @@ class NorkaHeader(Adw.Bin):
         # self.grid_menu_button: Gtk.MenuButton = self.builder.get_object(
         #     "grid_menu_button")
         # self.grid_menu_button.set_icon_name('open-menu')
-        # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
+        self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
         # self.editor_menu_button: Gtk.MenuButton = self.builder.get_object(
         #     "editor_menu_button")
         # self.editor_menu_button.set_icon_name('open-menu')
-        # self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
+        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions

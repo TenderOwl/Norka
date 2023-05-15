@@ -42,7 +42,7 @@ from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.widgets.about_dialog import AboutDialog
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
-from norka.widgets.preferences_dialog import PreferencesDialog
+from norka.widgets.preferences_dialog import PreferencesWindow
 from norka.window import NorkaWindow
 
 
@@ -179,7 +179,7 @@ class Application(Adw.Application):
                 settings.get_boolean('prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
-        preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
+        preferences_dialog = PreferencesWindow(transient_for=self.window, settings=self.settings)
         preferences_dialog.present()
 
     def on_quit(self, action, param):

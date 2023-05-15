@@ -26,19 +26,22 @@ from typing import List
 
 from gi.repository import Gtk, Adw, GtkSource
 
+from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.services.medium import Medium
 from norka.services.writeas import Writeas
 
 
-class PreferencesDialog(Adw.Window):
-    __gtype_name__ = 'PreferencesDialog'
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/preferences_window.ui')
+class PreferencesWindow(Adw.PreferencesWindow):
+    __gtype_name__ = 'PreferencesWindow'
+
+    toast_overlay: Adw.ToastOverlay =  Gtk.Template.Child()
 
     def __init__(self, transient_for, settings):
         super().__init__(transient_for=transient_for, modal=True)
 
         self.settings = settings
-        self.set_default_size(340, 340)
 
         # hints = Gdk.Geometry()
         # hints.min_width = 340
@@ -46,8 +49,7 @@ class PreferencesDialog(Adw.Window):
         # self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
 
         # self.set_border_width(5)
-        self.set_deletable(False)
-        self.set_title(_('Preferences'))
+        # self.set_title(_('Preferences'))
 
         # langs_available: List[Gspell.Language] = []Gspell.language_get_available()
         langs_available: List[object] = []
@@ -73,11 +75,11 @@ class PreferencesDialog(Adw.Window):
         self.spellcheck_language_chooser.set_model(langs_available_model)
         self.spellcheck_language_chooser.set_id_column(0)
         self.spellcheck_language_chooser.set_entry_text_column(1)
-        renderer_text = Gtk.CellRendererText()
-        self.spellcheck_language_chooser.set_child(renderer_text, True)
-        self.spellcheck_language_chooser.add_attribute(renderer_text, "text", 1)
-        self.spellcheck_language_chooser.set_active_id(self.settings.get_string('spellcheck-language'))
-        self.spellcheck_language_chooser.connect('changed', self.on_spellcheck_language)
+        # renderer_text = Gtk.CellRendererText()
+        # self.spellcheck_language_chooser.set_child(renderer_text)
+        # self.spellcheck_language_chooser.add_attribute(renderer_text, "text", 1)
+        # self.spellcheck_language_chooser.set_active_id(self.settings.get_string('spellcheck-language'))
+        # self.spellcheck_language_chooser.connect('changed', self.on_spellcheck_language)
 
         self.autosave_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         self.autosave_switch.set_state(self.settings.get_boolean('autosave'))
@@ -91,30 +93,30 @@ class PreferencesDialog(Adw.Window):
         self.spaces_tabs_switch.set_state(self.settings.get_boolean('spaces-instead-of-tabs'))
         self.spaces_tabs_switch.connect("state-set", self.on_spaces_tabs)
 
-        general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
+        # general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
 
-        general_grid.attach(Gtk.Label(label=_("General"), css_classes=['title-1']), 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label(label=_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2,
-                            1)
-        general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
-        general_grid.attach(Gtk.Label(label=_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2,
-                            2, 1)
-        general_grid.attach(self.sort_switch, 2, 2, 1, 1)
-        general_grid.attach(Gtk.Label(label=_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
-        general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
-        general_grid.attach(Gtk.Label(label=_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
-        general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("General"), css_classes=['title-1']), 0, 0, 3, 1)
+        # general_grid.attach(Gtk.Label(label=_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2,
+        #                     1)
+        # general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2,
+        #                     2, 1)
+        # general_grid.attach(self.sort_switch, 2, 2, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
+        # general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
+        # general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
 
-        general_grid.attach(Gtk.Label(label=_("Tabs"), css_classes=['title-1']), 0, 5, 3, 1)
-        general_grid.attach(Gtk.Label(label=_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
-                            1)
-        general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(label=_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0,
-                            7, 2,
-                            1)
-        general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
-        general_grid.attach(Gtk.Label(label=_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
-        general_grid.attach(indent_width, 2, 8, 2, 1)
+        # general_grid.attach(Gtk.Label(label=_("Tabs"), css_classes=['title-1']), 0, 5, 3, 1)
+        # general_grid.attach(Gtk.Label(label=_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
+        #                     1)
+        # general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0,
+        #                     7, 2,
+        #                     1)
+        # general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
+        # general_grid.attach(Gtk.Label(label=_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
+        # general_grid.attach(indent_width, 2, 8, 2, 1)
 
         # Interface grid
         interface_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
@@ -149,22 +151,22 @@ class PreferencesDialog(Adw.Window):
         self.render_writeas(export_grid)
 
         # Main Stack
-        main_stack = Gtk.Stack(margin_start=6, margin_end=6, margin_bottom=18, margin_top=8)
-        main_stack.add_titled(general_grid, "behavior", _("Behavior"))
-        main_stack.add_titled(interface_grid, "interface", _("Interface"))
-        main_stack.add_titled(export_grid, "export", _("Export"))
+        # main_stack = Gtk.Stack(margin_start=6, margin_end=6, margin_bottom=18, margin_top=8)
+        # main_stack.add_titled(general_grid, "behavior", _("Behavior"))
+        # main_stack.add_titled(interface_grid, "interface", _("Interface"))
+        # main_stack.add_titled(export_grid, "export", _("Export"))
 
         main_stackswitcher = Gtk.StackSwitcher()
-        main_stackswitcher.set_stack(main_stack)
+        # main_stackswitcher.set_stack(main_stack)
         main_stackswitcher.set_halign(Gtk.Align.CENTER)
 
-        main_grid = Gtk.Grid()
-        main_grid.attach(main_stackswitcher, 0, 0, 1, 1)
-        main_grid.attach(main_stack, 0, 1, 1, 1)
+        # main_grid = Gtk.Grid()
+        # main_grid.attach(main_stackswitcher, 0, 0, 1, 1)
+        # main_grid.attach(main_stack, 0, 1, 1, 1)
 
-        self.overlay = Adw.ToastOverlay()
-        self.overlay.set_child(main_grid)
-        self.set_content(self.overlay)
+        # self.toast_overlay = Adw.ToastOverlay()
+        # self.toast_overlay.set_child(main_grid)
+        # self.set_content(self.toast_overlay)
 
         close_button = Gtk.Button(label=_("Close"))
         close_button.connect('clicked', self.on_close_activated)
@@ -175,8 +177,10 @@ class PreferencesDialog(Adw.Window):
         self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
         self.medium_token.connect("changed", self.on_medium_token)
 
-        self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
-        self.medium_link.set_label(_("Create Integration token and copy it here"))
+        self.medium_link = Gtk.LinkButton(
+            uri="https://medium.com/me/settings",
+                                          label=_("Create Integration token and copy it here")
+                                          )
 
         content_grid.attach(Gtk.Label(label="Medium.com", css_classes=['title-1']), 0, 0, 3, 1)
         content_grid.attach(Gtk.Label(label=("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)

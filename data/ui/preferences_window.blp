@@ -1,0 +1,95 @@
+using Gtk 4.0;
+using Adw 1;
+
+template PreferencesWindow : Adw.PreferencesWindow {
+  default-height: 480;
+  default-width: 640;
+  title: _('Preferences');
+  
+  Adw.PreferencesPage general_page {
+    title: _('General');
+
+    Adw.PreferencesGroup general_prefs_grp {
+
+      title: _('Behaviour');
+
+      ListBox {
+      styles ["boxed-list"]
+
+        Adw.ActionRow {
+          title: _('Save files when changed');
+
+          Switch autosave_switch {
+            valign: center;
+          }
+        }
+
+        Adw.ActionRow  {
+          title: _("Sort documents backwards");
+
+          Switch sort_switch {
+            valign: center;
+          }
+        }
+
+
+        Adw.ActionRow  {
+          title: _("Spell checking");
+
+          Switch spellcheck_switch {
+            valign: center;
+          }
+        }
+
+
+        Adw.ComboRow  {
+          title: _("Language");
+        }
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _('Tabs');
+
+      ListBox {
+      styles ["boxed-list"]
+
+        Adw.ActionRow {
+          title: _('Automatic indentation');
+
+          Switch autoindent_switch {
+            valign: center;
+          }
+        }
+
+        Adw.ActionRow {
+          title: _('Insert spaces instead of tabs');
+
+          Switch spaces_tabs_switch {
+            valign: center;
+          }
+        }
+
+        Adw.ActionRow {
+          title: _('Tab width');
+
+          Gtk.SpinButton indent_width {
+            valign: center;
+          }
+        }
+      }
+    }
+  }
+
+  Adw.PreferencesPage interface_page {
+    title: _('Interface');
+  }
+
+  Adw.PreferencesPage export_page {
+    title: _('Export');
+
+    Adw.ToastOverlay toast_overlay {
+      
+    }
+  }
+}
