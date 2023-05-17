@@ -61,13 +61,14 @@ class NorkaHeader(Adw.Bin):
     title_label: Adw.WindowTitle = Gtk.Template.Child()
     # subtitle_label: Gtk.Label = Gtk.Template.Child()
 
-    def __init__(self, settings, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
 
         self.stats_mode = StatsMode.STATS
 
         self.document_mode_active = False
-        self.settings = settings
+        self.settings = Gtk.Application.get_default().props.settings
 
         self.stats = None
         self.document_path = "/"

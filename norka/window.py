@@ -54,6 +54,9 @@ class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
     content_box: Gtk.Box = Gtk.Template.Child()
+    header: NorkaHeader = Gtk.Template.Child()
+    overlay: Adw.ToastOverlay = Gtk.Template.Child()
+    screens: Gtk.Stack = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
@@ -81,7 +84,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.uri_to_open = None
 
         # Make a header
-        self.header = NorkaHeader(self.settings)
+        # self.header = NorkaHeader(self.settings)
         # self.set_titlebar(self.header)
 
         # Init screens
@@ -99,23 +102,11 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor = Editor(self.storage, self.settings)
         self.editor.connect('update-document-stats', self.update_document_stats)
 
-        self.screens = Gtk.Stack()
-        self.screens.set_transition_duration(400)
-        self.screens.set_transition_type(
-            Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-
         self.screens.add_named(self.welcome_grid, 'welcome-grid')
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
 
         self.toast = Adw.Toast()
-
-        self.overlay = Gtk.Overlay(vexpand=True)
-        self.overlay.add_overlay(self.screens)
-        # self.overlay.add_overlay(self.toast)
-
-        self.content_box.append(self.header)
-        self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()

@@ -6,11 +6,21 @@ template NorkaWindow : Adw.ApplicationWindow {
   default-height: 600;
   default-width: 800;
 
-  Box screens {
+  Box {
     orientation: vertical;
 
     Box content_box {
       orientation: vertical;
+
+      .NorkaHeader header {}
+
+      Adw.ToastOverlay overlay {
+
+        Stack screens {
+          transition-type: slide_left_right;
+          transition-duration: 150;
+        }
+      }
     }
   }
 
