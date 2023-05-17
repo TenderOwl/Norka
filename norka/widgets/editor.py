@@ -181,7 +181,7 @@ class Editor(Gtk.Box):
         self.document = self.storage.get(doc_id)
 
         self.buffer.set_text(self.document.content)
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
         self.view.grab_focus()

@@ -38,6 +38,8 @@ from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.utils import find_child
+from norka.widgets.document_grid_document_menu import DocumentGridDocumentMenu
+from norka.widgets.document_grid_folder_menu import DocumentGridFolderMenu
 from norka.widgets.folder_create_dialog import FolderCreateDialog
 
 
@@ -74,11 +76,17 @@ class DocumentGrid(Gtk.Box):
         self.view.set_text_column(1)
         self.view.set_tooltip_column(4)
         self.view.set_item_width(80)
-        self.view.set_activate_on_single_click(True)
-        self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        # self.view.set_activate_on_single_click(True)
+        # self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.reload_items()
         self.view.connect('show', self.reload_items)
+        
+        self.right_click_controller = Gtk.GestureClick()
+        self.right_click_controller.set_button(Gdk.BUTTON_SECONDARY)
+        self.right_click_controller.connect('pressed', self.on_button_pressed)
+
+        self.view.add_controller(self.right_click_controller)
         # self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
@@ -126,7 +134,7 @@ class DocumentGrid(Gtk.Box):
         """
         if self.is_folder_selected:
             return None
-
+        
         model_iter = self.model.get_iter(self.selected_path)
         return self.model.get_value(model_iter, 3)
 
@@ -276,48 +284,51 @@ class DocumentGrid(Gtk.Box):
         surface = context.get_target()
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
-    def on_button_pressed(self, widget: Gtk.Widget, event):
+    def on_button_pressed(self, controller: Gtk.GestureClick,
+                          n_press: int,
+                          x: float, y: float,
+                          user_data: object = None):
         """Handle mouse button press event and display context menu if needed.
         """
-        self.selected_path = self.view.get_path_at_pos(event.x, event.y)
+        controller.set_state(Gtk.EventSequenceState.CLAIMED)
+
+        self.selected_path = self.view.get_path_at_pos(x, y)
 
         if not self.selected_path:
             # self.selected_document = None
             self.view.unselect_all()
-            return True
+            return
 
-        if event.button == Gdk.BUTTON_SECONDARY:
-            self.view.select_path(self.selected_path)
+        self.view.select_path(self.selected_path)
 
-            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
-            if isinstance(origin_item, Folder) and origin_item.title == "..":
-                print('System @UP folder. Action declined.')
-                return
+        origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+        if isinstance(origin_item, Folder) and origin_item.title == "..":
+            print('System @UP folder. Action declined.')
+            return
 
-            # self.selected_document = self.storage.get(self.model.get_value(
-            #     self.model.get_iter(self.selected_path), 3
-            # ))
+        # self.selected_document = self.storage.get(self.model.get_value(
+        #     self.model.get_iter(self.selected_path), 3
+        # ))
 
-            found, rect = self.view.get_cell_rect(self.selected_path)
+        rec = Gdk.Rectangle()
+        rec.x = x
+        rec.y = y
+        rec.width = 0
+        rec.height = 0
 
-            builder = Gtk.Builder()
-            builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
+        # Switch between folder's and document's menus
+        if self.is_folder_selected:
+            menu_popover = DocumentGridFolderMenu()
+        else:
+            menu_popover = DocumentGridDocumentMenu(
+                is_archived=self.selected_document.archived
+            )
 
-            # Switch between folder's and document's menus
-            if self.is_folder_selected:
-                menu_popover: Gtk.PopoverMenu = builder.get_object('folder-popover-menu')
-            else:
-                menu_popover: Gtk.PopoverMenu = builder.get_object('document-popover-menu')
-                find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
-                find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
+        menu_popover.set_parent(self)
+        menu_popover.set_pointing_to(rec)
+        menu_popover.popup()
 
-            # menu_popover.set_relative_to(self.view)
-            menu_popover.set_pointing_to(rect)
-            menu_popover.popup()
-
-            return True
-
-        self.view.unselect_all()
+        return
 
     # def on_drag_begin(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
     #     self.last_selected_path = self.selected_path

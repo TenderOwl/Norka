@@ -1,0 +1,39 @@
+using Gtk 4.0;
+
+template DocumentGridFolderMenu : Gtk.PopoverMenu {
+  menu-model: document_menu;
+  autohide: true;
+  position: right;
+}
+
+menu document_menu {
+  item {
+    label: _('Rename');
+    action: 'document.rename';
+  }
+  
+  submenu {
+    label: _('Export...');
+    section {
+      item {
+        label: _('Text');
+        action: 'document.export';
+      }
+      item {
+        label: _('Markdown');
+        action: 'document.export-markdown';
+      }
+      item {
+        label: _('HTML');
+        action: 'document.export-html';
+      }
+    }
+  }
+
+  section {
+    item {
+      label: _('Delete');
+      action: "document.delete";
+    }
+  }
+}
