@@ -28,27 +28,33 @@ from gi.repository import Gtk
 
 class ExportFormat:
     PlainText = (_("Plain text"), ("*.txt",))
-    Markdown = (_("Markdown"), ("*.md", "*.markdown",))
+    Markdown = (
+        _("Markdown"),
+        (
+            "*.md",
+            "*.markdown",
+        ),
+    )
     Html = (_("HTML"), ("*.html", "*.htm"))
     Pdf = (_("PDF"), ("*.pdf",))
     Docx = (_("Docx"), ("*.docx",))
 
 
-class ExportFileDialog(Gtk.FileChooserNative):
-    def __init__(self, title=None, parent=None, action=None, accept_label=None, cancel_label=None):
+class ExportFileDialog(Gtk.FileDialog):
+    def __init__(
+        self, title=None, parent=None, action=None, accept_label=None, cancel_label=None
+    ):
         super().__init__()
 
         self.props.title = title
-        self.props.transient_for = parent
-        self.props.action = action
+        self.props.modal = True
         self.props.accept_label = accept_label
-        self.props.cancel_label = cancel_label
+        # self.props.cancel_label = cancel_label
 
-        self.set_do_overwrite_confirmation(True)
+        # self.set_do_overwrite_confirmation(True)
 
     def set_format(self, export_format: ExportFormat):
-        file_filter = Gtk.FileFilter()
-        file_filter.set_name(export_format[0])
+        file_filter = Gtk.FileFilter(name=export_format[0])
         for pattern in export_format[1]:
             file_filter.add_pattern(pattern)
-        self.add_filter(file_filter)
+        self.set_default_filter(file_filter)
