@@ -26,7 +26,7 @@ template NorkaHeader : Adw.Bin {
 
         [start]
         Button add_folder_button {
-          icon-name: "image2";
+          icon-name: "folder-new-symbolic";
           action-name: "folder.create";
           tooltip-text: _('Create new folder');
         }
@@ -45,14 +45,16 @@ template NorkaHeader : Adw.Bin {
         [end]
         MenuButton grid_menu_button {
           icon-name: 'open-menu';
+          tooltip-text: _("Menu");
+          menu-model: generalMenu;
         }
 
-        [end]
-        ToggleButton archived_button {
-          action-name: 'document.toggle_archived';
-          icon-name: 'user-trash';
-          tooltip-text: _('Show Archived files');
-        }
+        // [end]
+        // ToggleButton archived_button {
+        //   action-name: 'document.toggle_archived';
+        //   icon-name: 'user-trash';
+        //   tooltip-text: _('Show Archived files');
+        // }
       };
     }
 
@@ -71,6 +73,8 @@ template NorkaHeader : Adw.Bin {
         [start]
         Button back_button {
           action-name: 'document.close';
+          icon-name: 'go-previous-symbolic';
+          tooltip-text: _('Go back');
         }
 
         [start]
@@ -78,28 +82,64 @@ template NorkaHeader : Adw.Bin {
           visible: false;
         }
 
-        MenuButton share_app_menu {
-          icon-name: 'document-save-as';
+        [end]
+        MenuButton editor_menu_button {
+          icon-name: 'open-menu';
+          menu-model: editorMenu;
+          tooltip-text: _('Menu');
         }
 
         [end]
         Button extended_stats_button {
           action-name: 'document.show_extended_stats';
-          icon-name: 'extended-stats';
+          icon-name: 'dialog-information-symbolic';
+          tooltip-text: _('Document stats');
         }
 
         [end]
-        Button print_button {
-          action-name: 'document.print';
-          icon-name: 'print-symbolic';
-          tooltip-text: _('Print the document');
+        MenuButton share_app_menu {
+          icon-name: 'emblem-shared-symbolic';
+          tooltip-text: _('Share document');
+
         }
 
-        [end]
-        MenuButton editor_menu_button {
-          icon-name: 'open-menu';
-        }
+        // [end]
+        // Button print_button {
+        //   action-name: 'document.print';
+        //   icon-name: 'print-symbolic';
+        //   tooltip-text: _('Print the document');
+        // }
       };
     }
   }
+}
+
+menu generalMenu {
+    section {
+        item (_("_Formatting"), 'app.format_shortcuts')
+    }
+    section {
+        item (_("Show ar_chived files"), 'document.toggle_archived')
+    }
+    section {
+        item (_("Make _Backup"), 'document.backup')
+    }
+    section {
+        item (_("P_references"), 'app.preferences')
+        item (_("_Keyboard Shortcuts"), 'app.shortcuts')
+        item (_("_About Norka"), 'app.about')
+    }
+}
+
+menu editorMenu {
+    section {
+        item (_("_Formatting"), 'app.format_shortcuts')
+        item (_("_Preview"), 'document.preview')
+        item (_("Prin_t"), 'document.print')
+    }
+    section {
+        item (_("P_references"), 'app.preferences')
+        item (_("_Keyboard Shortcuts"), 'app.shortcuts')
+        item (_("_About Norka"), 'app.about')
+    }
 }

@@ -48,11 +48,9 @@ class NorkaHeader(Adw.Bin):
     add_button: Gtk.Button = Gtk.Template.Child()
     add_folder_button: Gtk.Button = Gtk.Template.Child()
     back_button: Gtk.Button = Gtk.Template.Child()
-    archived_button: Gtk.ToggleButton = Gtk.Template.Child()
     grid_menu_button: Gtk.MenuButton = Gtk.Template.Child()
 
     editor_header: Adw.HeaderBar = Gtk.Template.Child()
-    print_button: Gtk.ToggleButton = Gtk.Template.Child()
     extended_stats_button: Gtk.ToggleButton = Gtk.Template.Child()
     share_app_menu: Gtk.MenuButton = Gtk.Template.Child()
     editor_menu_button: Gtk.MenuButton = Gtk.Template.Child()
@@ -93,11 +91,11 @@ class NorkaHeader(Adw.Bin):
         # self.grid_menu_button: Gtk.MenuButton = self.builder.get_object(
         #     "grid_menu_button")
         # self.grid_menu_button.set_icon_name('open-menu')
-        self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
+        # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
         # self.editor_menu_button: Gtk.MenuButton = self.builder.get_object(
         #     "editor_menu_button")
         # self.editor_menu_button.set_icon_name('open-menu')
-        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
+        # self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions
