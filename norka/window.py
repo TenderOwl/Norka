@@ -72,7 +72,6 @@ class NorkaWindow(Adw.ApplicationWindow):
         # Export clients
         self.medium_client = Medium()
         self.writeas_client = Writeas()
-        self.uri_to_open = None
         
         # Init screens
         self.welcome_grid = Welcome()
@@ -92,8 +91,6 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.screens.add_named(self.welcome_grid, 'welcome-grid')
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
-
-        self.toast = Adw.Toast()
 
         # Init actions
         self.init_actions()
@@ -122,6 +119,14 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         """
         action_items = {
+            'window': [
+                {
+                    'name': 'open_uri',
+                    'action': self.open_uri,
+                    'accels': (None,),
+                    'state': GLib.Variant.new_string('')
+                },
+            ],
             'folder': [
                 {
                     'name': 'create',
@@ -272,8 +277,17 @@ class NorkaWindow(Adw.ApplicationWindow):
             action_group = Gio.SimpleActionGroup()
 
             for item in actions:
-                action = Gio.SimpleAction(name=item['name'])
-                action.connect('activate', item['action'])
+                if 'state' in item:
+                    action = Gio.SimpleAction.new_stateful(
+                        name=item['name'],
+                        parameter_type=item['state'].get_type(),
+                        state=item['state']
+                    )
+                    action.connect('change-state', item['action'])
+                else:
+                    action = Gio.SimpleAction(name=item['name'])
+                    action.connect('activate', item['action'])
+                    
                 self.get_application().set_accels_for_action(
                     f'{action_group_key}.{item["name"]}', item["accels"])
                 action_group.add_action(action)
@@ -613,17 +627,14 @@ class NorkaWindow(Adw.ApplicationWindow):
         doc = self.document_grid.selected_document or self.editor.document
         if not doc:
             return
-
-        dialog = ExportFileDialog("Export document to file", self,
-                                  Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
-        export_format = ExportFormat.PlainText
-        dialog.set_format(export_format)
-        dialog_result = dialog.run()
-
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+        
+        def dialog_callback(dialog, result):
+            _file = dialog.save_finish(result)
+            if not _file:
+                return
+            
             self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
+            basename, ext = os.path.splitext(_file.get_path())
             if ext not in export_format[1]:
                 ext = export_format[1][0][1:]
 
@@ -631,7 +642,13 @@ class NorkaWindow(Adw.ApplicationWindow):
                                (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
+
+        dialog = ExportFileDialog("Export document to file", self,
+                                  Gtk.FileChooserAction.SAVE)
+        dialog.set_initial_name(doc.title)
+        export_format = ExportFormat.PlainText
+        dialog.set_format(export_format)
+        dialog_result = dialog.save(callback=dialog_callback)
 
     def on_export_markdown(self,
                            sender: Gtk.Widget = None,
@@ -645,24 +662,26 @@ class NorkaWindow(Adw.ApplicationWindow):
         doc = self.document_grid.selected_document or self.editor.document
         if not doc:
             return
-
-        dialog = ExportFileDialog("Export document to file", self,
-                                  Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
-        export_format = ExportFormat.Markdown
-        dialog.set_format(export_format)
-        dialog_result = dialog.run()
-
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+        
+        def dialog_callback(dialog, result):
+            _file = dialog.save_finish(result)
+            if not _file:
+                return
+            
             self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
+            basename, ext = os.path.splitext(_file.get_path())
             if ext not in export_format[1]:
                 ext = export_format[1][0][1:]
 
             GObjectWorker.call(Exporter.export_markdown, (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
+        dialog = ExportFileDialog("Export document to file", self,
+                                  Gtk.FileChooserAction.SAVE)
+        dialog.set_initial_name(doc.title)
+        export_format = ExportFormat.Markdown
+        dialog.set_format(export_format)
+        dialog.save(callback=dialog_callback)
 
     def on_export_html(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -674,24 +693,26 @@ class NorkaWindow(Adw.ApplicationWindow):
         doc = self.document_grid.selected_document or self.editor.document
         if not doc:
             return
-
-        dialog = ExportFileDialog(_("Export document to file"), self,
-                                  Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
-        export_format = ExportFormat.Html
-        dialog.set_format(export_format)
-        dialog_result = dialog.run()
-
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+        
+        def dialog_callback(dialog, result):
+            _file = dialog.save_finish(result)
+            if not _file:
+                return
+            
             self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
+            basename, ext = os.path.splitext(_file.get_path())
             if ext not in export_format[1]:
                 ext = export_format[1][0][1:]
 
             GObjectWorker.call(Exporter.export_html, (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
+        dialog = ExportFileDialog(_("Export document to file"), self,
+                                  Gtk.FileChooserAction.SAVE)
+        dialog.set_initial_name(doc.title)
+        export_format = ExportFormat.Html
+        dialog.set_format(export_format)
+        dialog.save(callback=dialog_callback)
 
     def on_export_docx(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -703,24 +724,26 @@ class NorkaWindow(Adw.ApplicationWindow):
         doc = self.document_grid.selected_document or self.editor.document
         if not doc:
             return
-
-        dialog = ExportFileDialog(_("Export document to file"), self,
-                                  Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
-        export_format = ExportFormat.Docx
-        dialog.set_format(export_format)
-        dialog_result = dialog.run()
-
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+        
+        def dialog_callback(dialog, result):
+            _file = dialog.save_finish(result)
+            if not _file:
+                return
+            
             self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
+            basename, ext = os.path.splitext(_file.get_path())
             if ext not in export_format[1]:
                 ext = export_format[1][0][1:]
 
             GObjectWorker.call(Exporter.export_docx, (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
+        dialog = ExportFileDialog(_("Export document to file"), self,
+                                  Gtk.FileChooserAction.SAVE)
+        dialog.set_initial_name(doc.title)
+        export_format = ExportFormat.Docx
+        dialog.set_format(export_format)
+        dialog.save(callback=dialog_callback)
 
     def on_export_pdf(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -732,17 +755,14 @@ class NorkaWindow(Adw.ApplicationWindow):
         doc = self.document_grid.selected_document or self.editor.document
         if not doc:
             return
-
-        dialog = ExportFileDialog(_("Export document to file"), self,
-                                  Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
-        export_format = ExportFormat.Pdf
-        dialog.set_format(export_format)
-        dialog_result = dialog.run()
-
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+        
+        def dialog_callback(dialog, result):
+            _file = dialog.save_finish(result)
+            if not _file:
+                return
+            
             self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
+            basename, ext = os.path.splitext(_file.get_path())
             if ext not in export_format[1]:
                 ext = export_format[1][0][1:]
 
@@ -751,20 +771,26 @@ class NorkaWindow(Adw.ApplicationWindow):
                                  lambda x, path: self.on_export_callback(path))
             pdf_exporter.print()
 
-        dialog.destroy()
+        dialog = ExportFileDialog(_("Export document to file"), self,
+                                  Gtk.FileChooserAction.SAVE)
+        dialog.set_initial_name(doc.title)
+        export_format = ExportFormat.Pdf
+        dialog.set_format(export_format)
+        dialog.save(callback=dialog_callback)
 
     def on_export_callback(self, result):
         self.header.show_spinner(False)
-        self.disconnect_toast()
+        toast = Adw.Toast()
         if result:
-            self.toast.set_title(_("Document exported."))
-            self.toast.set_default_action(_("Open folder"))
-            self.uri_to_open = f"file://{os.path.dirname(result)}"
-            self.toast.connect("default-action", self.open_uri)
-            self.toast.send_notification()
+            toast.set_title(_("Document exported."))
+            toast.set_button_label(_("Open folder"))
+            toast.set_action_name('window.open_uri')
+            toast.set_action_target_value(
+                GLib.Variant.new_string(f"file://{os.path.dirname(result)}")
+            )
         else:
-            self.toast.set_title(_("Export goes wrong."))
-            self.toast.send_notification()
+            toast.set_title(_("Export goes wrong."))
+        self.overlay.add_toast(toast)
 
     def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
         """Configure Medium client and export document asynchronously
@@ -780,15 +806,14 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         token = self.settings.get_string("medium-personal-token")
         user_id = self.settings.get_string("medium-user-id")
-
+        
         if not token or not user_id:
-            self.toast.set_title(
+            toast = Adw.Toast()
+            toast.set_title(
                 _("You need to set Medium token in Preferences -> Export"))
-            self.toast.set_default_action(_("Configure"))
-            self.disconnect_toast()
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            toast.set_button_label(_("Configure"))
+            toast.set_action_name("app.preferences")
+            self.overlay.add_toast(toast)
 
         else:
             self.header.show_spinner(True)
@@ -800,16 +825,17 @@ class NorkaWindow(Adw.ApplicationWindow):
     def on_export_medium_callback(self, result):
 
         self.header.show_spinner(False)
-        if result:
-            self.toast.set_title(_("Document successfully exported!"))
-            self.toast.set_default_action(_("View"))
-            self.uri_to_open = result["url"]
-            self.disconnect_toast()
-            self.toast.connect("default-action", self.open_uri)
+        toast = Adw.Toast()
+        if result: 
+            toast.set_title(_("Document successfully exported!"))
+            toast.set_button_label(_("View"))
+            toast.set_action_name('window.open_uri')
+            toast.set_action_target_value(
+                GLib.Variant.new_string(result["url"])
+            )
         else:
-            self.toast.set_title(_("Export failed!"))
-            self.toast.set_default_action(None)
-        self.toast.send_notification()
+            toast.set_title(_("Export failed!"))
+        self.overlay.add_toast(toast)
 
     def on_export_writeas(self, sender: Gtk.Widget = None, event=None) -> None:
         """Configure Write.as client and export document asynchronously
@@ -826,13 +852,11 @@ class NorkaWindow(Adw.ApplicationWindow):
         token = self.settings.get_string("writeas-access-token")
 
         if not token:
-            self.toast.set_title(
-                "You have to login to Write.as in Preferences -> Export")
-            self.toast.set_default_action("Configure")
-            self.disconnect_toast()
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            toast = Adw.Toast(
+                title=_("You have to login to Write.as in Preferences -> Export"),
+                button_label=_("Configure"),
+                action_name='app.preferences')
+            self.overlay.add_toast(toast)
 
         else:
             self.header.show_spinner(True)
@@ -843,16 +867,17 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def on_export_writeas_callback(self, result):
         self.header.show_spinner(False)
+        toast = Adw.Toast()
         if result:
-            self.toast.set_title(_("Document successfully exported!"))
-            self.toast.set_default_action(_("View"))
-            self.disconnect_toast()
-            self.uri_to_open = f"https://write.as/{result['id']}"
-            self.toast.connect("default-action", self.open_uri)
+            toast.set_title(_("Document successfully exported!"))
+            toast.set_button_label(_("View"))
+            toast.set_action_name('window.open_uri')
+            toast.set_action_target_value(
+                GLib.Variant.new_string(f"https://write.as/{result['id']}")
+            )
         else:
-            self.toast.set_title(_("Export failed."))
-            self.toast.set_default_action(None)
-        self.toast.send_notification()
+            toast.set_title(_("Export failed."))
+        self.overlay.add_toast(toast)
 
     def on_backup(self, sender: Gtk.Widget = None, event=None) -> None:
         dialog: Gtk.FileChooserNative = Gtk.FileChooserNative.new(
@@ -872,21 +897,24 @@ class NorkaWindow(Adw.ApplicationWindow):
                                args=(dialog.get_filename(),),
                                callback=self.on_backup_finished)
 
-            self.toast.set_title(_("Backup started."))
-            self.toast.send_notification()
+            toast = Adw.Toast(title=_("Backup started."))
+            self.overlay.add_toast(toast)
 
         dialog.destroy()
 
     def on_backup_finished(self, result):
         self.header.show_spinner(False)
+        toast = Adw.Toast()
         if result:
-            self.toast.set_title(_("All documents saved."))
-            self.toast.set_default_action(_("Open folder"))
-            self.uri_to_open = f"file://{result}"
-            self.toast.connect("default-action", self.open_uri)
+            toast.set_title(_("All documents saved."))
+            toast.set_button_label(_("Open folder"))
+            toast.set_action_name("window.open_uri")
+            toast.set_action_target_value(
+                GLib.Variant.new_string(f"file://{result}")
+            )
         else:
-            self.toast.set_title(_("Backup failed."))
-        self.toast.send_notification()
+            toast.set_title(_("Backup failed."))
+        self.overlay.add_toast(toast)
 
     def search_activated(self, sender, event=None):
         if self.screens.get_visible_child_name() == 'document-grid':
@@ -906,7 +934,6 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         if response == Gtk.ResponseType.APPLY and dialog.document_id:
             self.document_activate(dialog.document_id)
-        dialog.destroy()
 
     def on_text_search_activated(self,
                                  sender: Gtk.Widget = None,
@@ -1010,23 +1037,13 @@ class NorkaWindow(Adw.ApplicationWindow):
     def on_extended_stats_dialog_close(self, dialog: Gtk.Widget = None) -> None:
         self.extended_stats_dialog = None
 
-    def open_uri(self, event) -> None:
-        if self.uri_to_open:
-            Gtk.show_uri_on_window(None, self.uri_to_open, Gdk.CURRENT_TIME)
-            self.uri_to_open = None
+    def open_uri(self, event, state: GLib.Variant) -> None:
+        uri = state.get_string()
 
-    def disconnect_toast(self):
-        """Disconnect toast action. Weird way, need ti rewrite it"""
-        try:
-            self.toast.disconnect_by_func(
-                self.get_application().on_preferences)
-        except:
-            pass
-
-        try:
-            self.toast.disconnect_by_func(self.open_uri)
-        except:
-            pass
+        if uri.startswith('file:/'):
+            Gtk.FileLauncher.new(Gio.File.new_for_uri(uri)).launch()
+        else:
+            Gtk.UriLauncher.new(uri).launch()
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
