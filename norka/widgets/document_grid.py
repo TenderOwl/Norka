@@ -77,6 +77,7 @@ class DocumentGrid(Gtk.Box):
         self.view.set_activate_on_single_click(True)
         self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
+        self.reload_items()
         self.view.connect('show', self.reload_items)
         # self.view.connect('button-press-event', self.on_button_pressed)
 
