@@ -29,7 +29,7 @@ import traceback
 from datetime import datetime
 from typing import List, Optional
 
-from gi.repository import GLib
+from gi.repository import GLib, GObject
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
@@ -37,11 +37,12 @@ from norka.models.folder import Folder
 from norka.services.logger import Logger
 
 
-class Storage(object):
+class Storage(GObject.GObject):
     """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
     """
+    __gtype_name__ = 'NorkaStorage'
 
     def __init__(self, storage_path: str):
         self.conn = None

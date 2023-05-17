@@ -31,6 +31,7 @@ class Settings(Gio.Settings):
     """Norka Settings
 
     """
+    __gtype_name__ = 'NorkaSettings'
 
     def __init__(self):
         """Init Settings

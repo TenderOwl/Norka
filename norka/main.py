@@ -34,7 +34,7 @@ gi.require_version('Adw', '1')
 gi.require_version('GtkSource', '5')
 gi.require_version('WebKit', '6.0')
 
-from gi.repository import Gtk, Gio, Gdk, GLib, Adw
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw, GObject
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -49,7 +49,9 @@ from norka.window import NorkaWindow
 class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
-    window: NorkaWindow
+    window: NorkaWindow 
+    settings: Settings = GObject.Property(type=Settings)
+    storage: Storage = GObject.Property(type=Storage)
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
@@ -97,6 +99,22 @@ class Application(Adw.Application):
         format_shortcuts_action = Gio.SimpleAction.new("format_shortcuts", None)
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
+
+    @GObject.Property
+    def settings(self):
+        return self._settings
+    
+    @settings.setter
+    def settings(self, value: Settings):
+        self._settings = value
+
+    @GObject.Property
+    def storage(self):
+        return self._storage
+    
+    @storage.setter
+    def storage(self, value: Storage):
+        self._storage = value
 
     def do_startup(self):
         Adw.Application.do_startup(self)
