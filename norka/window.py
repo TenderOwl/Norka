@@ -64,29 +64,16 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.set_icon_name('com.github.tenderowl.norka.svg')
         self.settings = settings
         self.storage = storage
-        self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.current_size = (786, 520)
-        # self.resize(*self.settings.get_value('window-size'))
-
-        # hints = Gdk.Geometry()
-        # hints.min_width = 554
-        # hints.min_height = 435
-        # self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        # self.connect('configure-event', self.on_configure_event)
-        # self.connect('destroy', self.on_window_delete_event)
+        self.set_default_size(*self.settings.get_value('window-size'))
 
         # Export clients
         self.medium_client = Medium()
         self.writeas_client = Writeas()
         self.uri_to_open = None
-
-        # Make a header
-        # self.header = NorkaHeader(self.settings)
-        # self.set_titlebar(self.header)
-
+        
         # Init screens
         self.welcome_grid = Welcome()
         # self.welcome_grid.connect('activated', self.on_welcome_activated)
@@ -293,7 +280,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
             self.insert_action_group(action_group_key, action_group)
 
-    def on_window_delete_event(self, sender: Gtk.Widget = None) -> None:
+    def do_close_request(self) -> None:
         """Save opened document before window is closed.
 
         """
@@ -305,20 +292,10 @@ class NorkaWindow(Adw.ApplicationWindow):
 
             if not self.is_maximized():
                 self.settings.set_value("window-size",
-                                        GLib.Variant("ai", self.current_size))
-                self.settings.set_value(
-                    "window-position", GLib.Variant("ai",
-                                                    self.current_position))
+                                        GLib.Variant("ai", self.get_default_size()))
 
         except Exception as e:
             Logger.error(e)
-
-    def on_configure_event(self, window, event):
-        if self._configure_timeout_id:
-            GLib.source_remove(self._configure_timeout_id)
-
-        self.current_size = window.get_size()
-        self.current_position = window.get_position()
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
