@@ -575,16 +575,25 @@ class NorkaWindow(Adw.ApplicationWindow):
             item = self.document_grid.selected_document
 
         if item:
-            prompt = MessageDialog(
-                f"Permanently delete “{item.title}”?",
-                "Deleted items are not sent to Archive and not recoverable at all",
-                "dialog-warning",
+            prompt = Adw.MessageDialog(
+                heading=_(f"Permanently delete “{item.title}”?"),
+                body=_("Deleted items are not sent to Archive and not recoverable at all"),
+                default_response='delete',
+                close_response='cancel',
             )
+            prompt.add_response('delete', _('Delete'))
+            prompt.add_response('cancel', _('Cancel'))
+            prompt.set_response_appearance('delete', Adw.ResponseAppearance.DESTRUCTIVE)
+            prompt.set_response_appearance('cancel', Adw.ResponseAppearance.DEFAULT)
+            prompt.connect('response', self.on_document_delete_response, item)
+            prompt.present()
 
-            result = prompt.run()
-            prompt.destroy()
 
-            if result == Gtk.ResponseType.APPLY:
+    def on_document_delete_response(self, sender, response: str, item):
+            """Permanently remove `item` from the storage. Non-recoverable.
+            """
+            print('response ', response, item)
+            if response == 'delete' and item:
                 if self.document_grid.is_folder_selected:
                     self.storage.delete_folder(item)
                 else:
