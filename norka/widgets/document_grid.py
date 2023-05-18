@@ -65,7 +65,6 @@ class DocumentGrid(Gtk.Box):
 
         self.show_archived = False
         self.selected_path = None
-        # self.selected_document = None
 
         # Store current virtual files path.
         self.current_path = '/'
@@ -76,11 +75,12 @@ class DocumentGrid(Gtk.Box):
         self.view.set_text_column(1)
         self.view.set_tooltip_column(4)
         self.view.set_item_width(80)
-        # self.view.set_activate_on_single_click(True)
-        # self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        self.view.set_activate_on_single_click(True)
+        self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.reload_items()
         self.view.connect('show', self.reload_items)
+        self.view.connect('item-activated', self.on_view_item_activated)
         
         self.right_click_controller = Gtk.GestureClick()
         self.right_click_controller.set_button(Gdk.BUTTON_SECONDARY)
@@ -138,7 +138,7 @@ class DocumentGrid(Gtk.Box):
         model_iter = self.model.get_iter(self.selected_path)
         return self.model.get_value(model_iter, 3)
 
-    @property
+    @GObject.Property(type=Document)
     def selected_document(self) -> Optional[Document]:
         """Returns selected :model:`Document` or `None`
         """
@@ -284,6 +284,17 @@ class DocumentGrid(Gtk.Box):
         surface = context.get_target()
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
+    def on_view_item_activated(self, 
+                               view: Gtk.IconView, 
+                               path: Gtk.TreePath, 
+                               user_data: object=None):
+        self.selected_path = path
+
+        origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+        if isinstance(origin_item, Folder) and origin_item.title == "..":
+            print('System @UP folder. Action declined.')
+            return
+
     def on_button_pressed(self, controller: Gtk.GestureClick,
                           n_press: int,
                           x: float, y: float,
@@ -295,20 +306,10 @@ class DocumentGrid(Gtk.Box):
         self.selected_path = self.view.get_path_at_pos(x, y)
 
         if not self.selected_path:
-            # self.selected_document = None
             self.view.unselect_all()
             return
 
         self.view.select_path(self.selected_path)
-
-        origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
-        if isinstance(origin_item, Folder) and origin_item.title == "..":
-            print('System @UP folder. Action declined.')
-            return
-
-        # self.selected_document = self.storage.get(self.model.get_value(
-        #     self.model.get_iter(self.selected_path), 3
-        # ))
 
         rec = Gdk.Rectangle()
         rec.x = x
