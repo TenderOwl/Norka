@@ -1,0 +1,38 @@
+using Gtk 4.0;
+using Adw 1;
+
+template RenamePopover : Popover {
+    position: right;
+
+    Box {
+      orientation: vertical;
+      spacing: 8;
+      margin-end: 4;
+      margin-start: 4;
+      margin-top: 4;
+      margin-bottom: 4;
+
+      Label label {
+        halign: start;
+        margin-bottom: 8;
+        ellipsize: middle;
+      }
+
+      Box {
+        orientation: horizontal;
+        spacing: 8;
+
+        Entry entry {
+          hexpand: true;
+          changed => on_text_changed();
+          activate => on_apply_activated();
+        }
+
+        Button rename_btn {
+          label: _("Rename");
+          sensitive: false;
+          activate => on_apply_activated();
+        }
+      }
+    }
+}

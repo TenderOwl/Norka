@@ -25,8 +25,10 @@
 from gettext import gettext as _
 
 from gi.repository import Gtk, Pango, GObject
+from norka.define import RESOURCE_PREFIX
 
 
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/rename_popover.ui")
 class RenamePopover(Gtk.Popover):
     __gtype_name__ = "RenamePopover"
 
@@ -34,50 +36,40 @@ class RenamePopover(Gtk.Popover):
         "activate": (GObject.SignalFlags.ACTION, None, (str,)),
     }
 
+    label: Gtk.Label = Gtk.Template.Child()
+    entry: Gtk.Entry = Gtk.Template.Child()
+    rename_btn: Gtk.Button = Gtk.Template.Child()
+
     def __init__(
-        self, relative_to: Gtk.Widget, origin_title: str, label_title: str = None
+        self,
+        relative_to: Gtk.Widget,
+        origin_title: str,
+        label_title: str = None,
+        create_mode: bool = False,
     ):
         super().__init__()
-
-        self.set_relative_to(relative_to)
-        self.set_position(Gtk.PositionType.RIGHT)
-
+        self.set_parent(relative_to)
         self.origin_title = origin_title
+        
+        self.entry.set_text(origin_title)
 
-        label = Gtk.Label()
-        label.set_markup(label_title or f"<b>{_('Rename')} {self.origin_title}:</b>")
-        label.set_halign(Gtk.Align.START)
-        label.set_margin_bottom(6)
-        label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-
-        self.entry = Gtk.Entry(text=self.origin_title)
-        self.entry.set_hexpand(True)
-        self.entry.connect("changed", self.text_changed)
-        self.entry.connect("activate", self.apply_activated)
-
-        grid = Gtk.Grid(
-            margin_start=12,
-            margin_bottom=12,
-            margin_end=12,
-            margin_top=12,
-            column_spacing=6,
-            row_spacing=6,
+        self.label.set_markup(
+            label_title or f"<b>{_('Rename')} {self.origin_title}:</b>"
         )
-        grid.attach(label, 0, 0, 2, 1)
-        grid.attach(self.entry, 0, 1, 1, 1)
 
-        self.rename_button = Gtk.Button(label=_("Rename"))
-        self.rename_button.connect("clicked", self.apply_activated)
-        self.rename_button.set_sensitive(False)
-        self.rename_button.get_style_context().add_class("destructive-action")
-        grid.attach(self.rename_button, 1, 1, 1, 1)
+        if create_mode:
+            self.rename_btn.add_css_class("suggested-action")
+        else:
+            self.rename_btn.add_css_class("destructive-action")
 
-        self.set_child(grid)
+    @Gtk.Template.Callback()
+    def on_text_changed(self, _) -> None:
+        self.rename_btn.set_sensitive(
+            self.entry.get_text() and self.origin_title != self.entry.get_text()
+        )
 
-    def text_changed(self, editable) -> None:
-        self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())
-
-    def apply_activated(self, widget: Gtk.Widget):
+    @Gtk.Template.Callback()
+    def on_apply_activated(self, widget: Gtk.Widget):
         text = self.entry.get_text().strip()
         if self.origin_title != text:
             self.emit("activate", text)

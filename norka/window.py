@@ -402,8 +402,8 @@ class NorkaWindow(Adw.ApplicationWindow):
     def on_folder_create(self, sender: Gtk.Widget = None, event=None) -> None:
         popover = RenamePopover(self.header.add_folder_button,
                                 '',
-                                label_title=_('Name folder with:'))
-        popover.rename_button.set_label(_('Create'))
+                                label_title=_('Name folder with:'),
+                                create_mode=True)
         popover.connect('activate', self.on_folder_create_activated)
         popover.popup()
 
@@ -494,8 +494,7 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.header.show_spinner(False)
 
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
-
+        sender.popdown()
         self.storage.add_folder(title,
                                 path=self.document_grid.current_folder_path)
         self.document_grid.reload_items(
@@ -503,8 +502,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.check_grid_items()
 
     def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
-
+        sender.popdown()
         folder = self.document_grid.selected_folder
         if folder and self.storage.rename_folder(folder, title):
             self.document_grid.reload_items(
@@ -537,8 +535,8 @@ class NorkaWindow(Adw.ApplicationWindow):
             popover.connect('activate', self.on_document_rename_activated)
         popover.popup()
 
-    def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
+    def on_document_rename_activated(self, sender: Gtk.Popover, title: str):
+        sender.popdown()
 
         doc_id = self.document_grid.selected_document_id
         if not doc_id:
