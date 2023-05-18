@@ -444,20 +444,19 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.save_document()
 
     def on_document_import_activated(self, sender, event):
-        dialog = Gtk.FileChooserNative.new(_("Import files into Norka"), self,
-                                           Gtk.FileChooserAction.OPEN)
+        dialog = Gtk.FileDialog()
+        dialog.set_title(_("Import files into Norka"))
 
         filter_markdown = Gtk.FileFilter()
         filter_markdown.set_name(_("Text Files"))
         filter_markdown.add_mime_type("text/plain")
-        dialog.add_filter(filter_markdown)
-        dialog_result = dialog.run()
+        dialog.set_default_filter(filter_markdown)
+        dialog.open(callback=self.on_document_import_callback)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
-            file_path = dialog.get_filename()
-            self.import_document(file_path)
-
-        dialog.destroy()
+    def on_document_import_callback(self, dialog: Gtk.FileDialog, result):
+        _file = dialog.open_finish(result)
+        if _file:
+            self.import_document(_file.get_path())
 
     def on_document_import(self,
                            sender: Gtk.Widget = None,
