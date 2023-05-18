@@ -201,7 +201,7 @@ class Application(Adw.Application):
         preferences_dialog.present()
 
     def on_quit(self, action, param):
-        self.props.active_window.on_window_delete_event()
+        # self.props.active_window.on_window_delete_event()
         self.settings.sync()
         self.quit()
 
