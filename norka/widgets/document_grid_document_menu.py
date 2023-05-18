@@ -37,4 +37,4 @@ class DocumentGridDocumentMenu(Gtk.PopoverMenu):
         self.set_archive_mode(is_archived)
 
     def set_archive_mode(self, is_archived: bool = False):
-        self.document_menu.remove(4 if is_archived else 3)
+        self.document_menu.remove(2 if is_archived else 3)
