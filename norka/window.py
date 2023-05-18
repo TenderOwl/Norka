@@ -884,29 +884,30 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.overlay.add_toast(toast)
 
     def on_backup(self, sender: Gtk.Widget = None, event=None) -> None:
-        dialog: Gtk.FileChooserNative = Gtk.FileChooserNative.new(
-            _("Select folder to store backup"),
-            self,
-            Gtk.FileChooserAction.SELECT_FOLDER,
-            _("Select"),
-        )
-        dialog.set_create_folders(True)
-        dialog_result = dialog.run()
+        dialog = Gtk.FileDialog()
+        dialog.set_accept_label(_("Select"))
+        dialog.set_title(_("Select folder to store backup"))
+        dialog.set_modal(True)
+        
+        dialog.select_folder(callback=self.on_backup_callback)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+    def on_backup_callback(self, dialog: Gtk.FileDialog, result):
             self.header.show_spinner(True)
+
+            _folder = dialog.select_folder_finish(result)
+            if not _folder:
+                return
 
             backup_service = BackupService(settings=self.settings)
             GObjectWorker.call(backup_service.save,
-                               args=(dialog.get_filename(),),
+                               args=(_folder.get_path(),),
                                callback=self.on_backup_finished)
 
             toast = Adw.Toast(title=_("Backup started."))
             self.overlay.add_toast(toast)
 
-        dialog.destroy()
-
     def on_backup_finished(self, result):
+        print('on_backup_finished', result)
         self.header.show_spinner(False)
         toast = Adw.Toast()
         if result:
