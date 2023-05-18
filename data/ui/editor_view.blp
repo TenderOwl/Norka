@@ -1,0 +1,62 @@
+using Gtk 4.0;
+using GtkSource 5;
+using Adw 1;
+
+template EditorView : Gtk.Box {
+  orientation: vertical;
+
+  styles ["norka-editor-view"]
+
+  SearchBar search_bar {
+    show-close-button: true;
+
+    Adw.Clamp {
+      maximum-size: 800;
+      child: SearchEntry search_entry {
+        hexpand: true;
+      };
+    }
+  }
+
+  ScrolledWindow scroller {
+    hexpand: true;
+    vexpand: true;
+
+    styles ["scrolled-editor"]
+
+    Adw.Clamp editor_clamp {
+      maximum-size: 800;
+
+      GtkSource.View view {
+        tab-width: 4;
+        top-margin: 12;
+        bottom-margin: 12;
+        left-margin: 12;
+        wrap-mode: word;
+        auto-indent: true;
+        insert-spaces-instead-of-tabs: true;
+        pixels-above-lines: 2;
+        pixels-below-lines: 2;
+        pixels-inside-wrap: 4;
+
+        buffer: GtkSource.Buffer buffer {
+          enable-undo: true;
+        };
+
+        // move-cursor => on_view_move_cursor();
+
+        styles ["norka-editor"]
+      }
+    }
+  }
+
+  // GtkSource.Map map {
+  //   visible: false;
+  //   top-margin: 6;
+  //   right-margin: 6;
+  //   bottom-margin: 6;
+  //   left-margin: 6;
+  //   hexpand: false;
+  //   view: view;
+  // }
+}

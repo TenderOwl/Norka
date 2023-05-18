@@ -38,7 +38,7 @@ from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import Storage
 from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
-from norka.widgets.editor import Editor
+from norka.widgets.editor import EditorView
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsDialog
 from norka.widgets.header import NorkaHeader
@@ -85,7 +85,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
-        self.editor = Editor(self.storage, self.settings)
+        self.editor = EditorView()
         self.editor.connect('update-document-stats', self.update_document_stats)
 
         self.screens.add_named(self.welcome_grid, 'welcome-grid')
@@ -948,14 +948,14 @@ class NorkaWindow(Adw.ApplicationWindow):
                                sender: Gtk.Widget = None,
                                event=None) -> None:
         if self.screens.get_visible_child_name() == 'editor-grid' \
-                and self.editor.search_revealer.get_child_revealed():
+                and self.editor.search_bar.get_search_mode():
             self.editor.search_forward(sender=sender, event=event)
 
     def on_text_search_backward(self,
                                 sender: Gtk.Widget = None,
                                 event=None) -> None:
         if self.screens.get_visible_child_name() == 'editor-grid' \
-                and self.editor.search_revealer.get_child_revealed():
+                and self.editor.search_bar.get_search_mode():
             self.editor.search_backward(sender=sender, event=event)
 
     def on_zoom_in(self, sender, event) -> None:

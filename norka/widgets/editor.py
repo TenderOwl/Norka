@@ -28,6 +28,7 @@ from typing import Tuple
 
 from gi.repository import Gtk, GtkSource, Gdk, Pango, Adw, GObject
 
+from norka.define import RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.markup_formatter import MarkupFormatter
@@ -38,9 +39,9 @@ from norka.widgets.image_link_popover import ImageLinkPopover
 from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
 
-
-class Editor(Gtk.Box):
-    __gtype_name__ = 'Editor'
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/editor_view.ui')
+class EditorView(Gtk.Box):
+    __gtype_name__ = 'EditorView'
 
     __gsignals__ = {
         'document-load': (GObject.SignalFlags.ACTION, None, (int,)),
@@ -60,46 +61,54 @@ class Editor(Gtk.Box):
         'update-document-stats': (GObject.SignalFlags.ACTION, None, ()),
     }
 
-    def __init__(self, storage: Storage, settings: Settings):
+    view: GtkSource.View = Gtk.Template.Child()
+    buffer: GtkSource.Buffer = Gtk.Template.Child()
+    # map: GtkSource.Map = Gtk.Template.Child()
+    search_bar: Gtk.SearchBar = Gtk.Template.Child()
+    search_entry: Gtk.SearchEntry = Gtk.Template.Child()
+
+    def __init__(self):
         super().__init__()
 
         self.document = None
-        self.storage = storage
-        self.settings = settings
+        app = Gtk.Application.get_default()
+        self.storage = app.props.storage
+        self.settings = app.props.settings
 
-        self.buffer = GtkSource.Buffer()
+        # self.buffer = GtkSource.Buffer()
         self.manager = GtkSource.LanguageManager()
         self.language = self.manager.get_language("markdown")
         self.buffer.set_language(self.language)
+        # self.buffer.set_highlight_syntax(False)
         self.buffer.create_tag('match', background="#66ff00")
 
-        self.view = GtkSource.View()
-        self.view.set_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_auto_indent(True)
-        self.view.set_smart_home_end(True)
-        self.view.set_insert_spaces_instead_of_tabs(True)
-        self.view.set_tab_width(4)
-        self.view.props.width_request = 920
-        self.view.set_halign(Gtk.Align.CENTER)
+        # self.view = GtkSource.View()
+        # self.view.set_buffer(self.buffer)
+        # self.view.set_wrap_mode(Gtk.WrapMode.WORD)
+        # self.view.set_auto_indent(True)
+        # self.view.set_smart_home_end(True)
+        # self.view.set_insert_spaces_instead_of_tabs(True)
+        # self.view.set_tab_width(4)
+        # self.view.props.width_request = 920
+        # self.view.set_halign(Gtk.Align.CENTER)
 
-        self.view.set_pixels_above_lines(2)
-        self.view.set_pixels_below_lines(2)
-        self.view.set_pixels_inside_wrap(4)
-        self.view.set_top_margin(8)
-        self.view.set_left_margin(8)
-        self.view.set_right_margin(8)
-        self.view.set_bottom_margin(8)
+        # self.view.set_pixels_above_lines(2)
+        # self.view.set_pixels_below_lines(2)
+        # self.view.set_pixels_inside_wrap(4)
+        # self.view.set_top_margin(8)
+        # self.view.set_left_margin(8)
+        # self.view.set_right_margin(8)
+        # self.view.set_bottom_margin(8)
         # self.view.set_monospace(True)
-        self.view.get_style_context().add_class('norka-editor')
+        # self.view.get_style_context().add_class('norka-editor')
 
         # self.view.connect('key-release-event', self.on_key_release_event)
-        self.view.connect('move-cursor', self.on_view_move_cursor)
+        # self.view.connect('move-cursor', self.on_view_move_cursor)
 
         # Connect markup handler
         self.markup_formatter = MarkupFormatter(self.buffer)
 
-        self.get_style_context().add_class('norka-editor-view')
+        # self.get_style_context().add_class('norka-editor-view')
         self.connect('insert-bold', self.on_insert_bold)
         self.connect('insert-italic', self.on_insert_italic)
         self.connect('insert-code', self.on_insert_code)
@@ -113,25 +122,25 @@ class Editor(Gtk.Box):
         self.connect('insert-link', self.on_insert_link)
         self.connect('insert-image', self.on_insert_image)
 
-        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled.get_style_context().add_class('scrolled-editor')
-        self.scrolled.set_child(self.view)
+        # self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        # self.scrolled.get_style_context().add_class('scrolled-editor')
+        # self.scrolled.set_child(self.view)
 
         # SearchBar
-        self.search_bar = SearchBar()
-        self.search_revealer = Gtk.Revealer()
-        self.search_revealer.set_child(self.search_bar)
-        self.search_bar.connect('find-changed', self.do_next_match)
-        self.search_bar.connect('find-next', self.do_next_match)
-        self.search_bar.connect('find-prev', self.do_previous_match)
-        self.search_bar.connect('stop-search', self.do_stop_search)
+        self.search_bar.connect_entry(self.search_entry)
+        # self.search_revealer = Gtk.Revealer()
+        # self.search_revealer.set_child(self.search_bar)
+        self.search_entry.connect('search-changed', self.do_next_match)
+        self.search_entry.connect('next-match', self.do_next_match)
+        self.search_entry.connect('previous-match', self.do_previous_match)
+        self.search_entry.connect('stop-search', self.do_stop_search)
 
-        content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        content_grid.append(self.search_revealer)
-        content_grid.append(self.scrolled)
+        # content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        # content_grid.append(self.search_revealer)
+        # content_grid.append(self.scrolled)
 
-        self.overlay = Gtk.Overlay()
-        self.overlay.set_child(content_grid)
+        # self.overlay = Gtk.Overlay()
+        # self.overlay.set_child(content_grid)
         # self.stats_overlay = Adw.ToastOverlay()
 
         # Initialize stats calculations and connect `destroy` event
@@ -140,7 +149,7 @@ class Editor(Gtk.Box):
         self.stats_handler.connect('update-document-stats', self.update_stats)
         self.stats = self.stats_handler.stats
 
-        self.append(self.overlay)
+        # self.append(self.overlay)
 
         # SpellChecker
         self.font_desc = Pango.FontDescription()
@@ -184,7 +193,7 @@ class Editor(Gtk.Box):
         # self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
-        self.view.grab_focus()
+        # self.view.grab_focus()
         self.emit('document-load', self.document.document_id)
 
     def unload_document(self, save=True) -> None:
@@ -204,11 +213,10 @@ class Editor(Gtk.Box):
         self.hide_search_bar()
 
     def hide_search_bar(self):
-        self.search_revealer.set_reveal_child(False)
-        self.search_bar.stop_search()
+        self.search_bar.set_search_mode(False)
 
     def load_file(self, path: str) -> bool:
-        self.buffer.begin_not_undoable_action()
+        self.buffer.begin_irreversible_action()
         try:
             txt = open(path).read()
         except Exception as e:
@@ -216,7 +224,6 @@ class Editor(Gtk.Box):
             return False
 
         self.buffer.set_text(txt)
-        self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
 
@@ -313,16 +320,16 @@ class Editor(Gtk.Box):
         self.view.scroll_to_mark(cursor_mark, 0, False, 0, 0)
 
     def on_search_text_activated(self, sender: Gtk.Widget = None, event=None):
-        state = self.search_revealer.get_child_revealed()
+        state = self.search_bar.get_search_mode()
         if not state:
             # If there is selected text in view put it as search text
             bounds = self.buffer.get_selection_bounds()
             if bounds:
                 text = bounds[0].get_text(bounds[1])
-                self.search_bar.search_entry.set_text(text)
+                self.search_entry.set_text(text)
 
-            self.search_revealer.set_reveal_child(True)
-            self.search_bar.search_entry.grab_focus()
+            self.search_bar.set_search_mode(True)
+            self.search_entry.grab_focus()
 
     def set_spellcheck(self, value: bool) -> None:
         # self.spell_view.set_inline_spell_checking(value)
@@ -359,7 +366,7 @@ class Editor(Gtk.Box):
         self.emit('update-document-stats')
 
     def do_stop_search(self, event: Gdk.Event = None) -> None:
-        self.search_revealer.set_reveal_child(False)
+        self.search_bar.set_search_mode(False)
         self.view.grab_focus()
 
     def search(self, text: str, forward: bool = True) -> bool:
@@ -368,7 +375,7 @@ class Editor(Gtk.Box):
 
         # Can't search anything in an inexistent buffer and/or without anything to search.
         if any([not self.buffer, not self.get_text(), not text]):
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            self.search_entry.remove_css_class('error')
             return False
 
         self.search_context.set_highlight(True)
@@ -387,19 +394,16 @@ class Editor(Gtk.Box):
             found, self.search_iter = self.search_for_iter_backward(self.search_iter)
 
         if found:
-            self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            self.search_entry.remove_css_class('error')
         else:
             self.search_iter = self.buffer.get_start_iter()
             found, end_iter = self.search_for_iter(self.search_iter)
             if found:
-                self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+                self.search_entry.remove_css_class('error')
             else:
                 self.search_iter.set_offset(-1)
                 self.buffer.select_range(self.search_iter, self.search_iter)
-                self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+                self.search_entry.add_css_class('error')
                 return False
 
         return True
@@ -416,22 +420,21 @@ class Editor(Gtk.Box):
             self.scroll_to(start_iter, end_iter)
         return found, start_iter
 
-    def do_next_match(self, sender, text: str) -> bool:
-        return self.search(text)
+    def do_next_match(self, entry: Gtk.SearchEntry) -> bool:
+        return self.search(entry.get_text())
 
-    def do_previous_match(self, sender, text: str) -> bool:
-        return self.search(text, False)
+    def do_previous_match(self, entry: Gtk.SearchEntry) -> bool:
+        return self.search(entry.get_text(), False)
 
     def search_forward(self, sender=None, event=None) -> bool:
-        return self.do_next_match(sender, self.search_bar.search_entry.get_text())
+        return self.do_next_match(self.search_entry)
 
     def search_backward(self, sender=None, event=None) -> bool:
-        return self.do_previous_match(sender, self.search_bar.search_entry.get_text())
+        return self.do_previous_match(self.search_entry)
 
     def scroll_to(self, start_iter, end_iter):
 
-        mark = self.buffer.create_mark(None, start_iter, False)
-        self.view.scroll_to_mark(mark, 0, False, 0, 0)
+        print(self.view.scroll_to_iter(start_iter, 0.2, False, 0.5, 0))
 
         self.buffer.place_cursor(start_iter)
         self.buffer.select_range(start_iter, end_iter)
