@@ -100,7 +100,12 @@ template NorkaHeader : Adw.Bin {
         MenuButton share_app_menu {
           icon-name: 'emblem-shared-symbolic';
           tooltip-text: _('Share document');
+        }
 
+        [end]
+        ToggleButton search_btn {
+          icon-name: 'system-search-symbolic';
+          action-name: 'document.search_text';
         }
 
         // [end]

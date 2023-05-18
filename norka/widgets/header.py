@@ -53,6 +53,7 @@ class NorkaHeader(Adw.Bin):
     editor_header: Adw.HeaderBar = Gtk.Template.Child()
     extended_stats_button: Gtk.ToggleButton = Gtk.Template.Child()
     share_app_menu: Gtk.MenuButton = Gtk.Template.Child()
+    search_btn: Gtk.ToggleButton = Gtk.Template.Child()
     editor_menu_button: Gtk.MenuButton = Gtk.Template.Child()
 
     loader_spinner: Gtk.Spinner = Gtk.Template.Child()

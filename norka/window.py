@@ -24,7 +24,7 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Adw
+from gi.repository import Gtk, Gio, GLib, Gdk, Adw, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
@@ -72,7 +72,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         # Export clients
         self.medium_client = Medium()
         self.writeas_client = Writeas()
-        
+
         # Init screens
         self.welcome_grid = Welcome()
         # self.welcome_grid.connect('activated', self.on_welcome_activated)
@@ -87,6 +87,11 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         self.editor = EditorView()
         self.editor.connect('update-document-stats', self.update_document_stats)
+
+        self.editor.search_bar.bind_property('search_mode_enabled',
+                                  self.header.search_btn,
+                                  'active',
+                                  GObject.BindingFlags.BIDIRECTIONAL)
 
         self.screens.add_named(self.welcome_grid, 'welcome-grid')
         self.screens.add_named(self.document_grid, 'document-grid')
@@ -232,11 +237,11 @@ class NorkaWindow(Adw.ApplicationWindow):
                     'action': self.on_print,
                     'accels': ('<Control>p',)
                 },
-                # {
-                #     'name': 'search',
-                #     'action': self.search_activated,
-                #     'accels': ('<Control>k',)
-                # },
+                {
+                    'name': 'search',
+                    'action': self.search_activated,
+                    'accels': ('<Control>k',)
+                },
                 {
                     'name': 'zoom_in',
                     'action': self.on_zoom_in,
