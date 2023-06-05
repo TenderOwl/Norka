@@ -28,7 +28,7 @@ from typing import Optional
 from urllib.parse import urlparse, unquote_plus
 
 import cairo
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Gio
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
 from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
@@ -51,6 +51,8 @@ class DocumentGrid(Gtk.Grid):
         'rename-folder': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
     }
 
+    show_archived = GObject.Property(type=bool, default=False)
+
     def __init__(self, settings: Settings, storage: Storage):
         super().__init__()
 
@@ -61,12 +63,18 @@ class DocumentGrid(Gtk.Grid):
 
         self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
 
-        self.show_archived = False
         self.selected_path = None
         # self.selected_document = None
 
         # Store current virtual files path.
         self.current_path = '/'
+
+        self.infobar = Gtk.InfoBar(message_type=Gtk.MessageType.INFO)
+        infobar_label = Gtk.Label(label=_("Archived files only"))
+        infobar_label.get_style_context().add_class('heading')
+        self.infobar.get_content_area().add(infobar_label)
+        self.bind_property('show_archived', self.infobar, 'revealed',
+                           GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
         self.view = Gtk.IconView()
         self.view.set_model(self.model)
@@ -101,7 +109,11 @@ class DocumentGrid(Gtk.Grid):
         scrolled.set_vexpand(True)
         scrolled.add(self.view)
 
-        self.add(scrolled)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        main_box.add(self.infobar)
+        main_box.add(scrolled)
+
+        self.add(main_box)
 
     @property
     def current_folder_path(self):
@@ -161,6 +173,11 @@ class DocumentGrid(Gtk.Grid):
         if key == "sort-desc":
             self.reload_items(self)
 
+    def on_infobar_response(self, sender: Gtk.Widget, response: Gtk.ResponseType, *_):
+        self.infobar.set_revealed(False)
+        self.show_archived = False
+        self.reload_items()
+
     def reload_items(self, sender: Gtk.Widget = None, path: str = None) -> None:
         order_desc = self.settings.get_boolean('sort-desc')
         self.model.clear()
@@ -180,19 +197,25 @@ class DocumentGrid(Gtk.Grid):
         # Emit "path-changed" signal.
         self.emit('path-changed', _old_path, self.current_path)
 
-        # Load folders first
-        Logger.info(f"reload_items: {self.current_folder_path}")
-        for folder in self.storage.get_folders(path=self.current_folder_path):
-            self.create_folder_model(title=folder.title, path=folder.path)
+        if not self.show_archived:
+            # Load folders first
+            Logger.info(f"reload_items: {self.current_folder_path}")
+            for folder in self.storage.get_folders(path=self.current_folder_path):
+                self.create_folder_model(title=folder.title, path=folder.path)
 
         # Then load documents, not before foldes.
-        for document in self.storage.all(path=self.current_folder_path, with_archived=self.show_archived,
-                                         desc=order_desc):
+        if self.show_archived:
+            documents = self.storage.archived(desc=order_desc)
+        else:
+            documents = self.storage.all(path=self.current_folder_path,
+                                         with_archived=self.show_archived,
+                                         desc=order_desc)
+
+        for document in documents:
             # icon = Gtk.IconTheme.get_default().load_icon('text-x-generic', 64, 0)
-            opacity = 0.2 if document.archived else 1
 
             # generate icon. It needs to stay in cache
-            icon = self.gen_preview(document.content[:200], opacity=opacity)
+            icon = self.gen_preview(document.content[:200])
 
             # Generate tooltip
             tooltip = f"{document.title}"

@@ -164,6 +164,15 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         """
         action_items = {
+            'window': [
+                {
+                    'name': 'toggle_archived',
+                    # 'action': self.on_action_toggle,
+                    'accels': ('<Control>H',),
+                    'state': GLib.Variant.new_boolean(False),
+                    'change_state': self.on_toggle_archive
+                },
+            ],
             'folder': [
                 {
                     'name': 'create',
@@ -314,8 +323,19 @@ class NorkaWindow(Handy.ApplicationWindow):
             action_group = Gio.SimpleActionGroup()
 
             for item in actions:
-                action = Gio.SimpleAction(name=item['name'])
-                action.connect('activate', item['action'])
+                if 'state' in item:
+                    action = Gio.SimpleAction.new_stateful(
+                        item['name'], None, item['state']
+                    )
+                else:
+                    action = Gio.SimpleAction(name=item['name'])
+
+                if 'action' in item:
+                    action.connect('activate', item['action'])
+
+                if 'change_state' in item:
+                    action.connect('change-state', item['change_state'])
+
                 self.get_application().set_accels_for_action(
                     f'{action_group_key}.{item["name"]}', item["accels"])
                 action_group.add_action(action)
@@ -1033,8 +1053,10 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_toggle_archive(self,
                           action: Gio.SimpleAction,
-                          name: str = None) -> None:
-        show_archived = self.header.archived_button.get_active()
+                          value: GLib.Variant = None) -> None:
+
+        action.set_state(value)
+        show_archived = action.get_state().get_boolean()
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 

@@ -319,6 +319,22 @@ class Storage(object):
 
         return docs
 
+    def archived(self, desc: bool = False) -> List[Document]:
+        """Returns all archived documents in the given `path`.
+
+        `desc` indicates whether to return documents in descending order or not.
+        """
+        query = f"SELECT * FROM documents WHERE archived=1  ORDER BY ID {'desc' if desc else 'asc'}"
+
+        cursor = self.conn.cursor().execute(query)
+        rows = cursor.fetchall()
+
+        docs = []
+        for row in rows:
+            docs.append(Document.new_with_row(row))
+
+        return docs
+
     def get(self, doc_id: int) -> Optional[Document]:
         """Returns document with given `doc_id`.
 

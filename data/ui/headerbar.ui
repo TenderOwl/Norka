@@ -39,6 +39,12 @@
         <property name="icon-name">folder-new</property>
         <property name="icon_size">2</property>
     </object>
+    <object class="GtkImage" id="image-search-text">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="icon-name">system-search-symbolic</property>
+        <property name="icon_size">2</property>
+    </object>
     <object class="GtkImage" id="image1">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
@@ -216,13 +222,12 @@
                     </packing>
                 </child>
                 <child>
-                    <object class="GtkToggleButton" id="archived_button">
+                    <object class="GtkButton" id="search_button">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="receives-default">True</property>
-                        <property name="action-name">document.toggle_archived</property>
-                        <property name="image">user-trash</property>
-                        <property name="always-show-image">True</property>
+                        <property name="action-name">document.search_text</property>
+                        <property name="image">image-search-text</property>
                         <style>
                             <class name="flat"/>
                         </style>
@@ -424,14 +429,20 @@
 
     <menu id="appmenu">
         <section>
-          <item>
-            <attribute name="label" translatable="yes">_Preferences</attribute>
-            <attribute name="action">app.preferences</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">Preview</attribute>
-            <attribute name="action">document.preview</attribute>
-          </item>
+            <item>
+                <attribute name="label" translatable="yes">Find Note</attribute>
+                <attribute name="action">document.search_text</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">Show Archived</attribute>
+                <attribute name="action">window.toggle_archived</attribute>
+            </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">_Preferences</attribute>
+                <attribute name="action">app.preferences</attribute>
+            </item>
         </section>
         <section>
             <item>
@@ -448,16 +459,16 @@
             </item>
         </section>
         <section>
-          <item>
-            <attribute name="label" translatable="yes">Make _Backup</attribute>
-            <attribute name="action">document.backup</attribute>
-          </item>
+            <item>
+                <attribute name="label" translatable="yes">Make _Backup</attribute>
+                <attribute name="action">document.backup</attribute>
+            </item>
         </section>
         <section>
-          <item>
-            <attribute name="label" translatable="yes">_Quit</attribute>
-            <attribute name="action">app.quit</attribute>
-          </item>
+            <item>
+                <attribute name="label" translatable="yes">_Quit</attribute>
+                <attribute name="action">app.quit</attribute>
+            </item>
         </section>
-      </menu>
+    </menu>
 </interface>

@@ -76,24 +76,24 @@ class Header(Gtk.Box):
         self.import_button: Gtk.Button = self.builder.get_object(
             "import_button")
         self.import_button.set_tooltip_markup(
-            Granite.markup_accel_tooltip(('<Control>o', ),
+            Granite.markup_accel_tooltip(('<Control>o',),
                                          _('Import file to Norka')))
         #
         self.add_button: Gtk.Button = self.builder.get_object("add_button")
         self.add_button.set_tooltip_markup(
-            Granite.markup_accel_tooltip(('<Control>n', ),
+            Granite.markup_accel_tooltip(('<Control>n',),
                                          _('Create new document')))
 
         self.add_folder_button: Gtk.Button = self.builder.get_object(
             "add_folder_button")
         self.add_folder_button.set_tooltip_markup(
-            Granite.markup_accel_tooltip(('<Control><Shift>n', ),
+            Granite.markup_accel_tooltip(('<Control><Shift>n',),
                                          _('Create new folder')))
 
         self.back_button: Gtk.Button = self.builder.get_object("back_button")
         self.back_button.set_tooltip_markup(
             Granite.markup_accel_tooltip(
-                ('<Control>w', ),
+                ('<Control>w',),
                 _('Save document and return to documents list')))
 
         self.bind_property('show-save-button', self.save_btn_revealer, 'reveal-child')
@@ -106,7 +106,7 @@ class Header(Gtk.Box):
 
         self.print_button: Gtk.ToggleButton = self.builder.get_object("print_button")
         self.print_button.set_tooltip_markup(
-            Granite.markup_accel_tooltip(('<Control>p', ),
+            Granite.markup_accel_tooltip(('<Control>p',),
                                          _('Print the document')))
 
         self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
@@ -116,10 +116,6 @@ class Header(Gtk.Box):
         self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
             "share_app_menu")
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))
-
-        self.archived_button: Gtk.ToggleButton = self.builder.get_object("archived_button")
-        self.archived_button.set_tooltip_markup(
-            Granite.markup_accel_tooltip(None, _('Show Archived files')))
 
         self.grid_menu_button: Gtk.MenuButton = self.builder.get_object("grid_menu_button")
         # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
@@ -155,7 +151,7 @@ class Header(Gtk.Box):
             label = f"{self.stats.characters} chars | {self.stats.words} words"
         elif self.stats_mode == StatsMode.PATH:
 
-            path = self.document_path.replace('/',' > ') if self.document_path != '/' else ''
+            path = self.document_path.replace('/', ' > ') if self.document_path != '/' else ''
             label = _('root') + path
         else:
             label = ""
