@@ -89,10 +89,10 @@ class Editor(Gtk.Grid):
         self.view.set_pixels_above_lines(2)
         self.view.set_pixels_below_lines(2)
         self.view.set_pixels_inside_wrap(4)
-        self.view.set_top_margin(8)
+        self.view.set_top_margin(32)
         self.view.set_left_margin(8)
         self.view.set_right_margin(8)
-        self.view.set_bottom_margin(8)
+        self.view.set_bottom_margin(32)
         # self.view.set_monospace(True)
         self.view.get_style_context().add_class('norka-editor')
 
