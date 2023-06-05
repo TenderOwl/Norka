@@ -26,7 +26,7 @@ import re
 from gettext import gettext as _
 from typing import Tuple
 
-from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject
+from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject, GLib
 
 from norka.models.document import Document
 from norka.services.logger import Logger
@@ -58,6 +58,7 @@ class Editor(Gtk.Grid):
         'insert-link': (GObject.SignalFlags.ACTION, None, ()),
         'insert-image': (GObject.SignalFlags.ACTION, None, ()),
         'update-document-stats': (GObject.SignalFlags.ACTION, None, ()),
+        'loading': (GObject.SignalFlags.ACTION, None, (bool,)),
     }
 
     def __init__(self, storage: Storage, settings: Settings):
@@ -68,6 +69,7 @@ class Editor(Gtk.Grid):
         self.settings = settings
 
         self.buffer = GtkSource.Buffer()
+        self.buffer.connect('changed', self.on_buffer_changed)
         self.manager = GtkSource.LanguageManager()
         self.language = self.manager.get_language("markdown")
         self.buffer.set_language(self.language)
@@ -77,7 +79,7 @@ class Editor(Gtk.Grid):
         self.view.set_buffer(self.buffer)
         self.view.set_wrap_mode(Gtk.WrapMode.WORD)
         self.view.set_auto_indent(True)
-        self.view.set_smart_home_end(True)
+        self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
         self.view.set_insert_spaces_instead_of_tabs(True)
         self.view.set_tab_width(4)
         self.view.props.width_request = 920
@@ -160,6 +162,9 @@ class Editor(Gtk.Grid):
                                                       settings=self.search_settings)
         self.search_iter = None
 
+    def on_buffer_changed(self, buffer: Gtk.TextBuffer, *_):
+        self.buffer.set_modified(True)
+
     def create_document(self, title: str = None, folder_path: str = '/') -> None:
         """Create new document and put it to storage
 
@@ -170,6 +175,8 @@ class Editor(Gtk.Grid):
             title = _('Nameless')
         self.document = Document(title=title, folder=folder_path)
         self.view.grab_focus()
+        # Begin autosaving timer
+        self.start_saver()
         self.emit('document-load', self.document.document_id)
 
     def load_document(self, doc_id: int) -> None:
@@ -186,6 +193,8 @@ class Editor(Gtk.Grid):
         self.buffer.set_modified(False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
         self.view.grab_focus()
+        # Begin autosaving timer
+        self.start_saver()
         self.emit('document-load', self.document.document_id)
 
     def unload_document(self, save=True) -> None:
@@ -203,6 +212,9 @@ class Editor(Gtk.Grid):
         self.emit('document-close', self.document.document_id)
         self.document = None
         self.hide_search_bar()
+
+    def start_saver(self):
+        GLib.timeout_add_seconds(interval=2, function=self.save_document)
 
     def hide_search_bar(self):
         self.search_revealer.set_reveal_child(False)
@@ -224,9 +236,11 @@ class Editor(Gtk.Grid):
         return True
 
     def save_document(self) -> bool:
-        if not self.document:
+        if not self.document or not self.buffer.get_modified():
             return False
 
+        self.emit('loading', True)
+        print('saving document')
         text = self.buffer.get_text(
             self.buffer.get_start_iter(),
             self.buffer.get_end_iter(),
@@ -237,6 +251,7 @@ class Editor(Gtk.Grid):
         # No need to save new empty documents
         if self.document.document_id == -1 and len(text) == 0:
             # storage.delete(self.document.document_id)
+            self.emit('loading', False)
             return False
 
         if self.document.title in ('', 'Nameless'):
@@ -252,7 +267,9 @@ class Editor(Gtk.Grid):
         if self.storage.update(self.document.document_id,
                                {"content": text, 'title': self.document.title}):
             self.document.content = text
+            self.buffer.set_modified(False)
             Logger.debug('Document %s saved', self.document.document_id)
+            self.emit('loading', False)
             return True
 
     def get_text(self) -> str:

@@ -104,6 +104,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         self.editor = Editor(self.storage, self.settings)
         self.editor.connect('update-document-stats', self.update_document_stats)
+        self.editor.connect('loading', self.editor_loading)
 
         self.screens = Gtk.Stack()
         self.screens.set_transition_duration(400)
@@ -166,99 +167,99 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'create',
                     'action': self.on_folder_create,
-                    'accels': ('<Control><Shift>n', )
+                    'accels': ('<Control><Shift>n',)
                 },
             ],
             'document': [
                 {
                     'name': 'create',
                     'action': self.on_document_create_activated,
-                    'accels': ('<Control>n', )
+                    'accels': ('<Control>n',)
                 },
                 {
                     'name': 'save',
                     'action': self.on_document_save_activated,
-                    'accels': ('<Control>s', )
+                    'accels': ('<Control>s',)
                 },
                 {
                     'name': 'close',
                     'action': self.on_document_close_activated,
-                    'accels': ('<Control>w', )
+                    'accels': ('<Control>w',)
                 },
                 {
                     'name': 'rename',
                     'action': self.on_document_rename,
-                    'accels': ('F2', )
+                    'accels': ('F2',)
                 },
                 {
                     'name': 'archive',
                     'action': self.on_document_archive_activated,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'unarchive',
                     'action': self.on_document_unarchive_activated,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'delete',
                     'action': self.on_document_delete_activated,
-                    'accels': ('<Shift>Delete', )
+                    'accels': ('<Shift>Delete',)
                 },
                 {
                     'name': 'import',
                     'action': self.on_document_import_activated,
-                    'accels': ('<Control>o', )
+                    'accels': ('<Control>o',)
                 },
                 {
                     'name': 'export',
                     'action': self.on_export_plaintext,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-markdown',
                     'action': self.on_export_markdown,
-                    'accels': ('<Control><Shift>s', )
+                    'accels': ('<Control><Shift>s',)
                 },
                 {
                     'name': 'export-html',
                     'action': self.on_export_html,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-pdf',
                     'action': self.on_export_pdf,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-docx',
                     'action': self.on_export_docx,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-medium',
                     'action': self.on_export_medium,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'export-writeas',
                     'action': self.on_export_writeas,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'backup',
                     'action': self.on_backup,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'preview',
                     'action': self.on_preview,
-                    'accels': ('<Control><Shift>p', )
+                    'accels': ('<Control><Shift>p',)
                 },
                 {
                     'name': 'print',
                     'action': self.on_print,
-                    'accels': ('<Control>p', )
+                    'accels': ('<Control>p',)
                 },
                 # {
                 #     'name': 'search',
@@ -273,37 +274,37 @@ class NorkaWindow(Handy.ApplicationWindow):
                 {
                     'name': 'zoom_out',
                     'action': self.on_zoom_out,
-                    'accels': ('<Control>minus', )
+                    'accels': ('<Control>minus',)
                 },
                 {
                     'name': 'zoom_default',
                     'action': self.on_zoom_default,
-                    'accels': ('<Control>0', )
+                    'accels': ('<Control>0',)
                 },
                 {
                     'name': 'search_text',
                     'action': self.search_activated,
-                    'accels': ('<Control>f', )
+                    'accels': ('<Control>f',)
                 },
                 {
                     'name': 'search_text_next',
                     'action': self.on_text_search_forward,
-                    'accels': ('<Control>g', )
+                    'accels': ('<Control>g',)
                 },
                 {
                     'name': 'search_text_prev',
                     'action': self.on_text_search_backward,
-                    'accels': ('<Control><Shift>g', )
+                    'accels': ('<Control><Shift>g',)
                 },
                 {
                     'name': 'toggle_archived',
                     'action': self.on_toggle_archive,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
                 {
                     'name': 'show_extended_stats',
                     'action': self.on_show_extended_stats,
-                    'accels': (None, )
+                    'accels': (None,)
                 },
             ]
         }
@@ -879,7 +880,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.header.show_spinner(True)
             self.writeas_client.set_token(access_token=token)
             GObjectWorker.call(self.writeas_client.create_post,
-                               args=(doc, ),
+                               args=(doc,),
                                callback=self.on_export_writeas_callback)
 
     def on_export_writeas_callback(self, result):
@@ -910,7 +911,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             backup_service = BackupService(settings=self.settings)
             GObjectWorker.call(backup_service.save,
-                               args=(dialog.get_filename(), ),
+                               args=(dialog.get_filename(),),
                                callback=self.on_backup_finished)
 
             self.toast.set_title(_("Backup started."))
@@ -1117,6 +1118,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.header.update_stats(stats, document_path=document_path)
         if self.extended_stats_dialog:
             self.extended_stats_dialog.update_stats(stats)
+
+    def editor_loading(self, editor: Editor, is_loading: bool) -> None:
+        if is_loading:
+            self.header.loader_spinner.start()
+        else:
+            self.header.loader_spinner.stop()
 
     def on_print(self, sender, event=None):
         doc = self.document_grid.selected_document or self.editor.document
