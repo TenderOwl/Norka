@@ -14,28 +14,28 @@
   bind "<ctl><shift>k" { "insert-image" () };
 }
 
-.norka-header {
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
+/*.norka-header {*/
+/*  padding-top: 3px;*/
+/*  padding-bottom: 3px;*/
+/*}*/
 
-.elementary .norka-header *
-{
-  color: #fffcfa;
-}
+/*.elementary .norka-header **/
+/*{*/
+/*  color: #fffcfa;*/
+/*}*/
 
-.elementary .norka-header .title,
-.elementary .norka-header .subtitle {
-  text-shadow: 0 1px 1px #111;
-}
+/*.elementary .norka-header .title,*/
+/*.elementary .norka-header .subtitle {*/
+/*  text-shadow: 0 1px 1px #111;*/
+/*}*/
 
 .norka-editor-view {
   -gtk-key-bindings: editor-bindings;
 }
 
 .norka-editor {
-  border: none;
-  background: transparent;
+  /*border: none;*/
+  /*background: transparent;*/
   font-family: 'iA Writer Duospace', serif;
 }
 

@@ -7,49 +7,67 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-new</property>
-    <property name="icon_size">3</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="document-open">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">document-import</property>
-    <property name="icon_size">3</property>
+    <property name="icon-name">document-open-symbolic</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="extended-stats">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">dialog-information</property>
-    <property name="icon_size">3</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="extended-stats1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">dialog-information</property>
-    <property name="icon_size">3</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="folder-new">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">folder-new</property>
-    <property name="icon_size">3</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="icon-name">document-print</property>
-    <property name="icon_size">3</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">folder-new</property>
-    <property name="icon_size">3</property>
+    <property name="icon-name">folder-new-symbolic</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkImage" id="user-trash">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="icon-name">user-trash</property>
-    <property name="icon_size">3</property>
+    <property name="icon-name">user-trash-symbolic</property>
+    <property name="icon_size">2</property>
+  </object>
+  <object class="GtkImage" id="image-back">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">go-previous-symbolic</property>
+    <property name="icon_size">2</property>
+  </object>
+  <object class="GtkImage" id="image-menu">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">open-menu</property>
+    <property name="icon_size">2</property>
+  </object>
+  <object class="GtkImage" id="image-share">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">emblem-shared-symbolic</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkStack" id="header_box">
     <property name="visible">True</property>
@@ -66,6 +84,9 @@
         <property name="title" translatable="yes">Norka</property>
         <property name="subtitle" translatable="yes">continuous text editor</property>
         <property name="show-close-button">True</property>
+        <style>
+          <class name="flat"></class>
+        </style>
         <child type="title">
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -150,6 +171,7 @@
             <property name="can-focus">False</property>
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
+            <property name="image">image-menu</property>
             <child>
               <placeholder/>
             </child>
@@ -248,16 +270,13 @@
         </child>
         <child>
           <object class="GtkButton" id="back_button">
-            <property name="label">Documents</property>
             <property name="name">back_button</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="valign">center</property>
+            <property name="image">image-back</property>
             <property name="action-name">document.close</property>
-            <style>
-              <class name="back-button"/>
-            </style>
           </object>
         </child>
         <child>
@@ -275,6 +294,7 @@
             <property name="can-focus">True</property>
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
+            <property name="image">image-menu</property>
             <child>
               <placeholder/>
             </child>
@@ -290,6 +310,7 @@
             <property name="can-focus">True</property>
             <property name="focus-on-click">False</property>
             <property name="receives-default">True</property>
+            <property name="image">image-share</property>
             <child>
               <placeholder/>
             </child>

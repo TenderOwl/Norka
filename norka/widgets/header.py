@@ -98,42 +98,27 @@ class Header(Gtk.Box):
         # # self.search_button.set_action_name('document.search_text')
         # # self.search_button.set_visible(False)
 
-        self.print_button: Gtk.ToggleButton() = self.builder.get_object(
-            "print_button")
+        self.print_button: Gtk.ToggleButton = self.builder.get_object("print_button")
         self.print_button.set_tooltip_markup(
             Granite.markup_accel_tooltip(('<Control>p', ),
                                          _('Print the document')))
 
-        self.extended_stats_button: Gtk.ToggleButton(
-        ) = self.builder.get_object("extended_stats_button")
+        self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
         self.extended_stats_button.set_tooltip_markup(
             Granite.markup_accel_tooltip(None, _('Show document info')))
 
         self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
             "share_app_menu")
-        self.share_app_menu.set_image(
-            Gtk.Image.new_from_icon_name('document-save-as',
-                                         Gtk.IconSize.LARGE_TOOLBAR))
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))
 
-        self.archived_button: Gtk.ToggleButton() = self.builder.get_object(
-            "archived_button")
+        self.archived_button: Gtk.ToggleButton = self.builder.get_object("archived_button")
         self.archived_button.set_tooltip_markup(
             Granite.markup_accel_tooltip(None, _('Show Archived files')))
 
-        self.grid_menu_button: Gtk.MenuButton = self.builder.get_object(
-            "grid_menu_button")
-        self.grid_menu_button.set_image(
-            Gtk.Image.new_from_icon_name('open-menu',
-                                         Gtk.IconSize.LARGE_TOOLBAR))
+        self.grid_menu_button: Gtk.MenuButton = self.builder.get_object("grid_menu_button")
         self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
-        self.editor_menu_button: Gtk.MenuButton = self.builder.get_object(
-            "editor_menu_button")
-        self.editor_menu_button.set_image(
-            Gtk.Image.new_from_icon_name('open-menu',
-                                         Gtk.IconSize.LARGE_TOOLBAR))
-        self.editor_menu_button.set_popover(
-            MenuPopover(settings=self.settings))
+        self.editor_menu_button: Gtk.MenuButton = self.builder.get_object("editor_menu_button")
+        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions
