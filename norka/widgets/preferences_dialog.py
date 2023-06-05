@@ -54,7 +54,7 @@ class PreferencesDialog(Granite.Dialog):
         for lang in langs_available:
             langs_available_model.append((lang.get_code(), lang.get_name()))
 
-        self.toast = Granite.WidgetsToast(title=_("Toast"))
+        self.toast = Granite.WidgetsToast(title=_("Toast"), margin=0)
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))

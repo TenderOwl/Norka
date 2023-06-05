@@ -118,7 +118,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         self.screens.show_all()
 
-        self.toast = Granite.WidgetsToast()
+        self.toast = Granite.WidgetsToast(margin=0)
 
         self.overlay = Gtk.Overlay()
         self.overlay.add_overlay(self.screens)
