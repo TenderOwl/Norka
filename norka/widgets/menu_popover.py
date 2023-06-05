@@ -27,6 +27,8 @@ from gi.repository import Gtk, Granite
 
 
 class MenuPopover(Gtk.Popover):
+    __gtype_name__ = 'EditorMenuPopover'
+
     def __init__(self, settings):
         super().__init__()
         self.set_constrain_to(Gtk.PopoverConstraint.NONE)
@@ -47,45 +49,43 @@ class MenuPopover(Gtk.Popover):
         zoom_in_button.set_tooltip_markup(
             Granite.markup_accel_tooltip(('<Control>equal', '<Control>plus'), _('Zoom In')))
 
-        font_size_grid = Gtk.Grid(column_homogeneous=True, hexpand=True, margin=12)
+        font_size_grid = Gtk.Grid(column_homogeneous=True, hexpand=True, margin_top=6)
         font_size_grid.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
         font_size_grid.add(zoom_out_button)
         font_size_grid.add(self.zoom_default_button)
         font_size_grid.add(zoom_in_button)
 
-        preferences_menuitem = Gtk.ModelButton(
-            action_name='app.preferences')
+        preferences_menuitem = Gtk.ModelButton(action_name='app.preferences')
         preferences_menuitem.get_child().destroy()
-        preferences_menuitem.add(Granite.AccelLabel.from_action_name("Preferences", "app.preferences"))
+        prefs_label = Granite.AccelLabel.from_action_name("Preferences", "app.preferences")
+        prefs_label.set_valign(Gtk.Align.CENTER)
+        preferences_menuitem.add(prefs_label)
 
-        about_menuitem = Gtk.ModelButton(
-            text=_("About"),
-            action_name='app.about')
+        about_menuitem = Gtk.ModelButton(text=_("About"), action_name='app.about')
 
-        preview_menuitem = Gtk.ModelButton(
-            action_name='document.preview')
+        preview_menuitem = Gtk.ModelButton(action_name='document.preview')
         preview_menuitem.get_child().destroy()
-        preview_menuitem.add(Granite.AccelLabel.from_action_name("Preview", "document.preview"))
+        preview_label = Granite.AccelLabel.from_action_name("Preview", "document.preview")
+        preview_label.set_valign(Gtk.Align.CENTER)
+        preview_menuitem.add(preview_label)
 
-        shortcuts_menuitem = Gtk.ModelButton(
-            text=_("Shortcuts"),
-            action_name='app.shortcuts')
-        format_shortcuts_menuitem = Gtk.ModelButton(
-            text=_("Markup Shortcuts"),
-            action_name='app.format_shortcuts')
+        shortcuts_menuitem = Gtk.ModelButton(text=_("Shortcuts"), action_name='app.shortcuts')
+        format_shortcuts_menuitem = Gtk.ModelButton(text=_("Markup Shortcuts"), action_name='app.format_shortcuts')
 
-        backup_menuitem = Gtk.ModelButton(
-            action_name='document.backup')
+        backup_menuitem = Gtk.ModelButton(action_name='document.backup')
         backup_menuitem.get_child().destroy()
-        backup_menuitem.add(Granite.AccelLabel.from_action_name("Make backup", "document.backup"))
+        backup_label = Granite.AccelLabel.from_action_name("Make backup", "document.backup")
+        backup_label.set_valign(Gtk.Align.CENTER)
+        backup_menuitem.add(backup_label)
 
-        quit_menuitem = Gtk.ModelButton(
-            text=_("Quit"),
-            action_name='app.quit')
+        quit_menuitem = Gtk.ModelButton(text=_("Quit"), action_name='app.quit')
         quit_menuitem.get_child().destroy()
-        quit_menuitem.add(Granite.AccelLabel.from_action_name("Quit", "app.quit"))
+        quit_label = Granite.AccelLabel.from_action_name("Quit", "app.quit")
+        quit_label.set_valign(Gtk.Align.CENTER)
+        quit_menuitem.add(quit_label)
 
-        menu_grid = Gtk.Grid(margin_bottom=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
+        menu_grid = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL, width_request=200,
+                             margin_bottom=6, margin_start=6, margin_end=6)
         menu_grid.attach(font_size_grid, 0, 0, 3, 1)
         menu_grid.attach(self.make_sep(), 0, 1, 3, 1)
         menu_grid.attach(preferences_menuitem, 0, 2, 3, 1)

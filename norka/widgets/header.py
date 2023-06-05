@@ -139,7 +139,7 @@ class Header(Gtk.Box):
             self.header_box.set_visible_child_name("grid_header")
 
     def update_path_label(self, path: str = "/") -> None:
-        path = path.replace('/',' > ') if path != '/' else ''
+        path = path.replace('/', ' > ') if path != '/' else ''
         self.subtitle_path_label.set_label(_('root') + path)
 
     def update_title(self, title: str = "") -> None:
