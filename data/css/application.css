@@ -43,15 +43,11 @@
     border-radius: 4px;
 }*/
 
-.stat_title_label {
-  font-size: 200%;
-}
+/*.stat_title_label {*/
+/*  font-size: 200%;*/
+/*}*/
 
-.stat_label_data {
-  font-size: 150%;
-  font-weight: bold;
-}
-
-.stat_label {
-  color: shade(@fg_color, 1.5);
-}
+/*.stat_label_data {*/
+/*  font-size: 130%;*/
+/*  font-weight: bolder;*/
+/*}*/

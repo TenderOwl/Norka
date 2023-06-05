@@ -40,7 +40,7 @@ from norka.services.writeas import Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
-from norka.widgets.extended_stats_dialog import ExtendedStatsDialog
+from norka.widgets.extended_stats_dialog import ExtendedStatsWindow
 from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
@@ -1040,7 +1040,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                                action: Gio.SimpleAction,
                                name: str = None) -> None:
         if not self.extended_stats_dialog:
-            self.extended_stats_dialog = ExtendedStatsDialog(window=self)
+            self.extended_stats_dialog = ExtendedStatsWindow(window=self)
             self.extended_stats_dialog.connect(
                 'destroy', self.on_extended_stats_dialog_close)
 
