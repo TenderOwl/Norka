@@ -193,6 +193,7 @@
                         <property name="focus-on-click">False</property>
                         <property name="receives-default">True</property>
                         <property name="image">image-grid-menu</property>
+                        <property name="menu-model">appmenu</property>
                         <style>
                             <class name="flat"/>
                         </style>
@@ -420,4 +421,43 @@
             </packing>
         </child>
     </object>
+
+    <menu id="appmenu">
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">_Preferences</attribute>
+            <attribute name="action">app.preferences</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Preview</attribute>
+            <attribute name="action">document.preview</attribute>
+          </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Markup Shortcuts</attribute>
+                <attribute name="action">app.format_shortcuts</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">Shortcuts</attribute>
+                <attribute name="action">app.shortcuts</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">About</attribute>
+                <attribute name="action">app.about</attribute>
+            </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">Make _Backup</attribute>
+            <attribute name="action">document.backup</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">_Quit</attribute>
+            <attribute name="action">app.quit</attribute>
+          </item>
+        </section>
+      </menu>
 </interface>

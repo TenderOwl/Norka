@@ -122,7 +122,7 @@ class Header(Gtk.Box):
             Granite.markup_accel_tooltip(None, _('Show Archived files')))
 
         self.grid_menu_button: Gtk.MenuButton = self.builder.get_object("grid_menu_button")
-        self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
+        # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
         self.editor_menu_button: Gtk.MenuButton = self.builder.get_object("editor_menu_button")
         self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
