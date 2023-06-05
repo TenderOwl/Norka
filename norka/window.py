@@ -103,6 +103,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.view.connect('item-activated', self.on_document_item_activated)
 
         self.editor = Editor(self.storage, self.settings)
+        self.editor.connect('document-changed', self.on_document_changed)
         self.editor.connect('update-document-stats', self.update_document_stats)
         self.editor.connect('loading', self.editor_loading)
 
@@ -491,6 +492,11 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.import_document(file_path)
 
         dialog.destroy()
+
+    def on_document_changed(self, editor: Editor, is_changed: bool = False):
+        # Show Save button when autosaving disabled
+        if not self.settings.get_boolean('autosave'):
+            self.header.show_save_button = is_changed
 
     def on_document_import(self,
                            sender: Gtk.Widget = None,
@@ -1120,6 +1126,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
+        print('is_loading -> ', is_loading)
         if is_loading:
             self.header.loader_spinner.start()
         else:

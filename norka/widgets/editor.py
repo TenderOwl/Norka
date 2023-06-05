@@ -59,6 +59,7 @@ class Editor(Gtk.Grid):
         'insert-image': (GObject.SignalFlags.ACTION, None, ()),
         'update-document-stats': (GObject.SignalFlags.ACTION, None, ()),
         'loading': (GObject.SignalFlags.ACTION, None, (bool,)),
+        'document-changed': (GObject.SignalFlags.ACTION, None, (bool,)),
     }
 
     def __init__(self, storage: Storage, settings: Settings):
@@ -162,8 +163,11 @@ class Editor(Gtk.Grid):
                                                       settings=self.search_settings)
         self.search_iter = None
 
-    def on_buffer_changed(self, buffer: Gtk.TextBuffer, *_):
+    def on_buffer_changed(self, buffer: Gtk.TextBuffer):
         self.buffer.set_modified(True)
+        self.emit('document-changed', True)
+        if self.settings.get_boolean('autosave'):
+            self.start_saver()
 
     def create_document(self, title: str = None, folder_path: str = '/') -> None:
         """Create new document and put it to storage
@@ -175,8 +179,9 @@ class Editor(Gtk.Grid):
             title = _('Nameless')
         self.document = Document(title=title, folder=folder_path)
         self.view.grab_focus()
-        # Begin autosaving timer
-        self.start_saver()
+        if self.settings.get_boolean('autosave'):
+            # Begin autosaving timer
+            self.start_saver()
         self.emit('document-load', self.document.document_id)
 
     def load_document(self, doc_id: int) -> None:
@@ -186,21 +191,27 @@ class Editor(Gtk.Grid):
         :type doc_id: int
         :return: None
         """
+        self.emit('loading', True)
+        self.view.set_editable(False)
+
         self.document = self.storage.get(doc_id)
 
+        self.buffer.begin_not_undoable_action()
         self.buffer.set_text(self.document.content)
-        self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
+        self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
+        self.buffer.end_not_undoable_action()
+        self.view.set_editable(True)
+
         self.view.grab_focus()
-        # Begin autosaving timer
-        self.start_saver()
+        if self.settings.get_boolean('autosave'):
+            # Begin autosaving timer
+            self.start_saver()
         self.emit('document-load', self.document.document_id)
 
     def unload_document(self, save=True) -> None:
         """Save current document and clear text buffer
-
-        :return: None
         """
         # self.stats_overlay.destroy()
         if not self.document:
@@ -212,6 +223,7 @@ class Editor(Gtk.Grid):
         self.emit('document-close', self.document.document_id)
         self.document = None
         self.hide_search_bar()
+        self.emit('loading', False)
 
     def start_saver(self):
         GLib.timeout_add_seconds(interval=2, function=self.save_document)
@@ -231,6 +243,7 @@ class Editor(Gtk.Grid):
         self.buffer.set_text(txt)
         self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
+        self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
 
         return True
@@ -240,7 +253,6 @@ class Editor(Gtk.Grid):
             return False
 
         self.emit('loading', True)
-        print('saving document')
         text = self.buffer.get_text(
             self.buffer.get_start_iter(),
             self.buffer.get_end_iter(),
@@ -268,6 +280,7 @@ class Editor(Gtk.Grid):
                                {"content": text, 'title': self.document.title}):
             self.document.content = text
             self.buffer.set_modified(False)
+            self.emit('document-changed', False)
             Logger.debug('Document %s saved', self.document.document_id)
             self.emit('loading', False)
             return True

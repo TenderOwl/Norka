@@ -1,3 +1,4 @@
+@define-color suggested_bg_color #3584e4;
 
 @binding-set editor-bindings {
   bind "<ctl>i" { "insert-italic" () };
@@ -37,6 +38,22 @@
   /*border: none;*/
   /*background: transparent;*/
   font-family: 'iA Writer Duospace', serif;
+}
+
+button.suggested-action {
+  background-color: @suggested_bg_color;
+  color: rgb(255, 255, 255);
+  border: none;
+}
+
+button.suggested-action :hover {
+  background-color: lighter(@suggested_bg_color);
+  border: none;
+}
+
+button.suggested-action :active {
+  background-color: darker(@suggested_bg_color);
+  border: none;
 }
 
 /*.quick-dialog entry {

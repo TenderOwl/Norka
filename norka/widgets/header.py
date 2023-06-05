@@ -25,7 +25,7 @@
 from enum import Enum
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gdk, Granite, Handy
+from gi.repository import Gtk, Gdk, Granite, Handy, GObject
 
 from norka.define import RESOURCE_PREFIX
 from norka.services.stats_handler import DocumentStats
@@ -41,6 +41,8 @@ class StatsMode(Enum):
 class Header(Gtk.Box):
     __gtype_name__ = 'Header'
 
+    show_save_button = GObject.Property(type=bool, default=False)
+
     def __init__(self, settings, **kwargs):
         super().__init__(**kwargs)
 
@@ -54,6 +56,8 @@ class Header(Gtk.Box):
         self.title_label: Gtk.Label = self.builder.get_object('title_label')
         self.subtitle_label: Gtk.Label = self.builder.get_object('subtitle_label')
         self.subtitle_eventbox: Gtk.EventBox = self.builder.get_object('subtitle_eventbox')
+        self.save_btn_revealer: Gtk.Revealer = self.builder.get_object('save_btn_revealer')
+        self.save_btn: Gtk.EventBox = self.builder.get_object('save_btn')
 
         self.stats_mode = StatsMode.STATS
 
@@ -91,6 +95,8 @@ class Header(Gtk.Box):
             Granite.markup_accel_tooltip(
                 ('<Control>w', ),
                 _('Save document and return to documents list')))
+
+        self.bind_property('show-save-button', self.save_btn_revealer, 'reveal-child')
 
         # # self.search_button = Gtk.ToggleButton()
         # # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
