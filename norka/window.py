@@ -49,7 +49,7 @@ from norka.widgets.rename_popover import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
-@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/window.ui"))
+@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
 class NorkaWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 

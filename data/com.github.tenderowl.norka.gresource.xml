@@ -5,7 +5,7 @@
 		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
 		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 		<file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
-		<file preprocess="xml-stripblanks">ui/window.ui</file>
+		<file preprocess="xml-stripblanks">ui/main_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/headerbar.ui</file>
 		<file preprocess="xml-stripblanks">ui/stats.ui</file>
