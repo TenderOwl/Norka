@@ -64,10 +64,7 @@ class Exporter:
 
     @staticmethod
     def export_pdf(path: str, document: Document) -> str:
-        print('export pdf to ', path)
-
         html = Exporter.render_html(document.content, document.title)
-        print('html rendered')
 
         pdf_exporter = PDFExporter(path, html)
         pdf_exporter.print()
@@ -117,7 +114,6 @@ class PDFExporter(GObject.GObject):
 
     def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
         # When html is fully loaded then setup PrintOperation and print to PDF.
-        print('PDFPrinter event: ', event)
         if event == WebKit2.LoadEvent.FINISHED:
             print_settings = Gtk.PrintSettings()
             print_settings.set(Gtk.PRINT_SETTINGS_OUTPUT_BASENAME, self.basename)
@@ -125,19 +121,15 @@ class PDFExporter(GObject.GObject):
             print_settings.set(Gtk.PRINT_SETTINGS_OUTPUT_FILE_FORMAT, "pdf")
             print_settings.set_quality(Gtk.PrintQuality.HIGH)
             print_settings.set_printer("Print to File")
-            print('PDFPrinter preparing')
 
             operation: WebKit2.PrintOperation = WebKit2.PrintOperation.new(self.web_view)
             operation.set_print_settings(print_settings)
             operation.connect('finished', lambda op: self.emit('finished', self.path))
             operation.print_()
-            print('PDFPrinter creating PDF')
 
     def print(self):
         self.web_view.connect('load-changed', self.on_load_changed)
-        print('webview created')
         self.web_view.load_html(self.html)
-        print('webview loading text')
 
 
 class Printer(GObject.GObject):
@@ -167,9 +159,7 @@ class Printer(GObject.GObject):
 
     def print(self):
         self.web_view.connect('load-changed', self.on_load_changed)
-        print('webview created')
         self.web_view.load_html(self.html)
-        print('webview loading text')
 
 # class PlaintextRenderer(mistune.HTMLRenderer):
 #

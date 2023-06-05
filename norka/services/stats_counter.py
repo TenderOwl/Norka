@@ -134,5 +134,4 @@ class StatsCounter:
 
     def stop(self):
         """Stops the worker process. StatsCounter shouldn't be used after this."""
-        print("stop counter")
         self.parent_conn.close()

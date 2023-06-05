@@ -52,7 +52,6 @@ class Medium:
     def get_user(self):
         try:
             response = self.session.get(self.api_route('/me'))
-            print(response)
             if response.status_code == 200:
                 return response.json().get('data')
         except Exception as e:

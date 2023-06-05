@@ -1126,7 +1126,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
-        print('is_loading -> ', is_loading)
         if is_loading:
             self.header.loader_spinner.start()
         else:
