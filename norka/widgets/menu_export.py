@@ -32,7 +32,7 @@ from norka.define import RESOURCE_PREFIX
 class MenuExport(Gtk.Popover):
     def __init__(self, settings):
         super().__init__()
-        self.set_constrain_to(Gtk.PopoverConstraint.NONE)
+        # self.set_constrain_to(Gtk.PopoverConstraint.NONE)
 
         self.settings = settings
 
@@ -43,8 +43,7 @@ class MenuExport(Gtk.Popover):
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
             image_position=Gtk.PositionType.TOP)
-        self.export_plain.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text.svg"))
+        self.export_plain.set_image(Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text.svg"))
 
         self.export_markdown = Gtk.Button(
             label=_("Markdown"),
@@ -58,7 +57,7 @@ class MenuExport(Gtk.Popover):
             Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-markdown.svg"))
 
         self.export_html = Gtk.Button(
-            _("Html"),
+            label=_("Html"),
             action_name="document.export-html",
             tooltip_text=_("Export document to HTML"),
             relief=Gtk.ReliefStyle.NONE,
@@ -74,13 +73,13 @@ class MenuExport(Gtk.Popover):
             tooltip_text=_("Export document to PDF"),
             relief=Gtk.ReliefStyle.NONE,
             always_show_image=True,
-            image_position=Gtk.PositionType.TOP,)
+            image_position=Gtk.PositionType.TOP, )
         self.export_pdf.set_tooltip_text(_("Export document to PDF"))
         self.export_pdf.set_image(
             Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-pdf.svg"))
 
         self.export_docx = Gtk.Button(
-            _("Docx"),
+            label=_("Docx"),
             action_name="document.export-docx",
             tooltip_text=_("Export document to Docx"),
             relief=Gtk.ReliefStyle.NONE,
@@ -104,28 +103,38 @@ class MenuExport(Gtk.Popover):
         self.carousel.insert(export_grid_1, 0)
         self.carousel.insert(export_grid_2, 1)
 
-        self.export_file = Gtk.ModelButton()
-        self.export_file.get_child().destroy()
-        self.export_file.add(Granite.AccelLabel(label=_("Export to file"), accel_string='<Control><Shift>s'))
+        self.export_file = Gtk.Button(label=_("Export to file"))
         self.export_file.set_action_name("document.export")
 
-        self.export_medium = Gtk.ModelButton()
-        self.export_medium.get_child().destroy()
-        self.export_medium.add(Granite.AccelLabel(label=_("To Medium")))
+        self.export_medium = Gtk.Button(label=_("To Medium"))
+        self.export_medium.get_style_context().add_class('flat')
         self.export_medium.set_action_name("document.export-medium")
 
-        self.export_writeas = Gtk.ModelButton()
-        self.export_writeas.get_child().destroy()
-        self.export_writeas.add(Granite.AccelLabel(label=_("To Write.as")))
+        self.export_writeas = Gtk.Button(label=_("To Write.as"))
+        self.export_writeas.get_style_context().add_class('flat')
         self.export_writeas.set_action_name("document.export-writeas")
 
-        menu_grid = Gtk.Grid(margin_bottom=3, margin_top=3, orientation=Gtk.Orientation.VERTICAL, width_request=200)
-        menu_grid.attach(Granite.HeaderLabel(_("Files"), margin_left=12, margin_right=12), 0, 0, 3, 1)
+        menu_grid = Gtk.Grid(margin_bottom=8, margin_top=8,
+                             margin_start=8, margin_end=8,
+                             orientation=Gtk.Orientation.VERTICAL, width_request=200)
+        files_label = Gtk.Label(
+            label=_("Files"),
+            margin_top=8,
+            margin_bottom=8,
+            halign=Gtk.Align.START)
+        files_label.get_style_context().add_class('title-4')
+        menu_grid.attach(files_label, 0, 0, 3, 1)
         menu_grid.attach(self.carousel, 0, 1, 3, 1)
         menu_grid.attach(self.carousel_indicator, 0, 2, 3, 1)
 
         menu_grid.attach(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, margin_top=12), 0, 2, 3, 1)
-        menu_grid.attach(Granite.HeaderLabel(_("Internet"), margin_left=12, margin_right=12), 0, 3, 3, 1)
+        internet_label = Gtk.Label(
+            label=_("Internet"),
+            margin_top=8,
+            margin_bottom=8,
+            halign=Gtk.Align.START)
+        internet_label.get_style_context().add_class('title-4')
+        menu_grid.attach(internet_label, 0, 3, 3, 1)
         menu_grid.attach(self.export_medium, 0, 4, 3, 1)
         menu_grid.attach(self.export_writeas, 0, 5, 3, 1)
 
