@@ -30,7 +30,7 @@ from norka.models.document import Document
 from norka.services.storage import Storage
 
 
-class QuickFindDialog(Granite.Dialog):
+class QuickFindDialog(Gtk.Dialog):
     __gtype_name__ = 'QuickFindDialog'
 
     def __init__(self, storage: Storage):
