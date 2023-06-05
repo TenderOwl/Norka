@@ -48,6 +48,7 @@ class DocumentGrid(Gtk.Grid):
         'path-changed': (GObject.SIGNAL_RUN_FIRST, None, (str, str)),
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'document-import': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        'document-activated': (GObject.SIGNAL_RUN_FIRST, None, ()),
         'rename-folder': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
     }
 
@@ -86,6 +87,7 @@ class DocumentGrid(Gtk.Grid):
         self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
 
         self.view.connect('show', self.reload_items)
+        self.view.connect('item-activated', self.on_icon_item_activate)
         self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
@@ -297,6 +299,10 @@ class DocumentGrid(Gtk.Grid):
         # get the resulting pixbuf
         surface = context.get_target()
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
+
+    def on_icon_item_activate(self, view: Gtk.IconView, path: Gtk.TreePath, *_):
+        self.selected_path = path
+        self.emit('document-activated')
 
     def on_button_pressed(self, widget: Gtk.Widget, event: Gdk.EventButton):
         """Handle mouse button press event and display context menu if needed.

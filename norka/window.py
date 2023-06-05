@@ -100,7 +100,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.connect('document-create', self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
-        self.document_grid.view.connect('item-activated', self.on_document_item_activated)
+        self.document_grid.connect('document-activated', self.on_document_item_activated)
 
         self.editor = Editor(self.storage, self.settings)
         self.editor.connect('document-changed', self.on_document_changed)
@@ -417,7 +417,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             self.check_grid_items()
 
-    def on_document_item_activated(self, sender: Gtk.Widget, path: Gtk.TreePath) -> None:
+    def on_document_item_activated(self, sender: Gtk.Widget) -> None:
         """Activate currently selected document in grid and open it in editor.
 
         :param sender:
