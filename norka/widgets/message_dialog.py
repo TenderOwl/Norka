@@ -23,22 +23,23 @@
 # SOFTWARE.
 from gettext import gettext as _
 
-from gi.repository import Granite, Gtk, Gio
+from gi.repository import Gtk, Gio
 
 from norka.define import APP_TITLE
 
 
-class MessageDialog(Granite.MessageDialog):
+class MessageDialog(Gtk.MessageDialog):
     __gtype_name__ = 'DeleteDialog'
 
     def __init__(self, primary_text: str, secondary_text: str, image_icon_name: str,
                  buttons: Gtk.ButtonsType = Gtk.ButtonsType.NONE):
         super().__init__(
-            primary_text=primary_text,
+            text=primary_text,
             secondary_text=secondary_text,
-            buttons=buttons
+            buttons=buttons,
+            message_type=Gtk.MessageType.WARNING
         )
-        self.set_image_icon(Gio.ThemedIcon.new(image_icon_name))
+        # self.set_image_icon(Gio.ThemedIcon.new(image_icon_name))
         self.set_title(APP_TITLE)
         self.set_transient_for(Gtk.Application.get_default().props.active_window)
 
