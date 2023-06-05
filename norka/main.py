@@ -224,7 +224,7 @@ class Application(Gtk.Application):
         dialog.show()
 
     def on_format_shortcuts(self, action, param):
-        dialog = FormatShortcutsDialog()
+        dialog = FormatShortcutsWindow()
         dialog.set_transient_for(self.window)
         dialog.show()
 

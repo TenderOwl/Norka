@@ -24,7 +24,7 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Handy
+from gi.repository import Gtk, Handy, Granite
 from norka.define import RESOURCE_PREFIX
 
 
@@ -32,10 +32,11 @@ from norka.define import RESOURCE_PREFIX
 class FormatShortcutsWindow(Handy.Window):
     __gtype_name__ = "FormatShortcutsWindow"
 
+    content_box: Gtk.Box = Gtk.Template.Child()
+
     def __init__(self):
         super().__init__(title=_('Markup Help'))
-        self.set_default_size(300, 340)
-        self.set_border_width(6)
+        self.set_default_size(300, 620)
 
         h1_label = Gtk.Label(label=f'{self.span_text("#")} {_("Header")} 1',
                              halign=Gtk.Align.START,
@@ -153,11 +154,7 @@ class FormatShortcutsWindow(Handy.Window):
         grid.attach(code_block_label, 1, 15, 1, 1)
         grid.attach(code_block_keys, 2, 15, 1, 1)
 
-        self.get_content_area().add(grid)
-
-        close_button = Gtk.Button(label=_("Close"))
-        close_button.connect('clicked', self.on_close_activated)
-        self.add_action_widget(close_button, 0)
+        self.content_box.add(grid)
 
         self.show_all()
 

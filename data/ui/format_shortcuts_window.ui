@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.24"/>
-  <requires lib="libhandy" version="1.0"/>
-  <template class="FormatShortcutsWindow" parent="HdyWindow">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox" id="content_box">
-        <property name="visible">True</property>
+    <requires lib="gtk+" version="3.24"/>
+    <requires lib="libhandy" version="1.0"/>
+    <template class="FormatShortcutsWindow" parent="HdyWindow">
         <property name="can-focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="orientation">vertical</property>
+        <style>
+            <class name="csd"></class>
+        </style>
         <child>
-          <placeholder/>
+            <object class="GtkBox" id="content_box">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                    <object class="HdyHeaderBar" id="header_bar">
+                        <property name="visible">true</property>
+                        <property name="title" translatable="true">Formatting</property>
+                        <property name="show-close-button">true</property>
+                        <style>
+                            <class name="csd"></class>
+                        </style>
+                    </object>
+                </child>
+
+            </object>
         </child>
-      </object>
-    </child>
-  </template>
+
+
+    </template>
 </interface>
