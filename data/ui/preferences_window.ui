@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+    <requires lib="gtk+" version="3.24"/>
+    <requires lib="libhandy" version="1.0"/>
+    <template class="PreferencesDialog" parent="HdyWindow">
+        <child>
+            <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                    <object class="HdyHeaderBar">
+                        <property name="visible">True</property>
+                        <property name="show-close-button">True</property>
+                        <property name="centering-policy">strict</property>
+                        <child type="title">
+                            <object class="HdyViewSwitcherTitle"
+                                    id="view_switcher_title">
+                                <property name="stack">main_stack</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkOverlay" id="overlay">
+                        <property name="visible">true</property>
+                        <child>
+                            <object class="GtkBox" id="main_box">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                    <object class="GtkStack" id="main_stack">
+                                        <property name="visible">True</property>
+                                        <property name="hexpand">true</property>
+                                        <property name="margin-start">16</property>
+                                        <property name="margin-end">16</property>
+                                        <property name="margin-bottom">18</property>
+                                        <property name="margin-top">8</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="HdyViewSwitcherBar">
+                                        <property name="stack">main_stack</property>
+                                        <property name="reveal"
+                                                  bind-source="view_switcher_title"
+                                                  bind-property="title-visible"
+                                                  bind-flags="sync-create"/>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

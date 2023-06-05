@@ -24,29 +24,26 @@
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell
+from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell, Handy
 
+from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.services.medium import Medium
 from norka.services.writeas import Writeas
 
 
-class PreferencesDialog(Granite.Dialog):
-    __gtype_name__ = 'SettingsDialog'
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/preferences_window.ui')
+class PreferencesDialog(Handy.Window):
+    __gtype_name__ = 'PreferencesDialog'
+
+    overlay: Gtk.Overlay = Gtk.Template.Child()
+    main_stack: Gtk.Stack = Gtk.Template.Child()
 
     def __init__(self, transient_for, settings):
         super().__init__(transient_for=transient_for, modal=True)
 
         self.settings = settings
-        self.set_default_size(340, 340)
 
-        hints = Gdk.Geometry()
-        hints.min_width = 340
-        hints.min_height = 340
-        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-
-        self.set_border_width(5)
-        self.set_deletable(False)
         self.set_title(_('Preferences'))
 
         langs_available: List[Gspell.Language] = Gspell.language_get_available()
@@ -92,7 +89,9 @@ class PreferencesDialog(Granite.Dialog):
 
         general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
 
-        general_grid.attach(Granite.HeaderLabel(_("General")), 0, 0, 3, 1)
+        general_label = Gtk.Label(label=_("General"), halign=Gtk.Align.START)
+        general_label.get_style_context().add_class('title-4')
+        general_grid.attach(general_label, 0, 0, 3, 1)
         general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
         general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
         general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
@@ -102,7 +101,9 @@ class PreferencesDialog(Granite.Dialog):
         general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
         general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
 
-        general_grid.attach(Granite.HeaderLabel(_("Tabs")), 0, 5, 3, 1)
+        tabs_label = Gtk.Label(label=_("Tabs"), halign=Gtk.Align.START)
+        tabs_label.get_style_context().add_class('title-4')
+        general_grid.attach(tabs_label, 0, 5, 3, 1)
         general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
         general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
         general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
@@ -131,7 +132,9 @@ class PreferencesDialog(Granite.Dialog):
 
         style_chooser.set_style_scheme(scheme)
 
-        interface_grid.attach(Granite.HeaderLabel(_("Appearance")), 0, 0, 3, 1)
+        appearance_label = Gtk.Label(label=_("Appearance"), halign=Gtk.Align.START)
+        appearance_label.get_style_context().add_class('title-4')
+        interface_grid.attach(appearance_label, 0, 0, 3, 1)
         interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
         interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
         interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
@@ -144,27 +147,13 @@ class PreferencesDialog(Granite.Dialog):
         self.render_writeas(export_grid)
 
         # Main Stack
-        main_stack = Gtk.Stack(margin=6, margin_bottom=18, margin_top=8)
-        main_stack.add_titled(general_grid, "behavior", _("Behavior"))
-        main_stack.add_titled(interface_grid, "interface", _("Interface"))
-        main_stack.add_titled(export_grid, "export", _("Export"))
+        self.main_stack.add_titled(general_grid, "behavior", _("Behavior"))
+        self.main_stack.add_titled(interface_grid, "interface", _("Interface"))
+        self.main_stack.add_titled(export_grid, "export", _("Export"))
 
-        main_stackswitcher = Gtk.StackSwitcher(homogeneous=True)
-        main_stackswitcher.set_stack(main_stack)
-        main_stackswitcher.set_halign(Gtk.Align.CENTER)
-
-        main_grid = Gtk.Grid()
-        main_grid.attach(main_stackswitcher, 0, 0, 1, 1)
-        main_grid.attach(main_stack, 0, 1, 1, 1)
-
-        self.overlay = Gtk.Overlay()
-        self.overlay.add(main_grid)
         self.overlay.add_overlay(self.toast)
-        self.get_content_area().add(self.overlay)
 
-        close_button = Gtk.Button(label=_("Close"))
-        close_button.connect('clicked', self.on_close_activated)
-        self.add_action_widget(close_button, 0)
+        self.show_all()
 
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
@@ -174,7 +163,9 @@ class PreferencesDialog(Granite.Dialog):
         self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
         self.medium_link.set_label(_("Create Integration token and copy it here"))
 
-        content_grid.attach(Granite.HeaderLabel("Medium.com"), 0, 0, 3, 1)
+        medium_label = Gtk.Label(label="Medium.com", halign=Gtk.Align.START)
+        medium_label.get_style_context().add_class('title-4')
+        content_grid.attach(medium_label, 0, 0, 3, 1)
         content_grid.attach(Gtk.Label(_("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         content_grid.attach(self.medium_token, 1, 1, 2, 1)
         content_grid.attach(self.medium_link, 0, 2, 3, 1)
@@ -191,7 +182,9 @@ class PreferencesDialog(Granite.Dialog):
         self.writeas_logout_button = Gtk.Button(label=_("Logout"), hexpand=True)
         self.writeas_logout_button.connect("clicked", self.on_writeas_logout)
 
-        content_grid.attach(Granite.HeaderLabel("Write.as"), 0, 3, 3, 1)
+        writeas_label = Gtk.Label(label="Write.as", halign=Gtk.Align.START)
+        writeas_label.get_style_context().add_class('title-4')
+        content_grid.attach(writeas_label, 0, 3, 3, 1)
 
         self.writeas_login_revealer = Gtk.Revealer()
         self.writeas_login_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
