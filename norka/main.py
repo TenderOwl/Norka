@@ -28,7 +28,6 @@ from typing import List
 
 import gi
 
-from norka.widgets.format_shortcuts_dialog import FormatShortcutsDialog
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
@@ -44,6 +43,7 @@ from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
 from norka.widgets.about_dialog import AboutDialog
+from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
 

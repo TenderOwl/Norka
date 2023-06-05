@@ -24,15 +24,14 @@
 
 from gettext import gettext as _
 
-import gi
-
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk, Handy
+from norka.define import RESOURCE_PREFIX
 
 
-class FormatShortcutsDialog(Granite.Dialog):
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/format_shortcuts_window.ui')
+class FormatShortcutsWindow(Handy.Window):
+    __gtype_name__ = "FormatShortcutsWindow"
+
     def __init__(self):
         super().__init__(title=_('Markup Help'))
         self.set_default_size(300, 340)
@@ -67,7 +66,7 @@ class FormatShortcutsDialog(Granite.Dialog):
 
         link_label = Gtk.Label(
             label=f'{self.span_text("[")}{_("Link title")}{self.span_text("]")}'
-            f'{self.span_text("(")}{_("URL")}{self.span_text(")")}',
+                  f'{self.span_text("(")}{_("URL")}{self.span_text(")")}',
             halign=Gtk.Align.START,
             use_markup=True)
         link_keys = Granite.AccelLabel(accel_string='<Control>k')
