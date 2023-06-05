@@ -27,33 +27,33 @@ from gettext import gettext as _
 from gi.repository import Gtk, Granite
 
 
-class FolderCreateDialog(Granite.Dialog):
+class FolderCreateDialog(Gtk.MessageDialog):
     __gtype_name__ = 'FolderCreateDialog'
 
     def __init__(self, folder_title=None):
-        super().__init__(title=_("Create folder"))
+        super().__init__(
+            # title=_("Create folder"),
+            message_type=Gtk.MessageType.QUESTION,
+            text=_("Create folder?"),
+            secondary_text=_("We will put these files inside"),
+            modal=True,
+            transient_for=Gtk.Application.get_default().props.active_window
+        )
 
-        self.set_default_size(300, 100)
-        self.set_modal(True)
-        self.set_transient_for(Gtk.Application.get_default().props.active_window)
+        self.set_default_size(320, 100)
 
-        header = Granite.HeaderLabel(_('Create folder'), halign=Gtk.Align.CENTER)
-
-        self.entry = Gtk.Entry(placeholder_text=_('Folder name'), hexpand=True)
+        self.entry = Gtk.Entry(placeholder_text=_('Folder name'), hexpand=True, visible=True)
         self.entry.set_text(folder_title)
         self.entry.connect('activate', lambda entry: self.response(Gtk.ResponseType.ACCEPT))
 
-        layout = Gtk.Grid(row_spacing=12, margin_start=12, margin_end=12)
-        layout.attach(header, 0, 0, 1, 1)
-        layout.attach(self.entry, 0, 1, 1, 1)
+        layout = Gtk.Box(margin_start=12, margin_end=12, visible=True)
+        layout.add(self.entry)
 
         self.get_content_area().add(layout)
         self.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
 
         suggested_button = self.add_button(_("Create"), Gtk.ResponseType.ACCEPT)
-        suggested_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION)
-
-        self.show_all()
+        suggested_button.get_style_context().add_class('suggested-action')
 
     @property
     def folder_title(self):
