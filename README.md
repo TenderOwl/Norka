@@ -1,10 +1,8 @@
 # Norka
 
 [![Please do not theme this app](https://stopthemingmy.app/badge.svg)](https://stopthemingmy.app)
-[![Build Status](https://github.com/tenderowl/Norka/workflows/CI/badge.svg)](https://github.com/tenderowl/Norka/action)
 [![norka](https://snapcraft.io//norka/badge.svg)](https://snapcraft.io/norka)
 [![norka](https://snapcraft.io//norka/trending.svg?name=0)](https://snapcraft.io/norka)
-<a href="https://liberapay.com/tenderowl/donate"><img src="https://img.shields.io/liberapay/patrons/tenderowl.svg?logo=liberapay"></a>
 
 <div align="center">
   <span align="center"> <img width="80" height="70" class="center" src="https://github.com/tenderowl/norka/blob/master/data/icons/com.github.tenderowl.norka.svg" alt="Icon"></span>
@@ -12,12 +10,16 @@
   <h3 align="center">Continuous text editing for everyone</h3>
 </div>
 
-While I'm not the UX-man and it's just a hobby, I try to create visually appealing applications. And Norka is one of my trials to create a cozy text editor for GNOME and elementary OS exactly. 
-
-Markdown for markup; No files until you need it; Your notes always saved and can be exported in a moment.
+Imagine a hassle-free text-writing experience.
+Don't worry about saving files, complex markup, or accidentally deleted notes.
+  
+Do what you want to do - concentrate on beautiful stories, short notes, or inspired scripts. 
+Norka cares about you.
 
 <div align="center">
   <img class="center" alt="Norka" src="data/screenshots/app_screenshot.png" />
+  
+  <a href="https://www.buymeacoffee.com/tenderowl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 </div>
 
 ## Features
@@ -40,21 +42,18 @@ Read more on [tenderowl.com/work/norka](https://tenderowl.com/work/norka).
 
 ## Installation
 
-### Flathub
-<a href="https://flathub.org/apps/details/com.github.tenderowl.norka"><img height="50" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
+<a href='https://flathub.org/apps/com.github.tenderowl.norka'><img width='240' alt='Download on Flathub' src='https://dl.flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
-### Snap Store
+## Translations
 
-<a href="https://snapcraft.io/norka">
-  <img height="50" alt="Get it from the Snap Store" src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" />
-</a>
+[![Translation status](https://hosted.weblate.org/widgets/frog/-/norka/multi-auto.svg)](https://hosted.weblate.org/engage/frog/)
 
-### elementary OS AppCenter
-<a href="https://appcenter.elementary.io/com.github.tenderowl.norka"><img src="https://appcenter.elementary.io/badge.svg?new" alt="Get it on AppCenter" /></a>
+If you feel enough power to help me - you're welcome! Just click on a widget above 😉
 
 ## :tada: Support
-If you like Norka and you want to support its development, consider donating via Liberapay:  
-<a href="https://liberapay.com/tenderowl/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
+If you like Norka and you want to support its development it would be awesome if you help to buy me a coffee:
+
+<a href="https://www.buymeacoffee.com/tenderowl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 
 ## Tech part
