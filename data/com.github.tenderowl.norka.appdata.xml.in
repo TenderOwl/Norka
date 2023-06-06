@@ -6,18 +6,18 @@
     <name>Norka</name>
     <summary>Continuous text editor</summary>
     <description>
-        <p>Imagine text writing experience without the hassle. Don't worry about saving files, complex markup, or
-            accidentally deleted notes.
+        <p>Imagine a hassle-free text-writing experience.
+            Don't worry about saving files, complex markup, or accidentally deleted notes.
         </p>
-        <p>Do what you want to do - concentrate on beautiful stories, short notes, or documenting. Norka cares about
-            you.
+        <p>Do what you want to do - concentrate on beautiful stories, short notes, or inspired scripts.
+            Norka cares about you.
         </p>
         <ul>
-            <li>All your notes inside</li>
-            <li>Automatically saved in place</li>
-            <li>Can be easily exported to HTML, Docx and event PDF in one click</li>
-            <li>If you need markup - use markdown</li>
-            <li>Don't like the default theme - choose different</li>
+            <li>All your notes are stored inside.</li>
+            <li>Magically saved at any moment.</li>
+            <li>Easily exportable to HTML, Docx, and even PDF in one click.</li>
+            <li>If you need markup - use markdown, it's easy as pie.</li>
+            <li>Don't like the default theme - choose differently.</li>
         </ul>
     </description>
     <update_contact>andrey_AT_tenderowl.com</update_contact>
@@ -34,11 +34,6 @@
             </image>
         </screenshot>
         <screenshot>
-            <caption>Welcome screen</caption>
-            <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/norka-welcome.png
-            </image>
-        </screenshot>
-        <screenshot>
             <caption>Documents and Folders</caption>
             <image>https://raw.githubusercontent.com/tenderowl/norka/master/data/screenshots/norka-grid.png
             </image>
@@ -46,6 +41,17 @@
     </screenshots>
 
     <releases>
+        <release date="2023-06-06" version="1.1.0">
+            <description>
+                <p>Hooray 🎉️! A new version of the Norka text editor has been released, in which you will find many
+                    improvements and new features. The interface has become more modern and convenient, the processing
+                    of command line arguments has been fixed and improved, and a full-fledged autosave has finally
+                    started working 🤩️. Now you can write texts without any worries and enjoy the simplicity and beauty
+                    of Norka.
+                </p>
+                <p>Download the new version right now and try it yourself!</p>
+            </description>
+        </release>
         <release date="2022-03-08" version="1.0.1">
             <description>
                 <p>Fix issue when doesn't start Norka at the first launch.</p>
