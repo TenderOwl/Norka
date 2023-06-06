@@ -26,12 +26,12 @@ import os
 from gettext import gettext as _
 from urllib.parse import urlparse, unquote_plus
 
-from gi.repository import Granite, Gtk, Gdk, GObject
+from gi.repository import Granite, Gtk, Gdk, GObject, Handy
 
 from norka.define import TARGET_ENTRY_TEXT
 
 
-class Welcome(Granite.WidgetsWelcome):
+class Welcome(Handy.StatusPage):
     __gtype_name__ = 'NorkaWelcome'
 
     __gsignals__ = {
@@ -39,13 +39,29 @@ class Welcome(Granite.WidgetsWelcome):
     }
 
     def __init__(self):
-        super().__init__()
-        self.set_title(_('No documents yet'))
-        self.set_subtitle(_('Create one and start writing'))
-        self.append('document-new', _('New document'), _('Create empty document'))
-        self.append('document-import', _('Import document'), _('Import document'))
-        self.get_button_from_index(0).set_action_name('document.create')
-        self.get_button_from_index(1).set_action_name('document.import')
+        super().__init__(title=_('No documents yet'),
+                         description=_('Create or import and start writing'),
+                         icon_name='com.github.tenderowl.norka')
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        create_btn = Gtk.Button(label=_('New document'), action_name='document.create',
+                                tooltip_text=_('Create empty document'),
+                                always_show_image=True)
+        create_btn.set_image(Gtk.Image.new_from_icon_name('document-new-symbolic', Gtk.IconSize.BUTTON))
+        create_btn.get_style_context().add_class('flat')
+        box.add(create_btn)
+
+        import_btn = Gtk.Button(label=_('Import document'), action_name='document.import',
+                                tooltip_text=_('Import document'),
+                                always_show_image=True)
+        import_btn.set_image(Gtk.Image.new_from_icon_name('folder-open-symbolic', Gtk.IconSize.BUTTON))
+        import_btn.get_style_context().add_class('flat')
+        box.add(import_btn)
+
+        clamp = Handy.Clamp(maximum_size=360)
+        clamp.add(box)
+
+        self.add(clamp)
 
         # Enable drag-drop
         enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
@@ -53,17 +69,6 @@ class Welcome(Granite.WidgetsWelcome):
                            [enforce_target], Gdk.DragAction.COPY)
         self.connect('drag-data-received', self.on_drag_data_received)
 
-        # self.connect('activated', self.on_activated)
-
-    # def on_activated(self, sender: 'Welcome', index: int) -> None:
-    #     if index == 0:
-    #         # self.on_document_create_activated(sender, index)
-    #         self.emit('document.create')
-    #
-    #     if index == 1:
-    #         self.emit('document.import', sender)
-
-    # Move handler to window class
     def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
                               data: Gtk.SelectionData, info: int, time: int) -> None:
         if info == TARGET_ENTRY_TEXT:
