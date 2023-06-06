@@ -58,4 +58,4 @@ if __name__ == '__main__':
     Gio.Resource._register(resource)
 
     from norka import main
-    sys.exit(main.main())
+    sys.exit(main.main(VERSION))

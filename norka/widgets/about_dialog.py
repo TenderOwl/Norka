@@ -34,7 +34,7 @@ class AboutDialog(Gtk.AboutDialog):
         super().__init__(transient_for=transient_for, modal=modal)
         self.set_program_name(APP_TITLE)
         self.set_comments(_('Continuous text editor'))
-        self.set_copyright('© 2021, Tender Owl')
+        self.set_copyright('© 2021-2023, Tender Owl')
         self.set_website("https://tenderowl.com/work/norka")
         self.set_website_label(_('Learn more about Norka'))
         self.set_license_type(Gtk.License.MIT_X11)
