@@ -535,6 +535,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         self.header.show_spinner(True)
         try:
+            _doc_id = None
             with open(file_path, 'r') as _file:
                 lines = _file.readlines()
                 filename = os.path.basename(file_path)[:file_path.rfind('.')]
@@ -545,7 +546,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                 _doc_id = self.storage.add(_doc)
 
                 self.document_grid.reload_items()
-            return True
+            return _doc_id or True
         except Exception as e:
             print(e)
             return False

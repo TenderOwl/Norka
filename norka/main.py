@@ -46,11 +46,12 @@ class Application(Gtk.Application):
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
-                         flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+                         flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
         Handy.init()
 
-        self.add_main_option('new', 110, GLib.OptionFlags.OPTIONAL_ARG, GLib.OptionArg.STRING,
+        self.add_main_option('new', ord("n"),
+                             GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
                              _('Open new document on start.'))
 
         self.version = version
@@ -74,25 +75,25 @@ class Application(Gtk.Application):
         except Exception as e:
             sys.exit(e)
 
-        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action = Gio.SimpleAction.new(name="quit", parameter_type=None)
         quit_action.connect("activate", self.on_quit)
         self.add_action(quit_action)
         self.set_accels_for_action('app.quit', ('<Control>q',))
 
-        about_action = Gio.SimpleAction.new("about", None)
+        about_action = Gio.SimpleAction.new(name="about", parameter_type=None)
         about_action.connect("activate", self.on_about)
         self.add_action(about_action)
 
-        preferences_action = Gio.SimpleAction.new("preferences", None)
+        preferences_action = Gio.SimpleAction.new(name="preferences", parameter_type=None)
         preferences_action.connect("activate", self.on_preferences)
         self.add_action(preferences_action)
         self.set_accels_for_action('app.preferences', ('<Control>comma',))
 
-        shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
+        shortcuts_action = Gio.SimpleAction.new(name="shortcuts", parameter_type=None)
         shortcuts_action.connect("activate", self.on_shortcuts)
         self.add_action(shortcuts_action)
 
-        format_shortcuts_action = Gio.SimpleAction.new("format_shortcuts", None)
+        format_shortcuts_action = Gio.SimpleAction.new(name="format_shortcuts", parameter_type=None)
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
 
@@ -145,25 +146,31 @@ class Application(Gtk.Application):
         :param n_files: number of files in command line args
         :param hint: a hint (or “”), but never None
         """
+        print(f'Openin {n_files} files')
         if n_files and not self.window:
             self.do_activate()
 
+        doc_id = None
         for gfile in files:
             path = gfile.get_path()
             if not path:
                 continue
-            self.window.import_document(file_path=path)
+            doc_id = self.window.import_document(file_path=path)
 
-    def do_command_line(self, command_line):
+        # Open last imported file
+        if doc_id:
+            self.window.document_activate(doc_id)
+
+    def do_handle_local_options(self, options):
         self.activate()
-        options = command_line.get_options_dict()
         options = options.end().unpack()
         if 'new' in options:
             new_arg_value = options['new']
+            # print('new document flag')
             if new_arg_value and not self.window.is_document_editing:
                 self.window.on_document_create_activated(title=new_arg_value)
-                return 1
-        return 0
+            return 1
+        return -1
 
     def on_settings_changed(self, settings, key):
         Logger.debug(f'SETTINGS: %s changed', key)
