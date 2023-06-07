@@ -27,11 +27,11 @@ desktop_conf.set('icon', meson.project_name())
 
 desktop_file = i18n.merge_file(
   input: configure_file(
-    input: 'com.github.tenderowl.norka.desktop.in.in',
-    output: '@BASENAME@',
+    input: appid + '.desktop.in.in',
+    output: appid + '.desktop.in',
     configuration: desktop_conf
   ),
-  output: '@0@.desktop'.format(meson.project_name()),
+  output: appid + '.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -46,8 +46,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'com.github.tenderowl.norka.appdata.xml.in',
-  output: '@0@.appdata.xml'.format(meson.project_name()),
+  input: appid + '.appdata.xml.in',
+  output: appid  + '.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'metainfo')
@@ -60,7 +60,7 @@ if appstream_util.found()
   )
 endif
 
-install_data('com.github.tenderowl.norka.gschema.xml',
+install_data(appid + '.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 
