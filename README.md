@@ -17,7 +17,7 @@ Do what you want to do - concentrate on beautiful stories, short notes, or inspi
 Norka cares about you.
 
 <div align="center">
-  <img class="center" alt="Norka" src="data/screenshots/app_screenshot.png" />
+  <img class="center" alt="Norka" src="data/screenshots/norka-editor.png" />
   
   <a href="https://www.buymeacoffee.com/tenderowl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 </div>
