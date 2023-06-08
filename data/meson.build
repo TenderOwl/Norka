@@ -1,29 +1,15 @@
-# blueprints = custom_target('blueprints',
-#   input: files(
-#     'ui/window.blp',
-#     'ui/headerbar.blp',
-#     'ui/preview_window.blp',
-#     'ui/stats.blp',
-#     'ui/shortcuts.blp',
-#     'ui/documents_grid_context_menu.blp',
-#   ),
-#   output: '.',
-#   command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
-# )
-
 message('Compiling resources')
 
 gnome.compile_resources(appid,
   appid + '.gresource.xml',
   gresource_bundle: true,
-  # dependencies: blueprints,
   install: true,
   install_dir: pkgdatadir,
 )
 
 desktop_conf = configuration_data()
 desktop_conf.set('project_name', meson.project_name())
-desktop_conf.set('icon', meson.project_name())
+desktop_conf.set('icon', appid)
 
 desktop_file = i18n.merge_file(
   input: configure_file(
