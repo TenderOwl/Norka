@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-08 14:10+0300\n"
-"PO-Revision-Date: 2023-06-07 21:50+0000\n"
-"Last-Translator: \"J. Lavoie\" <j.lavoie@net-c.ca>\n"
+"PO-Revision-Date: 2023-08-25 12:52+0000\n"
+"Last-Translator: rene-coty <irenee.thirion@e.email>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/frog/norka/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 "Generated-By: pygettext.py 1.5\n"
 
 #: ../norka/widgets/image_link_popover.py:41
@@ -157,7 +157,7 @@ msgstr "En savoir plus sur Norka"
 
 #: ../norka/widgets/preferences_dialog.py:50
 msgid "Preferences"
-msgstr "Paramètres"
+msgstr "Préférences"
 
 #: ../norka/widgets/preferences_dialog.py:57
 msgid "Toast"
