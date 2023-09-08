@@ -47,7 +47,7 @@ from norka.widgets.rename_popover import RenamePopover
 from norka.widgets.welcome_page import WelcomePage
 
 
-@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/main_window.ui')
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
@@ -80,8 +80,6 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         # Make a header
         self.header = Header(self.settings)
-        # self.set_titlebar(self.header)
-        self.header.show()
 
         # Init screens
         self.welcome_grid = WelcomePage()
@@ -322,7 +320,6 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def on_window_delete_event(self, sender: Gtk.Widget = None) -> None:
         """Save opened document before window is closed.
-
         """
         try:
             if self.autosave:
@@ -476,20 +473,23 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.save_document()
 
     def on_document_import_activated(self, sender, event):
-        dialog = Gtk.FileChooserNative.new(_("Import files into Norka"), self,
-                                           Gtk.FileChooserAction.OPEN)
-
+        dialog: Gtk.FileDialog = Gtk.FileDialog()
+        dialog.set_title(_("Import files into Norka"))
         filter_markdown = Gtk.FileFilter()
         filter_markdown.set_name(_("Text Files"))
         filter_markdown.add_mime_type("text/plain")
-        dialog.add_filter(filter_markdown)
-        dialog_result = dialog.run()
+        dialog.set_default_filter(filter_markdown)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
-            file_path = dialog.get_filename()
-            self.import_document(file_path)
+        dialog.open(parent=self, callback=self.on_file_dialog_open_finish)
 
-        dialog.destroy()
+    def on_file_dialog_open_finish(self, dialog, result):
+        try:
+            gfile: Gio.File = dialog.open_finish(result)
+        except GLib.GError:
+            return
+
+        if gfile:
+            self.import_document(gfile.get_path())
 
     def on_document_changed(self, editor: Editor, is_changed: bool = False):
         # Show Save button when autosaving disabled
