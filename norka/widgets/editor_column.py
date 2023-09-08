@@ -22,18 +22,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-from gi.repository import Adw, Gtk
+from gi.repository import Gtk
 
 from norka.define import RESOURCE_PREFIX
-from norka.widgets.notes_column import NotesColumn
 
 
-@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/sidebar_page.ui')
-class SidebarPage(Adw.NavigationPage):
-    __gtype_name__ = 'SidebarPage'
-
-    add_button: Adw.SplitButton = Gtk.Template.Child()
-    notes_column: NotesColumn = Gtk.Template.Child()
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/editor_column.ui')
+class EditorColumn(Gtk.Box):
+    __gtype_name__ = 'EditorColumn'
 
     def __init__(self):
         super().__init__()

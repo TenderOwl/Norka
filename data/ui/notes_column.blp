@@ -1,0 +1,27 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NotesColumn : Gtk.Box {
+
+  orientation: vertical;
+
+  ScrolledWindow {
+    vexpand: true;
+
+    // $NotesList notes_list {}
+    Label {
+      vexpand: true;
+      label: "Sidebar";
+    }
+  }
+
+  // Box {
+  //   margin-start: 6;
+  //   margin-end: 6;
+  //   margin-bottom: 6;
+  //   margin-top: 6;
+  //   orientation: vertical;
+
+  //   SearchEntry search_entry {}
+  // }
+}

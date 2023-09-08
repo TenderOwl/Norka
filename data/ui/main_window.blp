@@ -9,12 +9,12 @@ template $NorkaWindow : Adw.ApplicationWindow {
 
   title: _("Norka");
 
-  Adw.ToastOverlay overlay {
+  Adw.Breakpoint breakpoint {}
 
-    child: Adw.NavigationSplitView split_view {
+  Adw.NavigationSplitView split_view {
 
       [sidebar]
-      $SidebarPage sidebar {
+      $SidebarPage sidebar_page {
         name: "sidebar";
         title: "Sidebar";
       }
@@ -24,14 +24,5 @@ template $NorkaWindow : Adw.ApplicationWindow {
         name: "content_page";
         title: "Content";
       }
-
-      // Box content_box {
-      //   hexpand: true;
-      //   vexpand: true;
-      //   orientation: vertical;
-      // }
-    };
   }
-
-
 }

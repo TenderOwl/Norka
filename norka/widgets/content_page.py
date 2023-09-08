@@ -25,11 +25,14 @@
 from gi.repository import Adw, Gtk
 
 from norka.define import RESOURCE_PREFIX
+from norka.widgets.editor_column import EditorColumn
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/content_page.ui')
 class ContentPage(Adw.NavigationPage):
     __gtype_name__ = 'ContentPage'
+
+    editor_column: EditorColumn = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()

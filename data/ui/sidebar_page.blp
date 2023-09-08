@@ -54,6 +54,10 @@ template $SidebarPage : Adw.NavigationPage {
         tooltip-text: "Search note";
       }
     }
+
+    Adw.ToastOverlay overlay {
+      $NotesColumn notes_column {}
+    }
   }
 }
 

@@ -40,7 +40,6 @@ from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsWindow
-from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
@@ -53,7 +52,7 @@ from norka.widgets.welcome_page import WelcomePage
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    overlay: Adw.ToastOverlay = Gtk.Template.Child()
+    breakpoint: Adw.Breakpoint = Gtk.Template.Child()
     split_view: Adw.NavigationSplitView = Gtk.Template.Child()
     sidebar_page: SidebarPage = Gtk.Template.Child()
     content_page: ContentPage = Gtk.Template.Child()
@@ -84,7 +83,10 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.uri_to_open = None
 
         # Make a header
-        self.header = Header(self.settings)
+        # self.header = Header(self.settings)
+
+        self.breakpoint.set_condition(Adw.BreakpointCondition.parse('max-width: 400sp'))
+        self.breakpoint.add_setter(self.split_view, 'collapsed', True)
 
         # Init screens
         self.welcome_grid = WelcomePage()
@@ -106,9 +108,6 @@ class NorkaWindow(Adw.ApplicationWindow):
         # self.screens.add_named(self.welcome_grid, 'welcome-grid')
         # self.screens.add_named(self.document_grid, 'document-grid')
         # self.screens.add_named(self.editor, 'editor-grid')
-
-        self.overlay = Adw.ToastOverlay()
-        self.overlay.set_child(self.split_view)
 
         # self.content_box.append(self.header)
         # self.content_box.append(self.overlay)
@@ -562,13 +561,13 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         found, rect = self.document_grid.view.get_cell_rect(
             self.document_grid.selected_path)
-        popover = RenamePopover(self.overlay, item.title)
-        popover.set_pointing_to(rect)
-        if self.document_grid.is_folder_selected:
-            popover.connect('activate', self.on_folder_rename_activated)
-        else:
-            popover.connect('activate', self.on_document_rename_activated)
-        popover.popup()
+        # popover = RenamePopover(self.overlay, item.title)
+        # popover.set_pointing_to(rect)
+        # if self.document_grid.is_folder_selected:
+        #     popover.connect('activate', self.on_folder_rename_activated)
+        # else:
+        #     popover.connect('activate', self.on_document_rename_activated)
+        # popover.popup()
 
     def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
@@ -1044,7 +1043,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def show_toast(self, title: str, category='info', uri: str = None):
         toast = Adw.Toast(title=title)
-        self.overlay.add_toast(toast)
+        # self.overlay.add_toast(toast)
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
