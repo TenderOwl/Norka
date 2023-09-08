@@ -26,7 +26,7 @@ import sys
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gtk, Gio, GLib, Adw
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -38,17 +38,17 @@ from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
 
 
-class Application(Gtk.Application):
+class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
     gtk_settings: Gtk.Settings
+    window: NorkaWindow = None
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
-        self.add_main_option('new', ord("n"),
-                             GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
+        self.add_main_option('new', ord("n"), GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
                              _('Open new document on start.'))
 
         self.version = version
@@ -57,7 +57,6 @@ class Application(Gtk.Application):
         self.settings = Settings.new()
 
         # self.init_style()
-        self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
@@ -187,8 +186,8 @@ class Application(Gtk.Application):
         if key == 'font':
             self.window.editor.update_font(settings.get_string('font'))
         if key == 'prefer-dark-theme':
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = \
-                settings.get_boolean('prefer-dark-theme')
+            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = settings.get_boolean(
+                'prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
@@ -204,10 +203,8 @@ class Application(Gtk.Application):
         about_dialog.present()
 
     def color_scheme_changed(self, _old, _new):
-        self.settings.get_boolean('prefer-dark-theme')
-        # if not dark_mode:
-        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-        #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        self.settings.get_boolean(
+            'prefer-dark-theme')  # if not dark_mode:  #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \  #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")
