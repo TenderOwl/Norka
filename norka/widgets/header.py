@@ -48,7 +48,7 @@ class Header(Gtk.Box):
 
         self.builder = Gtk.Builder.new_from_resource(f'{RESOURCE_PREFIX}/ui/headerbar.ui')
         self.header_box: Gtk.Stack = self.builder.get_object('header_box')
-        self.grid_header: Adw.HeaderBar = self.builder.get_object('grid_header')
+        # self.grid_header: Adw.HeaderBar = self.builder.get_object('grid_header')
         self.editor_header: Adw.HeaderBar = self.builder.get_object('editor_header')
         self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
         self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')

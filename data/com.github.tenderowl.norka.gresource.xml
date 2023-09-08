@@ -2,15 +2,16 @@
 <gresources>
 	<gresource prefix="/com/github/tenderowl/norka/">
 		<file compressed="true">css/application.css</file>
-		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
-		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
-		<file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
 		<file preprocess="xml-stripblanks">ui/main_window.ui</file>
-		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/headerbar.ui</file>
+		<file preprocess="xml-stripblanks">ui/sidebar.ui</file>
+		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
+		<file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
+		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/stats.ui</file>
 		<file preprocess="xml-stripblanks">ui/format_shortcuts_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/preferences_window.ui</file>
+		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 		<file>icons/com.github.tenderowl.norka.svg</file>
 		<file>icons/folder.svg</file>
 		<file>icons/folder-open.svg</file>

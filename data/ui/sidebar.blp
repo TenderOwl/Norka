@@ -1,0 +1,120 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Sidebar : Adw.NavigationPage {
+
+  Adw.ToolbarView {
+
+    [top]
+    Adw.HeaderBar{
+
+      [title]
+      Label {}
+
+      [start]
+      Adw.SplitButton add_button {
+        focus-on-click: false;
+        action-name: "document.create";
+        icon-name: "list-add-symbolic";
+        tooltip-text: "Create note";
+        menu-model: create_menu;
+      }
+
+      [start]
+      Button add_folder_button {
+        focus-on-click: false;
+        action-name: "folder.create";
+        icon-name: "folder-new";
+        tooltip-text: "Create folder";
+      }
+
+      // [start]
+      // Button import_button {
+      //   focus-on-click: false;
+      //   action-name: "document.import";
+      //   icon-name: "folder-open-symbolic";
+      //   tooltip-text: "Import file";
+      // }
+
+      [end]
+      MenuButton grid_menu_button {
+        focus-on-click: false;
+        menu-model: appmenu;
+        icon-name: "open-menu-symbolic";
+        tooltip-text: "Open menu";
+      }
+
+      [start]
+      Spinner loader_spinner {}
+
+      [end]
+      Button search_button {
+        action-name: "document.search_text";
+        icon-name: "system-search-symbolic";
+        tooltip-text: "Search note";
+      }
+    }
+  }
+}
+
+
+menu appmenu {
+  section {
+    item {
+      label: _("Find Note");
+      action: "document.search_text";
+    }
+
+    item {
+      label: _("Show Archived");
+      action: "window.toggle_archived";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+  }
+
+  section {
+    item {
+      label: _("Markup Shortcuts");
+      action: "app.format_shortcuts";
+    }
+
+    item {
+      label: _("Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("About");
+      action: "app.about";
+    }
+  }
+
+  section {
+    item {
+      label: _("Make _Backup");
+      action: "document.backup";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Quit");
+      action: "app.quit";
+    }
+  }
+}
+
+
+menu create_menu {
+  item {
+    label: _("Import file");
+    action: "document.import";
+    icon: "folder-open-symbolic";
+  }
+}

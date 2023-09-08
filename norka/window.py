@@ -44,6 +44,7 @@ from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
+from norka.widgets.sidebar import Sidebar
 from norka.widgets.welcome_page import WelcomePage
 
 
@@ -51,6 +52,9 @@ from norka.widgets.welcome_page import WelcomePage
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
+    overlay: Adw.ToastOverlay = Gtk.Template.Child()
+    split_view: Adw.NavigationSplitView = Gtk.Template.Child()
+    sidebar: Sidebar = Gtk.Template.Child()
     content_box: Gtk.Box = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
@@ -98,17 +102,12 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.connect('update-document-stats', self.update_document_stats)
         self.editor.connect('loading', self.editor_loading)
 
-        self.screens = Gtk.Stack()
-        self.screens.set_transition_duration(400)
-        self.screens.set_transition_type(
-            Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-
-        self.screens.add_named(self.welcome_grid, 'welcome-grid')
-        self.screens.add_named(self.document_grid, 'document-grid')
-        self.screens.add_named(self.editor, 'editor-grid')
+        # self.screens.add_named(self.welcome_grid, 'welcome-grid')
+        # self.screens.add_named(self.document_grid, 'document-grid')
+        # self.screens.add_named(self.editor, 'editor-grid')
 
         self.overlay = Adw.ToastOverlay()
-        self.overlay.set_child(self.screens)
+        self.overlay.set_child(self.split_view)
 
         self.content_box.append(self.header)
         self.content_box.append(self.overlay)
@@ -133,7 +132,7 @@ class NorkaWindow(Adw.ApplicationWindow):
     def is_document_editing(self) -> bool:
         """Returns if Norka is on editor screen or not
         """
-        return self.screens.get_visible_child_name() == 'editor-grid'
+        return self.split_view.get_visible_child_name() == 'editor-grid'
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -351,23 +350,17 @@ class NorkaWindow(Adw.ApplicationWindow):
         """
         if self.storage.count_all(path=self.document_grid.current_folder_path) > 0 \
                 or self.document_grid.current_folder_path != '/':
-            self.toggle_welcome(False)
+            # self.toggle_welcome(False)
             # self.screens.set_visible_child_name('document-grid')
 
             last_doc_id = self.settings.get_int('last-document-id')
             if last_doc_id and last_doc_id != -1:
-                self.screens.set_visible_child_name('editor-grid')
+                self.split_view.set_show_content(True)
                 self.editor.load_document(last_doc_id)
                 self.header.toggle_document_mode()
                 self.header.update_title(title=self.editor.document.title)
-        else:
-            self.toggle_welcome(True)
-
-    def toggle_welcome(self, state=True):
-        if state:
-            self.screens.set_visible_child_name('welcome-grid')
-        else:
-            self.screens.set_visible_child_name('document-grid')
+        # else:
+        #     self.toggle_welcome(True)
 
     def on_document_close_activated(self,
                                     sender: Gtk.Widget,
@@ -377,8 +370,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         """
 
         # Should work only in editor mode.
-        if self.screens.get_visible_child_name() == 'editor-grid':
-            self.screens.set_visible_child_name('document-grid')
+        if self.split_view.get_show_content():
+            self.split_view.set_show_content(False)
             self.editor.unload_document(save=self.autosave)
             if self.extended_stats_dialog:
                 self.extended_stats_dialog.close()
@@ -417,10 +410,10 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def document_activate(self, doc_id):
         Logger.info(f'Document {doc_id} activated')
-        editor = self.screens.get_child_by_name('editor-grid')
+        editor = self.split_view.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
         editor.connect('update-document-stats', self.update_document_stats)
-        self.screens.set_visible_child_name('editor-grid')
+        self.split_view.set_show_content(True)
         self.header.toggle_document_mode()
         self.header.update_title(title=editor.document.title)
         self.settings.set_int('last-document-id', doc_id)
@@ -457,7 +450,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         self.editor.create_document(
             title=title, folder_path=self.document_grid.current_folder_path)
-        self.screens.set_visible_child_name('editor-grid')
+        self.split_view.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
         self.header.update_title(title=self.editor.document.title)
 
@@ -925,9 +918,9 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.show_toast(_("Backup failed."))
 
     def search_activated(self, sender, event=None):
-        if self.screens.get_visible_child_name() == 'document-grid':
+        if self.split_view.get_visible_child_name() == 'document-grid':
             self.on_document_search(sender, event)
-        elif self.screens.get_visible_child_name() == 'editor-grid':
+        elif self.split_view.get_visible_child_name() == 'editor-grid':
             self.on_text_search_activated(sender, event)
         else:
             pass
@@ -951,12 +944,12 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.on_search_text_activated(sender, event)
 
     def on_text_search_forward(self, sender: Gtk.Widget = None, event=None) -> None:
-        if self.screens.get_visible_child_name() == 'editor-grid' \
+        if self.split_view.get_visible_child_name() == 'editor-grid' \
                 and self.editor.search_revealer.get_child_revealed():
             self.editor.search_forward(sender=sender, event=event)
 
     def on_text_search_backward(self, sender: Gtk.Widget = None, event=None) -> None:
-        if self.screens.get_visible_child_name() == 'editor-grid' \
+        if self.split_view.get_visible_child_name() == 'editor-grid' \
                 and self.editor.search_revealer.get_child_revealed():
             self.editor.search_backward(sender=sender, event=event)
 
@@ -1023,9 +1016,9 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.document_grid.show_archived = show_archived
         self.document_grid.reload_items()
 
-        self.toggle_welcome(not show_archived and self.storage.count_all(
-            path=self.document_grid.current_folder_path,
-            with_archived=show_archived) == 0)
+        # self.toggle_welcome(not show_archived and self.storage.count_all(
+        #     path=self.document_grid.current_folder_path,
+        #     with_archived=show_archived) == 0)
 
     def on_show_extended_stats(self,
                                action: Gio.SimpleAction,
