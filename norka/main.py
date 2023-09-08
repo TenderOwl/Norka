@@ -48,6 +48,8 @@ class Application(Adw.Application):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
+        Adw.init()
+
         self.add_main_option('new', ord("n"), GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
                              _('Open new document on start.'))
 
