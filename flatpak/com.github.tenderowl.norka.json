@@ -24,16 +24,6 @@
         "*.a"
     ],
     "modules" : [
-        {
-            "name" : "gspell",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/otrocodigo/gspell.git",
-                    "tag" : "1.11.1"
-                }
-            ]
-        },
         "python3-markdown2.json",
         "python3-requests.json",
         "python3-htmldocx.json",

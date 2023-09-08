@@ -65,20 +65,16 @@ Text editor built for GNOME on top of [PyGObject](https://pygobject.readthedocs.
 
 Build time requirements:
 
-- meson (>= 0.49)
-- python3 (>= 3.6)
+- meson (>= 0.58)
+- python3 (>= 3.8)
 - intltool
-- libgranite-dev
-- libgtk-3-dev (>= 3.10)
-- libgspell-1-dev
-- libgtksourceview-4.0-dev (>= 3.24.3)
-- libwebkit2gtk-4.0
+- libgtk-4-dev (>= 4.10)
+- libgtksourceview-5.0-dev
+- libwebkit2gtk-6.0
 - python3-gi
 - python3-gi-cairo
-- gir1.2-gspell-1
-- gir1.2-gtksource-3.0
-- gir1.2-granite-1.0
-- gir1.2-webkit2-4.0
+- gir1.2-gtksource-5.0
+- gir1.2-webkit2-6.0
 
 
 Run meson build to configure the build environment. Change to the build directory and run `ninja` to build:
