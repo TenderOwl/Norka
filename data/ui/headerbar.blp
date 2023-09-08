@@ -1,0 +1,309 @@
+using Gtk 4.0;
+using Adw 1;
+
+Image document-new {
+  icon-name: "document-new";
+  icon-size: large;
+}
+
+Image document-open {
+  icon-name: "document-open-symbolic";
+  icon-size: large;
+}
+
+Image document-save {
+  icon-name: "document-save-symbolic";
+  icon-size: large;
+}
+
+Image extended-stats {
+  icon-name: "dialog-information";
+  icon-size: large;
+}
+
+Image extended-stats1 {
+  icon-name: "dialog-information";
+  icon-size: large;
+}
+
+Image folder-new {
+  icon-name: "folder-new";
+  icon-size: large;
+}
+
+Image image-search-text {
+  icon-name: "system-search-symbolic";
+  icon-size: large;
+}
+
+Image image1 {
+  icon-name: "document-print";
+  icon-size: large;
+}
+
+Image image2 {
+  icon-name: "folder-new-symbolic";
+  icon-size: large;
+}
+
+Image user-trash {
+  icon-name: "user-trash-symbolic";
+  icon-size: large;
+}
+
+Image image-back {
+  icon-name: "go-previous-symbolic";
+  icon-size: large;
+}
+
+Image image-grid-menu {
+  icon-name: "open-menu";
+  icon-size: large;
+}
+
+Image image-editor-menu {
+  icon-name: "open-menu";
+  icon-size: large;
+}
+
+Image image-share {
+  icon-name: "emblem-shared-symbolic";
+  icon-size: large;
+}
+
+Stack header_box {
+  transition-duration: 50;
+  transition-type: crossfade;
+
+  StackPage {
+    name: "grid_header";
+    child: 
+    Adw.HeaderBar grid_header {
+      name: "grid_header";
+      width-request: -1;
+      hexpand: true;
+
+      [title]
+      Box {
+        halign: center;
+        valign: center;
+        vexpand: false;
+        orientation: vertical;
+
+        Label {
+          label: _("Norka");
+
+          styles [
+            "title",
+          ]
+        }
+
+        Label subtitle_path_label {
+          styles [
+            "subtitle",
+          ]
+        }
+      }
+
+      Button add_button {
+        focus-on-click: false;
+        action-name: "document.create";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Button add_folder_button {
+        focus-on-click: false;
+        action-name: "folder.create";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Button import_button {
+        focus-on-click: false;
+        action-name: "document.import";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      MenuButton grid_menu_button {
+        focus-on-click: false;
+        menu-model: appmenu;
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Spinner loader_spinner {
+      }
+
+      Button search_button {
+        action-name: "document.search_text";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      styles [
+        "norka-header",
+      ]
+    }
+
+    ;
+  }
+
+  StackPage {
+    name: "editor_header";
+    child: 
+    Adw.HeaderBar editor_header {
+      name: "editor_header";
+      hexpand: true;
+
+      [title]
+      Box {
+        halign: center;
+        valign: center;
+        vexpand: false;
+        orientation: vertical;
+
+        Label title_label {
+          label: _("Norka");
+
+          styles [
+            "title",
+          ]
+        }
+
+        Label subtitle_label {
+          styles [
+            "subtitle",
+          ]
+        }
+      }
+
+      Button back_button {
+        name: "back_button";
+        valign: center;
+        action-name: "document.close";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Revealer save_btn_revealer {
+        transition-duration: 150;
+        transition-type: crossfade;
+
+        Button save_btn {
+          name: "save_button";
+          valign: center;
+          label: _("Save");
+          action-name: "document.save";
+
+          styles [
+            "suggested-action",
+            "flat",
+          ]
+        }
+      }
+
+      Spinner editor_spinner {
+      }
+
+      MenuButton editor_menu_button {
+        focus-on-click: false;
+
+        styles [
+          "flat",
+        ]
+      }
+
+      MenuButton share_app_menu {
+        focus-on-click: false;
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Button extended_stats_button {
+        action-name: "document.show_extended_stats";
+
+        styles [
+          "flat",
+        ]
+      }
+
+      Button print_button {
+        action-name: "document.print";
+
+        styles [
+          "flat",
+        ]
+      }
+    }
+
+    ;
+  }
+}
+
+menu appmenu {
+  section {
+    item {
+      label: _("Find Note");
+      action: "document.search_text";
+    }
+
+    item {
+      label: _("Show Archived");
+      action: "window.toggle_archived";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+  }
+
+  section {
+    item {
+      label: _("Markup Shortcuts");
+      action: "app.format_shortcuts";
+    }
+
+    item {
+      label: _("Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("About");
+      action: "app.about";
+    }
+  }
+
+  section {
+    item {
+      label: _("Make _Backup");
+      action: "document.backup";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Quit");
+      action: "app.quit";
+    }
+  }
+}

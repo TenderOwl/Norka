@@ -1,8 +1,24 @@
 message('Compiling resources')
 
+blueprints = custom_target('blueprints',
+  input: files(
+    'ui/documents_grid_context_menu.blp',
+    'ui/format_shortcuts_window.blp',
+    'ui/main_window.blp',
+    'ui/preferences_window.blp',
+    'ui/preview_window.blp',
+    'ui/shortcuts.blp',
+    'ui/stats.blp',
+    'ui/headerbar.blp',
+  ),
+  output: '.',
+  command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
+)
+
 gnome.compile_resources(appid,
   appid + '.gresource.xml',
   gresource_bundle: true,
+  dependencies: blueprints,
   install: true,
   install_dir: pkgdatadir,
 )

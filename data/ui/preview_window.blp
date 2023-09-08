@@ -1,0 +1,27 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreviewWindow : Adw.Window {
+  Overlay header_overlay {
+    $AdwDeck content_deck {
+      vexpand: "True";
+    }
+  }
+}
+
+Revealer header_revealer {
+  valign: start;
+  reveal-child: true;
+
+  Adw.HeaderBar header_bar {
+    name: "headerbar_revealer";
+
+    [title]
+    Label {
+      label: _("Preview");
+    }
+
+    Spinner spinner {
+    }
+  }
+}

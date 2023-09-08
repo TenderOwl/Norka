@@ -1,0 +1,180 @@
+using Gtk 4.0;
+
+PopoverMenu document-popover-menu {
+  can-focus: false;
+  position: right;
+
+  Box main {
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.rename";
+      text: _("Rename");
+    }
+
+    Separator {
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      text: _("Export...");
+      menu-name: "export";
+    }
+
+    Separator {
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      name: "archive";
+      can-focus: "False";
+      action-name: "document.archive";
+      text: _("Archive");
+    }
+
+    $GtkModelButton {
+      name: "unarchive";
+      can-focus: "False";
+      action-name: "document.unarchive";
+      text: _("Unarchive");
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.delete";
+      text: _("Delete");
+    }
+  }
+
+  Box export {
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      receives-default: "True";
+      text: _("Export...");
+      menu-name: "main";
+      inverted: "True";
+      centered: "True";
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.export";
+      text: _("Text");
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.export-markdown";
+      text: _("Markdown");
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.export-html";
+      text: _("HTML");
+    }
+
+    Separator {
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.export-medium";
+      text: _("Medium.com");
+    }
+
+    $GtkModelButton {
+      can-focus: "False";
+      action-name: "document.export-writeas";
+      text: _("Writeas");
+    }
+  }
+}
+
+PopoverMenu folder-popover-menu {
+  can-focus: false;
+  position: right;
+
+  Box main1 {
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      action-name: "document.rename";
+      text: _("Rename");
+    }
+
+    Separator {
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      action-name: "document.delete";
+      text: _("Delete");
+    }
+  }
+
+  Box export1 {
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      receives-default: "True";
+      text: _("Export...");
+      menu-name: "main";
+      inverted: "True";
+      centered: "True";
+    }
+
+    $GtkModelButton {
+      action-name: "document.export";
+      text: _("Text");
+    }
+
+    $GtkModelButton {
+      action-name: "document.export-markdown";
+      text: _("Markdown");
+    }
+
+    $GtkModelButton {
+      action-name: "document.export-html";
+      text: _("HTML");
+    }
+
+    Separator {
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      action-name: "document.export-medium";
+      text: _("Medium.com");
+    }
+
+    $GtkModelButton {
+      action-name: "document.export-writeas";
+      text: _("Writeas");
+    }
+  }
+}

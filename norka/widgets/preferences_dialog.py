@@ -37,7 +37,7 @@ class PreferencesDialog(Adw.Window):
     __gtype_name__ = 'PreferencesDialog'
 
     overlay: Adw.ToastOverlay = Gtk.Template.Child()
-    main_stack: Gtk.Stack = Gtk.Template.Child()
+    main_stack: Adw.ViewStack = Gtk.Template.Child()
 
     def __init__(self, transient_for, settings):
         super().__init__(transient_for=transient_for, modal=True)

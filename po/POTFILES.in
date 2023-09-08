@@ -1,9 +1,9 @@
 data/com.github.tenderowl.norka.appdata.xml.in
 data/com.github.tenderowl.norka.desktop.in.in
-data/ui/documents_grid_context_menu.ui
-data/ui/headerbar.ui
-data/ui/shortcuts.ui
-data/ui/stats.ui
+data/ui/documents_grid_context_menu.blp
+data/ui/headerbar.blp
+data/ui/shortcuts.blp
+data/ui/stats.blp
 norka/define.py
 norka/main.py
 norka/widgets/about_dialog.py

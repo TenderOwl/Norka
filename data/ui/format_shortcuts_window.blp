@@ -1,0 +1,19 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $FormatShortcutsWindow : Adw.Window {
+  styles [
+    "csd",
+  ]
+
+  Box content_box {
+    orientation: vertical;
+
+    Adw.HeaderBar header_bar {
+      [title]
+      Label {
+        label: _("Formatting");
+      }
+    }
+  }
+}
