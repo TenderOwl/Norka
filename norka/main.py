@@ -21,6 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import datetime
 import os
 import sys
 from gettext import gettext as _
@@ -32,7 +33,6 @@ from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
-from norka.widgets.about_dialog import AboutDialog
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
@@ -201,8 +201,20 @@ class Application(Adw.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
-        about_dialog.present()
+        about_window = Adw.AboutWindow(
+            application_name="Norka",
+            application_icon=APP_ID,
+            version=self.version,
+            copyright=f'© {datetime.date.today().year} Tender Owl',
+            website="https://norka.app",
+            issue_url="https://github.com/TenderOwl/Norka/issues/new",
+            license_type=Gtk.License.MIT_X11,
+            developer_name="TenderOwl Team",
+            developers=["Andrey Maksimov"],
+            release_notes="""<p>Brand new UI!""",
+            transient_for=self.props.active_window
+        )
+        about_window.present()
 
     def color_scheme_changed(self, _old, _new):
         self.settings.get_boolean(
