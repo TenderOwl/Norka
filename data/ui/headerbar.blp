@@ -1,47 +1,6 @@
 using Gtk 4.0;
 using Adw 1;
 
-
-Image folder-new {
-  icon-name: "folder-new";
-  icon-size: large;
-}
-
-Image image1 {
-  icon-name: "document-print";
-  icon-size: large;
-}
-
-Image image2 {
-  icon-name: "folder-new-symbolic";
-  icon-size: large;
-}
-
-Image user-trash {
-  icon-name: "user-trash-symbolic";
-  icon-size: large;
-}
-
-Image image-back {
-  icon-name: "go-previous-symbolic";
-  icon-size: large;
-}
-
-Image image-grid-menu {
-  icon-name: "open-menu";
-  icon-size: large;
-}
-
-Image image-editor-menu {
-  icon-name: "open-menu";
-  icon-size: large;
-}
-
-Image image-share {
-  icon-name: "emblem-shared-symbolic";
-  icon-size: large;
-}
-
 Stack header_box {
   transition-duration: 50;
   transition-type: crossfade;
@@ -80,7 +39,7 @@ Stack header_box {
       Button add_button {
         focus-on-click: false;
         action-name: "document.create";
-        icon-name: "document-open-symbolic";
+        icon-name: "list-add-symbolic";
         tooltip-text: "Create note";
       }
 
@@ -96,7 +55,7 @@ Stack header_box {
       Button import_button {
         focus-on-click: false;
         action-name: "document.import";
-        icon-name: "document-import-symbolic";
+        icon-name: "folder-open-symbolic";
         tooltip-text: "Import file";
       }
 
