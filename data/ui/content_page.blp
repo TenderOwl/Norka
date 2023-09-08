@@ -1,0 +1,95 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ContentPage : Adw.NavigationPage {
+
+  Adw.ToolbarView {
+
+    [top]
+    Adw.HeaderBar editor_header {
+      name: "editor_header";
+      hexpand: true;
+
+      [title]
+      Box {
+        halign: center;
+        valign: center;
+        vexpand: false;
+        orientation: vertical;
+
+        Label title_label {
+          label: _("Norka");
+
+          styles [
+            "title",
+          ]
+        }
+
+        Label subtitle_label {
+          styles [
+            "subtitle",
+          ]
+        }
+      }
+
+      // [start]
+      // Button back_button {
+      //   name: "back_button";
+      //   action-name: "document.close";
+      //   icon-name: "go-previous-symbolic";
+      //   tooltip-text: "Go back";
+      // }
+
+      [start]
+      Revealer save_btn_revealer {
+        transition-duration: 150;
+        transition-type: crossfade;
+
+        Button save_btn {
+          name: "save_button";
+          valign: center;
+          label: _("Save");
+          action-name: "document.save";
+
+          styles [
+            "suggested-action",
+            "flat",
+          ]
+        }
+      }
+
+      [start]
+      Spinner editor_spinner {
+      }
+
+      [end]
+      MenuButton editor_menu_button {
+        focus-on-click: false;
+        icon-name: "open-menu-symbolic";
+        tooltip-text: "Open menu";
+      }
+
+      [end]
+      MenuButton share_app_menu {
+        focus-on-click: false;
+        icon-name: "emblem-shared-symbolic";
+        tooltip-text: "Share note";
+      }
+
+      [end]
+      Button extended_stats_button {
+        action-name: "document.show_extended_stats";
+        tooltip-text: "Show note stats";
+        icon-name: "dialog-information";
+      }
+
+      [end]
+      Button print_button {
+        action-name: "document.print";
+        icon-name: "document-print";
+        tooltip-text: "Print note";
+      }
+    }
+
+  }
+}

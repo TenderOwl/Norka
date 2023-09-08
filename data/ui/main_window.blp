@@ -14,22 +14,22 @@ template $NorkaWindow : Adw.ApplicationWindow {
     child: Adw.NavigationSplitView split_view {
 
       [sidebar]
-      $Sidebar sidebar {
+      $SidebarPage sidebar {
         name: "sidebar";
         title: "Sidebar";
       }
 
       [content]
-      Adw.NavigationPage {
-        name: "editor_column";
-        title: "Editor";
+      $ContentPage content_page {
+        name: "content_page";
+        title: "Content";
       }
 
-      Box content_box {
-        hexpand: true;
-        vexpand: true;
-        orientation: vertical;
-      }
+      // Box content_box {
+      //   hexpand: true;
+      //   vexpand: true;
+      //   orientation: vertical;
+      // }
     };
   }
 

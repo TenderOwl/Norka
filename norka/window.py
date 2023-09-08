@@ -35,6 +35,7 @@ from norka.services.logger import Logger
 from norka.services.medium import Medium, PublishStatus
 from norka.services.storage import Storage
 from norka.services.writeas import Writeas
+from norka.widgets.content_page import ContentPage
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
@@ -44,7 +45,7 @@ from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
-from norka.widgets.sidebar import Sidebar
+from norka.widgets.sidebar_page import SidebarPage
 from norka.widgets.welcome_page import WelcomePage
 
 
@@ -54,8 +55,8 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     overlay: Adw.ToastOverlay = Gtk.Template.Child()
     split_view: Adw.NavigationSplitView = Gtk.Template.Child()
-    sidebar: Sidebar = Gtk.Template.Child()
-    content_box: Gtk.Box = Gtk.Template.Child()
+    sidebar_page: SidebarPage = Gtk.Template.Child()
+    content_page: ContentPage = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
@@ -109,8 +110,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.overlay = Adw.ToastOverlay()
         self.overlay.set_child(self.split_view)
 
-        self.content_box.append(self.header)
-        self.content_box.append(self.overlay)
+        # self.content_box.append(self.header)
+        # self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()

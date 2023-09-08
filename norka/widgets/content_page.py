@@ -22,17 +22,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Adw, Gtk
 
 from norka.define import RESOURCE_PREFIX
 
 
-@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/sidebar.ui')
-class Sidebar(Adw.NavigationPage):
-    __gtype_name__ = 'Sidebar'
-
-    add_button: Adw.SplitButton = Gtk.Template.Child()
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/content_page.ui')
+class ContentPage(Adw.NavigationPage):
+    __gtype_name__ = 'ContentPage'
 
     def __init__(self):
         super().__init__()
