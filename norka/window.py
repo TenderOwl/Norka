@@ -937,23 +937,24 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def search_activated(self, sender, event=None):
         if self.screens.get_visible_child_name() == 'document-grid':
-            self.on_document_search_activated(sender, event)
+            self.on_document_search(sender, event)
         elif self.screens.get_visible_child_name() == 'editor-grid':
             self.on_text_search_activated(sender, event)
         else:
             pass
 
-    def on_document_search_activated(self,
-                                     sender: Gtk.Widget = None,
-                                     event=None) -> None:
+    def on_document_search(self,
+                           _sender: Gtk.Widget = None,
+                           _event=None) -> None:
         """Open search dialog to find a documents
         """
         dialog = QuickFindDialog(self.storage)
-        response = dialog.run()
+        dialog.connect('document-activated', self.on_document_activate)
+        dialog.show()
 
-        if response == Gtk.ResponseType.APPLY and dialog.document_id:
-            self.document_activate(dialog.document_id)
-        dialog.destroy()
+    def on_document_activate(self, dialog, doc_id):
+        self.document_activate(doc_id)
+        dialog.close()
 
     def on_text_search_activated(self,
                                  sender: Gtk.Widget = None,

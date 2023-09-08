@@ -24,33 +24,31 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gdk, Gio, GObject
+from gi.repository import Gtk, Gio, GObject, Adw, Pango
 
 from norka.models.document import Document
 from norka.services.storage import Storage
 
 
-class QuickFindDialog(Gtk.Dialog):
+class QuickFindDialog(Adw.Window):
     __gtype_name__ = 'QuickFindDialog'
 
+    __gsignals__ = {
+        'document-activated': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+    }
+
     def __init__(self, storage: Storage):
-        super().__init__(title=_("Quick Find"))
+        super().__init__(title=_("Quick Find"), modal=True,
+                         transient_for=Gtk.Application.get_default().props.active_window,
+                         width_request=400, height_request=200,
+                         default_width=400, default_height=200)
+
+        self.add_css_class("quick-find-dialog")
 
         self.storage = storage
 
         # Store document_id to response
         self.document_id = None
-
-        self.get_style_context().add_class("quick-find-dialog")
-
-        # self.get_header_bar().set_visible(False)
-        # self.get_header_bar().set_no_show_all(True)
-
-        self.set_default_size(400, 200)
-        self.set_modal(True)
-        self.set_transient_for(Gtk.Application.get_default().props.active_window)
-
-        Gtk.Revealer()
 
         # ListStore to store results
         self.result_store = Gio.ListStore()
@@ -72,7 +70,7 @@ class QuickFindDialog(Gtk.Dialog):
                                    spacing=12,
                                    margin_top=32,
                                    )
-        placeholder_grid.get_style_context().add_class("dim-label")
+        placeholder_grid.add_css_class("dim-label")
         placeholder_grid.append(placeholder_image)
         placeholder_grid.append(placeholder_label)
 
@@ -84,24 +82,21 @@ class QuickFindDialog(Gtk.Dialog):
 
         self.search_entry = Gtk.SearchEntry(placeholder_text=_('Jump to...'))
         self.search_entry.connect('search-changed', self.search_changed)
+        self.search_entry.connect('stop-search', self.on_stop_search)
 
-        box = self.get_content_area()
-        box.set_margin_start(6)
-        box.set_margin_end(6)
-        box.set_margin_top(6)
-        box.set_margin_bottom(6)
-        box.set_spacing(6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                      margin_start=6, margin_end=6,
+                      margin_top=6, margin_bottom=6,
+                      spacing=6, )
         box.append(self.search_entry)
         box.append(scrolled)
-        # self.set_titlebar(None)
+
+        self.set_content(box)
 
         # self.connect('key_release_event', self.on_key_release_event)
 
-    def on_key_release_event(self, sender, event_key):
-        if event_key.keyval == Gdk.KEY_Escape:
-            self.destroy()
-
-        return False
+    def on_stop_search(self, _sender):
+        self.close()
 
     def search_changed(self, sender: Gtk.SearchEntry):
         self.result_store.remove_all()
@@ -116,12 +111,7 @@ class QuickFindDialog(Gtk.Dialog):
             self.result_store.append(document)
 
     def row_activated(self, sender: Gtk.ListBox, row: Gtk.ListBoxRow):
-        self.document_id = row.document_id
-        self.response(Gtk.ResponseType.APPLY)
-        self.popdown()
-
-    def popdown(self):
-        self.hide()
+        self.emit('document-activated', row.document_id)
 
 
 class QuickFindRow(Gtk.ListBoxRow):
@@ -141,7 +131,9 @@ class QuickFindRow(Gtk.ListBoxRow):
                       margin_bottom=6,
                       )
 
-        doc_label = Gtk.Label(label=item.title)
+        doc_label = Gtk.Label(label=item.title,
+                              ellipsize=Pango.EllipsizeMode.END,
+                              tooltip_text=item.title)
         archive_icon = Gtk.Image.new_from_icon_name('user-trash-symbolic')
         archive_icon.get_style_context().add_class('muted')
 

@@ -489,9 +489,9 @@ class Storage(object):
     def find(self, search_text: str) -> List[Document]:
         """Finds documents with given `search_text`.
         """
-        query = "SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
+        query = "SELECT * FROM documents WHERE lower(title) LIKE ? OR title LIKE ? ORDER BY archived ASC"
 
-        cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
+        cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%', f'{search_text.lower()}%'))
         rows = cursor.fetchall()
 
         docs = []
