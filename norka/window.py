@@ -802,16 +802,13 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def on_export_callback(self, result):
         self.header.show_spinner(False)
-        self.disconnect_toast()
         if result:
-            self.toast.set_title(_("Document exported."))
-            self.toast.set_default_action(_("Open folder"))
-            self.uri_to_open = f"file://{os.path.dirname(result)}"
-            self.toast.connect("default-action", self.open_uri)
-            self.toast.send_notification()
+            self.show_toast(_("Document exported."))
+            # self.toast.set_default_action(_("Open folder"))
+            # self.uri_to_open = f"file://{os.path.dirname(result)}"
+            # self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title(_("Export goes wrong."))
-            self.toast.send_notification()
+            self.show_toast(_("Export goes wrong."))
 
     def on_export_medium(self, sender: Gtk.Widget = None, event=None) -> None:
         """Configure Medium client and export document asynchronously
@@ -829,13 +826,12 @@ class NorkaWindow(Adw.ApplicationWindow):
         user_id = self.settings.get_string("medium-user-id")
 
         if not token or not user_id:
-            self.toast.set_title(
-                _("You need to set Medium token in Preferences -> Export"))
-            self.toast.set_default_action(_("Configure"))
-            self.disconnect_toast()
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            self.show_toast(_("You need to set Medium token in Preferences -> Export"))
+            # self.toast.set_default_action(_("Configure"))
+            # self.disconnect_toast()
+            # self.toast.connect("default-action",
+            #                    self.get_application().on_preferences)
+
 
         else:
             self.header.show_spinner(True)
@@ -848,15 +844,13 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         self.header.show_spinner(False)
         if result:
-            self.toast.set_title(_("Document successfully exported!"))
-            self.toast.set_default_action(_("View"))
-            self.uri_to_open = result["url"]
-            self.disconnect_toast()
-            self.toast.connect("default-action", self.open_uri)
+            self.show_toast(_("Document successfully exported!"))
+            # self.toast.set_default_action(_("View"))
+            # self.uri_to_open = result["url"]
+            # self.disconnect_toast()
+            # self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title(_("Export failed!"))
-            self.toast.set_default_action(None)
-        self.toast.send_notification()
+            self.show_toast(_("Export failed!"))
 
     def on_export_writeas(self, sender: Gtk.Widget = None, event=None) -> None:
         """Configure Write.as client and export document asynchronously
@@ -873,13 +867,12 @@ class NorkaWindow(Adw.ApplicationWindow):
         token = self.settings.get_string("writeas-access-token")
 
         if not token:
-            self.toast.set_title(
-                "You have to login to Write.as in Preferences -> Export")
-            self.toast.set_default_action("Configure")
-            self.disconnect_toast()
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            self.show_toast(_("You have to login to Write.as in Preferences -> Export"))
+            # self.toast.set_default_action("Configure")
+            # self.disconnect_toast()
+            # self.toast.connect("default-action",
+            #                    self.get_application().on_preferences)
+            # self.toast.send_notification()
 
         else:
             self.header.show_spinner(True)
@@ -891,49 +884,45 @@ class NorkaWindow(Adw.ApplicationWindow):
     def on_export_writeas_callback(self, result):
         self.header.show_spinner(False)
         if result:
-            self.toast.set_title(_("Document successfully exported!"))
-            self.toast.set_default_action(_("View"))
-            self.disconnect_toast()
-            self.uri_to_open = f"https://write.as/{result['id']}"
-            self.toast.connect("default-action", self.open_uri)
+            self.show_toast(_("Document successfully exported!"))
+            # self.toast.set_default_action(_("View"))
+            # self.disconnect_toast()
+            # self.uri_to_open = f"https://write.as/{result['id']}"
+            # self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title(_("Export failed."))
-            self.toast.set_default_action(None)
-        self.toast.send_notification()
+            self.show_toast(_("Export failed."))
 
     def on_backup(self, sender: Gtk.Widget = None, event=None) -> None:
-        dialog: Gtk.FileChooserNative = Gtk.FileChooserNative.new(
-            _("Select folder to store backup"),
-            self,
-            Gtk.FileChooserAction.SELECT_FOLDER,
-            _("Select"),
-        )
-        dialog.set_create_folders(True)
-        dialog_result = dialog.run()
+        dialog: Gtk.FileDialog = Gtk.FileDialog()
+        dialog.set_title(_("Select folder to store backup"))
+        dialog.select_folder(parent=self, callback=self.on_backup_selected)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
+    def on_backup_selected(self, dialog, result):
+        try:
+            folder: Gio.File = dialog.select_folder_finish(result)
+        except GLib.GError:
+            self.show_toast(_("Couldn't' select backup folder"), category="error")
+            return
+
+        if folder:
             self.header.show_spinner(True)
 
             backup_service = BackupService(settings=self.settings)
             GObjectWorker.call(backup_service.save,
-                               args=(dialog.get_filename(),),
+                               args=(folder.get_path(),),
                                callback=self.on_backup_finished)
 
-            self.toast.set_title(_("Backup started."))
-            self.toast.send_notification()
-
-        dialog.destroy()
+            self.show_toast(_("Backup started."))
 
     def on_backup_finished(self, result):
         self.header.show_spinner(False)
         if result:
-            self.toast.set_title(_("All documents saved."))
-            self.toast.set_default_action(_("Open folder"))
-            self.uri_to_open = f"file://{result}"
-            self.toast.connect("default-action", self.open_uri)
+            self.show_toast(_("All documents saved."))
+            # self.toast.set_default_action(_("Open folder"))
+            # self.uri_to_open = f"file://{result}"
+            # self.toast.connect("default-action", self.open_uri)
         else:
-            self.toast.set_title(_("Backup failed."))
-        self.toast.send_notification()
+            self.show_toast(_("Backup failed."))
 
     def search_activated(self, sender, event=None):
         if self.screens.get_visible_child_name() == 'document-grid':
@@ -956,23 +945,17 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.document_activate(doc_id)
         dialog.close()
 
-    def on_text_search_activated(self,
-                                 sender: Gtk.Widget = None,
-                                 event=None) -> None:
+    def on_text_search_activated(self, sender: Gtk.Widget = None, event=None) -> None:
         """Open search dialog to find text in a documents
         """
         self.editor.on_search_text_activated(sender, event)
 
-    def on_text_search_forward(self,
-                               sender: Gtk.Widget = None,
-                               event=None) -> None:
+    def on_text_search_forward(self, sender: Gtk.Widget = None, event=None) -> None:
         if self.screens.get_visible_child_name() == 'editor-grid' \
                 and self.editor.search_revealer.get_child_revealed():
             self.editor.search_forward(sender=sender, event=event)
 
-    def on_text_search_backward(self,
-                                sender: Gtk.Widget = None,
-                                event=None) -> None:
+    def on_text_search_backward(self, sender: Gtk.Widget = None, event=None) -> None:
         if self.screens.get_visible_child_name() == 'editor-grid' \
                 and self.editor.search_revealer.get_child_revealed():
             self.editor.search_backward(sender=sender, event=event)
@@ -1065,18 +1048,9 @@ class NorkaWindow(Adw.ApplicationWindow):
             Gtk.show_uri_on_window(None, self.uri_to_open, Gdk.CURRENT_TIME)
             self.uri_to_open = None
 
-    def disconnect_toast(self):
-        """Disconnect toast action. Weird way, need ti rewrite it"""
-        try:
-            self.toast.disconnect_by_func(
-                self.get_application().on_preferences)
-        except:
-            pass
-
-        try:
-            self.toast.disconnect_by_func(self.open_uri)
-        except:
-            pass
+    def show_toast(self, title: str, category='info', uri: str = None):
+        toast = Adw.Toast(title=title)
+        self.overlay.add_toast(toast)
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
