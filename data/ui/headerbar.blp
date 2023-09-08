@@ -1,38 +1,9 @@
 using Gtk 4.0;
 using Adw 1;
 
-Image document-new {
-  icon-name: "document-new";
-  icon-size: large;
-}
-
-Image document-open {
-  icon-name: "document-open-symbolic";
-  icon-size: large;
-}
-
-Image document-save {
-  icon-name: "document-save-symbolic";
-  icon-size: large;
-}
-
-Image extended-stats {
-  icon-name: "dialog-information";
-  icon-size: large;
-}
-
-Image extended-stats1 {
-  icon-name: "dialog-information";
-  icon-size: large;
-}
 
 Image folder-new {
   icon-name: "folder-new";
-  icon-size: large;
-}
-
-Image image-search-text {
-  icon-name: "system-search-symbolic";
   icon-size: large;
 }
 
@@ -105,59 +76,48 @@ Stack header_box {
         }
       }
 
+      [start]
       Button add_button {
         focus-on-click: false;
         action-name: "document.create";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "document-open-symbolic";
+        tooltip-text: "Create note";
       }
 
+      [start]
       Button add_folder_button {
         focus-on-click: false;
         action-name: "folder.create";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "folder-new";
+        tooltip-text: "Create folder";
       }
 
+      [start]
       Button import_button {
         focus-on-click: false;
         action-name: "document.import";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "document-import-symbolic";
+        tooltip-text: "Import file";
       }
 
+      [end]
       MenuButton grid_menu_button {
         focus-on-click: false;
         menu-model: appmenu;
-
-        styles [
-          "flat",
-        ]
+        icon-name: "open-menu-symbolic";
+        tooltip-text: "Open menu";
       }
 
-      Spinner loader_spinner {
-      }
+      [start]
+      Spinner loader_spinner {}
 
+      [end]
       Button search_button {
         action-name: "document.search_text";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "system-search-symbolic";
+        tooltip-text: "Search note";
       }
-
-      styles [
-        "norka-header",
-      ]
-    }
-
-    ;
+    };
   }
 
   StackPage {
@@ -189,16 +149,15 @@ Stack header_box {
         }
       }
 
+      [start]
       Button back_button {
         name: "back_button";
-        valign: center;
         action-name: "document.close";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "go-previous-symbolic";
+        tooltip-text: "Go back";
       }
 
+      [start]
       Revealer save_btn_revealer {
         transition-duration: 150;
         transition-type: crossfade;
@@ -216,43 +175,38 @@ Stack header_box {
         }
       }
 
+      [start]
       Spinner editor_spinner {
       }
 
+      [end]
       MenuButton editor_menu_button {
         focus-on-click: false;
-
-        styles [
-          "flat",
-        ]
+        icon-name: "open-menu-symbolic";
+        tooltip-text: "Open menu";
       }
 
+      [end]
       MenuButton share_app_menu {
         focus-on-click: false;
-
-        styles [
-          "flat",
-        ]
+        icon-name: "emblem-shared-symbolic";
+        tooltip-text: "Share note";
       }
 
+      [end]
       Button extended_stats_button {
         action-name: "document.show_extended_stats";
-
-        styles [
-          "flat",
-        ]
+        tooltip-text: "Show note stats";
+        icon-name: "dialog-information";
       }
 
+      [end]
       Button print_button {
         action-name: "document.print";
-
-        styles [
-          "flat",
-        ]
+        icon-name: "document-print";
+        tooltip-text: "Print note";
       }
-    }
-
-    ;
+    };
   }
 }
 
