@@ -1,0 +1,27 @@
+using Gtk 4.0;
+
+template $NotesList : Box {
+  hexpand: true;
+
+  ListView list_view {
+    hexpand: true;
+    single-click-activate: false;
+    show-separators: false;
+    enable-rubberband: false;
+    model: SingleSelection selection {
+      autoselect: false;
+      model: FilterListModel filter_model {
+        filter: CustomFilter filter {};
+      };
+    };
+    factory: SignalListItemFactory factory {
+      setup => $_on_item_setup();
+      bind => $_on_item_bind();
+    };
+
+    styles [
+      "navigation-sidebar",
+    ]
+  }
+}
+

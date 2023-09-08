@@ -25,14 +25,22 @@
 from gi.repository import Gtk
 
 from norka.define import RESOURCE_PREFIX
-from norka.widgets.notes_list import NotesList
 
 
-@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/notes_column.ui')
-class NotesColumn(Gtk.Box):
-    __gtype_name__ = 'NotesColumn'
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/notes_list.ui')
+class NotesList(Gtk.Box):
+    __gtype_name__ = 'NotesList'
 
-    notes_list: NotesList = Gtk.Template.Child()
+    list_view: Gtk.ListView = Gtk.Template.Child()
+    selection: Gtk.SingleSelection = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()
+
+    @Gtk.Template.Callback()
+    def _on_item_setup(self, factory: Gtk.SignalListItemFactory, list_item: Gtk.ListItem):
+        pass
+
+    @Gtk.Template.Callback()
+    def _on_item_bind(self, factory: Gtk.SignalListItemFactory, list_item: Gtk.ListItem):
+        pass
