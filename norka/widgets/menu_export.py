@@ -24,15 +24,12 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite, Handy
-
-from norka.define import RESOURCE_PREFIX
+from gi.repository import Gtk, Adw
 
 
 class MenuExport(Gtk.Popover):
     def __init__(self, settings):
         super().__init__()
-        # self.set_constrain_to(Gtk.PopoverConstraint.NONE)
 
         self.settings = settings
 
@@ -40,54 +37,35 @@ class MenuExport(Gtk.Popover):
             label=_("Text"),
             action_name="document.export",
             tooltip_text=_("Export document to plain text file"),
-            relief=Gtk.ReliefStyle.NONE,
-            always_show_image=True,
-            image_position=Gtk.PositionType.TOP)
-        self.export_plain.set_image(Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text.svg"))
+            icon_name="text",
+        )
 
         self.export_markdown = Gtk.Button(
             label=_("Markdown"),
             action_name="document.export-markdown",
-            tooltip_markup=Granite.markup_accel_tooltip(
-                ("<Control><Shift>s",), _("Export document to markdown")),
-            relief=Gtk.ReliefStyle.NONE,
-            always_show_image=True,
-            image_position=Gtk.PositionType.TOP)
-        self.export_markdown.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-markdown.svg"))
+            # tooltip_markup=Granite.markup_accel_tooltip(("<Control><Shift>s",), _("Export document to markdown")),
+            icon_name="text-markdown",
+        )
 
         self.export_html = Gtk.Button(
             label=_("Html"),
             action_name="document.export-html",
             tooltip_text=_("Export document to HTML"),
-            relief=Gtk.ReliefStyle.NONE,
-            always_show_image=True,
-            image_position=Gtk.PositionType.TOP)
-        self.export_html.set_tooltip_text(_("Export document to HTML"))
-        self.export_html.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/text-html.svg"))
+            icon_name="text-html",
+        )
 
         self.export_pdf = Gtk.Button(
-            _("Pdf"),
+            label=_("Pdf"),
             action_name="document.export-pdf",
             tooltip_text=_("Export document to PDF"),
-            relief=Gtk.ReliefStyle.NONE,
-            always_show_image=True,
-            image_position=Gtk.PositionType.TOP, )
-        self.export_pdf.set_tooltip_text(_("Export document to PDF"))
-        self.export_pdf.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-pdf.svg"))
+            icon_name="application-pdf")
 
         self.export_docx = Gtk.Button(
             label=_("Docx"),
             action_name="document.export-docx",
             tooltip_text=_("Export document to Docx"),
-            relief=Gtk.ReliefStyle.NONE,
-            always_show_image=True,
-            image_position=Gtk.PositionType.TOP)
-        self.export_docx.set_tooltip_text(_("Export document to Docx"))
-        self.export_docx.set_image(
-            Gtk.Image.new_from_resource(f"{RESOURCE_PREFIX}/icons/application-msword.svg"))
+            icon_name="application-msword",
+        )
 
         export_grid_1 = Gtk.Grid()
         export_grid_1.attach(self.export_plain, 0, 1, 1, 1)
@@ -98,8 +76,8 @@ class MenuExport(Gtk.Popover):
         export_grid_2.attach(self.export_pdf, 0, 1, 1, 1)
         export_grid_2.attach(self.export_docx, 1, 1, 1, 1)
 
-        self.carousel = Handy.Carousel()
-        self.carousel_indicator = Handy.CarouselIndicatorLines(carousel=self.carousel)
+        self.carousel = Adw.Carousel()
+        self.carousel_indicator = Adw.CarouselIndicatorLines(carousel=self.carousel)
         self.carousel.insert(export_grid_1, 0)
         self.carousel.insert(export_grid_2, 1)
 
@@ -138,7 +116,6 @@ class MenuExport(Gtk.Popover):
         menu_grid.attach(self.export_medium, 0, 4, 3, 1)
         menu_grid.attach(self.export_writeas, 0, 5, 3, 1)
 
-        self.add(menu_grid)
+        self.set_child(menu_grid)
 
-        menu_grid.show_all()
         self.export_pdf.set_visible(False)

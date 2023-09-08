@@ -26,7 +26,7 @@ import sys
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Gio, Gdk, Granite, GLib, Handy
+from gi.repository import Gtk, Gio, Gdk, GLib
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -41,14 +41,11 @@ from norka.window import NorkaWindow
 class Application(Gtk.Application):
     __gtype_name__ = 'NorkaApplication'
 
-    granite_settings: Granite.Settings
     gtk_settings: Gtk.Settings
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
-
-        Handy.init()
 
         self.add_main_option('new', ord("n"),
                              GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
@@ -59,7 +56,7 @@ class Application(Gtk.Application):
         # Init GSettings
         self.settings = Settings.new()
 
-        self.init_style()
+        # self.init_style()
         self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
@@ -97,16 +94,16 @@ class Application(Gtk.Application):
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
 
-    def init_style(self):
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
-        screen = Gdk.Screen.get_default()
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(
-            screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-        if self.settings.get_boolean('prefer-dark-theme'):
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
+    # def init_style(self):
+    #     css_provider = Gtk.CssProvider()
+    #     css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
+    #     screen = Gdk.Screen.get_default()
+    #     style_context = Gtk.StyleContext()
+    #     style_context.add_provider_for_screen(
+    #         screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    #
+    #     if self.settings.get_boolean('prefer-dark-theme'):
+    #         Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
@@ -119,20 +116,19 @@ class Application(Gtk.Application):
         """Activates the application.
 
         """
-        self.granite_settings = Granite.Settings.get_default()
         self.gtk_settings = Gtk.Settings.get_default()
 
         # Setup default theme mode
-        if self.settings.get_boolean('prefer-dark-theme'):
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = True
-        else:
-            # Then, we check if the user's preference is for the dark style and set it if it is
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        # if self.settings.get_boolean('prefer-dark-theme'):
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = True
+        # else:
+        #     # Then, we check if the user's preference is for the dark style and set it if it is
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+        #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
         # Finally, we listen to changes in Granite.Settings and update our app if the user changes their preference
-        self.granite_settings.connect("notify::prefers-color-scheme",
-                                      self.color_scheme_changed)
+        # self.granite_settings.connect("notify::prefers-color-scheme",
+        #                               self.color_scheme_changed)
 
         self.window = self.props.active_window
         if not self.window:
@@ -173,7 +169,7 @@ class Application(Gtk.Application):
         return -1
 
     def on_settings_changed(self, settings, key):
-        Logger.debug(f'SETTINGS: %s changed', key)
+        Logger.debug('SETTINGS: %s changed', key)
         if key == "autosave":
             self.window.autosave = settings.get_boolean(key)
         if key == "spellcheck":
@@ -196,7 +192,6 @@ class Application(Gtk.Application):
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
-        preferences_dialog.show_all()
         preferences_dialog.present()
 
     def on_quit(self, action, param):
@@ -209,10 +204,10 @@ class Application(Gtk.Application):
         about_dialog.present()
 
     def color_scheme_changed(self, _old, _new):
-        dark_mode = self.settings.get_boolean('prefer-dark-theme')
-        if not dark_mode:
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        self.settings.get_boolean('prefer-dark-theme')
+        # if not dark_mode:
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+        #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")

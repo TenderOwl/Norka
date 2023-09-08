@@ -35,10 +35,9 @@ class LinkPopover(Gtk.Popover):
 
     def __init__(self, relative_to: Gtk.Widget):
         super().__init__()
-        self.set_relative_to(relative_to)
         self.set_position(Gtk.PositionType.BOTTOM)
 
-        link_label = Gtk.Label(_('Link to insert:'), halign=Gtk.Align.START, hexpand=True)
+        link_label = Gtk.Label(label=_('Link to insert:'), halign=Gtk.Align.START, hexpand=True)
 
         self.link_entry = Gtk.Entry(placeholder_text=_('https://tenderowl.com'))
         self.link_entry.connect('activate', self.on_activate)
@@ -48,14 +47,12 @@ class LinkPopover(Gtk.Popover):
                       width_request=200,
                       margin_bottom=12,
                       margin_top=12,
-                      margin_right=12,
-                      margin_left=12, )
-        box.add(link_label)
-        box.add(self.link_entry)
+                      margin_start=12,
+                      margin_end=12, )
+        box.append(link_label)
+        box.append(self.link_entry)
 
-        self.add(box)
-
-        self.show_all()
+        self.set_child(box)
 
     def set_link(self, link: str = None):
         self.link_entry.set_text(link or '')

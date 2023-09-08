@@ -23,7 +23,7 @@
 # SOFTWARE.
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk
 
 from norka.define import APP_TITLE
 

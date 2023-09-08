@@ -35,15 +35,15 @@ class ImageLinkPopover(Gtk.Popover):
 
     def __init__(self, relative_to: Gtk.Widget):
         super().__init__()
-        self.set_relative_to(relative_to)
         self.set_position(Gtk.PositionType.BOTTOM)
 
-        link_label = Gtk.Label(_('Image link to insert:'), halign=Gtk.Align.START, hexpand=True)
+        link_label = Gtk.Label(label=_('Image link to insert:'), halign=Gtk.Align.START,
+                               hexpand=True)
 
         self.link_entry = Gtk.Entry(placeholder_text=_('https://tenderowl.com'))
         self.link_entry.connect('activate', self.on_activate)
 
-        select_button = Gtk.Button(_('Choose'))
+        select_button = Gtk.Button(label=_('Choose'))
         select_button.connect('clicked', self.on_select_clicked)
 
         box = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL,
@@ -51,18 +51,14 @@ class ImageLinkPopover(Gtk.Popover):
                        row_spacing=6,
                        width_request=200,
                        margin_bottom=12,
-                       margin_top=12,
-                       margin_right=12,
-                       margin_left=12, )
+                       margin_top=12, )
         box.attach(link_label, 0, 0, 2, 1)
         box.attach(self.link_entry, 0, 1, 1, 1)
         box.attach(select_button, 1, 1, 1, 1)
 
-        self.add(box)
+        self.set_child(box)
         self.link_entry.grab_focus_without_selecting()
 
-        self.show_all()
-        select_button.grab_remove()
         self.link_entry.grab_focus_without_selecting()
 
     def set_link(self, link: str = None):

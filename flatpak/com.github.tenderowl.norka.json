@@ -2,7 +2,7 @@
     "app-id" : "com.github.tenderowl.norka",
     "runtime" : "org.gnome.Platform",
     "sdk" : "org.gnome.Sdk",
-    "runtime-version" : "44",
+    "runtime-version" : "master",
     "command" : "norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
@@ -24,44 +24,6 @@
         "*.a"
     ],
     "modules" : [
-        {
-            "name": "granite",
-            "buildsystem": "meson",
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://github.com/elementary/granite.git",
-                    "tag": "6.2.0"
-                }
-            ]
-        },
-        {
-            "name": "libhandy",
-            "buildsystem": "meson",
-            "builddir": true,
-            "config-opts": [
-                "-Dexamples=false",
-                "-Dtests=false"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/libhandy.git",
-                    "tag" : "1.8.2"
-                }
-            ]
-        },
-        {
-            "name" : "gtksourceview",
-            "buildsystem" : "meson",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/gtksourceview.git",
-                    "tag" : "4.8.4"
-                }
-            ]
-        },
         {
             "name" : "gspell",
             "sources" : [

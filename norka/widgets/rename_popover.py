@@ -37,7 +37,6 @@ class RenamePopover(Gtk.Popover):
     def __init__(self, relative_to: Gtk.Widget, origin_title: str, label_title: str = None):
         super().__init__()
 
-        self.set_relative_to(relative_to)
         self.set_position(Gtk.PositionType.RIGHT)
 
         self.origin_title = origin_title
@@ -53,18 +52,23 @@ class RenamePopover(Gtk.Popover):
         self.entry.connect('changed', self.text_changed)
         self.entry.connect('activate', self.apply_activated)
 
-        grid = Gtk.Grid(margin=12, column_spacing=6, row_spacing=6)
-        grid.attach(label, 0, 0, 2, 1)
-        grid.attach(self.entry, 0, 1, 1, 1)
+        grid = Gtk.Box(
+            margin_start=12,
+            margin_end=12,
+            margin_top=12,
+            margin_bottom=12,
+            spacing=6
+        )
+        grid.append(label)
+        grid.append(self.entry)
 
         self.rename_button = Gtk.Button(label=_("Rename"))
         self.rename_button.connect('clicked', self.apply_activated)
         self.rename_button.set_sensitive(False)
         self.rename_button.get_style_context().add_class("destructive-action")
-        grid.attach(self.rename_button, 1, 1, 1, 1)
+        grid.append(self.rename_button)
 
-        self.add(grid)
-        self.show_all()
+        self.set_child(grid)
 
     def text_changed(self, editable) -> None:
         self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())

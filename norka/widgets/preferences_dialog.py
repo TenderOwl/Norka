@@ -24,7 +24,7 @@
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell, Handy
+from gi.repository import Gtk, GtkSource, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
@@ -33,10 +33,10 @@ from norka.services.writeas import Writeas
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/preferences_window.ui')
-class PreferencesDialog(Handy.Window):
+class PreferencesDialog(Adw.Window):
     __gtype_name__ = 'PreferencesDialog'
 
-    overlay: Gtk.Overlay = Gtk.Template.Child()
+    overlay: Adw.ToastOverlay = Gtk.Template.Child()
     main_stack: Gtk.Stack = Gtk.Template.Child()
 
     def __init__(self, transient_for, settings):
@@ -46,12 +46,10 @@ class PreferencesDialog(Handy.Window):
 
         self.set_title(_('Preferences'))
 
-        langs_available: List[Gspell.Language] = Gspell.language_get_available()
-        langs_available_model = Gtk.ListStore(str, str)
-        for lang in langs_available:
-            langs_available_model.append((lang.get_code(), lang.get_name()))
-
-        self.toast = Granite.WidgetsToast(title=_("Toast"), margin=0)
+        # langs_available: List[Gspell.Language] = Gspell.language_get_available()
+        # langs_available_model = Gtk.ListStore(str, str)
+        # for lang in langs_available:
+        #     langs_available_model.append((lang.get_code(), lang.get_name()))
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))
@@ -66,7 +64,7 @@ class PreferencesDialog(Handy.Window):
         self.spellcheck_switch.connect("state-set", self.on_spellcheck)
 
         self.spellcheck_language_chooser = Gtk.ComboBox()
-        self.spellcheck_language_chooser.set_model(langs_available_model)
+        # self.spellcheck_language_chooser.set_model(langs_available_model)
         self.spellcheck_language_chooser.set_id_column(0)
         self.spellcheck_language_chooser.set_entry_text_column(1)
         renderer_text = Gtk.CellRendererText()
@@ -92,24 +90,28 @@ class PreferencesDialog(Handy.Window):
         general_label = Gtk.Label(label=_("General"), halign=Gtk.Align.START)
         general_label.get_style_context().add_class('title-4')
         general_grid.attach(general_label, 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END),
+                            0, 1, 2, 1)
         general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
-        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2,
+                            2, 1)
         general_grid.attach(self.sort_switch, 2, 2, 1, 1)
-        general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
         general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
-        general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
         general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
 
         tabs_label = Gtk.Label(label=_("Tabs"), halign=Gtk.Align.START)
         tabs_label.get_style_context().add_class('title-4')
         general_grid.attach(tabs_label, 0, 5, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
+                            1)
         general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
+        general_grid.attach(Gtk.Label(label=_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0,
+                            7, 2,
                             1)
         general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
         general_grid.attach(indent_width, 2, 8, 2, 1)
 
         # Interface grid
@@ -122,7 +124,7 @@ class PreferencesDialog(Handy.Window):
 
         style_chooser = GtkSource.StyleSchemeChooserWidget(hexpand=True, vexpand=True)
         style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
-        scrolled.add(style_chooser)
+        scrolled.set_child(style_chooser)
 
         scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(
             self.settings.get_string('stylescheme')
@@ -135,9 +137,9 @@ class PreferencesDialog(Handy.Window):
         appearance_label = Gtk.Label(label=_("Appearance"), halign=Gtk.Align.START)
         appearance_label.get_style_context().add_class('title-4')
         interface_grid.attach(appearance_label, 0, 0, 3, 1)
-        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        interface_grid.attach(Gtk.Label(label=_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
         interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
-        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
+        interface_grid.attach(Gtk.Label(label=_("Styles")), 0, 2, 3, 1)
         interface_grid.attach(scrolled, 0, 3, 3, 1)
 
         # Export grid
@@ -150,10 +152,6 @@ class PreferencesDialog(Handy.Window):
         self.main_stack.add_titled(general_grid, "behavior", _("Behavior"))
         self.main_stack.add_titled(interface_grid, "interface", _("Interface"))
         self.main_stack.add_titled(export_grid, "export", _("Export"))
-
-        self.overlay.add_overlay(self.toast)
-
-        self.show_all()
 
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
@@ -259,16 +257,16 @@ class PreferencesDialog(Handy.Window):
     def on_medium_callback(self, result):
         self.medium_token.set_sensitive(True)
         if result:
-            self.toast.set_title(f"Token accepted, {result['name']}!")
+            toast = Adw.Toast(title=_(f"Token accepted, {result['name']}!"))
             self.settings.set_string("medium-user-id", result['id'])
-            self.toast.send_notification()
+            self.overlay.add_toast(toast)
         else:
             self.on_medium_errorback()
 
     def on_medium_errorback(self, error=None):
         self.medium_token.set_sensitive(True)
-        self.toast.set_title(_("Something goes wrong!"))
-        self.toast.send_notification()
+        toast = Adw.Toast(title=_("Something goes wrong!"))
+        self.overlay.add_toast(toast)
         self.settings.set_string("medium-user-id", "")
 
     def writeas_entry_changed(self, entry: Gtk.Entry):
@@ -311,15 +309,15 @@ class PreferencesDialog(Handy.Window):
 
     def on_writeas_callback(self, result):
         data, error = result
-        self.toast.set_default_action(None)
+        toast = Adw.Toast()
         if error:
-            self.toast.set_title(_("Login failed."))
-            self.toast.send_notification()
+            toast.set_title(_("Login failed."))
 
         if data and "access_token" in data:
             self.settings.set_string("writeas-access-token", data["access_token"])
-            self.toast.set_title(_("Logged as {}.").format(data['user']['username']))
-            self.toast.send_notification()
+            toast.set_title(_("Logged as {}.").format(data['user']['username']))
+
+        self.overlay.add_toast(toast)
 
         # Enable widgets while login
         self.writeas_login.set_sensitive(True)

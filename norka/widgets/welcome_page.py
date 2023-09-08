@@ -14,7 +14,6 @@
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
-from gettext import gettext as _
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,16 +21,12 @@ from gettext import gettext as _
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
 from gettext import gettext as _
-from urllib.parse import urlparse, unquote_plus
 
-from gi.repository import Granite, Gtk, Gdk, GObject, Handy
-
-from norka.define import TARGET_ENTRY_TEXT
+from gi.repository import Gtk, GObject, Adw
 
 
-class Welcome(Handy.StatusPage):
+class WelcomePage(Adw.Bin):
     __gtype_name__ = 'NorkaWelcome'
 
     __gsignals__ = {
@@ -39,47 +34,51 @@ class Welcome(Handy.StatusPage):
     }
 
     def __init__(self):
-        super().__init__(title=_('No documents yet'),
-                         description=_('Create or import and start writing'),
-                         icon_name='com.github.tenderowl.norka')
+        super().__init__()
+
+        status_widget = Adw.StatusPage(
+            title=_('No documents yet'),
+            description=_('Create or import and start writing'),
+            icon_name='com.github.tenderowl.norka')
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         create_btn = Gtk.Button(label=_('New document'), action_name='document.create',
                                 tooltip_text=_('Create empty document'),
-                                always_show_image=True)
-        create_btn.set_image(Gtk.Image.new_from_icon_name('document-new-symbolic', Gtk.IconSize.BUTTON))
+                                icon_name='document-new-symbolic',
+                                )
         create_btn.get_style_context().add_class('flat')
-        box.add(create_btn)
+        box.append(create_btn)
 
         import_btn = Gtk.Button(label=_('Import document'), action_name='document.import',
                                 tooltip_text=_('Import document'),
-                                always_show_image=True)
-        import_btn.set_image(Gtk.Image.new_from_icon_name('folder-open-symbolic', Gtk.IconSize.BUTTON))
+                                icon_name="folder-open-symbolic")
         import_btn.get_style_context().add_class('flat')
-        box.add(import_btn)
+        box.append(import_btn)
 
-        clamp = Handy.Clamp(maximum_size=360)
-        clamp.add(box)
+        clamp = Adw.Clamp(maximum_size=360)
+        clamp.set_child(box)
 
-        self.add(clamp)
+        status_widget.set_child(clamp)
+
+        self.set_child(status_widget)
 
         # Enable drag-drop
-        enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
-        self.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
-                           [enforce_target], Gdk.DragAction.COPY)
-        self.connect('drag-data-received', self.on_drag_data_received)
+        # enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
+        # self.drag_dest_set(Gtk.DestDefaults.MOTION | Gtk.DestDefaults.DROP | Gtk.DestDefaults.HIGHLIGHT,
+        #                    [enforce_target], Gdk.DragAction.COPY)
+        # self.connect('drag-data-received', self.on_drag_data_received)
 
-    def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
-                              data: Gtk.SelectionData, info: int, time: int) -> None:
-        if info == TARGET_ENTRY_TEXT:
-            uris = data.get_text().split('\n')
-
-            for uri in uris:
-                # Skip empty items
-                if not uri:
-                    continue
-
-                p = urlparse(unquote_plus(uri))
-                filename = os.path.abspath(os.path.join(p.netloc, p.path))
-
-                self.emit('document-import', filename)
+    # def on_drag_data_received(self, widget: Gtk.Widget, drag_context: Gdk.DragContext, x: int, y: int,
+    #                           data: Gtk.SelectionData, info: int, time: int) -> None:
+    #     if info == TARGET_ENTRY_TEXT:
+    #         uris = data.get_text().split('\n')
+    #
+    #         for uri in uris:
+    #             # Skip empty items
+    #             if not uri:
+    #                 continue
+    #
+    #             p = urlparse(unquote_plus(uri))
+    #             filename = os.path.abspath(os.path.join(p.netloc, p.path))
+    #
+    #             self.emit('document-import', filename)
