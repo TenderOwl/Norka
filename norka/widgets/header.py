@@ -73,10 +73,12 @@ class Header(Gtk.Box):
         # self.subtitle_eventbox.connect('button-release-event', self.change_subtitle_mode)
 
         self.import_button: Gtk.Button = self.builder.get_object("import_button")
-        # self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',), _('Import file to Norka')))
+        # self.import_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>o',),
+#           _('Import file to Norka')))
         #
         self.add_button: Gtk.Button = self.builder.get_object("add_button")
-        # self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',), _('Create new document')))
+        # self.add_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>n',),
+        #   _('Create new document')))
 
         self.add_folder_button: Gtk.Button = self.builder.get_object(
             "add_folder_button")

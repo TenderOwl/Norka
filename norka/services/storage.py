@@ -68,7 +68,7 @@ class Storage(object):
             os.mkdir(self.base_path)
             Logger.info('Storage folder created at %s', self.base_path)
 
-        Logger.info(f'Storage located at %s', self.file_path)
+        Logger.info('Storage located at %s', self.file_path)
 
         self.connect()
 
@@ -227,7 +227,7 @@ class Storage(object):
         if title == '..':
             return False
 
-        query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
+        query = "UPDATE folders SET title=? WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (title, folder.path, folder.title,))
@@ -251,7 +251,7 @@ class Storage(object):
     def delete_folders(self, path: str) -> bool:
         """Permanently deletes folders under given `path`
         """
-        query = f"DELETE FROM folders WHERE path LIKE ?"
+        query = "DELETE FROM folders WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (f'{path}%',))
@@ -267,7 +267,7 @@ class Storage(object):
 
         :param folder: :class:`Folder` to be deleted.
         """
-        query = f"DELETE FROM folders WHERE path=? AND title=?"
+        query = "DELETE FROM folders WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (folder.path, folder.title,))
@@ -394,7 +394,7 @@ class Storage(object):
 
         Returns True if document was deleted successfully.
         """
-        query = f"DELETE FROM documents WHERE id=?"
+        query = "DELETE FROM documents WHERE id=?"
 
         try:
             self.conn.execute(query, (doc_id,))
@@ -463,7 +463,7 @@ class Storage(object):
         return True
 
     def move_documents(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
+        query = "UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
@@ -475,7 +475,7 @@ class Storage(object):
         return True
 
     def move_folders(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
+        query = "UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
@@ -489,7 +489,7 @@ class Storage(object):
     def find(self, search_text: str) -> List[Document]:
         """Finds documents with given `search_text`.
         """
-        query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
+        query = "SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
         cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
         rows = cursor.fetchall()

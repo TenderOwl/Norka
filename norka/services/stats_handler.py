@@ -24,7 +24,6 @@
 
 
 from collections import namedtuple
-from gettext import gettext as _
 
 from gi.repository import GtkSource, GObject
 

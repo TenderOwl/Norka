@@ -1,6 +1,3 @@
-import requests
-import json
-from .uri import URI
 
 from .wauser import user
 from .posts import post
@@ -101,7 +98,7 @@ class client():
         return post
 
     def upinPost(self, alias, id):
-        post = self.c.unpin(self.token, alias, id)
+        self.c.unpin(self.token, alias, id)
 
 # READ WRITE.as
     def rwa(self, skip=0):

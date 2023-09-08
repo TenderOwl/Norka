@@ -1,7 +1,6 @@
 from .uri import POST_URI
 import requests
 import json
-import code
 
 class post(object):
     def __init__(self):

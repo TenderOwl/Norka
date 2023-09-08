@@ -24,7 +24,7 @@
 import tempfile
 from gettext import gettext as _
 
-from gi.repository import WebKit, Gtk, Adw, Gdk
+from gi.repository import WebKit, Gtk, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker

@@ -2,7 +2,6 @@ import requests
 import json
 from .uri import URI, ME_URI
 
-import code
 
 class user(object):
     def __init__(self):

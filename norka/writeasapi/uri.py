@@ -1,5 +1,3 @@
-import requests
-import json
 
 URI = 'https://write.as/api/auth/login'
 POST_URI = 'https://write.as/api/posts'

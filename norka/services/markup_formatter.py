@@ -173,7 +173,7 @@ class MarkupFormatter:
         with user_action(self.buffer):
             cursor_mark = self.buffer.get_insert()
             cursor_iter = self.buffer.get_iter_at_mark(cursor_mark)
-            offset = cursor_iter.get_offset()
+            cursor_iter.get_offset()
 
             start = cursor_iter.copy()
             end = cursor_iter.copy()

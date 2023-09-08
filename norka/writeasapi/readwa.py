@@ -1,5 +1,4 @@
 import requests
-import json
 from .uri import RWA_URI
 
 class rwa(object):

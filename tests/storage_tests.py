@@ -3,7 +3,6 @@ from unittest import TestCase
 
 from norka.define import STORAGE_NAME, DB_VERSION
 from norka.models.document import Document
-from norka.models.folder import Folder
 from norka.services.storage import Storage
 
 

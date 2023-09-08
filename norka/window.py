@@ -29,7 +29,6 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
-from norka.services import distro
 from norka.services.backup import BackupService
 from norka.services.export import Exporter, PDFExporter, Printer
 from norka.services.logger import Logger
