@@ -22,9 +22,12 @@
 #
 # SPDX-License-Identifier: MIT
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, Pango
 
 from norka.define import RESOURCE_PREFIX
+from norka.models.document import Document
+from norka.services.settings import Settings
+from norka.services.storage import Storage
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/notes_list.ui')
@@ -33,14 +36,31 @@ class NotesList(Gtk.Box):
 
     list_view: Gtk.ListView = Gtk.Template.Child()
     selection: Gtk.SingleSelection = Gtk.Template.Child()
+    filter_model: Gtk.FilterListModel = Gtk.Template.Child()
+    store: Gio.ListStore = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()
 
+        self.settings: Settings = Gtk.Application.get_default().props.settings
+        self.storage: Storage = Gtk.Application.get_default().props.storage
+
+    def reload_notes(self):
+        documents = self.storage.all(path="/", with_archived=False)
+
+        if documents:
+            self.store.remove_all()
+            for doc in documents:
+                self.store.append(doc)
+
     @Gtk.Template.Callback()
     def _on_item_setup(self, factory: Gtk.SignalListItemFactory, list_item: Gtk.ListItem):
-        pass
+        label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START)
+        list_item.set_child(label)
 
     @Gtk.Template.Callback()
     def _on_item_bind(self, factory: Gtk.SignalListItemFactory, list_item: Gtk.ListItem):
-        pass
+        label: Gtk.Label = list_item.get_child()
+        document: Document = list_item.get_item()
+        label.set_label(document.title)
+        label.set_tooltip_text(document.title)

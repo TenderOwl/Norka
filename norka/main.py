@@ -27,7 +27,7 @@ import sys
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Gio, GLib, Adw
+from gi.repository import Gtk, Gio, GLib, Adw, GObject
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -43,6 +43,8 @@ class Application(Adw.Application):
 
     gtk_settings: Gtk.Settings
     window: NorkaWindow = None
+    settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
@@ -57,8 +59,6 @@ class Application(Adw.Application):
 
         # Init GSettings
         self.settings = Settings.new()
-
-        # self.init_style()
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)

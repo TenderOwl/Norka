@@ -1,4 +1,5 @@
 using Gtk 4.0;
+using Gio 2.0;
 
 template $NotesList : Box {
   hexpand: true;
@@ -12,6 +13,9 @@ template $NotesList : Box {
       autoselect: false;
       model: FilterListModel filter_model {
         filter: CustomFilter filter {};
+        model: Gio.ListStore store {
+          item-type: typeof<$Document>;
+        };
       };
     };
     factory: SignalListItemFactory factory {

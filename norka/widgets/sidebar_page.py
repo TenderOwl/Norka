@@ -37,3 +37,6 @@ class SidebarPage(Adw.NavigationPage):
 
     def __init__(self):
         super().__init__()
+
+    def do_showing(self):
+        self.notes_column.notes_list.reload_notes()
