@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-08 14:10+0300\n"
-"PO-Revision-Date: 2023-08-25 12:52+0000\n"
+"PO-Revision-Date: 2023-12-22 12:11+0000\n"
 "Last-Translator: rene-coty <irenee.thirion@e.email>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/frog/norka/fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.0.1-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 "Generated-By: pygettext.py 1.5\n"
 
 #: ../norka/widgets/image_link_popover.py:41
@@ -411,7 +411,7 @@ msgstr "éditeur de texte continu"
 
 #: ../norka/main.py:64
 msgid "Open new document on start."
-msgstr "Ouvrir un nouveau document au démarrage"
+msgstr "Ouvrir un nouveau document au démarrage."
 
 #: ../norka/window.py:437
 msgid "Name folder with:"
@@ -451,7 +451,7 @@ msgstr "Configurer"
 
 #: ../norka/window.py:845 ../norka/window.py:888
 msgid "Document successfully exported!"
-msgstr "Document exporté avec succès"
+msgstr "Document exporté avec succès !"
 
 #: ../norka/window.py:846 ../norka/window.py:889
 msgid "View"
@@ -475,11 +475,11 @@ msgstr "Sélectionner"
 
 #: ../norka/window.py:916
 msgid "Backup started."
-msgstr "Sauvegarde débutée"
+msgstr "Sauvegarde débutée."
 
 #: ../norka/window.py:924
 msgid "All documents saved."
-msgstr "Tous les documents sont enregistrés"
+msgstr "Tous les documents sont enregistrés."
 
 #: ../norka/window.py:929
 msgid "Backup failed."
@@ -687,8 +687,8 @@ msgstr "@icon@"
 #: ../data/com.github.tenderowl.norka.desktop.in.in:12
 msgid "text;editor;markdown;notes;pdf;word;html;writer;document;"
 msgstr ""
-"text;editor;markdown;notes;pdf;word;html;writer;document;éditeur;docx;"
-"markdown;"
+"text ;editor ;markdown ;notes ;pdf ;word ;html ;writer ;document ;éditeur ;"
+"docx ;markdown ;"
 
 #: ../data/com.github.tenderowl.norka.desktop.in.in:19
 msgid "New Note"
@@ -778,7 +778,7 @@ msgstr ""
 msgid "CLI option to use Norka as quick notes editor. See website for more."
 msgstr ""
 "Option CLI pour utiliser Norka comme un éditeur de notes rapide. Voir le "
-"site web pour en savoir plus"
+"site web pour en savoir plus."
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:60
 msgid "Fixes"
@@ -786,7 +786,7 @@ msgstr "Corrections"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:62
 msgid "Header now properly inserted for non-Latin languages"
-msgstr "Titre désormais correctement inséré pour les langages non-latins."
+msgstr "Titre désormais correctement inséré pour les langages non-latins"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:63
 msgid "Autocompletion stops if no text is entered on list item"
@@ -802,7 +802,7 @@ msgstr ""
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:70
 msgid "Bugfixes and UI impovements."
-msgstr "Corrections de bogues et améliorations de l’interface"
+msgstr "Corrections de bogues et améliorations de l’interface."
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:75
 msgid "Backup, export to Docx and PDF and more."
@@ -890,7 +890,7 @@ msgstr "Dates de création et de modification dans l’infobulle"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:127
 msgid "Update app translation."
-msgstr "Traduction de l’application mise à jour"
+msgstr "Traduction de l’application mise à jour."
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:132
 msgid ""
@@ -917,7 +917,7 @@ msgstr ""
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:153
 msgid "Some fixes:"
-msgstr "Quelques corrections"
+msgstr "Quelques corrections :"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:155
 msgid "Properly toggle welcome screen and show archived"
@@ -965,7 +965,7 @@ msgid ""
 "immediately switch to the created one"
 msgstr ""
 "Et dans le cas où vous créez un nouveau document alors que vous en éditiez "
-"un autre, Norka passera immédiatement à celui créé."
+"un autre, Norka passera immédiatement à celui créé"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:178
 msgid ""
@@ -1006,9 +1006,9 @@ msgid ""
 "or Headerbar button. And from command line of course!"
 msgstr ""
 "Norka grandit et apprend de nouveau tours comme l’importation de fichiers "
-"dans les documents Norka ! Vous pouvez utiliser n’importe quelle méthode "
-"comme : glisser-déposer; raccourcis clavier (Ctrl + O) ou le bouton dans la "
-"barre supérieur. Et depuis la ligne de commande bien sûr !"
+"dans les documents Norka ! Vous pouvez utiliser n’importe quelle méthode "
+"comme : glisser-déposer ; raccourcis clavier (Ctrl + O) ou le bouton dans la "
+"barre supérieur. Et depuis la ligne de commande bien sûr !"
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:196
 msgid ""
@@ -1017,9 +1017,9 @@ msgid ""
 "permanent or unarchive if you changed your mind."
 msgstr ""
 "Pendant longtemps, vous pouviez seulement archiver des documents, parce que "
-"supprimer archive également :) Désormais vous pouvez voir les documents "
+"supprimer archive également :) Désormais vous pouvez voir les documents "
 "archivés et les supprimer de manière permanente ou les désarchiver si vous "
-"avez changé d’avis"
+"avez changé d’avis."
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:199
 msgid ""
