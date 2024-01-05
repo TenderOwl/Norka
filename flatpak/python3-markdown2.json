@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "file",
-            "url": "https://files.pythonhosted.org/packages/f1/98/61276a753f078dd2f3171c9a69fd3f451d220e806b2b1cdca41b8e368b0f/markdown2-2.4.10-py2.py3-none-any.whl",
-            "sha256": "e6105800483783831f5dc54f827aa5b44eb137ecef5a70293d8ecfbb4109ecc6"
+            "url": "https://files.pythonhosted.org/packages/70/4c/674a82d120c2be454c792907fd81210f4d713eddb98c8b229c2c7f06bcf1/markdown2-2.4.12-py2.py3-none-any.whl",
+            "sha256": "98f47591006f0ace0644cbece03fed6f3845513286f6c6e9f8bcf6a575174e2c"
         }
     ]
 }

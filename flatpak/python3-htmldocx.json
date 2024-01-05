@@ -17,18 +17,23 @@
         },
         {
             "type": "file",
-            "url": "https://files.pythonhosted.org/packages/30/39/7305428d1c4f28282a4f5bdbef24e0f905d351f34cf351ceb131f5cddf78/lxml-4.9.3.tar.gz",
-            "sha256": "48628bd53a426c9eb9bc066a923acaa0878d1e86129fd5359aee99285f4eed9c"
+            "url": "https://files.pythonhosted.org/packages/80/2c/076fafd979728858829fb9ce2e13fa6367b6be9acc4da0cff6367aa6a1ce/lxml-5.0.0.zip",
+            "sha256": "2219cbf790e701acf9a21a31ead75f983e73daf0eceb9da6990212e4d20ebefe"
         },
         {
             "type": "file",
-            "url": "https://files.pythonhosted.org/packages/8b/a0/52729ce4aa026f31b74cc877be1d11e4ddeaa361dc7aebec148171644b33/python-docx-0.8.11.tar.gz",
-            "sha256": "1105d233a0956dd8dd1e710d20b159e2d72ac3c301041b95f4d4ceb3e0ebebc4"
+            "url": "https://files.pythonhosted.org/packages/5f/d8/6948f7ac00edf74bfa52b3c5e3073df20284bec1db466d13e668fe991707/python_docx-1.1.0-py3-none-any.whl",
+            "sha256": "bac9773278098a1ddc43a52d84e22f5909c4a3080a624530b3ecb3771b07c6cd"
         },
         {
             "type": "file",
             "url": "https://files.pythonhosted.org/packages/4c/f3/038b302fdfbe3be7da016777069f26ceefe11a681055ea1f7817546508e3/soupsieve-2.5-py3-none-any.whl",
             "sha256": "eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7"
+        },
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/b7/f4/6a90020cd2d93349b442bfcb657d0dc91eee65491600b2cb1d388bc98e6b/typing_extensions-4.9.0-py3-none-any.whl",
+            "sha256": "af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"
         }
     ]
 }

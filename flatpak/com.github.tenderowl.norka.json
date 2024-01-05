@@ -27,6 +27,7 @@
         "python3-markdown2.json",
         "python3-requests.json",
         "python3-htmldocx.json",
+        "python3-loguru.json",
         {
             "name" : "norka",
             "builddir" : true,
