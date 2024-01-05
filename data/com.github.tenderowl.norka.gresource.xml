@@ -9,6 +9,7 @@
 		<file preprocess="xml-stripblanks">ui/notes_list.ui</file>
 		<file preprocess="xml-stripblanks">ui/content_page.ui</file>
 		<file preprocess="xml-stripblanks">ui/editor_column.ui</file>
+		<file preprocess="xml-stripblanks">ui/editor.ui</file>
 		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
 		<file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
 		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>

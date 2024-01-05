@@ -1087,17 +1087,19 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.preview = None
 
     def update_document_stats(self, editor):
-        stats = self.editor.stats
-        document_path = self.editor.document.folder if self.editor.document else None
-        self.header.update_stats(stats, document_path=document_path)
-        if self.extended_stats_dialog:
-            self.extended_stats_dialog.update_stats(stats)
+        pass
+        # stats = self.editor.stats
+        # document_path = self.editor.document.folder if self.editor.document else None
+        # self.header.update_stats(stats, document_path=document_path)
+        # if self.extended_stats_dialog:
+        #     self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
-        if is_loading:
-            self.header.loader_spinner.start()
-        else:
-            self.header.loader_spinner.stop()
+        # if is_loading:
+        #     self.header.loader_spinner.start()
+        # else:
+        #     self.header.loader_spinner.stop()
+        pass
 
     def on_print(self, sender, event=None):
         doc = self.document_grid.selected_document or self.editor.document

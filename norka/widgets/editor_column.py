@@ -25,11 +25,14 @@
 from gi.repository import Gtk
 
 from norka.define import RESOURCE_PREFIX
+from norka.widgets.editor import Editor
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/editor_column.ui')
 class EditorColumn(Gtk.Box):
     __gtype_name__ = 'EditorColumn'
+
+    editor: Editor = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()

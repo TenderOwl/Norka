@@ -6,9 +6,11 @@ template $NotesList : Box {
 
   ListView list_view {
     hexpand: true;
-    single-click-activate: false;
+    single-click-activate: true;
     show-separators: false;
     enable-rubberband: false;
+    activate => $_on_list_view_activate();
+
     model: SingleSelection selection {
       autoselect: false;
       model: FilterListModel filter_model {

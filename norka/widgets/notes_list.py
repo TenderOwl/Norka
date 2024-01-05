@@ -23,8 +23,10 @@
 # SPDX-License-Identifier: MIT
 
 from gi.repository import Gtk, Gio, Pango
+from loguru import logger
 
 from norka.define import RESOURCE_PREFIX
+from norka.document_manager import document_manager
 from norka.models.document import Document
 from norka.services.settings import Settings
 from norka.services.storage import Storage
@@ -45,8 +47,8 @@ class NotesList(Gtk.Box):
         self.settings: Settings = Gtk.Application.get_default().props.settings
         self.storage: Storage = Gtk.Application.get_default().props.storage
 
-    def reload_notes(self):
-        documents = self.storage.all(path="/", with_archived=False)
+    def reload_notes(self, path: str = "/", include_archived: bool = False):
+        documents = self.storage.all(path=path, with_archived=include_archived)
 
         if documents:
             self.store.remove_all()
@@ -55,7 +57,7 @@ class NotesList(Gtk.Box):
 
     @Gtk.Template.Callback()
     def _on_item_setup(self, factory: Gtk.SignalListItemFactory, list_item: Gtk.ListItem):
-        label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START)
+        label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, xalign=0, hexpand=True)
         list_item.set_child(label)
 
     @Gtk.Template.Callback()
@@ -63,4 +65,10 @@ class NotesList(Gtk.Box):
         label: Gtk.Label = list_item.get_child()
         document: Document = list_item.get_item()
         label.set_label(document.title)
-        label.set_tooltip_text(document.title)
+        label.set_tooltip_markup(f'<b>{document.title}</b>\n<small>{document.absolute_path}</small>')
+
+    @Gtk.Template.Callback()
+    def _on_list_view_activate(self, list_view: Gtk.ListView, position: int):
+        selected_item = self.store.get_item(position)
+        logger.debug(f"_on_list_view_activate: {selected_item}")
+        document_manager.current_document = selected_item

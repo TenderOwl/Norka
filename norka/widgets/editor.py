@@ -27,7 +27,10 @@ from gettext import gettext as _
 from typing import Tuple
 
 from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib
+from loguru import logger
 
+from norka.define import RESOURCE_PREFIX
+from norka.document_manager import document_manager
 from norka.models.document import Document
 from norka.services.logger import Logger
 from norka.services.markup_formatter import MarkupFormatter
@@ -39,6 +42,7 @@ from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
 
 
+@Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/editor.ui')
 class Editor(Gtk.Box):
     __gtype_name__ = 'Editor'
 
@@ -62,39 +66,42 @@ class Editor(Gtk.Box):
         'document-changed': (GObject.SignalFlags.ACTION, None, (bool,)),
     }
 
-    def __init__(self, storage: Storage, settings: Settings):
+    view: GtkSource.View = Gtk.Template.Child()
+    buffer: GtkSource.Buffer = Gtk.Template.Child()
+
+    def __init__(self, storage: Storage=None, settings: Settings=None):
         super().__init__()
 
         self.document = None
-        self.storage = storage
-        self.settings = settings
+        self.storage = Gtk.Application.get_default().props.storage
+        self.settings = Gtk.Application.get_default().props.settings
 
-        self.buffer = GtkSource.Buffer()
-        self.buffer.connect('changed', self.on_buffer_changed)
+        # self.buffer = GtkSource.Buffer()
+        # self.buffer.connect('changed', self.on_buffer_changed)
         self.manager = GtkSource.LanguageManager()
         self.language = self.manager.get_language("markdown")
         self.buffer.set_language(self.language)
         self.buffer.create_tag('match', background="#66ff00")
 
-        self.view = GtkSource.View()
-        self.view.set_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_auto_indent(True)
+        # self.view = GtkSource.View()
+        # self.view.set_buffer(self.buffer)
+        # self.view.set_wrap_mode(Gtk.WrapMode.WORD)
+        # self.view.set_auto_indent(True)
         self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
-        self.view.set_insert_spaces_instead_of_tabs(True)
-        self.view.set_tab_width(4)
-        self.view.props.width_request = 920
-        self.view.set_halign(Gtk.Align.CENTER)
+        # self.view.set_insert_spaces_instead_of_tabs(True)
+        # self.view.set_tab_width(4)
+        # self.view.props.width_request = 920
+        # self.view.set_halign(Gtk.Align.CENTER)
 
-        self.view.set_pixels_above_lines(2)
-        self.view.set_pixels_below_lines(2)
-        self.view.set_pixels_inside_wrap(4)
-        self.view.set_top_margin(32)
-        self.view.set_left_margin(32)
-        self.view.set_right_margin(32)
-        self.view.set_bottom_margin(32)
+        # self.view.set_pixels_above_lines(2)
+        # self.view.set_pixels_below_lines(2)
+        # self.view.set_pixels_inside_wrap(4)
+        # self.view.set_top_margin(32)
+        # self.view.set_left_margin(32)
+        # self.view.set_right_margin(32)
+        # self.view.set_bottom_margin(32)
         # self.view.set_monospace(True)
-        self.view.get_style_context().add_class('norka-editor')
+        # self.view.get_style_context().add_class('norka-editor')
 
         # self.view.connect('key-release-event', self.on_key_release_event)
         self.view.connect('move-cursor', self.on_view_move_cursor)
@@ -116,9 +123,9 @@ class Editor(Gtk.Box):
         self.connect('insert-link', self.on_insert_link)
         self.connect('insert-image', self.on_insert_image)
 
-        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled.get_style_context().add_class('scrolled-editor')
-        self.scrolled.set_child(self.view)
+        # self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        # self.scrolled.get_style_context().add_class('scrolled-editor')
+        # self.scrolled.set_child(self.view)
 
         # SearchBar
         self.search_bar = SearchBar()
@@ -129,12 +136,12 @@ class Editor(Gtk.Box):
         self.search_bar.connect('find-prev', self.do_previous_match)
         self.search_bar.connect('stop-search', self.do_stop_search)
 
-        content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        content_grid.append(self.search_revealer)
-        content_grid.append(self.scrolled)
+        # content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        # content_grid.append(self.search_revealer)
+        # content_grid.append(self.scrolled)
 
         self.overlay = Gtk.Overlay()
-        self.overlay.set_child(content_grid)
+        # self.overlay.set_child(content_grid)
         # self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
 
         # Initialize stats calculations and connect `destroy` event
@@ -161,6 +168,12 @@ class Editor(Gtk.Box):
         self.search_context = GtkSource.SearchContext(buffer=self.buffer,
                                                       settings=self.search_settings)
         self.search_iter = None
+
+        document_manager.connect('current-document-changed', self._on_document_changed)
+
+    def _on_document_changed(self, sender, document_id):
+        logger.debug(f'{sender}: {document_id}')
+        self.load_document(document_id)
 
     def on_buffer_changed(self, buffer: Gtk.TextBuffer):
         self.buffer.set_modified(True)
@@ -364,15 +377,15 @@ class Editor(Gtk.Box):
         scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(scheme_id)
         self.buffer.set_style_scheme(scheme)
 
-        try:
-            bgcolor = scheme.get_style('text').props.background
-        except AttributeError:
-            bgcolor = '#fff'
+        # try:
+        #     bgcolor = scheme.get_style('text').props.background
+        # except AttributeError:
+        #     bgcolor = '#fff'
 
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
-        self.scrolled.get_style_context().add_provider(css_provider,
-                                                       Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        # css_provider = Gtk.CssProvider()
+        # css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
+        # self.scrolled.get_style_context().add_provider(css_provider,
+        #                                                Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def update_font(self, font: str) -> None:
         # pass

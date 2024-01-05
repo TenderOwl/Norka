@@ -1,0 +1,34 @@
+using Gtk 4.0;
+using Adw 1;
+using GtkSource 5;
+
+template $Editor : Box {
+  orientation: vertical;
+
+  ScrolledWindow {
+    vexpand: true;
+
+    styles ["scrolled-editor"]
+
+    GtkSource.View view {
+      wrap-mode: word;
+      pixels-above-lines: 4;
+      pixels-below-lines: 4;
+      pixels-inside-wrap: 8;
+      left-margin: 16;
+      right-margin: 16;
+      top-margin: 32;
+      bottom-margin: 32;
+      auto-indent: true;
+      insert-spaces-instead-of-tabs: true;
+      width-request: 920;
+      halign: center;
+
+      buffer: GtkSource.Buffer buffer {
+        changed => $on_buffer_changed();
+      };
+
+      styles ["norka-editor-view"]
+    }
+  }
+}
