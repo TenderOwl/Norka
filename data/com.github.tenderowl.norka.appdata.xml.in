@@ -23,9 +23,12 @@
     <update_contact>andrey_AT_tenderowl.com</update_contact>
 
     <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
-    <developer_name>Tender Owl</developer_name>
+    <translation type="gettext">com.github.tenderowl.norka</translation>
+    <developer_name translatable="no">Tender Owl</developer_name>
     <url type="homepage">https://norka.app/</url>
     <url type="bugtracker">https://github.com/tenderowl/norka/issues</url>
+    <url type="vcs-browser">https://github.com/tenderowl/norka</url>
+    <url type="translate">https://hosted.weblate.org/projects/frog/norka/</url>
 
     <screenshots>
         <screenshot type="default">
@@ -42,7 +45,7 @@
 
     <releases>
         <release date="2023-06-06" version="1.1.0">
-            <description>
+            <description translatable="no">
                 <p>Hooray 🎉️! A new version of the Norka text editor has been released, in which you will find many
                     improvements and new features. The interface has become more modern and convenient, the processing
                     of command line arguments has been fixed and improved, and a full-fledged autosave has finally
@@ -53,13 +56,13 @@
             </description>
         </release>
         <release date="2022-03-08" version="1.0.1">
-            <description>
+            <description translatable="no">
                 <p>Fix issue when doesn't start Norka at the first launch.</p>
                 <p>Updated Russian translation.</p>
             </description>
         </release>
         <release date="2022-02-03" version="1.0.0">
-            <description>
+            <description translatable="no">
                 <p>New</p>
                 <ul>
                     <li>You can create folders to structure your notes</li>
@@ -78,12 +81,12 @@
             </description>
         </release>
         <release date="2021-10-13" version="0.8.2">
-            <description>
+            <description translatable="no">
                 <p>Bugfixes and UI improvements.</p>
             </description>
         </release>
         <release date="2021-09-18" version="0.8.0">
-            <description>
+            <description translatable="no">
                 <p>Backup, export to Docx and PDF and more.</p>
                 <ul>
                     <li>Backup option available in the main menu</li>
@@ -96,7 +99,7 @@
             </description>
         </release>
         <release date="2021-04-08" version="0.7.2">
-            <description>
+            <description translatable="no">
                 <p>New app page and</p>
                 <ul>
                     <li>New app screenshots</li>
@@ -105,7 +108,7 @@
             </description>
         </release>
         <release date="2021-02-13" version="0.7.0">
-            <description>
+            <description translatable="no">
                 <p>Improvements</p>
                 <ul>
                     <li>Dark mode</li>
@@ -114,7 +117,7 @@
             </description>
         </release>
         <release date="2021-01-20" version="0.6.3">
-            <description>
+            <description translatable="no">
                 <p>Improvements</p>
                 <ul>
                     <li>Fix extra dot for exported md files.</li>
@@ -123,7 +126,7 @@
             </description>
         </release>
         <release date="2020-10-07" version="0.6.2">
-            <description>
+            <description translatable="no">
                 <p>Improvements</p>
                 <ul>
                     <li>Editor width limited to 800 px for the best experience</li>
@@ -135,24 +138,24 @@
             </description>
         </release>
         <release date="2020-08-31" version="0.5.1">
-            <description>
+            <description translatable="no">
                 <p>Update app translation.</p>
             </description>
         </release>
         <release date="2020-08-29" version="0.5.0">
-            <description>
+            <description translatable="no">
                 <p>A new fancy way to search through your documents is available. And Norka is fully localizable now.
                     You are welcome :)
                 </p>
             </description>
         </release>
         <release date="2020-08-13" version="0.4.7">
-            <description>
+            <description translatable="no">
                 <p>Update metadata.</p>
             </description>
         </release>
         <release date="2020-08-12" version="0.4.6">
-            <description>
+            <description translatable="no">
                 <p>Improvements</p>
                 <ul>
                     <li>Set the minimum size of the Preferences dialog</li>
@@ -161,7 +164,7 @@
             </description>
         </release>
         <release date="2020-07-21" version="0.4.3">
-            <description>
+            <description translatable="no">
                 <p>Some fixes:</p>
                 <ul>
                     <li>Properly toggle welcome screen and show archived</li>
@@ -171,7 +174,7 @@
             </description>
         </release>
         <release date="2020-07-17" version="0.4.2">
-            <description>
+            <description translatable="no">
                 <p>Yet another update: small but valuable.</p>
                 <p>What it brings to us:</p>
                 <ul>
@@ -186,7 +189,7 @@
             </description>
         </release>
         <release date="2020-07-16" version="0.3.0">
-            <description>
+            <description translatable="no">
                 <p>TenderOwl thinks a living project is better than enormous updates yet we created a new little one!
                 </p>
                 <p>This release brings a new feature - export to Medium. All you need is open preferences and put the
@@ -200,7 +203,7 @@
             </description>
         </release>
         <release date="2020-06-28" version="0.2.0">
-            <description>
+            <description translatable="no">
                 <p>Norka grows up and learn new tricks like import files to Norka's documents!
                     You could use any methods you like: drag-n-drop, keyboard shortcut (Ctrl+O) or Headerbar button. And
                     from command line of course!
@@ -214,7 +217,7 @@
             </description>
         </release>
         <release date="2020-06-12" version="0.1.4">
-            <description>
+            <description translatable="no">
                 <p>
                     Search and Shortcuts.
                     Now you can use Text Search via keyboard shortcuts:
@@ -227,15 +230,13 @@
             </description>
         </release>
         <release date="2020-06-07" version="0.1.0">
-            <description>
+            <description translatable="no">
                 <p>Initial release of Norka. Young yet ready to provide you with editing functions and Markdown
                     formatter, even export but who needs it.
                 </p>
             </description>
         </release>
     </releases>
-
-    <translation type="gettext">com.github.tenderowl.norka</translation>
 
     <custom>
         <!-- elementary OS AppCenter specific values -->
