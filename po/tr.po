@@ -1,0 +1,761 @@
+# Turkish translation for Norka
+# Copyright (C) 2023 Norka'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Norka package.
+#
+# Sabri Ünal <libreajans@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Norka\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-25 14:41+0300\n"
+"PO-Revision-Date: 2023-12-25 14:35+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"Language-Team: Türkçe <takim@gnome.org.tr>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#: ../norka/main.py:55
+msgid "Open new document on start."
+msgstr "Başlangıçta yeni belge aç."
+
+#: ../norka/window.py:459
+msgid "Name folder with:"
+msgstr "Klasörü şununla adlandır:"
+
+#: ../norka/window.py:460 ../norka/widgets/folder_create_dialog.py:55
+msgid "Create"
+msgstr "Oluştur"
+
+#: ../norka/window.py:501
+msgid "Import files into Norka"
+msgstr "Dosyaları Norka'ya içe aktar"
+
+#: ../norka/window.py:505
+msgid "Text Files"
+msgstr "Metin Dosyaları"
+
+#: ../norka/window.py:747 ../norka/window.py:776 ../norka/window.py:805
+msgid "Export document to file"
+msgstr "Belgeyi dosyaya dışa aktar"
+
+#: ../norka/window.py:829
+msgid "Document exported."
+msgstr "Belge dışa aktarıldı."
+
+#: ../norka/window.py:830 ../norka/window.py:953
+msgid "Open folder"
+msgstr "Klasör aç"
+
+#: ../norka/window.py:835
+msgid "Export goes wrong."
+msgstr "Dışa aktarma yanlış gitti."
+
+#: ../norka/window.py:855
+msgid "You need to set Medium token in Preferences -> Export"
+msgstr "Tercihler -> Dışa Aktar bölümünde Medium jetonu ayarlamanız gerekir"
+
+#: ../norka/window.py:856
+msgid "Configure"
+msgstr "Yapılandır"
+
+#: ../norka/window.py:873 ../norka/window.py:916
+msgid "Document successfully exported!"
+msgstr "Belge dışa aktarıldı!"
+
+#: ../norka/window.py:874 ../norka/window.py:917
+msgid "View"
+msgstr "Görünüm"
+
+#: ../norka/window.py:879
+msgid "Export failed!"
+msgstr "Dışa aktarma başarısız oldu!"
+
+#: ../norka/window.py:922
+msgid "Export failed."
+msgstr "Dışa aktarma başarısız oldu."
+
+#: ../norka/window.py:928
+msgid "Select folder to store backup"
+msgstr "Yedeğin depolanacağı klasörü seç"
+
+#: ../norka/window.py:931
+msgid "Select"
+msgstr "Seç"
+
+#: ../norka/window.py:944
+msgid "Backup started."
+msgstr "Yedekleme başladı."
+
+#: ../norka/window.py:952
+msgid "All documents saved."
+msgstr "Tüm belgeler kaydedildi."
+
+#: ../norka/window.py:957
+msgid "Backup failed."
+msgstr "Yedekleme başarısız."
+
+#: ../norka/widgets/export_dialog.py:30
+msgid "Plain text"
+msgstr "Düz metin"
+
+#: ../norka/widgets/export_dialog.py:31 ../norka/widgets/menu_export.py:49
+msgid "Markdown"
+msgstr "Markdown"
+
+#: ../norka/widgets/export_dialog.py:32
+msgid "HTML"
+msgstr "HTML"
+
+#: ../norka/widgets/export_dialog.py:33
+msgid "PDF"
+msgstr "PDF"
+
+#: ../norka/widgets/export_dialog.py:34 ../norka/widgets/menu_export.py:82
+msgid "Docx"
+msgstr "Docx"
+
+#: ../norka/widgets/preferences_dialog.py:47
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../norka/widgets/preferences_dialog.py:54
+msgid "Toast"
+msgstr "Bildirim"
+
+#: ../norka/widgets/preferences_dialog.py:92
+msgid "General"
+msgstr "Genel"
+
+#: ../norka/widgets/preferences_dialog.py:95
+msgid "Save files when changed:"
+msgstr "Değiştirildiğinde dosyaları kaydet:"
+
+#: ../norka/widgets/preferences_dialog.py:97
+msgid "Sort documents backwards:"
+msgstr "Belgeleri ters sırala:"
+
+#: ../norka/widgets/preferences_dialog.py:99
+msgid "Spell checking:"
+msgstr "Yazım denetimi:"
+
+#: ../norka/widgets/preferences_dialog.py:101
+msgid "Language:"
+msgstr "Dil:"
+
+#: ../norka/widgets/preferences_dialog.py:104
+msgid "Tabs"
+msgstr "Sekmeler"
+
+#: ../norka/widgets/preferences_dialog.py:107
+msgid "Automatic indentation:"
+msgstr "Kendiliğinden girintile:"
+
+#: ../norka/widgets/preferences_dialog.py:109
+msgid "Insert spaces instead of tabs:"
+msgstr "Sekme yerine boşluk ekle:"
+
+#: ../norka/widgets/preferences_dialog.py:112
+msgid "Tab width:"
+msgstr "Sekme genişliği:"
+
+#: ../norka/widgets/preferences_dialog.py:135
+msgid "Appearance"
+msgstr "Görünüm"
+
+#: ../norka/widgets/preferences_dialog.py:138
+msgid "Prefer dark theme:"
+msgstr "Koyu tema yeğle:"
+
+#: ../norka/widgets/preferences_dialog.py:140
+msgid "Styles"
+msgstr "Biçemler"
+
+#: ../norka/widgets/preferences_dialog.py:150
+msgid "Behavior"
+msgstr "Davranış"
+
+#: ../norka/widgets/preferences_dialog.py:151
+msgid "Interface"
+msgstr "Arayüz"
+
+#: ../norka/widgets/preferences_dialog.py:152
+msgid "Export"
+msgstr "Dışa Aktar"
+
+#: ../norka/widgets/preferences_dialog.py:159
+msgid "Token"
+msgstr "Jeton"
+
+#: ../norka/widgets/preferences_dialog.py:164
+msgid "Create Integration token and copy it here"
+msgstr "Tümleşim jetonu oluşturp buraya kopyalayın"
+
+#: ../norka/widgets/preferences_dialog.py:169
+msgid "Personal Token:"
+msgstr "Kişisel Jeton:"
+
+#: ../norka/widgets/preferences_dialog.py:174
+#: ../norka/widgets/preferences_dialog.py:180
+msgid "Login"
+msgstr "Giriş"
+
+#: ../norka/widgets/preferences_dialog.py:175
+msgid "Password"
+msgstr "Parola"
+
+#: ../norka/widgets/preferences_dialog.py:182
+msgid "Logout"
+msgstr "Çıkış"
+
+#: ../norka/widgets/preferences_dialog.py:192
+msgid "Login:"
+msgstr "Giriş:"
+
+#: ../norka/widgets/preferences_dialog.py:194
+msgid "Password:"
+msgstr "Parola:"
+
+#: ../norka/widgets/preferences_dialog.py:270
+msgid "Something goes wrong!"
+msgstr "Bir şeyler yanlış gitti!"
+
+#: ../norka/widgets/preferences_dialog.py:316
+msgid "Login failed."
+msgstr "Giriş başarısız."
+
+#: ../norka/widgets/preferences_dialog.py:321
+msgid "Logged as {}."
+msgstr "{} olarak giriş yapıldı."
+
+#: ../norka/widgets/link_popover.py:41
+msgid "Link to insert:"
+msgstr "Eklenecek bağlantı:"
+
+#: ../norka/widgets/link_popover.py:43
+#: ../norka/widgets/image_link_popover.py:43
+msgid "https://tenderowl.com"
+msgstr "https://tenderowl.com"
+
+#: ../norka/widgets/folder_create_dialog.py:37
+msgid "Create folder?"
+msgstr "Klasör Oluşturulsun Mu?"
+
+#: ../norka/widgets/folder_create_dialog.py:38
+msgid "We will put these files inside"
+msgstr "Bu dosyaları içine ekleyeceğiz"
+
+#: ../norka/widgets/folder_create_dialog.py:45
+msgid "Folder name"
+msgstr "Klasör adı"
+
+#: ../norka/widgets/folder_create_dialog.py:53
+#: ../norka/widgets/message_dialog.py:46
+msgid "Cancel"
+msgstr "İptal"
+
+#: ../norka/widgets/message_dialog.py:47
+msgid "Delete"
+msgstr "Sil"
+
+#: ../norka/widgets/editor.py:179
+msgid "Nameless"
+msgstr "Adsız"
+
+#: ../norka/widgets/editor.py:387
+msgid "{:d}:{:02d}:{:02d} Read Time"
+msgstr "{:d}:{:02d}:{:02d} Okuma Süresi"
+
+#: ../norka/widgets/menu_export.py:40
+msgid "Text"
+msgstr "Metin"
+
+#: ../norka/widgets/menu_export.py:42
+msgid "Export document to plain text file"
+msgstr "Belgeyi düz metin dosyası olarak dışa aktar"
+
+#: ../norka/widgets/menu_export.py:52
+msgid "Export document to markdown"
+msgstr "Belgeyi markdown olarak dışa aktar"
+
+#: ../norka/widgets/menu_export.py:60
+msgid "Html"
+msgstr "Html"
+
+#: ../norka/widgets/menu_export.py:62 ../norka/widgets/menu_export.py:66
+msgid "Export document to HTML"
+msgstr "Belgeyi HTML olarak dışa aktar"
+
+#: ../norka/widgets/menu_export.py:71
+msgid "Pdf"
+msgstr "Pdf"
+
+#: ../norka/widgets/menu_export.py:73 ../norka/widgets/menu_export.py:77
+msgid "Export document to PDF"
+msgstr "Belgeyi PDF olarak dışa aktar"
+
+#: ../norka/widgets/menu_export.py:84 ../norka/widgets/menu_export.py:88
+msgid "Export document to Docx"
+msgstr "Belgeyi Docx olarak dışa aktar"
+
+#: ../norka/widgets/menu_export.py:106
+msgid "Export to file"
+msgstr "Dosyaya dışa aktar"
+
+#: ../norka/widgets/menu_export.py:109
+msgid "To Medium"
+msgstr "Medium İçin"
+
+#: ../norka/widgets/menu_export.py:113
+msgid "To Write.as"
+msgstr "Write.as İçin"
+
+#: ../norka/widgets/menu_export.py:121
+msgid "Files"
+msgstr "Dosyalar"
+
+#: ../norka/widgets/menu_export.py:132
+msgid "Internet"
+msgstr "İnternet"
+
+#: ../norka/widgets/welcome.py:41
+msgid "No documents yet"
+msgstr "Henüz belge yok"
+
+#: ../norka/widgets/welcome.py:42
+msgid "Create or import and start writing"
+msgstr "Oluşturun ya da içe aktar ve yazmaya başla"
+
+#: ../norka/widgets/welcome.py:46
+msgid "New document"
+msgstr "Yeni belge"
+
+#: ../norka/widgets/welcome.py:47
+msgid "Create empty document"
+msgstr "Boş belge oluştur"
+
+#: ../norka/widgets/welcome.py:53 ../norka/widgets/welcome.py:54
+msgid "Import document"
+msgstr "Belgeyi içe aktar"
+
+#: ../norka/widgets/extended_stats_dialog.py:83
+msgid "{:d}h {:02d}m {:02d}s"
+msgstr "{:d}sa {:02d}dk {:02d}sn"
+
+#: ../norka/widgets/image_link_popover.py:41
+msgid "Image link to insert:"
+msgstr "Eklenecek görüntü bağlantısı:"
+
+#: ../norka/widgets/image_link_popover.py:46
+msgid "Choose"
+msgstr "Seç"
+
+#: ../norka/widgets/image_link_popover.py:76
+msgid "Select image to insert"
+msgstr "Eklenecek görüntüyü seç"
+
+#: ../norka/widgets/image_link_popover.py:82
+msgid "Images"
+msgstr "Görüntüler"
+
+#: ../norka/widgets/search_bar.py:45
+msgid "Find"
+msgstr "Bul"
+
+#: ../norka/widgets/rename_popover.py:60
+msgid "Rename"
+msgstr "Yeniden Adlandır"
+
+#: ../norka/widgets/menu_popover.py:41
+msgid "Zoom Out"
+msgstr "Uzaklaştır"
+
+#: ../norka/widgets/menu_popover.py:45
+msgid "Zoom 1:1"
+msgstr "1:1 Yakınlaştır"
+
+#: ../norka/widgets/menu_popover.py:50
+msgid "Zoom In"
+msgstr "Yakınlaştır"
+
+#: ../norka/widgets/menu_popover.py:64
+msgid "About"
+msgstr "Hakkında"
+
+#: ../norka/widgets/menu_popover.py:72
+msgid "Shortcuts"
+msgstr "Kısayollar"
+
+#: ../norka/widgets/menu_popover.py:73
+msgid "Markup Shortcuts"
+msgstr "Markdown Kısayolları"
+
+#: ../norka/widgets/menu_popover.py:81
+msgid "Quit"
+msgstr "Çık"
+
+#: ../norka/widgets/format_shortcuts_dialog.py:38
+msgid "Markup Help"
+msgstr "Markdown Yardımı"
+
+#: ../norka/widgets/quick_find_dialog.py:37
+msgid "Quick Find"
+msgstr "Hızlı Bul"
+
+#: ../norka/widgets/quick_find_dialog.py:64
+msgid "Quickly find documents, just start typing its name."
+msgstr "Belgeleri hızlıca bulun, adını yazmaya başlamanız yeterli."
+
+#: ../norka/widgets/quick_find_dialog.py:87
+msgid "Jump to..."
+msgstr "Atla..."
+
+#: ../norka/widgets/header.py:80
+msgid "Import file to Norka"
+msgstr "Dosyayı Norka'ya içe aktar"
+
+#: ../norka/widgets/header.py:85
+msgid "Create new document"
+msgstr "Yeni belge oluştur"
+
+#: ../norka/widgets/header.py:91
+msgid "Create new folder"
+msgstr "Yeni klasör Oluştur"
+
+#: ../norka/widgets/header.py:97
+msgid "Save document and return to documents list"
+msgstr "Belgeyi kaydet ve belge listesine dön"
+
+#: ../norka/widgets/header.py:110
+msgid "Print the document"
+msgstr "Belgeyi yazdır"
+
+#: ../norka/widgets/header.py:114
+msgid "Show document info"
+msgstr "Belge bilgilerini göster"
+
+#: ../norka/widgets/header.py:139 ../norka/widgets/header.py:155
+msgid "root"
+msgstr "kök"
+
+#: ../norka/widgets/header.py:159
+msgid "Click to switch between <b>stats</b> and <b>path</b>"
+msgstr "<b>İstatistikler</b> ve <b>yol</b> arasında geçiş yapmak için tıklayın"
+
+#: ../norka/widgets/document_grid.py:74
+msgid "Archived files only"
+msgstr "Yalnızca arşivlenen dosyalar"
+
+#: ../norka/widgets/document_grid.py:197
+msgid "Go to the upper folder"
+msgstr "Üst klasöre git"
+
+#: ../norka/widgets/document_grid.py:228
+msgid "Created"
+msgstr "Oluşturulma"
+
+#: ../norka/widgets/document_grid.py:233
+msgid "Modified"
+msgstr "Değiştirilme"
+
+#: ../norka/widgets/preview.py:86
+msgid "Nothing to preview"
+msgstr "Ön izlenecek bir şey yok"
+
+#: ../norka/widgets/preview.py:87
+msgid "To render preview open a document"
+msgstr "Ön izleme oluşturmak için belge açın"
+
+#: ../norka/widgets/about_dialog.py:36
+msgid "Continuous text editor"
+msgstr "Sürekli metin düzenleyici"
+
+#: ../norka/widgets/about_dialog.py:39
+msgid "Learn more about Norka"
+msgstr "Norka hakkında daha fazla bilgi edin"
+
+#: ../norka/define.py:29
+msgid "continuous text editor"
+msgstr "sürekli metin düzenleyici"
+
+#: ../data/ui/stats.ui:51
+msgid "Document"
+msgstr "Belge"
+
+#: ../data/ui/stats.ui:82
+msgid "0m 0s"
+msgstr "0dk 0sn"
+
+#: ../data/ui/stats.ui:100 ../data/ui/stats.ui:184 ../data/ui/stats.ui:202
+msgid "0"
+msgstr "0"
+
+#: ../data/ui/stats.ui:116
+msgid "READ TIME"
+msgstr "OKUMA ZAMANI"
+
+#: ../data/ui/stats.ui:119
+msgid "label"
+msgstr "etiket"
+
+#: ../data/ui/stats.ui:137
+msgid "PARAGRAPHS"
+msgstr "PARAGRAFLAR"
+
+#: ../data/ui/stats.ui:152
+msgid "CHARACTERS"
+msgstr "KARAKTERLER"
+
+#: ../data/ui/stats.ui:168
+msgid "WORDS"
+msgstr "SÖZCÜKLER"
+
+#: ../data/ui/stats.ui:245
+msgid "CREATION DATE"
+msgstr "OLUŞTURULMA TARİHİ"
+
+#: ../data/ui/stats.ui:274
+msgid "MODIFICATION DATE"
+msgstr "DEĞIŞİKLİK TARİHİ"
+
+#: ../data/ui/stats.ui:303
+msgid ""
+"Export document to plain text file\n"
+"                                        "
+msgstr ""
+"Belgeyi düz metin dosyasına dışa aktar\n"
+"                                        "
+
+#: ../data/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Genel"
+
+#: ../data/ui/shortcuts.ui:18
+msgctxt "shortcut window"
+msgid "New"
+msgstr "Yeni"
+
+#: ../data/ui/shortcuts.ui:25
+msgctxt "shortcut window"
+msgid "Import"
+msgstr "İçe aktar"
+
+#: ../data/ui/shortcuts.ui:32
+msgctxt "shortcut window"
+msgid "Export"
+msgstr "Dışa aktar"
+
+#: ../data/ui/shortcuts.ui:39
+msgctxt "shortcut window"
+msgid "Close document"
+msgstr "Belgeyi kapat"
+
+#: ../data/ui/shortcuts.ui:46
+msgctxt "shortcut window"
+msgid "Quit application"
+msgstr "Uygulamadan çık"
+
+#: ../data/ui/shortcuts.ui:56 ../data/ui/shortcuts.ui:60
+msgctxt "shortcut window"
+msgid "Find"
+msgstr "Bul"
+
+#: ../data/ui/shortcuts.ui:67
+msgctxt "shortcut window"
+msgid "Find next"
+msgstr "Sonrakini bul"
+
+#: ../data/ui/shortcuts.ui:74
+msgctxt "shortcut window"
+msgid "Find previous"
+msgstr "Öncekini bul"
+
+#: ../data/ui/shortcuts.ui:83
+msgctxt "shortcut window"
+msgid "Preview"
+msgstr "Ön izle"
+
+#: ../data/ui/shortcuts.ui:87
+msgctxt "shortcut window"
+msgid "Open Preview window"
+msgstr "Ön izleme penceresini aç"
+
+#: ../data/ui/shortcuts.ui:96
+msgctxt "shortcut window"
+msgid "Copy and paste"
+msgstr "Kopyala ve yapıştır"
+
+#: ../data/ui/shortcuts.ui:100
+msgctxt "shortcut window"
+msgid "Copy selected text to clipboard"
+msgstr "Seçili metni panoya kopyala"
+
+#: ../data/ui/shortcuts.ui:107
+msgctxt "shortcut window"
+msgid "Cut selected text to clipboard"
+msgstr "Seçili metni panoya kes"
+
+#: ../data/ui/shortcuts.ui:114
+msgctxt "shortcut window"
+msgid "Paste selected text from clipboard"
+msgstr "Seçili metni panodan yapıştır"
+
+#: ../data/ui/shortcuts.ui:125
+msgctxt "shortcut window"
+msgid "Undo and redo"
+msgstr "Geri al ve yinele"
+
+#: ../data/ui/shortcuts.ui:129
+msgctxt "shortcut window"
+msgid "Undo previous command"
+msgstr "Önceki komutu geri al"
+
+#: ../data/ui/shortcuts.ui:136
+msgctxt "shortcut window"
+msgid "Redo previous command"
+msgstr "Önceki komutu yinele"
+
+#: ../data/ui/shortcuts.ui:147
+msgctxt "shortcut window"
+msgid "Selection"
+msgstr "Seçim"
+
+#: ../data/ui/shortcuts.ui:151
+msgctxt "shortcut window"
+msgid "Select all text"
+msgstr "Tüm metni seç"
+
+#: ../data/ui/shortcuts.ui:162
+msgctxt "shortcut window"
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../data/ui/shortcuts.ui:166
+msgctxt "shortcut window"
+msgid "Open Preferences"
+msgstr "Tercihleri aç"
+
+#: ../data/ui/documents_grid_context_menu.ui:47
+#: ../data/ui/documents_grid_context_menu.ui:130
+#: ../data/ui/documents_grid_context_menu.ui:303
+msgid "Export..."
+msgstr "Dışa Aktar..."
+
+#: ../data/ui/documents_grid_context_menu.ui:74
+msgid "Archive"
+msgstr "Arşivle"
+
+#: ../data/ui/documents_grid_context_menu.ui:88
+msgid "Unarchive"
+msgstr "Arşivden Çıkar"
+
+#: ../data/ui/documents_grid_context_menu.ui:200
+#: ../data/ui/documents_grid_context_menu.ui:373
+msgid "Medium.com"
+msgstr "Medium.com"
+
+# Bir web sitesi: write.as
+#: ../data/ui/documents_grid_context_menu.ui:214
+#: ../data/ui/documents_grid_context_menu.ui:387
+msgid "Writeas"
+msgstr "Writeas"
+
+#: ../data/ui/headerbar.ui:102 ../data/ui/headerbar.ui:120
+#: ../data/ui/headerbar.ui:269
+msgid "Norka"
+msgstr "Norka"
+
+#: ../data/ui/headerbar.ui:246
+msgid "page0"
+msgstr "sayfa0"
+
+#: ../data/ui/headerbar.ui:424
+msgid "page1"
+msgstr "sayfa1"
+
+#: ../data/ui/headerbar.ui:433
+msgid "Find Note"
+msgstr "Not Bul"
+
+#: ../data/ui/headerbar.ui:437
+msgid "Show Archived"
+msgstr "Arşivlenenleri Göster"
+
+#: ../data/ui/headerbar.ui:443
+msgid "_Preferences"
+msgstr "_Tercihler"
+
+#: ../data/ui/headerbar.ui:463
+msgid "Make _Backup"
+msgstr "_Yedek Oluştur"
+
+#: ../data/ui/headerbar.ui:469
+msgid "_Quit"
+msgstr "_Çık"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:4
+msgid "Text Editor"
+msgstr "Metin Düzenleyici"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:5
+msgid "Continuous text editor with autosaving"
+msgstr "Kendiliğinden kayıt özelliğine sahip sürekli metin düzenleyici"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:12
+msgid "text;editor;markdown;notes;pdf;word;html;writer;document;"
+msgstr ""
+"metin;düzenleyici;markdown;notlar;pdf;word;html;writer;yazıcı;yazar;belge;"
+
+#: ../data/com.github.tenderowl.norka.desktop.in.in:19
+msgid "New Note"
+msgstr "Yeni Not"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:9
+msgid ""
+"Imagine a hassle-free text-writing experience. Don't worry about saving "
+"files, complex markup, or accidentally deleted notes."
+msgstr ""
+"Sorunsuz bir metin yazma deneyimi hayal edin. Dosyaları kaydetme, karmaşık "
+"işaretleme ya da yanlışlıkla silinen notlar konusunda endişelenmeyin."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:12
+msgid ""
+"Do what you want to do - concentrate on beautiful stories, short notes, or "
+"inspired scripts. Norka cares about you."
+msgstr ""
+"Ne yapmak istiyorsanız onu yapın; güzel hikayelere, kısa notlara ya da ilham "
+"verici senaryolara odaklanın. Norka sizi önemsiyor."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:16
+msgid "All your notes are stored inside."
+msgstr "Tüm notlarınız içinde saklanır."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:17
+msgid "Magically saved at any moment."
+msgstr "Her an sihirli bir şekilde kaydedilir."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:18
+msgid "Easily exportable to HTML, Docx, and even PDF in one click."
+msgstr "Tek tıklamayla kolayca HTML, Docx ve hatta PDF'ye dışa aktarılabilir."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:19
+msgid "If you need markup - use markdown, it's easy as pie."
+msgstr ""
+"İşaretlemeye ihtiyacınız varsa, kullanması çok kolay olan markdown var."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:20
+msgid "Don't like the default theme - choose differently."
+msgstr "Öntanımlı temayı beğenmediyseniz farklı tema seçebilirsiniz."
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:35
+msgid "Editing document"
+msgstr "Belge düzenleniyor"
+
+#: ../data/com.github.tenderowl.norka.appdata.xml.in:40
+msgid "Documents and Folders"
+msgstr "Belgeler ve Klasörler"
