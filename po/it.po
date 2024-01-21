@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.tenderowl.norka VERSION\n"
 "POT-Creation-Date: 2021-01-22 15:54+MSK\n"
-"PO-Revision-Date: 2023-06-12 16:52+0000\n"
+"PO-Revision-Date: 2024-01-22 13:01+0000\n"
 "Last-Translator: albanobattistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/frog/norka/it/>\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 "Generated-By: pygettext.py 1.5\n"
 
 #: ../norka/define.py:29
@@ -436,7 +436,7 @@ msgstr "Writeas"
 #: ../data/ui/shortcuts.ui:14
 msgctxt "shortcut window"
 msgid "General"
-msgstr "Generali"
+msgstr "Generale"
 
 #: ../data/ui/shortcuts.ui:18
 msgctxt "shortcut window"
