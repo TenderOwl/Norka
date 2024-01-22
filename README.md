@@ -46,7 +46,7 @@ Read more on [tenderowl.com/work/norka](https://tenderowl.com/work/norka).
 
 ## Translations
 
-[![Translation status](https://hosted.weblate.org/widgets/frog/-/norka/multi-auto.svg)](https://hosted.weblate.org/engage/frog/)
+[![Translation status](https://hosted.weblate.org/widgets/frog/-/norka/multi-auto.svg)](https://hosted.weblate.org/projects/frog/norka/)
 
 If you feel enough power to help me - you're welcome! Just click on a widget above 😉
 
