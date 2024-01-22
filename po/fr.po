@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-08 14:10+0300\n"
-"PO-Revision-Date: 2023-12-22 12:11+0000\n"
+"PO-Revision-Date: 2024-01-22 13:01+0000\n"
 "Last-Translator: rene-coty <irenee.thirion@e.email>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/frog/norka/fr/>\n"
 "Language: fr\n"
@@ -588,7 +588,7 @@ msgstr "Sélectionner tout le texte"
 #: ../data/ui/shortcuts.ui:162
 msgctxt "shortcut window"
 msgid "Preferences"
-msgstr "Paramètres"
+msgstr "Préférences"
 
 #: ../data/ui/shortcuts.ui:166
 msgctxt "shortcut window"
