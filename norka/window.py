@@ -654,20 +654,25 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         dialog = ExportFileDialog("Export document to file", self,
                                   Gtk.FileChooserAction.SAVE)
-        dialog.set_current_name(doc.title)
+        dialog.set_initial_name(doc.title)
         export_format = ExportFormat.PlainText
         dialog.set_format(export_format)
-        dialog_result = dialog.run()
+        dialog.save(self, callback=self.on_export_dialog_finish)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
-            self.header.show_spinner(True)
-            basename, ext = os.path.splitext(dialog.get_filename())
-            if ext not in export_format[1]:
-                ext = export_format[1][0][1:]
+    def on_export_dialog_finish(self, dialog: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+        print('on_export_dialog_finish')
+        _result = dialog.open_finish(result)
+        print(_result)
 
-            GObjectWorker.call(Exporter.export_plaintext,
-                               (basename + ext, doc),
-                               callback=self.on_export_callback)
+        # if dialog_result == Gtk.ResponseType.ACCEPT:
+        #     self.header.show_spinner(True)
+        #     basename, ext = os.path.splitext(dialog.get_filename())
+        #     if ext not in export_format[1]:
+        #         ext = export_format[1][0][1:]
+        #
+        #     GObjectWorker.call(Exporter.export_plaintext,
+        #                        (basename + ext, doc),
+        #                        callback=self.on_export_callback)
 
     def on_export_markdown(self,
                            sender: Gtk.Widget = None,
