@@ -21,19 +21,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
 from datetime import datetime
 from gettext import gettext as _
 from typing import Optional
-from urllib.parse import urlparse, unquote_plus
 
 import cairo
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, Adw, Pango, Gio
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
 
-from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
+from norka.define import RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.models.folder import Folder
+from norka.models.grid_item import GridItem
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
@@ -41,6 +40,7 @@ from norka.utils import find_child
 from norka.widgets.folder_create_dialog import FolderCreateDialog
 
 
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/documents_grid.ui")
 class DocumentGrid(Gtk.Box):
     __gtype_name__ = 'DocumentGrid'
 
@@ -48,22 +48,26 @@ class DocumentGrid(Gtk.Box):
         'path-changed': (GObject.SIGNAL_RUN_FIRST, None, (str, str)),
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'document-import': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
-        'document-activated': (GObject.SIGNAL_RUN_FIRST, None, ()),
+        'document-activated': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'rename-folder': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
     }
 
     show_archived = GObject.Property(type=bool, default=False)
 
+    infobar: Adw.Banner = Gtk.Template.Child()
+    view: Gtk.GridView = Gtk.Template.Child()
+    model: Gio.ListStore = Gtk.Template.Child()
+    selection: Gtk.MultiSelection = Gtk.Template.Child()
+
     def __init__(self, settings: Settings, storage: Storage):
         super().__init__()
-        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.last_selected_path = None
         self.settings = settings
         self.storage = storage
         self.settings.connect("changed", self.on_settings_changed)
 
-        self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
+        # self.model = Gtk.ListStore(Pixbuf, str, str, int, str)
 
         self.selected_path = None
         # self.selected_document = None
@@ -71,24 +75,12 @@ class DocumentGrid(Gtk.Box):
         # Store current virtual files path.
         self.current_path = '/'
 
-        self.infobar = Gtk.InfoBar(message_type=Gtk.MessageType.INFO)
-        infobar_label = Gtk.Label(label=_("Archived files only"))
-        infobar_label.get_style_context().add_class('heading')
-        self.infobar.add_child(infobar_label)
+        # Bind information Banner visibility.
         self.bind_property('show_archived', self.infobar, 'revealed',
                            GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.BIDIRECTIONAL)
 
-        self.view = Gtk.IconView()
-        self.view.set_model(self.model)
-        self.view.set_pixbuf_column(0)
-        self.view.set_text_column(1)
-        self.view.set_tooltip_column(4)
-        self.view.set_item_width(80)
-        self.view.set_activate_on_single_click(True)
-        self.view.set_selection_mode(Gtk.SelectionMode.SINGLE)
-
         self.view.connect('show', self.reload_items)
-        self.view.connect('item-activated', self.on_icon_item_activate)
+        self.view.connect('activate', self.on_item_activate)
         # self.view.connect('button-press-event', self.on_button_pressed)
 
         # Enable drag-drop
@@ -116,8 +108,6 @@ class DocumentGrid(Gtk.Box):
         main_box.append(self.infobar)
         main_box.append(scrolled)
 
-        self.append(main_box)
-
     @property
     def current_folder_path(self):
         current_folder_path = self.current_path or '/'
@@ -141,7 +131,7 @@ class DocumentGrid(Gtk.Box):
         if self.is_folder_selected:
             return None
 
-        model_iter = self.model.get_iter(self.selected_path)
+        model_iter = self.selection.get_selection()
         return self.model.get_value(model_iter, 3)
 
     @property
@@ -183,7 +173,7 @@ class DocumentGrid(Gtk.Box):
 
     def reload_items(self, sender: Gtk.Widget = None, path: str = None) -> None:
         order_desc = self.settings.get_boolean('sort-desc')
-        self.model.clear()
+        self.model.remove_all()
 
         _old_path = self.current_path
 
@@ -233,22 +223,22 @@ class DocumentGrid(Gtk.Box):
                 tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
                            + _('Modified') + f": {modified.strftime('%x')}</span>"
 
-            self.model.append([icon,
-                               document.title,
-                               document.content,
-                               document.document_id,
-                               tooltip])
+            self.model.append(GridItem(icon=icon,
+                                       title=document.title,
+                                       content=document.content,
+                                       document_id=document.document_id,
+                                       tooltip=tooltip))
 
         if self.selected_path:
             self.view.select_path(self.selected_path)
 
     def create_folder_model(self, title: str, path: str, tooltip: str = None, icon: Pixbuf = None):
         icon = icon or Pixbuf.new_from_resource(RESOURCE_PREFIX + '/icons/folder.svg')
-        self.model.append([icon,
-                           title,
-                           path,
-                           -1,
-                           tooltip or title])
+        self.model.append(GridItem(icon=icon,
+                                   title=title,
+                                   content=path,
+                                   document_id=-1,
+                                   tooltip=tooltip or title))
 
     @staticmethod
     def gen_preview(text, size=9, opacity=1) -> Pixbuf:
@@ -301,9 +291,10 @@ class DocumentGrid(Gtk.Box):
         surface = context.get_target()
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
-    def on_icon_item_activate(self, view: Gtk.IconView, path: Gtk.TreePath, *_):
-        self.selected_path = path
-        self.emit('document-activated')
+    def on_item_activate(self, view: Gtk.GridView, position: int):
+        # self.selected_path = path
+        active_item = self.model.get_item(position)
+        self.emit('document-activated', active_item.document_id)
 
     def on_button_pressed(self, widget: Gtk.Widget, event):
         """Handle mouse button press event and display context menu if needed.
@@ -347,6 +338,29 @@ class DocumentGrid(Gtk.Box):
             return True
 
         self.view.unselect_all()
+
+    @Gtk.Template.Callback()
+    def on_item_setup(self, factory, item):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                      margin_start=8,
+                      margin_end=8,
+                      margin_top=8,
+                      margin_bottom=8)
+
+        image = Gtk.Image()
+        image.set_size_request(80, 80)
+        box.append(image)
+
+        label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, margin_top=8)
+        box.append(label)
+        item.set_child(box)
+
+    @Gtk.Template.Callback()
+    def on_item_bind(self, factory, item):
+        grid_item: GridItem = item.get_item()
+        box: Gtk.Box = item.get_child()
+        box.get_first_child().set_from_pixbuf(grid_item.icon)
+        box.get_last_child().set_label(grid_item.title)
 
     # def on_drag_begin(self, widget: Gtk.Widget, context: Gdk.DragContext) -> None:
     #     self.last_selected_path = self.selected_path

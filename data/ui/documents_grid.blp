@@ -1,0 +1,42 @@
+using Gtk 4.0;
+using Gio 2.0;
+using Adw 1;
+
+template $DocumentGrid : Box {
+  orientation: vertical;
+
+  Adw.Banner infobar {
+    title: _("Archived files only");
+  }
+
+  ScrolledWindow {
+    vexpand: true;
+    styles ["view"]
+
+    Adw.ClampScrollable {
+      maximum-size: 960;
+
+      GridView view {
+        enable-rubberband: true;
+        margin-start: 12;
+        margin-end: 12;
+        margin-top: 12;
+        margin-bottom: 12;
+
+        model: MultiSelection selection {
+          model: SortListModel sort_model {
+            model: Gio.ListStore model {
+              item-type: typeof<$GridItem>;
+            };
+            sorter: CustomSorter sorter {};
+            section-sorter: CustomSorter section_sorter {};
+          };
+        };
+        factory: SignalListItemFactory {
+          setup => $on_item_setup();
+          bind => $on_item_bind();
+        };
+      }
+    }
+  }
+}

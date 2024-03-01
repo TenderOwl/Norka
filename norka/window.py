@@ -70,13 +70,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.extended_stats_dialog = None
 
         self.current_size = (786, 520)
-        # self.resize(*self.settings.get_value('window-size'))
 
-        # hints = Gdk.Geometry()
-        # hints.min_width = 554
-        # hints.min_height = 435
-        # self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        # self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
         # Export clients
@@ -86,8 +80,6 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         # Make a header
         self.header = Header(self.settings)
-        # self.set_titlebar(self.header)
-        self.header.show()
 
         # Init screens
         self.welcome_grid = Welcome()
@@ -403,7 +395,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
             self.check_grid_items()
 
-    def on_document_item_activated(self, sender: Gtk.Widget) -> None:
+    def on_document_item_activated(self, sender: Gtk.Widget, document_id: int) -> None:
         """Activate currently selected document in grid and open it in editor.
 
         :param sender:
@@ -411,15 +403,15 @@ class NorkaWindow(Adw.ApplicationWindow):
         :return:
         """
 
-        folder = self.document_grid.selected_folder
-        if folder:
-            self.folder_activate(folder.absolute_path)
-            Logger.debug(f'Activated Folder {folder.absolute_path}')
-
-        else:
-            doc_id = self.document_grid.selected_document_id
-            Logger.debug(f'Activated Document.Id {doc_id}')
-            self.document_activate(doc_id)
+        # folder = self.document_grid.selected_folder
+        # if folder:
+        #     self.folder_activate(folder.absolute_path)
+        #     Logger.debug(f'Activated Folder {folder.absolute_path}')
+        #
+        # else:
+        #     doc_id = self.document_grid.selected_document_id
+        Logger.debug(f'Activated Document.Id {document_id}')
+        self.document_activate(document_id)
 
     def folder_activate(self, folder_path: str) -> None:
         if folder_path.endswith('..'):
@@ -1112,10 +1104,7 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
-        if is_loading:
-            self.header.loader_spinner.start()
-        else:
-            self.header.loader_spinner.stop()
+        self.header.show_spinner(False)
 
     def on_print(self, sender, event=None):
         doc = self.document_grid.selected_document or self.editor.document

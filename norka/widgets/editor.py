@@ -197,12 +197,12 @@ class Editor(Gtk.Box):
 
         self.document = self.storage.get(doc_id)
 
-        self.buffer.begin_not_undoable_action()
+        # self.buffer.begin_not_undoable_action()
         self.buffer.set_text(self.document.content)
         self.buffer.set_modified(False)
         self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.view.set_editable(True)
 
         self.view.grab_focus()
@@ -419,19 +419,16 @@ class Editor(Gtk.Box):
             found, self.search_iter = self.search_for_iter_backward(self.search_iter)
 
         if found:
-            self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            self.search_bar.search_entry.remove_css_class('error')
         else:
             self.search_iter = self.buffer.get_start_iter()
             found, end_iter = self.search_for_iter(self.search_iter)
             if found:
-                self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+                self.search_bar.search_entry.remove_css_class('error')
             else:
                 self.search_iter.set_offset(-1)
                 self.buffer.select_range(self.search_iter, self.search_iter)
-                self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+                self.search_bar.search_entry.add_css_class('error')
                 return False
 
         return True

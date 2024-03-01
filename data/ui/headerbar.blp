@@ -1,204 +1,151 @@
 using Gtk 4.0;
 using Adw 1;
 
-Image document-new {
-  icon-name: 'document-new';
-}
-
-Image document-open {
-  icon-name: 'document-open-symbolic';
-}
-
-Image document-save {
-  icon-name: 'document-save-symbolic';
-}
-
-Image extended-stats {
-  icon-name: 'dialog-information';
-}
-
-Image extended-stats1 {
-  icon-name: 'dialog-information';
-}
-
-Image folder-new {
-  icon-name: 'folder-new';
-}
-
-Image image-search-text {
-  icon-name: 'system-search-symbolic';
-}
-
-Image image1 {
-  icon-name: 'document-print';
-}
-
-Image image2 {
-  icon-name: 'folder-new-symbolic';
-}
-
-Image user-trash {
-  icon-name: 'user-trash-symbolic';
-}
-
-Image image-back {
-  icon-name: 'go-previous-symbolic';
-}
-
-Image image-grid-menu {
-  icon-name: 'open-menu';
-}
-
-Image image-editor-menu {
-  icon-name: 'open-menu';
-}
-
-Image image-share {
-  icon-name: 'emblem-shared-symbolic';
-}
-
 Stack header_box {
   transition-duration: 50;
   transition-type: crossfade;
 
-  Adw.HeaderBar grid_header {
+  StackPage {
     name: 'grid_header';
 
-    styles ["flat"]
+    child: Adw.HeaderBar grid_header {
 
-    [title]
-    Box {
-      halign: center;
-      valign: center;
-      vexpand: false;
-      orientation: vertical;
 
-      Label {
-        label: _('Norka');
+      styles ["flat"]
 
-        styles [
-          "title",
-        ]
-      }
+      [title]
+      Box {
+        halign: center;
+        valign: center;
+        vexpand: false;
+        orientation: vertical;
 
-      Label subtitle_path_label {
-        styles [
-          "subtitle",
-        ]
-      }
-    }
+        Label {
+          label: _('Norka');
 
-    Button add_button {
-      action-name: 'document.create';
-      icon-name: 'document-new-symbolic';
-    }
+          styles [
+            "title",
+          ]
+        }
 
-    Button add_folder_button {
-      action-name: 'folder.create';
-      icon-name: 'folder-new-symbolic';
-    }
-
-    Button import_button {
-      action-name: 'document.import';
-      icon-name: 'folder-open-symbolic';
-    }
-
-    [end]
-    MenuButton grid_menu_button {
-      icon-name: 'view-more-symbolic';
-      menu-model: appmenu;
-    }
-
-    [end]
-    Button search_button {
-      action-name: 'document.search_text';
-      icon-name: 'system-search-symbolic';
-    }
-  }
-
-  Adw.HeaderBar editor_header {
-    name: 'editor_header';
-    hexpand: true;
-
-    styles ["flat"]
-
-    [title]
-    Box {
-      halign: center;
-      valign: center;
-      vexpand: false;
-      orientation: vertical;
-
-      Label title_label {
-        label: _('Norka');
-
-        styles [
-          "title",
-        ]
-      }
-
-      Box subtitle_eventbox {
-        Label subtitle_label {
+        Label subtitle_path_label {
           styles [
             "subtitle",
           ]
         }
       }
-    }
 
-    Button back_button {
-      name: 'back_button';
-      valign: center;
-      icon-name: 'image-back';
-      action-name: 'document.close';
-
-      styles [
-        "flat",
-      ]
-    }
-
-    Revealer save_btn_revealer {
-      transition-duration: 150;
-      transition-type: crossfade;
-
-      Button save_btn {
-        name: 'save_button';
-        valign: center;
-        icon-name: 'document-save';
-        label: _('Save');
-        action-name: 'document.save';
-
-        styles [
-          "suggested-action",
-          "flat",
-        ]
+      Button add_button {
+        action-name: 'document.create';
+        icon-name: 'document-new-symbolic';
       }
-    }
 
-    Spinner editor_spinner {
-    }
+      Button add_folder_button {
+        action-name: 'folder.create';
+        icon-name: 'folder-new-symbolic';
+      }
 
-    MenuButton editor_menu_button {
-      can-focus: true;
-      icon-name: 'image-editor-menu';
+      Button import_button {
+        action-name: 'document.import';
+        icon-name: 'folder-open-symbolic';
+      }
 
-    }
+      Spinner loader_spinner {}
 
-    MenuButton share_app_menu {
-      can-focus: true;
-      icon-name: 'image-share';
-    }
+      [end]
+      MenuButton grid_menu_button {
+        icon-name: 'view-more-symbolic';
+        menu-model: appmenu;
+      }
 
-    Button extended_stats_button {
-      action-name: 'document.show_extended_stats';
-      icon-name: 'extended-stats';
-    }
+      [end]
+      Button search_button {
+        action-name: 'document.search_text';
+        icon-name: 'system-search-symbolic';
+      }
+    };
+  }
 
-    Button print_button {
-      can-focus: true;
-      action-name: 'document.print';
-      icon-name: 'image1';
-    }
+  StackPage {
+    name: 'editor_header';
+
+    child: Adw.HeaderBar editor_header {
+      hexpand: true;
+
+      styles ["flat"]
+
+      [title]
+      Box {
+        halign: center;
+        valign: center;
+        vexpand: false;
+        orientation: vertical;
+
+        Label title_label {
+          label: _('Norka');
+
+          styles [
+            "title",
+          ]
+        }
+
+        Box subtitle_eventbox {
+          Label subtitle_label {
+            styles [
+              "subtitle",
+            ]
+          }
+        }
+      }
+
+      Button back_button {
+        icon-name: 'go-previous-symbolic';
+        action-name: 'document.close';
+      }
+
+      Revealer save_btn_revealer {
+        transition-duration: 150;
+        transition-type: crossfade;
+
+        Button save_btn {
+          name: 'save_button';
+          valign: center;
+          icon-name: 'document-save';
+          label: _('Save');
+          action-name: 'document.save';
+
+          styles [
+            "suggested-action",
+            "flat",
+          ]
+        }
+      }
+
+      Spinner editor_spinner {}
+
+      [end]
+      MenuButton editor_menu_button {
+        icon-name: 'view-more-symbolic';
+
+      }
+
+      [end]
+      MenuButton share_app_menu {
+        icon-name: 'emblem-shared-symbolic';
+      }
+
+      [end]
+      Button extended_stats_button {
+        action-name: 'document.show_extended_stats';
+        icon-name: 'emblem-important-symbolic';
+      }
+
+      [end]
+      Button print_button {
+        action-name: 'document.print';
+        icon-name: 'document-print-symbolic';
+      }
+    };
   }
 }
 
