@@ -24,12 +24,13 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Handy, Granite
+from gi.repository import Gtk, Adw
+
 from norka.define import RESOURCE_PREFIX
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/format_shortcuts_window.ui')
-class FormatShortcutsWindow(Handy.Window):
+class FormatShortcutsWindow(Adw.Window):
     __gtype_name__ = "FormatShortcutsWindow"
 
     content_box: Gtk.Box = Gtk.Template.Child()
@@ -41,75 +42,72 @@ class FormatShortcutsWindow(Handy.Window):
         h1_label = Gtk.Label(label=f'{self.span_text("#")} {_("Header")} 1',
                              halign=Gtk.Align.START,
                              use_markup=True)
-        h1_keys = Granite.AccelLabel(accel_string='<Control>1')
+        h1_keys = Gtk.Label(label='<Control>1')
 
         h2_label = Gtk.Label(label=f'{self.span_text("##")} {_("Header")} 2',
                              halign=Gtk.Align.START,
                              use_markup=True)
-        h2_keys = Granite.AccelLabel(accel_string='<Control>2')
+        h2_keys = Gtk.Label(label='<Control>2')
 
         h3_label = Gtk.Label(label=f'{self.span_text("###")} {_("Header")} 3',
                              halign=Gtk.Align.START,
                              use_markup=True)
-        h3_keys = Granite.AccelLabel(accel_string='<Control>3')
+        h3_keys = Gtk.Label(label='<Control>3')
 
         bold_label = Gtk.Label(
             label=f'{self.span_text("**")}{_("Bold")}{self.span_text("**")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        bold_keys = Granite.AccelLabel(accel_string='<Control>b')
+        bold_keys = Gtk.Label(label='<Control>b')
 
         italic_label = Gtk.Label(
             label=f'{self.span_text("_")}{_("Italic")}{self.span_text("_")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        italic_keys = Granite.AccelLabel(accel_string='<Control>i')
+        italic_keys = Gtk.Label(label='<Control>i')
 
         link_label = Gtk.Label(
             label=f'{self.span_text("[")}{_("Link title")}{self.span_text("]")}'
                   f'{self.span_text("(")}{_("URL")}{self.span_text(")")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        link_keys = Granite.AccelLabel(accel_string='<Control>k')
+        link_keys = Gtk.Label(label='<Control>k')
 
         image_link_label = Gtk.Label(
-            label=
-            f'{self.span_text("![")}{_("Image title")}{self.span_text("]")}'
-            f'{self.span_text("(")}{_("URL")}{self.span_text(")")}',
+            label=f'{self.span_text("![")}{_("Image title")}{self.span_text("]")}'
+                  f'{self.span_text("(")}{_("URL")}{self.span_text(")")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        image_link_keys = Granite.AccelLabel(accel_string='<Control><Shift>k')
+        image_link_keys = Gtk.Label(label='<Control><Shift>k')
 
         list_label = Gtk.Label(label=f'{self.span_text("-")} {_("List")}',
                                halign=Gtk.Align.START,
                                use_markup=True)
-        list_keys = Granite.AccelLabel(accel_string='<Control>l')
+        list_keys = Gtk.Label(label='<Control>l')
 
         ordered_list_label = Gtk.Label(
             label=f'{self.span_text("1.")} {_("Ordered list")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        ordered_list_keys = Granite.AccelLabel(
-            accel_string='<Control><Shift>l')
+        ordered_list_keys = Gtk.Label(label='<Control><Shift>l')
 
         quote_label = Gtk.Label(label=f'{self.span_text(">")} {_("Quote")}',
                                 halign=Gtk.Align.START,
                                 use_markup=True)
-        quote_keys = Granite.AccelLabel(accel_string='<Control><Shift>j')
+        quote_keys = Gtk.Label(label='<Control><Shift>j')
 
         code_label = Gtk.Label(
-            label=
-            f'{self.span_text("`")}{_("Inline code")}{self.span_text("`")}',
+            label=f'{self.span_text("`")}{_("Inline code")}{self.span_text("`")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        code_keys = Granite.AccelLabel(accel_string='<Control><Shift>c')
+        code_keys = Gtk.Label(label='<Control><Shift>c')
 
         code_block_label = Gtk.Label(
             label=
             f'{self.span_text("```")}{_("Code block")}{self.span_text("```")}',
             halign=Gtk.Align.START,
             use_markup=True)
-        code_block_keys = Granite.AccelLabel(accel_string='<Control><Alt>c')
+        code_block_keys = Gtk.Label(label='<Control><Alt>c')
 
         grid = Gtk.Grid(
             column_spacing=6,
@@ -154,9 +152,7 @@ class FormatShortcutsWindow(Handy.Window):
         grid.attach(code_block_label, 1, 15, 1, 1)
         grid.attach(code_block_keys, 2, 15, 1, 1)
 
-        self.content_box.add(grid)
-
-        self.show_all()
+        self.content_box.append(grid)
 
     @staticmethod
     def make_sep():
@@ -169,4 +165,4 @@ class FormatShortcutsWindow(Handy.Window):
         return f'<span alpha="40%" weight="bold">{text}</span>'
 
     def on_close_activated(self, sender: Gtk.Widget):
-        self.destroy()
+        pass

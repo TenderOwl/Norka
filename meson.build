@@ -17,10 +17,12 @@ gnome = import('gnome')
 python = pymod.find_installation('python3')
 
 # Dependencies
-dependency('glib-2.0')
-dependency('gtk4', version :'>=4.3.1')
-dependency('libadwaita-1', version :'>=1.2')
+dependency('glib-2.0', version: '>= 2.70')
+dependency('gio-2.0', version: '>= 2.70')
+dependency('gtk4', version :'>=4.12')
+dependency('libadwaita-1', version :'>=1.4')
 dependency('gtksourceview-5')
+dependency('webkitgtk-6.0', version: '>= 2.42.0')
 
 prefix = get_option('prefix')
 bindir = get_option('bindir')

@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
-    <requires lib="gtk+" version="3.24"/>
-    <requires lib="libhandy" version="1.0"/>
-    <template class="PreferencesDialog" parent="HdyWindow">
+    <template class="PreferencesDialog" parent="AdwWindow">
         <child>
             <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                    <object class="HdyHeaderBar">
+                    <object class="AdwHeaderBar">
                         <property name="visible">True</property>
                         <property name="show-close-button">True</property>
                         <property name="centering-policy">strict</property>
                         <child type="title">
-                            <object class="HdyViewSwitcherTitle"
+                            <object class="AdwViewSwitcherTitle"
                                     id="view_switcher_title">
                                 <property name="stack">main_stack</property>
                             </object>
@@ -39,7 +36,7 @@
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="HdyViewSwitcherBar">
+                                    <object class="AdwViewSwitcherBar">
                                         <property name="stack">main_stack</property>
                                         <property name="reveal"
                                                   bind-source="view_switcher_title"

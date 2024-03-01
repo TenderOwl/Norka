@@ -17,7 +17,7 @@
         <property name="can-focus">False</property>
         <property name="resource">/com/github/tenderowl/norka/icons/text.svg</property>
     </object>
-    <template class="ExtendedStatsWindow" parent="HdyWindow">
+    <template class="ExtendedStatsWindow" parent="AdwWindow">
         <property name="can-focus">False</property>
         <style>
             <class name="csd"></class>
@@ -26,7 +26,7 @@
             <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
-                    <object class="HdyHeaderBar" id="header_bar">
+                    <object class="AdwHeaderBar" id="header_bar">
                         <property name="visible">true</property>
                         <property name="title" translatable="true">Stats</property>
                         <property name="show-close-button">true</property>
@@ -85,10 +85,6 @@
                                             <class name="accent"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">0</property>
-                                        <property name="top-attach">2</property>
-                                    </packing>
                                 </child>
                                 <child>
                                     <object class="GtkLabel" id="paragraphs_count_label">
@@ -103,10 +99,6 @@
                                             <class name="accent"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="top-attach">2</property>
-                                    </packing>
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
@@ -123,10 +115,7 @@
                                             <class name="stat_label"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">0</property>
-                                        <property name="top-attach">3</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
@@ -139,10 +128,7 @@
                                             <class name="stat_label"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="top-attach">3</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
@@ -154,10 +140,7 @@
                                             <class name="stat_label"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">0</property>
-                                        <property name="top-attach">1</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkLabel">
@@ -170,10 +153,7 @@
                                             <class name="stat_label"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="top-attach">1</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkLabel" id="characters_count_label">
@@ -187,10 +167,6 @@
                                             <class name="accent"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">0</property>
-                                        <property name="top-attach">0</property>
-                                    </packing>
                                 </child>
                                 <child>
                                     <object class="GtkLabel" id="words_count_label">
@@ -205,10 +181,6 @@
                                             <class name="accent"/>
                                         </style>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="top-attach">0</property>
-                                    </packing>
                                 </child>
                             </object>
                         </child>
@@ -250,8 +222,6 @@
                         </child>
                         <child>
                             <object class="GtkLabel" id="modified_date_label">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">6</property>
                                 <property name="margin-end">6</property>
@@ -264,8 +234,6 @@
                         </child>
                         <child>
                             <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="margin-start">6</property>
                                 <property name="margin-end">6</property>
@@ -279,8 +247,6 @@
                         </child>
                         <child>
                             <object class="GtkSeparator">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
                                 <property name="margin-top">14</property>
                                 <property name="margin-bottom">14</property>
                             </object>
@@ -288,8 +254,6 @@
                         <child>
                             <!-- n-columns=3 n-rows=1 -->
                             <object class="GtkGrid">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">False</property>
                                 <property name="row-homogeneous">True</property>
@@ -297,53 +261,25 @@
                                 <child>
                                     <object class="GtkButton" id="export_text">
                                         <property name="label" translatable="yes">Text</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="receives-default">True</property>
                                         <property name="tooltip-text" translatable="yes">Export document to plain text file
                                         </property>
-                                        <property name="image">export-text-icon</property>
-                                        <property name="relief">none</property>
-                                        <property name="image-position">top</property>
-                                        <property name="always-show-image">True</property>
+                                        <property name="icon-name">export-text-icon</property>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">0</property>
-                                        <property name="top-attach">0</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkButton" id="export_markdown">
                                         <property name="label" translatable="yes">Markdown</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="receives-default">True</property>
-                                        <property name="image">export-markdown-icon</property>
-                                        <property name="relief">none</property>
-                                        <property name="image-position">top</property>
-                                        <property name="always-show-image">True</property>
+                                        <property name="icon-name">export-markdown-icon</property>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">1</property>
-                                        <property name="top-attach">0</property>
-                                    </packing>
+
                                 </child>
                                 <child>
                                     <object class="GtkButton" id="export_html">
                                         <property name="label" translatable="yes">HTML</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="receives-default">True</property>
                                         <property name="tooltip-text" translatable="yes">Export document to HTML</property>
-                                        <property name="image">export-html-icon</property>
-                                        <property name="relief">none</property>
-                                        <property name="image-position">top</property>
-                                        <property name="always-show-image">True</property>
+                                        <property name="icon-name">export-html-icon</property>
                                     </object>
-                                    <packing>
-                                        <property name="left-attach">2</property>
-                                        <property name="top-attach">0</property>
-                                    </packing>
                                 </child>
                             </object>
                         </child>

@@ -24,7 +24,7 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gdk, Gio, GObject, Granite
+from gi.repository import Gtk, Gdk, Gio, GObject
 
 from norka.models.document import Document
 from norka.services.storage import Storage
@@ -76,18 +76,17 @@ class QuickFindDialog(Gtk.Dialog):
         placeholder_grid.get_style_context().add_class("dim-label")
         placeholder_grid.add(placeholder_image)
         placeholder_grid.add(placeholder_label)
-        placeholder_grid.show_all()
 
         result_box.set_placeholder(placeholder_grid)
 
         scrolled = Gtk.ScrolledWindow(expand=True,
                                       hscrollbar_policy=Gtk.PolicyType.NEVER)
-        scrolled.add(result_box)
+        scrolled.set_child(result_box)
 
         self.search_entry = Gtk.SearchEntry(placeholder_text=_('Jump to...'))
         self.search_entry.connect('search-changed', self.search_changed)
 
-        box = self.get_content_area()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         box.set_margin_start(6)
         box.set_margin_end(6)
         box.set_margin_top(6)
@@ -96,16 +95,15 @@ class QuickFindDialog(Gtk.Dialog):
         box.pack_start(self.search_entry, False, True, 0)
         box.pack_end(scrolled, True, True, 0)
         # self.set_titlebar(None)
+        self.set_child(box)
 
-        self.connect('key_release_event', self.on_key_release_event)
+        # self.connect('key_release_event', self.on_key_release_event)
 
-        self.show_all()
-
-    def on_key_release_event(self, sender, event_key: Gdk.EventKey):
-        if event_key.keyval == Gdk.KEY_Escape:
-            self.destroy()
-
-        return False
+    # def on_key_release_event(self, sender, event_key: Gdk.EventKey):
+    #     if event_key.keyval == Gdk.KEY_Escape:
+    #         self.destroy()
+    #
+    #     return False
 
     def search_changed(self, sender: Gtk.SearchEntry):
         self.result_store.remove_all()
@@ -150,4 +148,3 @@ class QuickFindRow(Gtk.ListBoxRow):
             box.pack_end(archive_icon, False, False, 0)
 
         self.add(box)
-        self.show_all()

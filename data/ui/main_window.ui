@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.24"/>
-  <requires lib="libhandy" version="1.0"/>
-  <template class="NorkaWindow" parent="HdyApplicationWindow">
-    <property name="can-focus">False</property>
-    <property name="window-position">center</property>
+  <template class="NorkaWindow" parent="AdwApplicationWindow">
     <child>
-      <object class="HdyDeck" id="screens">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
+      <object class="GtkBox" id="screens">
         <child>
           <object class="GtkBox" id="content_box">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <property name="orientation">vertical</property>

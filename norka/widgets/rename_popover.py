@@ -64,7 +64,6 @@ class RenamePopover(Gtk.Popover):
         grid.attach(self.rename_button, 1, 1, 1, 1)
 
         self.add(grid)
-        self.show_all()
 
     def text_changed(self, editable) -> None:
         self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())

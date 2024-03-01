@@ -61,7 +61,6 @@ class ImageLinkPopover(Gtk.Popover):
         self.add(box)
         self.link_entry.grab_focus_without_selecting()
 
-        self.show_all()
         select_button.grab_remove()
         self.link_entry.grab_focus_without_selecting()
 
@@ -87,5 +86,3 @@ class ImageLinkPopover(Gtk.Popover):
         if dialog_result == Gtk.ResponseType.ACCEPT:
             file_path = dialog.get_filename()
             self.emit('insert-link', file_path)
-
-        dialog.destroy()

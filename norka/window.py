@@ -24,13 +24,12 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
+from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
-from norka.services import distro
 from norka.services.backup import BackupService
 from norka.services.export import Exporter, PDFExporter, Printer
 from norka.services.logger import Logger
@@ -50,34 +49,34 @@ from norka.widgets.welcome import Welcome
 
 
 @Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
-class NorkaWindow(Handy.ApplicationWindow):
+class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    content_box = Gtk.Template.Child()
+    content_box: Gtk.Box = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_icon(
-            Pixbuf.new_from_resource_at_scale(
-                f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
-                128, True))
+        # self.set_default_icon(
+        #     Pixbuf.new_from_resource_at_scale(
+        #         f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg',
+        #         128, 128, True))
+
+        self.set_icon_name('com.github.tenderowl.norka')
         self.settings = settings
         self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.apply_styling()
-
         self.current_size = (786, 520)
-        self.resize(*self.settings.get_value('window-size'))
+        # self.resize(*self.settings.get_value('window-size'))
 
-        hints = Gdk.Geometry()
-        hints.min_width = 554
-        hints.min_height = 435
-        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        self.connect('configure-event', self.on_configure_event)
+        # hints = Gdk.Geometry()
+        # hints.min_width = 554
+        # hints.min_height = 435
+        # self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
+        # self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
         # Export clients
@@ -116,17 +115,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
 
-        self.screens.show_all()
-
-        self.toast = Granite.WidgetsToast(margin=0)
-
         self.overlay = Gtk.Overlay()
+        self.overlay.set_vexpand(True)
         self.overlay.add_overlay(self.screens)
-        self.overlay.add_overlay(self.toast)
-        self.overlay.show_all()
 
-        self.content_box.pack_start(self.header, False, False, 0)
-        self.content_box.pack_end(self.overlay, True, True, 0)
+        self.content_box.append(self.header)
+        self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()
@@ -149,15 +143,6 @@ class NorkaWindow(Handy.ApplicationWindow):
         """Returns if Norka is on editor screen or not
         """
         return self.screens.get_visible_child_name() == 'editor-grid'
-
-    def apply_styling(self):
-        """Apply elementary OS header styling only for elementary OS
-        """
-        if distro.id() == 'elementary':
-            Granite.widgets_utils_set_color_primary(
-                self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            self.get_style_context().add_class('elementary')
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -355,19 +340,19 @@ class NorkaWindow(Handy.ApplicationWindow):
             if not self.is_maximized():
                 self.settings.set_value("window-size",
                                         GLib.Variant("ai", self.current_size))
-                self.settings.set_value(
-                    "window-position", GLib.Variant("ai",
-                                                    self.current_position))
+                # self.settings.set_value(
+                #     "window-position", GLib.Variant("ai",
+                #                                     self.current_position))
 
         except Exception as e:
             Logger.error(e)
 
-    def on_configure_event(self, window, event: Gdk.EventConfigure):
-        if self._configure_timeout_id:
-            GLib.source_remove(self._configure_timeout_id)
-
-        self.current_size = window.get_size()
-        self.current_position = window.get_position()
+    # def on_configure_event(self, window, event: Gdk.EventConfigure):
+    #     if self._configure_timeout_id:
+    #         GLib.source_remove(self._configure_timeout_id)
+    #
+    #     self.current_size = window.get_size()
+    #     self.current_position = window.get_position()
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
@@ -511,8 +496,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             file_path = dialog.get_filename()
             self.import_document(file_path)
 
-        dialog.destroy()
-
     def on_document_changed(self, editor: Editor, is_changed: bool = False):
         # Show Save button when autosaving disabled
         if not self.settings.get_boolean('autosave'):
@@ -555,8 +538,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.header.show_spinner(False)
 
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
-
         self.storage.add_folder(title,
                                 path=self.document_grid.current_folder_path)
         self.document_grid.reload_items(
@@ -564,8 +545,6 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.check_grid_items()
 
     def on_folder_rename_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
-
         folder = self.document_grid.selected_folder
         if folder and self.storage.rename_folder(folder, title):
             self.document_grid.reload_items(
@@ -599,8 +578,6 @@ class NorkaWindow(Handy.ApplicationWindow):
         popover.popup()
 
     def on_document_rename_activated(self, sender: Gtk.Widget, title: str):
-        sender.destroy()
-
         doc_id = self.document_grid.selected_document_id
         if not doc_id:
             return
@@ -660,7 +637,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             )
 
             result = prompt.run()
-            prompt.destroy()
 
             if result == Gtk.ResponseType.APPLY:
                 if self.document_grid.is_folder_selected:
@@ -700,8 +676,6 @@ class NorkaWindow(Handy.ApplicationWindow):
                                (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
-
     def on_export_markdown(self,
                            sender: Gtk.Widget = None,
                            event=None) -> None:
@@ -731,8 +705,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             GObjectWorker.call(Exporter.export_markdown, (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
-
     def on_export_html(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
 
@@ -760,8 +732,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             GObjectWorker.call(Exporter.export_html, (basename + ext, doc),
                                callback=self.on_export_callback)
 
-        dialog.destroy()
-
     def on_export_docx(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
 
@@ -788,8 +758,6 @@ class NorkaWindow(Handy.ApplicationWindow):
 
             GObjectWorker.call(Exporter.export_docx, (basename + ext, doc),
                                callback=self.on_export_callback)
-
-        dialog.destroy()
 
     def on_export_pdf(self, sender: Gtk.Widget = None, event=None) -> None:
         """Export document from storage to local files or web-services.
@@ -819,8 +787,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             pdf_exporter.connect('finished',
                                  lambda x, path: self.on_export_callback(path))
             pdf_exporter.print()
-
-        dialog.destroy()
 
     def on_export_callback(self, result):
         self.header.show_spinner(False)
@@ -944,8 +910,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.toast.set_title(_("Backup started."))
             self.toast.send_notification()
 
-        dialog.destroy()
-
     def on_backup_finished(self, result):
         self.header.show_spinner(False)
         if result:
@@ -975,7 +939,6 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         if response == Gtk.ResponseType.APPLY and dialog.document_id:
             self.document_activate(dialog.document_id)
-        dialog.destroy()
 
     def on_text_search_activated(self,
                                  sender: Gtk.Widget = None,
@@ -1120,7 +1083,6 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.editor.connect('document-load', self.preview.show_preview)
             self.editor.connect('document-close', self.preview.show_empty_page)
             self.preview.connect('destroy', self.on_preview_close)
-            self.preview.show_all()
         else:
             self.preview.present()
 

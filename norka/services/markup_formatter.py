@@ -82,9 +82,6 @@ class MarkupFormatter:
             else:
                 self.buffer.insert_at_cursor(f'[{text}]({link})')
 
-        if widget:
-            widget.destroy()
-
     def insert_image_link(self, widget: Gtk.Widget = None, link: str = None):
         if not link:
             return
@@ -100,8 +97,6 @@ class MarkupFormatter:
             else:
                 self.buffer.insert_at_cursor(f'[{text}]({link})')
 
-            if widget:
-                widget.destroy()
 
     def toggle_block(self, text_view: Gtk.TextView, markup: str) -> None:
         """Apply text block markup to currently selected line.

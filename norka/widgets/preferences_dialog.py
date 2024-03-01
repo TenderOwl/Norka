@@ -24,7 +24,7 @@
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell, Handy
+from gi.repository import Gtk, GtkSource, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
@@ -33,7 +33,7 @@ from norka.services.writeas import Writeas
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/preferences_window.ui')
-class PreferencesDialog(Handy.Window):
+class PreferencesDialog(Adw.Window):
     __gtype_name__ = 'PreferencesDialog'
 
     overlay: Gtk.Overlay = Gtk.Template.Child()
@@ -46,12 +46,10 @@ class PreferencesDialog(Handy.Window):
 
         self.set_title(_('Preferences'))
 
-        langs_available: List[Gspell.Language] = Gspell.language_get_available()
+        # langs_available: List[Gspell.Language] = Gspell.language_get_available()
         langs_available_model = Gtk.ListStore(str, str)
-        for lang in langs_available:
-            langs_available_model.append((lang.get_code(), lang.get_name()))
-
-        self.toast = Granite.WidgetsToast(title=_("Toast"), margin=0)
+        # for lang in langs_available:
+        #     langs_available_model.append((lang.get_code(), lang.get_name()))
 
         indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
         indent_width.set_value(self.settings.get_int('indent-width'))
@@ -122,7 +120,7 @@ class PreferencesDialog(Handy.Window):
 
         style_chooser = GtkSource.StyleSchemeChooserWidget(hexpand=True, vexpand=True)
         style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
-        scrolled.add(style_chooser)
+        scrolled.set_child(style_chooser)
 
         scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(
             self.settings.get_string('stylescheme')
@@ -135,9 +133,9 @@ class PreferencesDialog(Handy.Window):
         appearance_label = Gtk.Label(label=_("Appearance"), halign=Gtk.Align.START)
         appearance_label.get_style_context().add_class('title-4')
         interface_grid.attach(appearance_label, 0, 0, 3, 1)
-        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        interface_grid.attach(Gtk.Label(label=_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
         interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
-        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
+        interface_grid.attach(Gtk.Label(label=_("Styles")), 0, 2, 3, 1)
         interface_grid.attach(scrolled, 0, 3, 3, 1)
 
         # Export grid
@@ -153,7 +151,6 @@ class PreferencesDialog(Handy.Window):
 
         self.overlay.add_overlay(self.toast)
 
-        self.show_all()
 
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
@@ -166,7 +163,7 @@ class PreferencesDialog(Handy.Window):
         medium_label = Gtk.Label(label="Medium.com", halign=Gtk.Align.START)
         medium_label.get_style_context().add_class('title-4')
         content_grid.attach(medium_label, 0, 0, 3, 1)
-        content_grid.attach(Gtk.Label(_("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)
+        content_grid.attach(Gtk.Label(label=_("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         content_grid.attach(self.medium_token, 1, 1, 2, 1)
         content_grid.attach(self.medium_link, 0, 2, 3, 1)
 
@@ -229,7 +226,7 @@ class PreferencesDialog(Handy.Window):
         return False
 
     def on_close_activated(self, sender: Gtk.Widget):
-        self.destroy()
+        pass
 
     def on_dark_theme(self, sender, state):
         self.settings.set_boolean('prefer-dark-theme', state)
