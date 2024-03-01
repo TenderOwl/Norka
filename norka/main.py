@@ -212,14 +212,16 @@ class Application(Adw.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = Adw.AboutWindow(version=self.version, transient_for=self.window, modal=True, )
-        about_dialog.set_program_name(APP_TITLE)
-        about_dialog.set_comments(_('Continuous text editor'))
-        about_dialog.set_copyright('© 2021-2024, Tender Owl')
-        about_dialog.set_website("https://norka.app/")
-        about_dialog.set_website_label(_('Learn more about Norka'))
-        about_dialog.set_license_type(Gtk.License.MIT_X11)
-        about_dialog.present()
+        about = Adw.AboutWindow(transient_for=self.props.active_window,
+                                application_name=APP_TITLE,
+                                application_icon='com.github.tenderowl.norka',
+                                developer_name='TenderOwl',
+                                version=self.version or '2.0.0',
+                                developers=['Andrey Maksimov'],
+                                copyright='© 2021-2024 TenderOwl',
+                                website='https://norka.app/',
+                                license_type=Gtk.License.MIT_X11)
+        about.present()
 
     def color_scheme_changed(self, _old, _new):
         dark_mode = self.settings.get_boolean('prefer-dark-theme')
