@@ -21,11 +21,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import html
 from typing import List
 
 from gi.repository import Gtk, Gdk
 
-TOOLTIP_SECONDARY_TEXT_MARKUP = """<span weight="600" size="smaller" alpha="75%">%s</span>"""
+TOOLTIP_SECONDARY_TEXT_MARKUP = """<span weight="600" size="smaller" alpha="75%">{}</span>"""
 
 
 def find_child(widget: Gtk.Widget, child_name):
@@ -64,7 +65,7 @@ def markup_accel_tooltip(accels: [str], description: str = None) -> str:
 
         if unique_accels:
             # TRANSLATORS: This is a delimiter that separates two keyboard shortcut labels like `⌘ + →, Control + A`
-            accel_label = ', '.join(unique_accels)
+            accel_label = html.escape(', '.join(unique_accels))
             accel_markup = TOOLTIP_SECONDARY_TEXT_MARKUP.format(accel_label)
             parts.append(accel_markup)
 
