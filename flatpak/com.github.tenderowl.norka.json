@@ -7,9 +7,10 @@
     "finish-args" : [
         "--filesystem=xdg-documents",
         "--share=ipc",
-        "--share=network",
         "--socket=fallback-x11",
+        "--device=dri",
         "--socket=wayland",
+        "--share=network",
         "--socket=cups"
     ],
     "cleanup" : [
