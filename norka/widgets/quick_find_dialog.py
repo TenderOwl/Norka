@@ -24,7 +24,7 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gdk, Gio, GObject
+from gi.repository import Gtk, Gio, GObject, Gdk
 
 from norka.models.document import Document
 from norka.services.storage import Storage
@@ -41,12 +41,12 @@ class QuickFindDialog(Gtk.Dialog):
         # Store document_id to response
         self.document_id = None
 
-        self.get_style_context().add_class("quick-find-dialog")
+        self.add_css_class("quick-find-dialog")
 
         # self.get_header_bar().set_visible(False)
         # self.get_header_bar().set_no_show_all(True)
 
-        self.set_default_size(400, 200)
+        self.set_default_size(400, 260)
         self.set_modal(True)
         self.set_transient_for(Gtk.Application.get_default().props.active_window)
 
@@ -58,8 +58,7 @@ class QuickFindDialog(Gtk.Dialog):
         result_box.bind_model(self.result_store, QuickFindRow)
         result_box.connect('row-activated', self.row_activated)
 
-        placeholder_image = Gtk.Image.new_from_icon_name("folder-saved-search-symbolic",
-                                                         Gtk.IconSize.LARGE_TOOLBAR)
+        placeholder_image = Gtk.Image.new_from_icon_name(icon_name="folder-saved-search-symbolic")
 
         placeholder_label = Gtk.Label(label=_("Quickly find documents, just start typing its name."),
                                       wrap=True,
@@ -68,18 +67,18 @@ class QuickFindDialog(Gtk.Dialog):
                                       )
         placeholder_label.show()
 
-        placeholder_grid = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL,
-                                    halign=Gtk.Align.CENTER,
-                                    row_spacing=12,
-                                    margin_top=32,
-                                    )
-        placeholder_grid.get_style_context().add_class("dim-label")
-        placeholder_grid.add(placeholder_image)
-        placeholder_grid.add(placeholder_label)
+        placeholder_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                                   halign=Gtk.Align.CENTER,
+                                   spacing=12,
+                                   margin_top=32,
+                                   )
+        placeholder_grid.add_css_class("dim-label")
+        placeholder_grid.append(placeholder_image)
+        placeholder_grid.append(placeholder_label)
 
         result_box.set_placeholder(placeholder_grid)
 
-        scrolled = Gtk.ScrolledWindow(expand=True,
+        scrolled = Gtk.ScrolledWindow(vexpand=True,
                                       hscrollbar_policy=Gtk.PolicyType.NEVER)
         scrolled.set_child(result_box)
 
@@ -92,18 +91,23 @@ class QuickFindDialog(Gtk.Dialog):
         box.set_margin_top(6)
         box.set_margin_bottom(6)
         box.set_spacing(6)
-        box.pack_start(self.search_entry, False, True, 0)
-        box.pack_end(scrolled, True, True, 0)
+        box.append(self.search_entry)
+        box.append(scrolled)
         # self.set_titlebar(None)
         self.set_child(box)
 
-        # self.connect('key_release_event', self.on_key_release_event)
+        self.key_event_controller = Gtk.EventControllerKey()
+        self.key_event_controller.connect('key-released', self.on_key_released)
+        self.add_controller(self.key_event_controller)
 
-    # def on_key_release_event(self, sender, event_key: Gdk.EventKey):
-    #     if event_key.keyval == Gdk.KEY_Escape:
-    #         self.destroy()
-    #
-    #     return False
+    def on_key_released(self, _event_controller_key: Gtk.EventControllerKey,
+                        keyval: int,
+                        _keycode: int,
+                        _state: Gdk.ModifierType):
+        if keyval == Gdk.KEY_Escape:
+            self.destroy()
+
+        return False
 
     def search_changed(self, sender: Gtk.SearchEntry):
         self.result_store.remove_all()
@@ -137,14 +141,18 @@ class QuickFindRow(Gtk.ListBoxRow):
         # Create layout box
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
                       spacing=6,
-                      margin=6)
+                      margin_start=6,
+                      margin_end=6,
+                      margin_top=6,
+                      margin_bottom=6
+                      )
 
         doc_label = Gtk.Label(label=item.title)
-        archive_icon = Gtk.Image.new_from_icon_name('user-trash-symbolic', Gtk.IconSize.SMALL_TOOLBAR)
-        archive_icon.get_style_context().add_class('muted')
+        archive_icon: Gtk.Image = Gtk.Image.new_from_icon_name(icon_name="user-trash-symbolic")
+        archive_icon.add_css_class('muted')
 
-        box.pack_start(doc_label, False, True, 0)
+        box.append(doc_label)
         if item.archived:
-            box.pack_end(archive_icon, False, False, 0)
+            box.append(archive_icon)
 
-        self.add(box)
+        self.set_child(box)

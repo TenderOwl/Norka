@@ -64,6 +64,8 @@ Stack header_box {
   Adw.HeaderBar grid_header {
     name: 'grid_header';
 
+    styles ["flat"]
+
     [title]
     Box {
       halign: center;
@@ -117,6 +119,8 @@ Stack header_box {
   Adw.HeaderBar editor_header {
     name: 'editor_header';
     hexpand: true;
+
+    styles ["flat"]
 
     [title]
     Box {
@@ -178,37 +182,22 @@ Stack header_box {
       can-focus: true;
       icon-name: 'image-editor-menu';
 
-      styles [
-        "flat",
-      ]
     }
 
     MenuButton share_app_menu {
       can-focus: true;
       icon-name: 'image-share';
-
-      styles [
-        "flat",
-      ]
     }
 
     Button extended_stats_button {
       action-name: 'document.show_extended_stats';
       icon-name: 'extended-stats';
-
-      styles [
-        "flat",
-      ]
     }
 
     Button print_button {
       can-focus: true;
       action-name: 'document.print';
       icon-name: 'image1';
-
-      styles [
-        "flat",
-      ]
     }
   }
 }

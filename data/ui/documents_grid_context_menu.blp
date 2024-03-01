@@ -1,0 +1,157 @@
+using Gtk 4.0;
+
+PopoverMenu document-popover-menu {
+  position: right;
+
+  Box main {
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      action-name: 'document.rename';
+      text: _('Rename');
+    }
+
+    Separator {
+    }
+
+    $GtkModelButton {
+      text: _('Export...');
+      menu-name: 'export';
+    }
+
+    Separator {
+    }
+
+    $GtkModelButton {
+      name: 'archive';
+      action-name: 'document.archive';
+      text: _('Archive');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.unarchive';
+      text: _('Unarchive');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.delete';
+      text: _('Delete');
+    }
+  }
+
+  Box export {
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      text: _('Export...');
+      menu-name: 'main';
+      inverted: 'True';
+      centered: 'True';
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export';
+      text: _('Text');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-markdown';
+      text: _('Markdown');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-html';
+      text: _('HTML');
+    }
+
+    Separator {
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-medium';
+      text: _('Medium.com');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-writeas';
+      text: _('Writeas');
+    }
+  }
+}
+
+PopoverMenu folder-popover-menu {
+  can-focus: false;
+  position: right;
+
+  Box main1 {
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      action-name: 'document.rename';
+      text: _('Rename');
+    }
+
+    Separator {
+    }
+
+    $GtkModelButton {
+      action-name: 'document.delete';
+      text: _('Delete');
+    }
+  }
+
+  Box export1 {
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      text: _('Export...');
+      menu-name: 'main';
+      inverted: 'True';
+      centered: 'True';
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export';
+      text: _('Text');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-markdown';
+      text: _('Markdown');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-html';
+      text: _('HTML');
+    }
+
+    Separator {
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-medium';
+      text: _('Medium.com');
+    }
+
+    $GtkModelButton {
+      action-name: 'document.export-writeas';
+      text: _('Writeas');
+    }
+  }
+}

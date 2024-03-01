@@ -1,0 +1,36 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreferencesDialog : Adw.Window {
+  Box {
+    visible: true;
+    orientation: vertical;
+
+    Adw.HeaderBar {
+      centering-policy: strict;
+
+      [title]
+      Adw.ViewSwitcher view_switcher_title {
+        stack: main_stack;
+      }
+    }
+
+    Overlay overlay {
+      Box main_box {
+        orientation: vertical;
+
+        Adw.ViewStack main_stack {
+          hexpand: true;
+          margin-start: 16;
+          margin-end: 16;
+          margin-bottom: 18;
+          margin-top: 8;
+        }
+
+        Adw.ViewSwitcherBar {
+          stack: main_stack;
+        }
+      }
+    }
+  }
+}

@@ -378,6 +378,7 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.screens.set_visible_child_name('welcome-grid')
         else:
             self.screens.set_visible_child_name('document-grid')
+            self.document_grid.reload_items()
 
     def on_document_close_activated(self,
                                     sender: Gtk.Widget,
@@ -935,7 +936,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         """Open search dialog to find a documents
         """
         dialog = QuickFindDialog(self.storage)
-        response = dialog.run()
+        response = dialog.present()
 
         if response == Gtk.ResponseType.APPLY and dialog.document_id:
             self.document_activate(dialog.document_id)

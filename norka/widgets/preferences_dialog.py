@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from gettext import gettext as _
-from typing import List
 
 from gi.repository import Gtk, GtkSource, Adw
 
@@ -37,7 +36,7 @@ class PreferencesDialog(Adw.Window):
     __gtype_name__ = 'PreferencesDialog'
 
     overlay: Gtk.Overlay = Gtk.Template.Child()
-    main_stack: Gtk.Stack = Gtk.Template.Child()
+    main_stack: Adw.ViewStack = Gtk.Template.Child()
 
     def __init__(self, transient_for, settings):
         super().__init__(transient_for=transient_for, modal=True)
@@ -90,24 +89,28 @@ class PreferencesDialog(Adw.Window):
         general_label = Gtk.Label(label=_("General"), halign=Gtk.Align.START)
         general_label.get_style_context().add_class('title-4')
         general_grid.attach(general_label, 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2,
+                            1)
         general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
-        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2,
+                            2, 1)
         general_grid.attach(self.sort_switch, 2, 2, 1, 1)
-        general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
         general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
-        general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
         general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
 
         tabs_label = Gtk.Label(label=_("Tabs"), halign=Gtk.Align.START)
         tabs_label.get_style_context().add_class('title-4')
         general_grid.attach(tabs_label, 0, 5, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2,
+                            1)
         general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
+        general_grid.attach(Gtk.Label(label=_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0,
+                            7, 2,
                             1)
         general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
+        general_grid.attach(Gtk.Label(label=_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
         general_grid.attach(indent_width, 2, 8, 2, 1)
 
         # Interface grid
@@ -150,7 +153,6 @@ class PreferencesDialog(Adw.Window):
         self.main_stack.add_titled(export_grid, "export", _("Export"))
 
         self.overlay.add_overlay(self.toast)
-
 
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
