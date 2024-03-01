@@ -1,0 +1,18 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NorkaWindow : Adw.ApplicationWindow {
+  default-width: 1000;
+  default-height: 800;
+  width-request: 360;
+  height-request: 360;
+  title: "Norka";
+
+  Box screens {
+    Box content_box {
+      hexpand: true;
+      vexpand: true;
+      orientation: vertical;
+    }
+  }
+}
