@@ -791,13 +791,11 @@ class NorkaWindow(Adw.ApplicationWindow):
         user_id = self.settings.get_string("medium-user-id")
 
         if not token or not user_id:
-            self.toast.set_title(
-                _("You need to set Medium token in Preferences -> Export"))
-            self.toast.set_default_action(_("Configure"))
-
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            toast = Adw.Toast(title=_("You need to set Medium token in Preferences -> Export"))
+            toast.set_button_label("Configure")
+            toast.set_action_name("app.preferences")
+            self.toast_overlay.add_toast(toast)
+            return
 
         else:
             self.header.show_spinner(True)
@@ -835,13 +833,10 @@ class NorkaWindow(Adw.ApplicationWindow):
         token = self.settings.get_string("writeas-access-token")
 
         if not token:
-            self.toast.set_title(
-                "You have to login to Write.as in Preferences -> Export")
-            self.toast.set_default_action("Configure")
-
-            self.toast.connect("default-action",
-                               self.get_application().on_preferences)
-            self.toast.send_notification()
+            toast = Adw.Toast(title=_("You need to set Write.as token in Preferences -> Export"))
+            toast.set_button_label("Configure")
+            toast.set_action_name("app.preferences")
+            self.toast_overlay.add_toast(toast)
 
         else:
             self.header.show_spinner(True)
