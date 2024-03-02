@@ -8,11 +8,13 @@ template $NorkaWindow : Adw.ApplicationWindow {
   height-request: 360;
   title: "Norka";
 
-  Box screens {
-    Box content_box {
-      hexpand: true;
-      vexpand: true;
-      orientation: vertical;
+  Adw.ToastOverlay toast_overlay {
+    Box screens {
+      Box content_box {
+        hexpand: true;
+        vexpand: true;
+        orientation: vertical;
+      }
     }
   }
   // Adw.Breakpoint {
