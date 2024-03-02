@@ -63,21 +63,30 @@ class Exporter:
         return path
 
     @staticmethod
-    def export_pdf(path: str, document: Document) -> str:
-        html = Exporter.render_html(document.content, document.title)
+    def export_pdf(path: str, document: Document) -> str | None:
+        try:
+            html = Exporter.render_html(document.content, document.title)
 
-        pdf_exporter = PDFExporter(path, html)
-        pdf_exporter.print()
+            pdf_exporter = PDFExporter(path, html)
+            pdf_exporter.print()
 
-        return path
+            return path
+
+        except Exception as e:
+            print(e)
+            return None
 
     @staticmethod
-    def export_docx(path: str, document: Document) -> str:
-        html = Exporter.render_html(document.content, document.title)
-        html_parser = HtmlToDocx()
-        docx = html_parser.parse_html_string(html)
-        docx.save(path)
-        return path
+    def export_docx(path: str, document: Document) -> str | None:
+        try:
+            html = Exporter.render_html(document.content, document.title)
+            html_parser = HtmlToDocx()
+            docx = html_parser.parse_html_string(html)
+            docx.save(path)
+            return path
+        except Exception as e:
+            print(e)
+            return None
 
     @staticmethod
     def render_html(text: str, title: str = None, dark_mode=False) -> str:

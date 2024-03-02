@@ -665,7 +665,6 @@ class NorkaWindow(Adw.ApplicationWindow):
             ExportFormat.Html: Exporter.export_html,
             ExportFormat.Markdown: Exporter.export_markdown,
             ExportFormat.Docx: Exporter.export_docx,
-            ExportFormat.Pdf: Exporter.export_pdf,
         }
 
         if save_file:
