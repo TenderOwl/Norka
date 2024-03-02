@@ -25,7 +25,6 @@ import os
 from gettext import gettext as _
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Adw
-from gi.repository.GdkPixbuf import Pixbuf
 
 from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
@@ -476,27 +475,32 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.save_document()
 
     def on_document_import_activated(self, sender, event):
-        dialog = Gtk.FileChooserNative.new(_("Import files into Norka"), self,
-                                           Gtk.FileChooserAction.OPEN)
+        """Initiate import of documents by opening Open Files dialog.
+        """
+        dialog = Gtk.FileDialog()
+        dialog.set_modal(True)
+        dialog.set_title(_("Import files into Norka"))
 
         filter_markdown = Gtk.FileFilter()
         filter_markdown.set_name(_("Text Files"))
         filter_markdown.add_mime_type("text/plain")
-        dialog.add_filter(filter_markdown)
-        dialog_result = dialog.run()
+        dialog.set_default_filter(filter_markdown)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
-            file_path = dialog.get_filename()
-            self.import_document(file_path)
+        dialog.open_multiple(parent=self, callback=self.on_document_import_callback)
+
+    def on_document_import_callback(self, dialog: Gtk.FileDialog, result: Gio.AsyncResult):
+        """Handles Open Files dialog result.
+        If there are multiple files selected import all of them.
+        """
+        for file in dialog.open_multiple_finish(result):
+            self.import_document(file.get_path())
 
     def on_document_changed(self, editor: Editor, is_changed: bool = False):
         # Show Save button when autosaving disabled
         if not self.settings.get_boolean('autosave'):
             self.header.show_save_button = is_changed
 
-    def on_document_import(self,
-                           sender: Gtk.Widget = None,
-                           file_path: str = None) -> None:
+    def on_document_import(self, sender: Gtk.Widget = None, file_path: str = None) -> None:
         if self.import_document(file_path=file_path):
             self.check_grid_items()
 
