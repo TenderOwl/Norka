@@ -1,26 +1,14 @@
 using Gtk 4.0;
 using Adw 1;
 
-Image export-html-icon {
-  resource: '/com/github/tenderowl/norka/icons/text-html.svg';
-}
-
-Image export-markdown-icon {
-  resource: '/com/github/tenderowl/norka/icons/text-markdown.svg';
-}
-
-Image export-text-icon {
-  resource: '/com/github/tenderowl/norka/icons/text.svg';
-}
-
 template $ExtendedStatsWindow : Adw.Window {
   styles [
     "csd",
   ]
 
-  Box {
-    orientation: vertical;
+  Adw.ToolbarView {
 
+    [top]
     Adw.HeaderBar header_bar {
       styles [
         "csd",
@@ -28,6 +16,7 @@ template $ExtendedStatsWindow : Adw.Window {
     }
 
     Box main_box {
+      orientation: vertical;
       margin-start: 8;
       margin-end: 8;
       margin-top: 8;
@@ -49,6 +38,7 @@ template $ExtendedStatsWindow : Adw.Window {
       }
 
       Grid {
+        orientation: vertical;
         margin-start: 6;
         margin-end: 6;
         row-spacing: 6;
@@ -64,18 +54,27 @@ template $ExtendedStatsWindow : Adw.Window {
             "title-4",
             "accent",
           ]
+          layout {
+            column: 0;
+            row: 0;
+          }
         }
 
         Label paragraphs_count_label {
           halign: start;
           margin-start: 14;
           margin-top: 14;
-          label: _('0');
+          label: '0';
 
           styles [
             "title-4",
             "accent",
           ]
+
+          layout {
+            column: 1;
+            row: 0;
+          }
         }
 
         Label {
@@ -83,8 +82,13 @@ template $ExtendedStatsWindow : Adw.Window {
           label: _('READ TIME');
 
           styles [
-            "stat_label",
+            "dim-label", "heading"
           ]
+
+          layout {
+            column: 0;
+            row: 1;
+          }
         }
 
         Label {
@@ -93,8 +97,13 @@ template $ExtendedStatsWindow : Adw.Window {
           label: _('PARAGRAPHS');
 
           styles [
-            "stat_label",
+            "dim-label", "heading"
           ]
+
+          layout {
+            column: 1;
+            row: 1;
+          }
         }
 
         Label {
@@ -102,8 +111,13 @@ template $ExtendedStatsWindow : Adw.Window {
           label: _('CHARACTERS');
 
           styles [
-            "stat_label",
+            "dim-label", "heading"
           ]
+
+          layout {
+            column: 0;
+            row: 3;
+          }
         }
 
         Label {
@@ -112,8 +126,12 @@ template $ExtendedStatsWindow : Adw.Window {
           label: _('WORDS');
 
           styles [
-            "stat_label",
+            "dim-label", "heading"
           ]
+          layout {
+            column: 1;
+            row: 3;
+          }
         }
 
         Label characters_count_label {
@@ -125,6 +143,10 @@ template $ExtendedStatsWindow : Adw.Window {
             "title-4",
             "accent",
           ]
+          layout {
+            column: 0;
+            row: 2;
+          }
         }
 
         Label words_count_label {
@@ -137,6 +159,10 @@ template $ExtendedStatsWindow : Adw.Window {
             "title-4",
             "accent",
           ]
+          layout {
+            column: 1;
+            row: 2;
+          }
         }
       }
 
@@ -164,9 +190,7 @@ template $ExtendedStatsWindow : Adw.Window {
         margin-bottom: 6;
         label: _('CREATION DATE');
 
-        styles [
-          "stat_label",
-        ]
+        styles ["dim-label", "heading"]
       }
 
       Label modified_date_label {
@@ -189,9 +213,7 @@ template $ExtendedStatsWindow : Adw.Window {
         margin-bottom: 6;
         label: _('MODIFICATION DATE');
 
-        styles [
-          "stat_label",
-        ]
+        styles ["dim-label", "heading"]
       }
 
       Separator {
@@ -206,20 +228,55 @@ template $ExtendedStatsWindow : Adw.Window {
         column-homogeneous: true;
 
         Button export_text {
-          label: _('Text');
-          tooltip-text: _('Export document to plain text file\n                                        ');
-          icon-name: 'export-text-icon';
+          tooltip-text: _('Export document to plain text file');
+          Box {
+            orientation: vertical;
+
+            Image {
+              icon-name: "text";
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('Text');
+            }
+          }
+          styles ["flat"]
         }
 
         Button export_markdown {
-          label: _('Markdown');
-          icon-name: 'export-markdown-icon';
+          tooltip-text: _('Export document to Markdown file');
+
+          Box {
+            orientation: vertical;
+            Image {
+              icon-name: 'text-markdown';
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('Markdown');
+            }
+          }
+          styles ["flat"]
         }
 
         Button export_html {
-          label: _('HTML');
+
           tooltip-text: _('Export document to HTML');
-          icon-name: 'export-html-icon';
+
+          Box {
+            orientation: vertical;
+          Image {
+              resource: '/com/github/tenderowl/norka/icons/text-html.svg';
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('HTML');
+            }
+          }
+          styles ["flat"]
         }
       }
     }
