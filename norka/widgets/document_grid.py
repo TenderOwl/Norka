@@ -21,6 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
 from datetime import datetime
 from gettext import gettext as _
 from typing import Optional
@@ -49,6 +50,7 @@ class DocumentGrid(Gtk.Box):
         'document-create': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'document-import': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         'document-activated': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'folder-activated': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         'rename-folder': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
     }
 
@@ -292,9 +294,12 @@ class DocumentGrid(Gtk.Box):
         return Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
 
     def on_item_activate(self, view: Gtk.GridView, position: int):
-        # self.selected_path = path
-        active_item = self.model.get_item(position)
-        self.emit('document-activated', active_item.document_id)
+        # Folder has Id = -1
+        active_item: GridItem = self.model.get_item(position)
+        if active_item.document_id == -1:
+            self.emit('folder-activated', os.path.join(active_item.content, active_item.title))
+        else:
+            self.emit('document-activated', active_item.document_id)
 
     def on_button_pressed(self, widget: Gtk.Widget, event):
         """Handle mouse button press event and display context menu if needed.

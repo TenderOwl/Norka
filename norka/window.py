@@ -90,7 +90,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.document_grid.connect('document-create', self.on_document_create_activated)
         self.document_grid.connect('document-import', self.on_document_import)
         self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
-        self.document_grid.connect('document-activated', self.on_document_item_activated)
+        self.document_grid.connect('document-activated', self.on_document_activated)
+        self.document_grid.connect('folder-activated', self.on_folder_activated)
 
         self.editor = Editor(self.storage, self.settings)
         self.editor.connect('document-changed', self.on_document_changed)
@@ -394,27 +395,20 @@ class NorkaWindow(Adw.ApplicationWindow):
 
             self.check_grid_items()
 
-    def on_document_item_activated(self, sender: Gtk.Widget, document_id: int) -> None:
+    def on_document_activated(self, _sender: Gtk.Widget, document_id: int) -> None:
         """Activate currently selected document in grid and open it in editor.
-
-        :param sender:
-        :param path:
-        :return:
         """
-
-        # folder = self.document_grid.selected_folder
-        # if folder:
-        #     self.folder_activate(folder.absolute_path)
-        #     Logger.debug(f'Activated Folder {folder.absolute_path}')
-        #
-        # else:
-        #     doc_id = self.document_grid.selected_document_id
-        Logger.debug(f'Activated Document.Id {document_id}')
         self.document_activate(document_id)
+
+    def on_folder_activated(self, _sender: Gtk.Widget, folder_path: str) -> None:
+        """Activate currently selected document in grid and open it in editor.
+        """
+        self.folder_activate(folder_path)
 
     def folder_activate(self, folder_path: str) -> None:
         if folder_path.endswith('..'):
-            folder_path = folder_path[:-3]
+            folder_path = folder_path[:-2]
+
         self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
