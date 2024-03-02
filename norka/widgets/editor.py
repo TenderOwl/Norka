@@ -119,7 +119,7 @@ class Editor(Gtk.Box):
         self.connect('insert-image', self.on_insert_image)
 
         self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled.get_style_context().add_class('scrolled-editor')
+        # self.scrolled.get_style_context().add_class('scrolled-editor')
         self.scrolled.set_child(self.view)
 
         # SearchBar
