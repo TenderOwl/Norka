@@ -1,0 +1,143 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $MenuExport : Popover {
+
+  Box {
+    orientation: vertical;
+    spacing: 6;
+
+    Label {
+      label: _("Files");
+      halign: start;
+      styles ["title-4"]
+    }
+
+    Adw.Carousel carousel {
+
+      Box {
+
+        Button export_plain {
+          action-name: "document.export";
+          tooltip-text: _('Export document to plain text file');
+          Box {
+            orientation: vertical;
+            Image {
+              icon-name: "text";
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('Text');
+            }
+          }
+          styles ["flat"]
+        }
+
+        Button export_markdown {
+          action-name: "document.export-markdown";
+          tooltip-text: _('Export document to Markdown');
+          Box {
+            orientation: vertical;
+            Image {
+              icon-name: "text-markdown";
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('Markdown');
+            }
+          }
+          styles ["flat"]
+        }
+
+        Button export_html {
+          action-name: "document.export-html";
+          tooltip-text: _('Export document to HTML');
+
+          Box {
+            orientation: vertical;
+            Image {
+              resource: '/com/github/tenderowl/norka/icons/text-html.svg';
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('HTML');
+            }
+          }
+          styles ["flat"]
+        }
+      }
+
+      Box {
+        Button export_docx {
+          action-name: "document.export-docx";
+          tooltip-text: _('Export document to Docx');
+          Box {
+            orientation: vertical;
+            Image {
+              icon-name: "application-msword";
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('Docx');
+            }
+          }
+          styles ["flat"]
+        }
+
+        Button export_pdf {
+          action-name: "document.export-pdf";
+          tooltip-text: _('Export document to PDF');
+          Box {
+            orientation: vertical;
+            Image {
+              icon-name: "application-pdf";
+              pixel-size: 64;
+            }
+
+            Label {
+              label: _('PDF');
+            }
+          }
+          styles ["flat"]
+        }
+
+      }
+    }
+
+    Adw.CarouselIndicatorDots {
+      carousel: carousel;
+    }
+
+    Separator {
+      orientation: horizontal;
+    }
+
+    Label {
+      label: _("Internet");
+      halign: start;
+      styles ["title-4"]
+    }
+
+    Button {
+      Label {
+        label: _("To Medium");
+        xalign: 0;
+      }
+      action-name: "document.export-medium";
+      styles ["flat"]
+    }
+
+    Button {
+      Label {
+        label: _("To Write.as");
+        xalign: 0;
+      }
+      action-name: "document.export-writeas";
+      styles ["flat"]
+    }
+  }
+}

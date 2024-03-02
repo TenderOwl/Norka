@@ -12,6 +12,7 @@
 		<file preprocess="xml-stripblanks">ui/stats.ui</file>
 		<file preprocess="xml-stripblanks">ui/format_shortcuts_window.ui</file>
 		<file preprocess="xml-stripblanks">ui/preferences_window.ui</file>
+		<file preprocess="xml-stripblanks">ui/menu_export.ui</file>
 		<file>icons/com.github.tenderowl.norka.svg</file>
 		<file>icons/folder.svg</file>
 		<file>icons/folder-open.svg</file>
