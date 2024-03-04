@@ -29,9 +29,9 @@ from gi.repository import Gtk, Gdk, Adw, GObject
 
 from norka.define import RESOURCE_PREFIX
 from norka.services.stats_handler import DocumentStats
+from norka.utils import markup_accel_tooltip
 from norka.widgets.menu_export import MenuExport
 from norka.widgets.menu_popover import MenuPopover
-from norka.utils import markup_accel_tooltip
 
 
 class StatsMode(Enum):
@@ -39,26 +39,36 @@ class StatsMode(Enum):
     PATH = 2
 
 
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/headerbar.ui")
 class Header(Gtk.Box):
     __gtype_name__ = 'Header'
 
     show_save_button = GObject.Property(type=bool, default=False)
 
+    header_box: Gtk.Stack = Gtk.Template.Child()
+    grid_header: Adw.HeaderBar = Gtk.Template.Child()
+    import_button: Gtk.Button = Gtk.Template.Child()
+    add_button: Gtk.Button = Gtk.Template.Child()
+    add_folder_button: Gtk.Button = Gtk.Template.Child()
+    back_button: Gtk.Button = Gtk.Template.Child()
+
+    editor_header: Adw.HeaderBar = Gtk.Template.Child()
+    loader_spinner: Gtk.Spinner = Gtk.Template.Child()
+    editor_spinner: Gtk.Spinner = Gtk.Template.Child()
+    subtitle_path_label: Gtk.Label = Gtk.Template.Child()
+    title_label: Gtk.Label = Gtk.Template.Child()
+    subtitle_label: Gtk.Label = Gtk.Template.Child()
+    subtitle_eventbox: Gtk.Box = Gtk.Template.Child()
+    save_btn_revealer: Gtk.Revealer = Gtk.Template.Child()
+    save_btn: Gtk.Button = Gtk.Template.Child()
+    print_button: Gtk.Button = Gtk.Template.Child()
+    extended_stats_button: Gtk.Button = Gtk.Template.Child()
+    share_app_menu: Gtk.MenuButton = Gtk.Template.Child()
+    grid_menu_button: Gtk.MenuButton = Gtk.Template.Child()
+    editor_menu_button: Gtk.MenuButton = Gtk.Template.Child()
+
     def __init__(self, settings, **kwargs):
         super().__init__(**kwargs)
-
-        self.builder = Gtk.Builder.new_from_resource(f'{RESOURCE_PREFIX}/ui/headerbar.ui')
-        self.header_box: Gtk.Stack = self.builder.get_object('header_box')
-        self.grid_header: Adw.HeaderBar = self.builder.get_object('grid_header')
-        self.editor_header: Adw.HeaderBar = self.builder.get_object('editor_header')
-        self.loader_spinner: Gtk.Spinner = self.builder.get_object('loader_spinner')
-        self.editor_spinner: Gtk.Spinner = self.builder.get_object('editor_spinner')
-        self.subtitle_path_label: Gtk.Label = self.builder.get_object('subtitle_path_label')
-        self.title_label: Gtk.Label = self.builder.get_object('title_label')
-        self.subtitle_label: Gtk.Label = self.builder.get_object('subtitle_label')
-        self.subtitle_eventbox: Gtk.Box = self.builder.get_object('subtitle_eventbox')
-        self.save_btn_revealer: Gtk.Revealer = self.builder.get_object('save_btn_revealer')
-        self.save_btn: Gtk.EventBox = self.builder.get_object('save_btn')
 
         self.stats_mode = StatsMode.STATS
 
@@ -69,47 +79,25 @@ class Header(Gtk.Box):
         self.document_path = "/"
 
         self.header_box.set_visible_child_name("grid_header")
-        self.append(self.header_box)
+        # self.append(self.header_box)
 
         # self.subtitle_eventbox.connect('button-release-event', self.change_subtitle_mode)
-
-        self.import_button: Gtk.Button = self.builder.get_object(
-            "import_button")
         self.import_button.set_tooltip_markup(markup_accel_tooltip(('<Control>o',), _('Import file to Norka')))
-        #
-        self.add_button: Gtk.Button = self.builder.get_object("add_button")
         self.add_button.set_tooltip_markup(markup_accel_tooltip(('<Control>n',), _('Create new document')))
-
-        self.add_folder_button: Gtk.Button = self.builder.get_object(
-            "add_folder_button")
         self.add_folder_button.set_tooltip_markup(markup_accel_tooltip(('<Control><Shift>n',), _('Create new folder')))
 
-        self.back_button: Gtk.Button = self.builder.get_object("back_button")
         self.back_button.set_tooltip_markup(
             markup_accel_tooltip(('<Control>w',), _('Save document and return to documents list')))
 
         self.bind_property('show-save-button', self.save_btn_revealer, 'reveal-child')
 
         # # self.search_button = Gtk.ToggleButton()
-        # # self.search_button.set_image(Gtk.Image.new_from_icon_name('edit-find', Gtk.IconSize.LARGE_TOOLBAR))
         # # self.search_button.set_tooltip_markup(Granite.markup_accel_tooltip(('<Control>f',), 'Find text'))
-        # # self.search_button.set_action_name('document.search_text')
-        # # self.search_button.set_visible(False)
 
-        self.print_button: Gtk.ToggleButton = self.builder.get_object("print_button")
         self.print_button.set_tooltip_markup(markup_accel_tooltip(('<Control>p',), _('Print the document')))
-
-        self.extended_stats_button: Gtk.ToggleButton = self.builder.get_object("extended_stats_button")
         self.extended_stats_button.set_tooltip_markup(markup_accel_tooltip(None, _('Show document info')))
 
-        self.share_app_menu: Gtk.MenuButton = self.builder.get_object(
-            "share_app_menu")
         self.share_app_menu.set_popover(MenuExport(settings=self.settings))
-
-        self.grid_menu_button: Gtk.MenuButton = self.builder.get_object("grid_menu_button")
-        # self.grid_menu_button.set_popover(MenuPopover(settings=self.settings))
-        self.editor_menu_button: Gtk.MenuButton = self.builder.get_object("editor_menu_button")
-        self.editor_menu_button.set_popover(MenuPopover(settings=self.settings))
 
     def toggle_document_mode(self) -> None:
         """Toggle document-related actions and global app actions

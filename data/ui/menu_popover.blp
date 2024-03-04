@@ -1,0 +1,122 @@
+using Gtk 4.0;
+
+template $EditorMenuPopover : Popover {
+  width-request: 200;
+
+  Box {
+    orientation: vertical;
+    spacing: 6;
+
+    Box {
+      hexpand: true;
+
+      styles ["linked"]
+
+      Button zoom_out_button {
+        icon-name: "zoom-out-symbolic";
+        action-name: "document.zoom_out";
+
+      }
+
+      Button zoom_default_button {
+        label: "100%";
+        action-name: "document.zoom_default";
+        hexpand: true;
+
+      }
+
+      Button zoom_in_button {
+        icon-name: "zoom-in-symbolic";
+        action-name: "document.zoom_in";
+
+      }
+    }
+
+    Button preview_menuitem {
+      Label {
+        label: _("Preview");
+        xalign: 0;
+      }
+      action-name: "document.preview";
+      styles ["flat"]
+    }
+
+    Gtk.Separator {
+      orientation: horizontal;
+      margin-top: 6;
+      margin-bottom: 6;
+    }
+
+    Button preferences_menuitem {
+      Label {
+        label: _("Preferences");
+        xalign: 0;
+      }
+      action-name: "app.preferences";
+      styles ["flat"]
+    }
+
+    Gtk.Separator {
+      orientation: horizontal;
+      margin-top: 6;
+      margin-bottom: 6;
+    }
+
+    Button format_shortcuts_menuitem {
+      Label {
+        label: _("Markup Shortcuts");
+        xalign: 0;
+      }
+      action-name: "app.format_shortcuts";
+      styles ["flat"]
+    }
+
+    Button shortcuts_menuitem {
+      Label {
+        label: _("Shortcuts");
+        xalign: 0;
+      }
+      action-name: "app.shortcuts";
+      styles ["flat"]
+    }
+
+    Button about_menuitem {
+      Label {
+        label: _("About");
+        xalign: 0;
+      }
+      action-name: "app.about";
+      styles ["flat"]
+    }
+
+    Gtk.Separator {
+      orientation: horizontal;
+      margin-top: 6;
+      margin-bottom: 6;
+    }
+
+    Button backup_menuitem {
+      Label {
+        label: _("Make Backup");
+        xalign: 0;
+      }
+      action-name: "document.backup";
+      styles ["flat"]
+    }
+
+    Gtk.Separator {
+      orientation: horizontal;
+      margin-top: 6;
+      margin-bottom: 6;
+    }
+
+    Button quit_menuitem {
+      Label {
+        label: _("Quit");
+        xalign: 0;
+      }
+      action-name: "app.quit";
+      styles ["flat"]
+    }
+  }
+}

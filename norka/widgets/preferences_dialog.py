@@ -152,14 +152,13 @@ class PreferencesDialog(Adw.Window):
         self.main_stack.add_titled(interface_grid, "interface", _("Interface"))
         self.main_stack.add_titled(export_grid, "export", _("Export"))
 
-        self.overlay.add_overlay(self.toast)
-
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
         self.medium_token.set_text(self.settings.get_string('medium-personal-token'))
         self.medium_token.connect("changed", self.on_medium_token)
 
-        self.medium_link = Gtk.LinkButton("https://medium.com/me/settings")
+        self.medium_link = Gtk.LinkButton()
+        self.medium_link.set_uri("https://medium.com/me/settings")
         self.medium_link.set_label(_("Create Integration token and copy it here"))
 
         medium_label = Gtk.Label(label="Medium.com", halign=Gtk.Align.START)
@@ -188,18 +187,18 @@ class PreferencesDialog(Adw.Window):
         self.writeas_login_revealer = Gtk.Revealer()
         self.writeas_login_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
         login_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
-        login_grid.attach(Gtk.Label(_("Login:"), halign=Gtk.Align.END), 0, 0, 1, 1)
+        login_grid.attach(Gtk.Label(label=_("Login:"), halign=Gtk.Align.END), 0, 0, 1, 1)
         login_grid.attach(self.writeas_login, 1, 0, 2, 1)
-        login_grid.attach(Gtk.Label(_("Password:"), halign=Gtk.Align.END), 0, 1, 1, 1)
+        login_grid.attach(Gtk.Label(label=_("Password:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         login_grid.attach(self.writeas_password, 1, 1, 2, 1)
         login_grid.attach(self.writeas_login_button, 0, 2, 3, 1)
-        self.writeas_login_revealer.add(login_grid)
+        self.writeas_login_revealer.set_child(login_grid)
 
         self.writeas_logout_revealer = Gtk.Revealer()
         self.writeas_logout_revealer.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE)
         logout_grid = Gtk.Grid(column_spacing=12, row_spacing=6)
         logout_grid.attach(self.writeas_logout_button, 0, 0, 3, 1)
-        self.writeas_logout_revealer.add(logout_grid)
+        self.writeas_logout_revealer.set_child(logout_grid)
 
         content_grid.attach(self.writeas_login_revealer, 0, 4, 3, 1)
         content_grid.attach(self.writeas_logout_revealer, 0, 4, 3, 1)

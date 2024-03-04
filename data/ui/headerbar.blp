@@ -1,150 +1,153 @@
 using Gtk 4.0;
 using Adw 1;
 
-Stack header_box {
-  transition-duration: 50;
-  transition-type: crossfade;
+template $Header : Box {
 
-  StackPage {
-    name: 'grid_header';
+  Stack header_box {
+    transition-duration: 50;
+    transition-type: crossfade;
 
-    child: Adw.HeaderBar grid_header {
+    StackPage {
+      name: 'grid_header';
 
-      styles ["flat"]
+      child: Adw.HeaderBar grid_header {
 
-      [title]
-      Box {
-        halign: center;
-        valign: center;
-        vexpand: false;
-        orientation: vertical;
+        styles ["flat"]
 
-        Label {
-          label: _('Norka');
+        [title]
+        Box {
+          halign: center;
+          valign: center;
+          vexpand: false;
+          orientation: vertical;
 
-          styles [
-            "title",
-          ]
-        }
+          Label {
+            label: _('Norka');
 
-        Label subtitle_path_label {
-          styles [
-            "subtitle",
-          ]
-        }
-      }
+            styles [
+              "title",
+            ]
+          }
 
-      Button add_button {
-        action-name: 'document.create';
-        icon-name: 'document-new-symbolic';
-      }
-
-      Button add_folder_button {
-        action-name: 'folder.create';
-        icon-name: 'folder-new-symbolic';
-      }
-
-      Button import_button {
-        action-name: 'document.import';
-        icon-name: 'folder-open-symbolic';
-      }
-
-      Spinner loader_spinner {}
-
-      [end]
-      MenuButton grid_menu_button {
-        icon-name: 'view-more-symbolic';
-        menu-model: appmenu;
-      }
-
-      [end]
-      Button search_button {
-        action-name: 'document.search_text';
-        icon-name: 'system-search-symbolic';
-      }
-    };
-  }
-
-  StackPage {
-    name: 'editor_header';
-
-    child: Adw.HeaderBar editor_header {
-      hexpand: true;
-
-      styles ["flat"]
-
-      [title]
-      Box {
-        halign: center;
-        valign: center;
-        vexpand: false;
-        orientation: vertical;
-
-        Label title_label {
-          label: _('Norka');
-
-          styles [
-            "title",
-          ]
-        }
-
-        Box subtitle_eventbox {
-          Label subtitle_label {
+          Label subtitle_path_label {
             styles [
               "subtitle",
             ]
           }
         }
-      }
 
-      Button back_button {
-        icon-name: 'go-previous-symbolic';
-        action-name: 'document.close';
-      }
-
-      Revealer save_btn_revealer {
-        transition-duration: 150;
-        transition-type: crossfade;
-
-        Button save_btn {
-          name: 'save_button';
-          valign: center;
-          icon-name: 'document-save';
-          label: _('Save');
-          action-name: 'document.save';
-
-          styles [
-            "suggested-action",
-            "flat",
-          ]
+        Button add_button {
+          action-name: 'document.create';
+          icon-name: 'document-new-symbolic';
         }
-      }
 
-      Spinner editor_spinner {}
+        Button add_folder_button {
+          action-name: 'folder.create';
+          icon-name: 'folder-new-symbolic';
+        }
 
-      [end]
-      MenuButton editor_menu_button {
-        icon-name: 'view-more-symbolic';
+        Button import_button {
+          action-name: 'document.import';
+          icon-name: 'folder-open-symbolic';
+        }
 
-      }
+        Spinner loader_spinner {}
 
-      [end]
-      MenuButton share_app_menu {
-        icon-name: 'emblem-shared-symbolic';
-      }
+        [end]
+        MenuButton grid_menu_button {
+          icon-name: 'view-more-symbolic';
+          menu-model: appmenu;
+        }
 
-      [end]
-      Button extended_stats_button {
-        action-name: 'document.show_extended_stats';
-        icon-name: 'emblem-important-symbolic';
-      }
+        [end]
+        Button search_button {
+          action-name: 'document.search_text';
+          icon-name: 'system-search-symbolic';
+        }
+      };
+    }
 
-      [end]
-      Button print_button {
-        action-name: 'document.print';
-        icon-name: 'document-print-symbolic';
-      }
-    };
+    StackPage {
+      name: 'editor_header';
+
+      child: Adw.HeaderBar editor_header {
+        hexpand: true;
+
+        styles ["flat"]
+
+        [title]
+        Box {
+          halign: center;
+          valign: center;
+          vexpand: false;
+          orientation: vertical;
+
+          Label title_label {
+            label: _('Norka');
+
+            styles [
+              "title",
+            ]
+          }
+
+          Box subtitle_eventbox {
+            Label subtitle_label {
+              styles [
+                "subtitle",
+              ]
+            }
+          }
+        }
+
+        Button back_button {
+          icon-name: 'go-previous-symbolic';
+          action-name: 'document.close';
+        }
+
+        Revealer save_btn_revealer {
+          transition-duration: 150;
+          transition-type: crossfade;
+
+          Button save_btn {
+            name: 'save_button';
+            valign: center;
+            icon-name: 'document-save';
+            label: _('Save');
+            action-name: 'document.save';
+
+            styles [
+              "suggested-action",
+              "flat",
+            ]
+          }
+        }
+
+        Spinner editor_spinner {}
+
+        [end]
+        MenuButton editor_menu_button {
+          icon-name: 'view-more-symbolic';
+          menu-model: editor_menu;
+        }
+
+        [end]
+        MenuButton share_app_menu {
+          icon-name: 'emblem-shared-symbolic';
+        }
+
+        [end]
+        Button extended_stats_button {
+          action-name: 'document.show_extended_stats';
+          icon-name: 'emblem-important-symbolic';
+        }
+
+        [end]
+        Button print_button {
+          action-name: 'document.print';
+          icon-name: 'document-print-symbolic';
+        }
+      };
+    }
   }
 }
 
@@ -158,6 +161,54 @@ menu appmenu {
     item {
       label: _('Show Archived');
       action: 'window.toggle_archived';
+    }
+  }
+
+  section {
+    item {
+      label: _('_Preferences');
+      action: 'app.preferences';
+    }
+  }
+
+  section {
+    item {
+      label: _('Markup Shortcuts');
+      action: 'app.format_shortcuts';
+    }
+
+    item {
+      label: _('Shortcuts');
+      action: 'app.shortcuts';
+    }
+
+    item {
+      label: _('About');
+      action: 'app.about';
+    }
+  }
+
+  section {
+    item {
+      label: _('Make _Backup');
+      action: 'document.backup';
+    }
+  }
+
+  section {
+    item {
+      label: _('_Quit');
+      action: 'app.quit';
+    }
+  }
+}
+
+
+menu editor_menu {
+  section {
+    item {
+      label: _('Preview');
+      action: 'document.preview';
     }
   }
 
