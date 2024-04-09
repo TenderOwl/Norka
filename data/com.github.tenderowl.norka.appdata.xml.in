@@ -25,6 +25,9 @@
     <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
     <translation type="gettext">com.github.tenderowl.norka</translation>
     <developer_name translate="no">Tender Owl</developer_name>
+    <developer id="io.github.tenderowl">
+        <name translate="no">Tender Owl</name>
+    </developer>
     <url type="homepage">https://norka.app/</url>
     <url type="bugtracker">https://github.com/tenderowl/norka/issues</url>
     <url type="vcs-browser">https://github.com/tenderowl/norka</url>
