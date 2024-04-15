@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-08 14:10+0300\n"
-"PO-Revision-Date: 2023-08-23 23:55+0000\n"
-"Last-Translator: Andrey M <meamka@ya.ru>\n"
+"PO-Revision-Date: 2024-04-16 09:01+0000\n"
+"Last-Translator: takua nuva <cozykopaka@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/frog/norka/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 "Generated-By: pygettext.py 1.5\n"
 
 #: ../norka/widgets/image_link_popover.py:41
@@ -26,7 +26,7 @@ msgstr "Адрес изображения"
 #: ../norka/widgets/image_link_popover.py:43
 #: ../norka/widgets/link_popover.py:43
 msgid "https://tenderowl.com"
-msgstr ""
+msgstr "https://tenderowl.com"
 
 #: ../norka/widgets/image_link_popover.py:46
 msgid "Choose"
@@ -103,11 +103,11 @@ msgstr "HTML"
 
 #: ../norka/widgets/export_dialog.py:33
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 #: ../norka/widgets/export_dialog.py:34 ../norka/widgets/menu_export.py:83
 msgid "Docx"
-msgstr ""
+msgstr "Docx"
 
 #: ../norka/widgets/extended_stats_dialog.py:64
 #: ../norka/widgets/preferences_dialog.py:165
@@ -605,7 +605,7 @@ msgstr "0м 0с"
 
 #: ../data/ui/stats.ui:89 ../data/ui/stats.ui:173 ../data/ui/stats.ui:191
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: ../data/ui/stats.ui:105
 msgid "READ TIME"
@@ -791,7 +791,7 @@ msgstr ""
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:70
 msgid "Bugfixes and UI impovements."
-msgstr ""
+msgstr "Исправления ошибок и улучшения интерфейса."
 
 #: ../data/com.github.tenderowl.norka.appdata.xml.in:75
 msgid "Backup, export to Docx and PDF and more."
