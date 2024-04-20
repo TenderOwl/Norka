@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2024 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ from norka.widgets.rename_popover import RenamePopover
 from norka.widgets.welcome import Welcome
 
 
-@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/main_window.ui")
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
@@ -57,10 +57,8 @@ class NorkaWindow(Adw.ApplicationWindow):
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
 
-        # self.set_default_icon(
-        #     Pixbuf.new_from_resource_at_scale(
-        #         f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg',
-        #         128, 128, True))
+        if Gtk.Application.get_default().props.profile == 'dev':
+            self.add_css_class('devel')
 
         self.set_icon_name('com.github.tenderowl.norka')
         self.settings = settings

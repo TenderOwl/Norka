@@ -24,6 +24,12 @@ dependency('libadwaita-1', version :'>=1.4')
 dependency('gtksourceview-5')
 dependency('webkitgtk-6.0', version: '>= 2.42.0')
 
+if get_option('profile') == 'release'
+  profile = 'release'
+else
+  profile = 'dev'
+endif
+
 prefix = get_option('prefix')
 bindir = get_option('bindir')
 datadir = get_option('datadir')
@@ -41,6 +47,7 @@ conf.set('VERSION', meson.project_version())
 conf.set('PYTHON', python.full_path())
 conf.set('PKGDATA_DIR', pkgdatadir)
 conf.set('appid', appid)
+conf.set('PROFILE', profile)
 
 subdir('bin')
 subdir('data')
