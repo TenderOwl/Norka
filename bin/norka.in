@@ -28,18 +28,18 @@
 # use or other dealings in this Software without prior written
 # authorization.
 
-import os
-import sys
-import signal
 import gettext
 import locale
-
+import os
+import signal
+import sys
 
 VERSION = '@VERSION@'
 pkgdatadir = '@PKGDATA_DIR@'
 localedir = '@LOCALE_DIR@'
 project_name = '@PROJECT_NAME@'
 appid = '@appid@'
+PROFILE = '@PROFILE@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -49,13 +49,12 @@ locale.bindtextdomain(project_name, localedir)
 gettext.textdomain(project_name)
 gettext.bindtextdomain(project_name, localedir)
 
-
 if __name__ == '__main__':
-    import gi
-
     from gi.repository import Gio
+
     resource = Gio.Resource.load(os.path.join(pkgdatadir, appid + '.gresource'))
-    Gio.Resource._register(resource)
+    resource._register()
 
     from norka import main
-    sys.exit(main.main(VERSION))
+
+    sys.exit(main.main(VERSION, PROFILE))

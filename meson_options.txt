@@ -1,0 +1,18 @@
+option(
+  'profile',
+  type: 'combo',
+  choices: [
+    'release',
+    'dev'
+  ],
+  value: 'release',
+)
+option(
+  'app_id_suffix',
+  type: 'combo',
+  choices: [
+    '',
+    '.Devel'
+  ],
+  value: '',
+)

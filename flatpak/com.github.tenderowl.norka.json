@@ -2,7 +2,7 @@
     "app-id" : "com.github.tenderowl.norka",
     "runtime" : "org.gnome.Platform",
     "sdk" : "org.gnome.Sdk",
-    "runtime-version" : "47",
+    "runtime-version" : "45",
     "command" : "norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
@@ -26,23 +26,17 @@
     ],
     "modules" : [
         {
-            "name" : "gtksourceview",
+            "name" : "libspelling",
             "buildsystem" : "meson",
+            "config-opts": [
+		"-Ddocs=false",
+		"-Dvapi=false"
+	    ],
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/gtksourceview.git",
-                    "tag" : "5.14.0"
-                }
-            ]
-        },
-        {
-            "name" : "gspell",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/otrocodigo/gspell.git",
-                    "tag" : "1.11.1"
+                    "url" : "https://gitlab.gnome.org/GNOME/libspelling",
+                    "tag" : "0.2.1"
                 }
             ]
         },
@@ -53,10 +47,14 @@
             "name" : "norka",
             "builddir" : true,
             "buildsystem" : "meson",
+            "config-opts": [
+		"-Dprofile=dev",
+		"-Dapp_id_suffix=.Devel"
+	      ],
             "sources" : [
                 {
-                    "type" : "git",
-                    "url" : "https://github.com/TenderOwl/Norka.git"
+                    "type" : "dir",
+                    "path" : ".."
                 }
             ]
         }

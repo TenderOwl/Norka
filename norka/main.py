@@ -26,7 +26,7 @@ import sys
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Gio, Gdk, GLib, Adw
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw, GObject
 
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -41,22 +41,25 @@ class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
     gtk_settings: Gtk.Settings
+    version: str = GObject.property(type=str, default='0.1.0')
+    profile: str = GObject.property(type=str, default='dev')
 
-    def __init__(self, version: str = None):
+    window: NorkaWindow | None = None
+
+    def __init__(self, version: str, profile: str):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
+
+        # Set application-wide properties
+        self.version = version
+        self.profile = profile
 
         self.add_main_option('new', ord("n"),
                              GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
                              _('Open new document on start.'))
 
-        self.version = version
-
         # Init GSettings
         self.settings = Settings.new()
-
-        # self.init_style()
-        self.window: NorkaWindow = None
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
@@ -232,9 +235,9 @@ class Application(Adw.Application):
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")
-        dialog = builder.get_object("shortcuts")
+        dialog: Gtk.ShortcutsWindow = builder.get_object("shortcuts")
         dialog.set_transient_for(self.window)
-        dialog.show()
+        dialog.present()
 
     def on_format_shortcuts(self, action, param):
         dialog = FormatShortcutsWindow()
@@ -242,10 +245,6 @@ class Application(Adw.Application):
         dialog.show()
 
 
-def main(version: str = None):
-    app = Application(version=version)
-    app.run(sys.argv)
-
-
-if __name__ == '__main__':
-    main()
+def main(version: str, profile: str) -> int:
+    app = Application(version=version, profile=profile)
+    return app.run(sys.argv)
