@@ -2,7 +2,7 @@
     "app-id" : "com.github.tenderowl.norka",
     "runtime" : "org.gnome.Platform",
     "sdk" : "org.gnome.Sdk",
-    "runtime-version" : "45",
+    "runtime-version" : "47",
     "command" : "norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
@@ -32,7 +32,7 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.gnome.org/GNOME/gtksourceview.git",
-                    "tag" : "5.11.1"
+                    "tag" : "5.14.0"
                 }
             ]
         },
