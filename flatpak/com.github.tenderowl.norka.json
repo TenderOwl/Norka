@@ -2,7 +2,7 @@
   "app-id": "com.github.tenderowl.norka",
   "runtime": "org.gnome.Platform",
   "sdk": "org.gnome.Sdk",
-  "runtime-version": "47",
+  "runtime-version": "48",
   "command": "norka",
   "finish-args": [
     "--filesystem=xdg-documents",
@@ -36,7 +36,7 @@
         {
           "type": "git",
           "url": "https://gitlab.gnome.org/GNOME/libspelling",
-          "tag": "0.4.1"
+          "tag": "0.4.8"
         }
       ]
     },

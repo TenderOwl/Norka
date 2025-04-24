@@ -935,8 +935,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def on_zoom_default(self, sender, event) -> None:
         self.settings.set_int('zoom', 100)
-        self.settings.set_string("font",
-                                 f'{FONT_SIZE_FAMILY} {FONT_SIZE_DEFAULT}')
+        self.settings.set_string("font", f'{FONT_SIZE_FAMILY} {FONT_SIZE_DEFAULT}')
 
     def toggle_spellcheck(self, state: bool) -> None:
         self.editor.set_spellcheck(state)
