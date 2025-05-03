@@ -24,11 +24,10 @@
 import asyncio
 import os
 import sys
-from copyreg import dispatch_table
 from gettext import gettext as _
-from typing import List
+from typing import List, Optional
 
-from gi.repository import Gtk, Gio, Gdk, GLib, GLib, Adw
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw
 from gi.events import GLibEventLoopPolicy
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
@@ -59,7 +58,7 @@ class Application(Adw.Application):
         self.settings = Settings.new()
 
         self.init_style()
-        self.window: NorkaWindow = None
+        self.window: Optional[NorkaWindow] = None
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
@@ -68,13 +67,12 @@ class Application(Adw.Application):
             storage_path = os.path.join(self.base_path, STORAGE_NAME)
             self.settings.set_string("storage-path", storage_path)
 
-
         self.storage = Storage(storage_path)
         try:
             self.storage.init()
         except Exception as e:
             print('ERROR: %s', e)
-            sys.exit(e)
+            sys.exit(str(e))
 
         quit_action = Gio.SimpleAction.new(name="quit", parameter_type=None)
         quit_action.connect("activate", self.on_quit)
@@ -110,7 +108,7 @@ class Application(Adw.Application):
         #     Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
 
     def do_startup(self):
-        Gtk.Application.do_startup(self)
+        Adw.Application.do_startup(self)
 
         # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
@@ -174,7 +172,7 @@ class Application(Adw.Application):
         return -1
 
     def on_settings_changed(self, settings, key):
-        Logger.debug(f'SETTINGS: %s changed', key)
+        Logger.debug('SETTINGS: %s changed', key)
         if key == "autosave":
             self.window.autosave = settings.get_boolean(key)
         if key == "spellcheck":

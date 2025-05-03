@@ -312,48 +312,48 @@ class DocumentGrid(Gtk.Box):
         self.selected_path = path
         self.emit('document-activated')
 
-    def on_button_pressed(self, widget: Gtk.Widget, event):
+    def on_button_pressed(self, n_press: int, x:float, y: float, user_data: object):
         """Handle mouse button press event and display context menu if needed.
         """
-        self.selected_path = self.view.get_path_at_pos(event.x, event.y)
+        self.selected_path = self.view.get_path_at_pos(x, y)
 
         if not self.selected_path:
             # self.selected_document = None
             self.view.unselect_all()
             return True
 
-        if event.button == Gdk.BUTTON_SECONDARY:
-            self.view.select_path(self.selected_path)
-
-            origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
-            if isinstance(origin_item, Folder) and origin_item.title == "..":
-                print('System @UP folder. Action declined.')
-                return
-
-            # self.selected_document = self.storage.get(self.model.get_value(
-            #     self.model.get_iter(self.selected_path), 3
-            # ))
-
-            found, rect = self.view.get_cell_rect(self.selected_path)
-
-            builder = Gtk.Builder()
-            builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
-
-            # Switch between folder's and document's menus
-            if self.is_folder_selected:
-                menu_popover: Gtk.PopoverMenu = builder.get_object('folder-popover-menu')
-            else:
-                menu_popover: Gtk.PopoverMenu = builder.get_object('document-popover-menu')
-                find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
-                find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
-
-            menu_popover.set_relative_to(self.view)
-            menu_popover.set_pointing_to(rect)
-            menu_popover.popup()
-
-            return True
-
-        self.view.unselect_all()
+        # if event.button == Gdk.BUTTON_SECONDARY:
+        #     self.view.select_path(self.selected_path)
+        #
+        #     origin_item = self.selected_folder if self.is_folder_selected else self.selected_document
+        #     if isinstance(origin_item, Folder) and origin_item.title == "..":
+        #         print('System @UP folder. Action declined.')
+        #         return
+        #
+        #     # self.selected_document = self.storage.get(self.model.get_value(
+        #     #     self.model.get_iter(self.selected_path), 3
+        #     # ))
+        #
+        #     found, rect = self.view.get_cell_rect(self.selected_path)
+        #
+        #     builder = Gtk.Builder()
+        #     builder.add_from_resource(f"{RESOURCE_PREFIX}/ui/documents_grid_context_menu.ui")
+        #
+        #     # Switch between folder's and document's menus
+        #     if self.is_folder_selected:
+        #         menu_popover: Gtk.PopoverMenu = builder.get_object('folder-popover-menu')
+        #     else:
+        #         menu_popover: Gtk.PopoverMenu = builder.get_object('document-popover-menu')
+        #         find_child(menu_popover, "archive").set_visible(not self.selected_document.archived)
+        #         find_child(menu_popover, "unarchive").set_visible(self.selected_document.archived)
+        #
+        #     menu_popover.set_relative_to(self.view)
+        #     menu_popover.set_pointing_to(rect)
+        #     menu_popover.popup()
+        #
+        #     return True
+        #
+        # self.view.unselect_all()
 
     # def on_drag_begin(self, drop: Gdk.Drop, user_data: object) -> None:
     #     self.last_selected_path = self.selected_path

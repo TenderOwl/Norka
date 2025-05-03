@@ -51,7 +51,7 @@ from norka.widgets.welcome import Welcome
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    content_box = Gtk.Template.Child()
+    screens: Adw.ViewStack = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
@@ -99,15 +99,9 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.connect('update-document-stats', self.update_document_stats)
         self.editor.connect('loading', self.editor_loading)
 
-        self.screens = Gtk.Stack()
-        self.screens.set_transition_duration(400)
-        self.screens.set_transition_type(
-            Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-
         self.screens.add_named(self.welcome_grid, 'welcome-grid')
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
-
 
         self.toast = Adw.ToastOverlay()
 
@@ -115,8 +109,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.overlay.set_child(self.screens)
         self.overlay.add_overlay(self.toast)
 
-        self.content_box.append(self.header)
-        self.content_box.append(self.overlay)
+        # self.content_box.append(self.header)
+        # self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()

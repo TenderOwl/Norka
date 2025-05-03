@@ -1,19 +1,19 @@
 /* @define-color suggested_bg_color #3584e4; */
 
-@binding-set editor-bindings {
-  bind "<ctl>i" { "insert-italic" () };
-  bind "<ctl>b" { "insert-bold" () };
-  bind "<ctl><shift>c" { "insert-code" () };
-  bind "<ctl><alt>c" { "insert-code-block" () };
-  bind "<ctl>1" { "insert-h1" () };
-  bind "<ctl>2" { "insert-h2" () };
-  bind "<ctl>3" { "insert-h3" () };
-  bind "<ctl>l" { "insert-list" () };
-  bind "<ctl><shift>l" { "insert-ordered-list" () };
-  bind "<ctl>t" { "insert-quote" () };
-  bind "<ctl>k" { "insert-link" () };
-  bind "<ctl><shift>k" { "insert-image" () };
-}
+/* @binding-set editor-bindings { */
+/*   bind "<ctl>i" { "insert-italic" () }; */
+/*   bind "<ctl>b" { "insert-bold" () }; */
+/*   bind "<ctl><shift>c" { "insert-code" () }; */
+/*   bind "<ctl><alt>c" { "insert-code-block" () }; */
+/*   bind "<ctl>1" { "insert-h1" () }; */
+/*   bind "<ctl>2" { "insert-h2" () }; */
+/*   bind "<ctl>3" { "insert-h3" () }; */
+/*   bind "<ctl>l" { "insert-list" () }; */
+/*   bind "<ctl><shift>l" { "insert-ordered-list" () }; */
+/*   bind "<ctl>t" { "insert-quote" () }; */
+/*   bind "<ctl>k" { "insert-link" () }; */
+/*   bind "<ctl><shift>k" { "insert-image" () }; */
+/* } */
 
 /*.norka-header {*/
 /*  padding-top: 3px;*/

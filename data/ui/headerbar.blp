@@ -1,103 +1,103 @@
 using Gtk 4.0;
 using Adw 1;
 
-Image document-new {
-  visible: true;
-  can-focus: false;
-  icon-name: "document-new";
-  icon-size: large;
-}
+// Image document-new {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "document-new";
+//   icon-size: large;
+// }
 
-Image document-open {
-  visible: true;
-  can-focus: false;
-  icon-name: "document-open-symbolic";
-  icon-size: large;
-}
+// Image document-open {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "document-open-symbolic";
+//   icon-size: large;
+// }
 
-Image document-save {
-  visible: true;
-  can-focus: false;
-  icon-name: "document-save-symbolic";
-  icon-size: large;
-}
+// Image document-save {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "document-save-symbolic";
+//   icon-size: large;
+// }
 
-Image extended-stats {
-  visible: true;
-  can-focus: false;
-  icon-name: "dialog-information";
-  icon-size: large;
-}
+// Image extended-stats {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "dialog-information";
+//   icon-size: large;
+// }
 
-Image extended-stats1 {
-  visible: true;
-  can-focus: false;
-  icon-name: "dialog-information";
-  icon-size: large;
-}
+// Image extended-stats1 {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "dialog-information";
+//   icon-size: large;
+// }
 
-Image folder-new {
-  visible: true;
-  can-focus: false;
-  icon-name: "folder-new";
-  icon-size: large;
-}
+// Image folder-new {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "folder-new";
+//   icon-size: large;
+// }
 
-Image image-search-text {
-  visible: true;
-  can-focus: false;
-  icon-name: "system-search-symbolic";
-  icon-size: large;
-}
+// Image image-search-text {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "system-search-symbolic";
+//   icon-size: large;
+// }
 
-Image image1 {
-  visible: true;
-  can-focus: false;
-  icon-name: "document-print";
-  icon-size: large;
-}
+// Image image1 {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "document-print";
+//   icon-size: large;
+// }
 
-Image image2 {
-  visible: true;
-  can-focus: false;
-  icon-name: "folder-new-symbolic";
-  icon-size: large;
-}
+// Image  {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "folder-new-symbolic";
+//   icon-size: large;
+// }
 
-Image user-trash {
-  visible: true;
-  can-focus: false;
-  icon-name: "user-trash-symbolic";
-  icon-size: large;
-}
+// Image user-trash {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "user-trash-symbolic";
+//   icon-size: large;
+// }
 
-Image image-back {
-  visible: true;
-  can-focus: false;
-  icon-name: "go-previous-symbolic";
-  icon-size: large;
-}
+// Image image-back {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "go-previous-symbolic";
+//   icon-size: large;
+// }
 
-Image image-grid-menu {
-  visible: true;
-  can-focus: false;
-  icon-name: "open-menu";
-  icon-size: large;
-}
+// Image image-grid-menu {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "open-menu";
+//   icon-size: large;
+// }
 
-Image image-editor-menu {
-  visible: true;
-  can-focus: false;
-  icon-name: "open-menu";
-  icon-size: large;
-}
+// Image image-editor-menu {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "open-menu";
+//   icon-size: large;
+// }
 
-Image image-share {
-  visible: true;
-  can-focus: false;
-  icon-name: "emblem-shared-symbolic";
-  icon-size: large;
-}
+// Image image-share {
+//   visible: true;
+//   can-focus: false;
+//   icon-name: "emblem-shared-symbolic";
+//   icon-size: large;
+// }
 
 Stack header_box {
   transition-duration: 50;
@@ -143,13 +143,13 @@ Stack header_box {
     [start]
     Button add_folder_button {
       action-name: "folder.create";
-      icon-name: "image2";
+      icon-name: "folder-new-symbolic";
     }
 
     [start]
     Button import_button {
       action-name: "document.import";
-      icon-name: "document-open";
+      icon-name: "document-open-symbolic";
     }
 
     [end]
@@ -166,7 +166,7 @@ Stack header_box {
     [end]
     Button search_button {
       action-name: "document.search_text";
-      icon-name: "image-search-text";
+      icon-name: "folder-saved-search-symbolic";
     }
 
     styles [
