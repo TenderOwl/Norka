@@ -1,0 +1,37 @@
+using Gtk 4.0;
+
+template $PreviewWindow: $HdyWindow {
+  can-focus: "False";
+  window-position: "center";
+
+  Overlay header_overlay {
+    visible: true;
+    can-focus: false;
+
+    $HdyDeck content_deck {
+      visible: "True";
+      can-focus: "False";
+      vexpand: "True";
+    }
+  }
+}
+
+Revealer header_revealer {
+  visible: true;
+  can-focus: false;
+  valign: start;
+  reveal-child: true;
+
+  $HdyHeaderBar header_bar {
+    name: "headerbar_revealer";
+    visible: "True";
+    can-focus: "False";
+    title: "Preview";
+    show-close-button: "True";
+
+    Spinner spinner {
+      visible: true;
+      can-focus: false;
+    }
+  }
+}

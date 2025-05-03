@@ -1,0 +1,405 @@
+using Gtk 4.0;
+
+Image document-new {
+  visible: true;
+  can-focus: false;
+  icon-name: "document-new";
+  icon-size: large;
+}
+
+Image document-open {
+  visible: true;
+  can-focus: false;
+  icon-name: "document-open-symbolic";
+  icon-size: large;
+}
+
+Image document-save {
+  visible: true;
+  can-focus: false;
+  icon-name: "document-save-symbolic";
+  icon-size: large;
+}
+
+Image extended-stats {
+  visible: true;
+  can-focus: false;
+  icon-name: "dialog-information";
+  icon-size: large;
+}
+
+Image extended-stats1 {
+  visible: true;
+  can-focus: false;
+  icon-name: "dialog-information";
+  icon-size: large;
+}
+
+Image folder-new {
+  visible: true;
+  can-focus: false;
+  icon-name: "folder-new";
+  icon-size: large;
+}
+
+Image image-search-text {
+  visible: true;
+  can-focus: false;
+  icon-name: "system-search-symbolic";
+  icon-size: large;
+}
+
+Image image1 {
+  visible: true;
+  can-focus: false;
+  icon-name: "document-print";
+  icon-size: large;
+}
+
+Image image2 {
+  visible: true;
+  can-focus: false;
+  icon-name: "folder-new-symbolic";
+  icon-size: large;
+}
+
+Image user-trash {
+  visible: true;
+  can-focus: false;
+  icon-name: "user-trash-symbolic";
+  icon-size: large;
+}
+
+Image image-back {
+  visible: true;
+  can-focus: false;
+  icon-name: "go-previous-symbolic";
+  icon-size: large;
+}
+
+Image image-grid-menu {
+  visible: true;
+  can-focus: false;
+  icon-name: "open-menu";
+  icon-size: large;
+}
+
+Image image-editor-menu {
+  visible: true;
+  can-focus: false;
+  icon-name: "open-menu";
+  icon-size: large;
+}
+
+Image image-share {
+  visible: true;
+  can-focus: false;
+  icon-name: "emblem-shared-symbolic";
+  icon-size: large;
+}
+
+Stack header_box {
+  visible: true;
+  can-focus: false;
+  transition-duration: 50;
+  transition-type: crossfade;
+
+  $HdyHeaderBar grid_header {
+    name: "grid_header";
+    width-request: "-1";
+    visible: "True";
+    can-focus: "False";
+    hexpand: "True";
+    title: _("Norka");
+    subtitle: _("continuous text editor");
+    show-close-button: "True";
+
+    [title]
+    Box {
+      visible: true;
+      can-focus: false;
+      halign: center;
+      valign: center;
+      vexpand: false;
+      orientation: vertical;
+
+      Label {
+        visible: true;
+        can-focus: false;
+        label: _("Norka");
+
+        styles [
+          "title",
+        ]
+      }
+
+      Label subtitle_path_label {
+        visible: true;
+        can-focus: false;
+
+        styles [
+          "subtitle",
+        ]
+      }
+    }
+
+    Button add_button {
+      visible: true;
+      can-focus: false;
+      focus-on-click: false;
+      receives-default: true;
+      action-name: "document.create";
+      icon-name: "document-new";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Button add_folder_button {
+      visible: true;
+      can-focus: false;
+      focus-on-click: false;
+      receives-default: true;
+      action-name: "folder.create";
+      icon-name: "image2";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Button import_button {
+      visible: true;
+      can-focus: false;
+      focus-on-click: false;
+      receives-default: true;
+      action-name: "document.import";
+      icon-name: "document-open";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    MenuButton grid_menu_button {
+      visible: true;
+      can-focus: false;
+      focus-on-click: false;
+      receives-default: true;
+      icon-name: "image-grid-menu";
+      menu-model: appmenu;
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Spinner loader_spinner {
+      visible: true;
+      can-focus: false;
+    }
+
+    Button search_button {
+      visible: true;
+      can-focus: false;
+      receives-default: true;
+      action-name: "document.search_text";
+      icon-name: "image-search-text";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    styles [
+      "norka-header",
+    ]
+  }
+
+  $HdyHeaderBar editor_header {
+    name: "editor_header";
+    width-request: "-1";
+    visible: "True";
+    can-focus: "False";
+    hexpand: "True";
+    show-close-button: "True";
+
+    [title]
+    Box {
+      visible: true;
+      can-focus: false;
+      halign: center;
+      valign: center;
+      vexpand: false;
+      orientation: vertical;
+
+      Label title_label {
+        visible: true;
+        can-focus: false;
+        label: _("Norka");
+
+        styles [
+          "title",
+        ]
+      }
+
+      $GtkEventBox subtitle_eventbox {
+        visible: "True";
+        can-focus: "False";
+        visible-window: "False";
+        above-child: "True";
+
+        Label subtitle_label {
+          visible: true;
+          can-focus: false;
+
+          styles [
+            "subtitle",
+          ]
+        }
+      }
+    }
+
+    Button back_button {
+      name: "back_button";
+      visible: true;
+      can-focus: false;
+      receives-default: true;
+      valign: center;
+      icon-name: "image-back";
+      action-name: "document.close";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Revealer save_btn_revealer {
+      visible: true;
+      transition-duration: 150;
+      transition-type: crossfade;
+
+      Button save_btn {
+        name: "save_button";
+        visible: true;
+        can-focus: false;
+        receives-default: true;
+        valign: center;
+        icon-name: "document-save";
+        label: _("Save");
+        action-name: "document.save";
+
+        styles [
+          "suggested-action",
+          "flat",
+        ]
+      }
+    }
+
+    Spinner editor_spinner {
+      visible: true;
+      can-focus: false;
+    }
+
+    MenuButton editor_menu_button {
+      visible: true;
+      can-focus: true;
+      focus-on-click: false;
+      receives-default: true;
+      icon-name: "image-editor-menu";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    MenuButton share_app_menu {
+      visible: true;
+      can-focus: true;
+      focus-on-click: false;
+      receives-default: true;
+      icon-name: "image-share";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Button extended_stats_button {
+      visible: true;
+      can-focus: false;
+      receives-default: true;
+      action-name: "document.show_extended_stats";
+      icon-name: "extended-stats";
+
+      styles [
+        "flat",
+      ]
+    }
+
+    Button print_button {
+      visible: true;
+      can-focus: true;
+      receives-default: true;
+      action-name: "document.print";
+      icon-name: "image1";
+
+      styles [
+        "flat",
+      ]
+    }
+  }
+}
+
+menu appmenu {
+  section {
+    item {
+      label: _("Find Note");
+      action: "document.search_text";
+    }
+
+    item {
+      label: _("Show Archived");
+      action: "window.toggle_archived";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+  }
+
+  section {
+    item {
+      label: _("Markup Shortcuts");
+      action: "app.format_shortcuts";
+    }
+
+    item {
+      label: _("Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("About");
+      action: "app.about";
+    }
+  }
+
+  section {
+    item {
+      label: _("Make _Backup");
+      action: "document.backup";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Quit");
+      action: "app.quit";
+    }
+  }
+}

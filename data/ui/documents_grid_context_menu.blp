@@ -1,0 +1,219 @@
+using Gtk 4.0;
+
+PopoverMenu document-popover-menu {
+  Box main {
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      action-name: "document.rename";
+      text: _("Rename");
+    }
+
+    Separator {}
+
+    $GtkModelButton {
+      text: _("Export...");
+      menu-name: "export";
+    }
+
+    Separator {
+      visible: true;
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      name: "archive";
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.archive";
+      text: _("Archive");
+    }
+
+    $GtkModelButton {
+      name: "unarchive";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.unarchive";
+      text: _("Unarchive");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.delete";
+      text: _("Delete");
+    }
+  }
+
+  Box export {
+    visible: true;
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "True";
+      text: _("Export...");
+      menu-name: "main";
+      inverted: "True";
+      centered: "True";
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.export";
+      text: _("Text");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.export-markdown";
+      text: _("Markdown");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.export-html";
+      text: _("HTML");
+    }
+
+    Separator {
+      visible: true;
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.export-medium";
+      text: _("Medium.com");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "False";
+      receives-default: "False";
+      action-name: "document.export-writeas";
+      text: _("Writeas");
+    }
+  }
+}
+
+PopoverMenu folder-popover-menu {
+  can-focus: false;
+  position: right;
+
+  Box main1 {
+    visible: true;
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.rename";
+      text: _("Rename");
+    }
+
+    Separator {
+      visible: true;
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.delete";
+      text: _("Delete");
+    }
+  }
+
+  Box export1 {
+    visible: true;
+    can-focus: false;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    orientation: vertical;
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "True";
+      text: _("Export...");
+      menu-name: "main";
+      inverted: "True";
+      centered: "True";
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.export";
+      text: _("Text");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.export-markdown";
+      text: _("Markdown");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.export-html";
+      text: _("HTML");
+    }
+
+    Separator {
+      visible: true;
+      can-focus: false;
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.export-medium";
+      text: _("Medium.com");
+    }
+
+    $GtkModelButton {
+      visible: "True";
+      can-focus: "True";
+      receives-default: "False";
+      action-name: "document.export-writeas";
+      text: _("Writeas");
+    }
+  }
+}

@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+template $NorkaWindow: $HdyApplicationWindow {
+  can-focus: "False";
+  window-position: "center";
+
+  $HdyDeck screens {
+    visible: "True";
+    can-focus: "False";
+
+    Box content_box {
+      visible: true;
+      can-focus: false;
+      hexpand: true;
+      vexpand: true;
+      orientation: vertical;
+    }
+  }
+}

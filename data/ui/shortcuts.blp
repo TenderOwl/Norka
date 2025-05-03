@@ -1,0 +1,142 @@
+using Gtk 4.0;
+
+ShortcutsWindow shortcuts {
+  modal: true;
+
+  ShortcutsSection section1 {
+    visible: true;
+    section-name: "shortcuts";
+    max-height: 12;
+
+    ShortcutsGroup s1lbl {
+      visible: true;
+      title: C_("shortcut window", "General");
+
+      ShortcutsShortcut s1-1 {
+        visible: true;
+        title: C_("shortcut window", "New");
+        accelerator: "<Primary>n";
+      }
+
+      ShortcutsShortcut s1-3 {
+        visible: true;
+        title: C_("shortcut window", "Import");
+        accelerator: "<Primary>o";
+      }
+
+      ShortcutsShortcut s1-4 {
+        visible: true;
+        title: C_("shortcut window", "Export");
+        accelerator: "<Shift><Primary>s";
+      }
+
+      ShortcutsShortcut s1-5 {
+        visible: true;
+        title: C_("shortcut window", "Close document");
+        accelerator: "<Primary>w";
+      }
+
+      ShortcutsShortcut s1-5b {
+        visible: true;
+        title: C_("shortcut window", "Quit application");
+        accelerator: "<Primary>q";
+      }
+    }
+
+    ShortcutsGroup search {
+      visible: true;
+      title: C_("shortcut window", "Find");
+
+      ShortcutsShortcut s1-10 {
+        visible: true;
+        title: C_("shortcut window", "Find");
+        accelerator: "<Primary>f";
+      }
+
+      ShortcutsShortcut s1-11 {
+        visible: true;
+        title: C_("shortcut window", "Find next");
+        accelerator: "<Primary>g";
+      }
+
+      ShortcutsShortcut s1-12 {
+        visible: true;
+        title: C_("shortcut window", "Find previous");
+        accelerator: "<Primary><Shift>g";
+      }
+    }
+
+    ShortcutsGroup preview {
+      visible: true;
+      title: C_("shortcut window", "Preview");
+
+      ShortcutsShortcut s2-1 {
+        visible: true;
+        title: C_("shortcut window", "Open Preview window");
+        accelerator: "<Primary><Shift>p";
+      }
+    }
+
+    ShortcutsGroup copy-paste {
+      visible: true;
+      title: C_("shortcut window", "Copy and paste");
+
+      ShortcutsShortcut s3-1 {
+        visible: true;
+        title: C_("shortcut window", "Copy selected text to clipboard");
+        accelerator: "<Primary>C";
+      }
+
+      ShortcutsShortcut s3-2 {
+        visible: true;
+        title: C_("shortcut window", "Cut selected text to clipboard");
+        accelerator: "<Primary>X";
+      }
+
+      ShortcutsShortcut s3-3 {
+        visible: true;
+        title: C_("shortcut window", "Paste selected text from clipboard");
+        accelerator: "<Primary>V";
+      }
+    }
+
+    ShortcutsGroup undo-redo {
+      visible: true;
+      title: C_("shortcut window", "Undo and redo");
+
+      ShortcutsShortcut s4-1 {
+        visible: true;
+        title: C_("shortcut window", "Undo previous command");
+        accelerator: "<Primary>Z";
+      }
+
+      ShortcutsShortcut s4-2 {
+        visible: true;
+        title: C_("shortcut window", "Redo previous command");
+        accelerator: "<Shift><Primary>Z";
+      }
+    }
+
+    ShortcutsGroup selection {
+      visible: true;
+      title: C_("shortcut window", "Selection");
+
+      ShortcutsShortcut s5-1 {
+        visible: true;
+        title: C_("shortcut window", "Select all text");
+        accelerator: "<Primary>A";
+      }
+    }
+
+    ShortcutsGroup preferences {
+      visible: true;
+      title: C_("shortcut window", "Preferences");
+
+      ShortcutsShortcut s6-1 {
+        visible: true;
+        title: C_("shortcut window", "Open Preferences");
+        accelerator: "<Primary>comma";
+      }
+    }
+  }
+}
