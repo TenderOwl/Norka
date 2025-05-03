@@ -39,7 +39,7 @@ VERSION = '@VERSION@'
 pkgdatadir = '@PKGDATA_DIR@'
 localedir = '@LOCALE_DIR@'
 project_name = '@PROJECT_NAME@'
-appid = '@appid@'
+appid = '@APP_ID@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
 signal.signal(signal.SIGINT, signal.SIG_DFL)

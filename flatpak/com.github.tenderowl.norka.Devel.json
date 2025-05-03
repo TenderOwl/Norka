@@ -2,7 +2,7 @@
     "app-id" : "com.github.tenderowl.norka",
     "runtime" : "org.gnome.Platform",
     "sdk" : "org.gnome.Sdk",
-    "runtime-version" : "44",
+    "runtime-version" : "48",
     "command" : "norka",
     "finish-args" : [
         "--filesystem=xdg-documents",
@@ -25,44 +25,6 @@
     ],
     "modules" : [
         {
-            "name": "granite",
-            "buildsystem": "meson",
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://github.com/elementary/granite.git",
-                    "tag": "6.2.0"
-                }
-            ]
-        },
-        {
-            "name": "libhandy",
-            "buildsystem": "meson",
-            "builddir": true,
-            "config-opts": [
-                "-Dexamples=false",
-                "-Dtests=false"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/libhandy.git",
-                    "tag" : "1.8.2"
-                }
-            ]
-        },
-        {
-            "name" : "gtksourceview",
-            "buildsystem" : "meson",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/gtksourceview.git",
-                    "tag" : "4.8.4"
-                }
-            ]
-        },
-        {
             "name" : "gspell",
             "sources" : [
                 {
@@ -72,9 +34,7 @@
                 }
             ]
         },
-        "python3-markdown2.json",
-        "python3-requests.json",
-        "python3-htmldocx.json",
+        "python3-modules.json",
         {
             "name" : "norka",
             "builddir" : true,
@@ -84,6 +44,9 @@
                     "type" : "git",
                     "url" : "https://github.com/TenderOwl/Norka.git"
                 }
+            ],
+            "config-opts": [
+                "-Dprofile=development"
             ]
         }
     ],
