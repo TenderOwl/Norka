@@ -21,13 +21,14 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import asyncio
 import os
 import sys
 from gettext import gettext as _
 from typing import List
 
-from gi.repository import Gtk, Gio, Gdk, Granite, GLib, Handy
-
+from gi.repository import Gtk, Gio, Gdk, GLib, GLib
+from gi.events import GLibEventLoopPolicy
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
 from norka.services.settings import Settings
@@ -227,6 +228,7 @@ class Application(Gtk.Application):
 
 
 def main(version: str = None):
+    asyncio.set_event_loop_policy(GLibEventLoopPolicy)
     app = Application(version=version)
     app.run(sys.argv)
 
