@@ -34,11 +34,11 @@ import signal
 import gettext
 import locale
 
-
 VERSION = '@VERSION@'
 pkgdatadir = '@PKGDATA_DIR@'
 localedir = '@LOCALE_DIR@'
 project_name = '@PROJECT_NAME@'
+profile = '@PROFILE@'
 appid = '@APP_ID@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
@@ -52,10 +52,9 @@ gettext.bindtextdomain(project_name, localedir)
 
 if __name__ == '__main__':
     import gi
-
     from gi.repository import Gio
     resource = Gio.Resource.load(os.path.join(pkgdatadir, appid + '.gresource'))
-    Gio.Resource._register(resource)
+    Gio.resources_register(resource)
 
     from norka import main
     sys.exit(main.main(VERSION))
