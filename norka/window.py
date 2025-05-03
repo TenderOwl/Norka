@@ -24,13 +24,11 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
-from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 
-from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
+from norka.define import APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
-from norka.services import distro
 from norka.services.backup import BackupService
 from norka.services.export import Exporter, PDFExporter, Printer
 from norka.services.logger import Logger
@@ -50,7 +48,7 @@ from norka.widgets.welcome import Welcome
 
 
 @Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
-class NorkaWindow(Handy.ApplicationWindow):
+class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
     content_box = Gtk.Template.Child()
@@ -58,26 +56,20 @@ class NorkaWindow(Handy.ApplicationWindow):
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
 
-        self.set_default_icon(
-            Pixbuf.new_from_resource_at_scale(
-                f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
-                128, True))
+        self.set_default_icon_name(APP_ID)
+            # Pixbuf.new_from_resource_at_scale(
+            #     f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
+            #     128, True))
         self.settings = settings
         self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.apply_styling()
-
         self.current_size = (786, 520)
-        self.resize(*self.settings.get_value('window-size'))
+        self.set_default_size(*self.settings.get_value('window-size'))
 
-        hints = Gdk.Geometry()
-        hints.min_width = 554
-        hints.min_height = 435
-        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        self.connect('configure-event', self.on_configure_event)
+        # self.connect('configure-event', self.on_configure_event)
         self.connect('destroy', self.on_window_delete_event)
 
         # Export clients
@@ -116,17 +108,15 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
 
-        self.screens.show_all()
 
-        self.toast = Granite.WidgetsToast(margin=0)
+        self.toast = Adw.ToastOverlay()
 
         self.overlay = Gtk.Overlay()
-        self.overlay.add_overlay(self.screens)
+        self.overlay.set_child(self.screens)
         self.overlay.add_overlay(self.toast)
-        self.overlay.show_all()
 
-        self.content_box.pack_start(self.header, False, False, 0)
-        self.content_box.pack_end(self.overlay, True, True, 0)
+        self.content_box.append(self.header)
+        self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()
@@ -150,14 +140,14 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         return self.screens.get_visible_child_name() == 'editor-grid'
 
-    def apply_styling(self):
-        """Apply elementary OS header styling only for elementary OS
-        """
-        if distro.id() == 'elementary':
-            Granite.widgets_utils_set_color_primary(
-                self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            self.get_style_context().add_class('elementary')
+    # def apply_styling(self):
+    #     """Apply elementary OS header styling only for elementary OS
+    #     """
+    #     if distro.id() == 'elementary':
+    #         Granite.widgets_utils_set_color_primary(
+    #             self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
+    #             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    #         self.add_class('elementary')
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
@@ -362,12 +352,12 @@ class NorkaWindow(Handy.ApplicationWindow):
         except Exception as e:
             Logger.error(e)
 
-    def on_configure_event(self, window, event: Gdk.EventConfigure):
-        if self._configure_timeout_id:
-            GLib.source_remove(self._configure_timeout_id)
-
-        self.current_size = window.get_size()
-        self.current_position = window.get_position()
+    # def on_configure_event(self, window, event: Gdk.EventConfigure):
+    #     if self._configure_timeout_id:
+    #         GLib.source_remove(self._configure_timeout_id)
+    #
+    #     self.current_size = window.get_size()
+    #     self.current_position = window.get_position()
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
@@ -1120,7 +1110,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.editor.connect('document-load', self.preview.show_preview)
             self.editor.connect('document-close', self.preview.show_empty_page)
             self.preview.connect('destroy', self.on_preview_close)
-            self.preview.show_all()
+
         else:
             self.preview.present()
 

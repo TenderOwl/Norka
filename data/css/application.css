@@ -1,4 +1,4 @@
-@define-color suggested_bg_color #3584e4;
+/* @define-color suggested_bg_color #3584e4; */
 
 @binding-set editor-bindings {
   bind "<ctl>i" { "insert-italic" () };
@@ -30,9 +30,9 @@
 /*  text-shadow: 0 1px 1px #111;*/
 /*}*/
 
-.norka-editor-view {
-  -gtk-key-bindings: editor-bindings;
-}
+/* .norka-editor-view { */
+/*   -gtk-key-bindings: editor-bindings; */
+/* } */
 
 .norka-editor {
   /*border: none;*/
@@ -40,21 +40,21 @@
   font-family: 'iA Writer Duospace', serif;
 }
 
-button.suggested-action {
-  background-color: @suggested_bg_color;
-  color: rgb(255, 255, 255);
-  border: none;
-}
+/* button.suggested-action { */
+/*   background-color: @suggested_bg_color; */
+/*   color: rgb(255, 255, 255); */
+/*   border: none; */
+/* } */
 
-button.suggested-action :hover {
-  background-color: lighter(@suggested_bg_color);
-  border: none;
-}
+/* button.suggested-action :hover { */
+/*   background-color: lighter(@suggested_bg_color); */
+/*   border: none; */
+/* } */
 
-button.suggested-action :active {
-  background-color: darker(@suggested_bg_color);
-  border: none;
-}
+/* button.suggested-action :active { */
+/*   background-color: darker(@suggested_bg_color); */
+/*   border: none; */
+/* } */
 
 /*.quick-dialog entry {
     border-radius: 4px;

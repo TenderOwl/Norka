@@ -24,7 +24,7 @@
 import os
 
 import markdown2
-from gi.repository import Gtk, WebKit2, GObject
+from gi.repository import Gtk, WebKit, GObject
 from htmldocx import HtmlToDocx
 
 from norka.models.document import Document
@@ -102,7 +102,7 @@ class PDFExporter(GObject.GObject):
     __gsignals__ = {
         'finished': (GObject.SignalFlags.ACTION, None, (str,)),
     }
-    web_view: WebKit2.WebView
+    web_view: WebKit.WebView
 
     def __init__(self, path: str, document: Document):
         GObject.GObject.__init__(self)
@@ -110,11 +110,11 @@ class PDFExporter(GObject.GObject):
         self.dir = os.path.dirname(path)
         self.basename = os.path.splitext(os.path.basename(path))[0]
         self.html = Exporter.render_html(document.content, document.title)
-        self.web_view = WebKit2.WebView()
+        self.web_view = WebKit.WebView()
 
-    def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
+    def on_load_changed(self, webview: WebKit.WebView, event: WebKit.LoadEvent):
         # When html is fully loaded then setup PrintOperation and print to PDF.
-        if event == WebKit2.LoadEvent.FINISHED:
+        if event == WebKit.LoadEvent.FINISHED:
             print_settings = Gtk.PrintSettings()
             print_settings.set(Gtk.PRINT_SETTINGS_OUTPUT_BASENAME, self.basename)
             print_settings.set(Gtk.PRINT_SETTINGS_OUTPUT_DIR, self.dir)
@@ -122,7 +122,7 @@ class PDFExporter(GObject.GObject):
             print_settings.set_quality(Gtk.PrintQuality.HIGH)
             print_settings.set_printer("Print to File")
 
-            operation: WebKit2.PrintOperation = WebKit2.PrintOperation.new(self.web_view)
+            operation: WebKit.PrintOperation = WebKit.PrintOperation.new(self.web_view)
             operation.set_print_settings(print_settings)
             operation.connect('finished', lambda op: self.emit('finished', self.path))
             operation.print_()
@@ -137,24 +137,24 @@ class Printer(GObject.GObject):
     __gsignals__ = {
         'finished': (GObject.SignalFlags.ACTION, None, ()),
     }
-    web_view: WebKit2.WebView
+    web_view: WebKit.WebView
     document: Document
 
     def __init__(self, document: Document):
         GObject.GObject.__init__(self)
         self.document = document
         self.html = Exporter.render_html(document.content, document.title)
-        self.web_view = WebKit2.WebView()
+        self.web_view = WebKit.WebView()
 
-    def on_load_changed(self, webview: WebKit2.WebView, event: WebKit2.LoadEvent):
+    def on_load_changed(self, webview: WebKit.WebView, event: WebKit.LoadEvent):
         # When html is fully loaded then setup PrintOperation and print to PDF.
-        if event == WebKit2.LoadEvent.FINISHED:
-            operation: WebKit2.PrintOperation = WebKit2.PrintOperation.new(self.web_view)
+        if event == WebKit.LoadEvent.FINISHED:
+            operation: WebKit.PrintOperation = WebKit.PrintOperation.new(self.web_view)
             operation.connect('finished', lambda op: self.emit('finished'))
             settings: Gtk.PrintSettings = Gtk.PrintSettings.new()
             settings.set(Gtk.PRINT_SETTINGS_OUTPUT_BASENAME, self.document.title)
             operation.set_print_settings(settings)
-            if operation.run_dialog() == WebKit2.PrintOperationResponse.CANCEL:
+            if operation.run_dialog() == WebKit.PrintOperationResponse.CANCEL:
                 self.emit('finished')
 
     def print(self):

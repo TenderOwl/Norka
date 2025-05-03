@@ -58,10 +58,9 @@ class ImageLinkPopover(Gtk.Popover):
         box.attach(self.link_entry, 0, 1, 1, 1)
         box.attach(select_button, 1, 1, 1, 1)
 
-        self.add(box)
+        self.set_child(box)
         self.link_entry.grab_focus_without_selecting()
 
-        self.show_all()
         select_button.grab_remove()
         self.link_entry.grab_focus_without_selecting()
 

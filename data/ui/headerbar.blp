@@ -1,4 +1,5 @@
 using Gtk 4.0;
+using Adw 1;
 
 Image document-new {
   visible: true;
@@ -99,23 +100,13 @@ Image image-share {
 }
 
 Stack header_box {
-  visible: true;
-  can-focus: false;
   transition-duration: 50;
   transition-type: crossfade;
 
-  $HdyHeaderBar grid_header {
+  Adw.HeaderBar grid_header {
     name: "grid_header";
-    width-request: "-1";
-    visible: "True";
-    can-focus: "False";
-    hexpand: "True";
-    title: _("Norka");
-    subtitle: _("continuous text editor");
-    show-close-button: "True";
 
-    [title]
-    Box {
+    title-widget: Box {
       visible: true;
       can-focus: false;
       halign: center;
@@ -141,75 +132,41 @@ Stack header_box {
           "subtitle",
         ]
       }
-    }
+    };
 
+    [start]
     Button add_button {
-      visible: true;
-      can-focus: false;
-      focus-on-click: false;
-      receives-default: true;
       action-name: "document.create";
       icon-name: "document-new";
-
-      styles [
-        "flat",
-      ]
     }
 
+    [start]
     Button add_folder_button {
-      visible: true;
-      can-focus: false;
-      focus-on-click: false;
-      receives-default: true;
       action-name: "folder.create";
       icon-name: "image2";
-
-      styles [
-        "flat",
-      ]
     }
 
+    [start]
     Button import_button {
-      visible: true;
-      can-focus: false;
-      focus-on-click: false;
-      receives-default: true;
       action-name: "document.import";
       icon-name: "document-open";
-
-      styles [
-        "flat",
-      ]
     }
 
+    [end]
     MenuButton grid_menu_button {
-      visible: true;
-      can-focus: false;
-      focus-on-click: false;
-      receives-default: true;
       icon-name: "image-grid-menu";
       menu-model: appmenu;
-
-      styles [
-        "flat",
-      ]
     }
 
-    Spinner loader_spinner {
+    Adw.Spinner loader_spinner {
       visible: true;
       can-focus: false;
     }
 
+    [end]
     Button search_button {
-      visible: true;
-      can-focus: false;
-      receives-default: true;
       action-name: "document.search_text";
       icon-name: "image-search-text";
-
-      styles [
-        "flat",
-      ]
     }
 
     styles [
@@ -217,26 +174,17 @@ Stack header_box {
     ]
   }
 
-  $HdyHeaderBar editor_header {
+  Adw.HeaderBar editor_header {
     name: "editor_header";
-    width-request: "-1";
-    visible: "True";
-    can-focus: "False";
-    hexpand: "True";
-    show-close-button: "True";
 
-    [title]
+    title-widget:
     Box {
-      visible: true;
-      can-focus: false;
       halign: center;
       valign: center;
       vexpand: false;
       orientation: vertical;
 
-      Label title_label {
-        visible: true;
-        can-focus: false;
+      Label title_label_1 {
         label: _("Norka");
 
         styles [
@@ -244,35 +192,28 @@ Stack header_box {
         ]
       }
 
-      $GtkEventBox subtitle_eventbox {
-        visible: "True";
-        can-focus: "False";
-        visible-window: "False";
-        above-child: "True";
+      // $GtkEventBox subtitle_eventbox {
+      //   visible: "True";
+      //   can-focus: "False";
+      //   visible-window: "False";
+      //   above-child: "True";
 
-        Label subtitle_label {
-          visible: true;
-          can-focus: false;
+      //   Label subtitle_label {
+      //     visible: true;
+      //     can-focus: false;
 
-          styles [
-            "subtitle",
-          ]
-        }
-      }
-    }
+      //     styles [
+      //       "subtitle",
+      //     ]
+      //   }
+      // }
+    };
 
     Button back_button {
       name: "back_button";
-      visible: true;
-      can-focus: false;
-      receives-default: true;
       valign: center;
       icon-name: "image-back";
       action-name: "document.close";
-
-      styles [
-        "flat",
-      ]
     }
 
     Revealer save_btn_revealer {
