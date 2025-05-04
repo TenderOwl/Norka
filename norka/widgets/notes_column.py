@@ -1,4 +1,4 @@
-# notes_sidebar.py
+# notes_column.py
 #
 # MIT License
 #
@@ -24,13 +24,11 @@
 from gi.repository import Adw, Gtk
 
 from norka.define import RESOURCE_PREFIX
-from norka.widgets.notes_column import NotesColumn
 
-@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/notes_sidebar.ui")
-class NotesSidebar(Adw.NavigationPage):
-    __gtype_name__ = 'NotesSidebar'
 
-    notes_column: NotesColumn = Gtk.Template.Child()
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/notes_column.ui")
+class NotesColumn(Gtk.Box):
+    __gtype_name__ = 'NotesColumn'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

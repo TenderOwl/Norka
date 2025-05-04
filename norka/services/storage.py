@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ from norka.models.folder import Folder
 from norka.services.logger import Logger
 
 
-class Storage(object):
+class Storage:
     """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
