@@ -12,15 +12,15 @@ template $NotesColumn : Gtk.Box {
     Adw.ViewStackPage {
       title: _("Tree");
       icon-name: "view-list-bullet-symbolic";
+      name: "tree_view";
 
-      child: Adw.StatusPage {
-        title: _("Tree");
-      };
+      child: $NotesTree notes_tree {};
     }
 
     Adw.ViewStackPage {
       title: _("Structure");
       icon-name: "accessories-dictionary-symbolic";
+      name: "structure_view";
 
       child: Adw.StatusPage {
         title: _("Structure");
@@ -28,7 +28,7 @@ template $NotesColumn : Gtk.Box {
     }
   }
 
-  Adw.InlineViewSwitcher {
+  Adw.InlineViewSwitcher view_switcher {
     stack: columns_stack;
     display-mode: both;
     homogeneous: true;

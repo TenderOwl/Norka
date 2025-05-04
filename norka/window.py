@@ -136,159 +136,153 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         """
         action_items = {
-            'window': [
+            "window": [
                 {
-                    'name': 'toggle_archived',
+                    "name": "toggle_archived",
                     # 'action': self.on_action_toggle,
-                    'accels': ('<Control>H',),
-                    'state': GLib.Variant.new_boolean(False),
-                    'change_state': self.on_toggle_archive
+                    "accels": ("<Control>H",),
+                    "state": GLib.Variant.new_boolean(False),
+                    "change_state": self.on_toggle_archive,
                 },
             ],
-            'folder': [
+            "folder": [
                 {
-                    'name': 'create',
-                    'action': self.on_folder_create,
-                    'accels': ('<Control><Shift>n',)
+                    "name": "create",
+                    "action": self.on_folder_create,
+                    "accels": ("<Control><Shift>n",),
                 },
             ],
-            'document': [
+            "document": [
                 {
-                    'name': 'create',
-                    'action': self.on_document_create_activated,
-                    'accels': ('<Control>n',)
+                    "name": "open",
+                    "action": self.on_document_open,
+                    "accels": (None,),
+                    "parameter_type": GLib.VariantType.new('s')
                 },
                 {
-                    'name': 'save',
-                    'action': self.on_document_save_activated,
-                    'accels': ('<Control>s',)
+                    "name": "create",
+                    "action": self.on_document_create_activated,
+                    "accels": ("<Control>n",),
                 },
                 {
-                    'name': 'close',
-                    'action': self.on_document_close_activated,
-                    'accels': ('<Control>w',)
+                    "name": "save",
+                    "action": self.on_document_save_activated,
+                    "accels": ("<Control>s",),
                 },
                 {
-                    'name': 'rename',
-                    'action': self.on_document_rename,
-                    'accels': ('F2',)
+                    "name": "close",
+                    "action": self.on_document_close_activated,
+                    "accels": ("<Control>w",),
                 },
                 {
-                    'name': 'archive',
-                    'action': self.on_document_archive_activated,
-                    'accels': (None,)
+                    "name": "rename",
+                    "action": self.on_document_rename,
+                    "accels": ("F2",),
                 },
                 {
-                    'name': 'unarchive',
-                    'action': self.on_document_unarchive_activated,
-                    'accels': (None,)
+                    "name": "archive",
+                    "action": self.on_document_archive_activated,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'delete',
-                    'action': self.on_document_delete_activated,
-                    'accels': ('<Shift>Delete',)
+                    "name": "unarchive",
+                    "action": self.on_document_unarchive_activated,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'import',
-                    'action': self.on_document_import_activated,
-                    'accels': ('<Control>o',)
+                    "name": "delete",
+                    "action": self.on_document_delete_activated,
+                    "accels": ("<Shift>Delete",),
                 },
                 {
-                    'name': 'export',
-                    'action': self.on_export_plaintext,
-                    'accels': (None,)
+                    "name": "import",
+                    "action": self.on_document_import_activated,
+                    "accels": ("<Control>o",),
                 },
                 {
-                    'name': 'export-markdown',
-                    'action': self.on_export_markdown,
-                    'accels': ('<Control><Shift>s',)
+                    "name": "export",
+                    "action": self.on_export_plaintext,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-html',
-                    'action': self.on_export_html,
-                    'accels': (None,)
+                    "name": "export-markdown",
+                    "action": self.on_export_markdown,
+                    "accels": ("<Control><Shift>s",),
                 },
                 {
-                    'name': 'export-pdf',
-                    'action': self.on_export_pdf,
-                    'accels': (None,)
+                    "name": "export-html",
+                    "action": self.on_export_html,
+                    "accels": (None,),
+                },
+                {"name": "export-pdf", "action": self.on_export_pdf, "accels": (None,)},
+                {
+                    "name": "export-docx",
+                    "action": self.on_export_docx,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-docx',
-                    'action': self.on_export_docx,
-                    'accels': (None,)
+                    "name": "export-medium",
+                    "action": self.on_export_medium,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-medium',
-                    'action': self.on_export_medium,
-                    'accels': (None,)
+                    "name": "export-writeas",
+                    "action": self.on_export_writeas,
+                    "accels": (None,),
                 },
+                {"name": "backup", "action": self.on_backup, "accels": (None,)},
                 {
-                    'name': 'export-writeas',
-                    'action': self.on_export_writeas,
-                    'accels': (None,)
+                    "name": "preview",
+                    "action": self.on_preview,
+                    "accels": ("<Control><Shift>p",),
                 },
-                {
-                    'name': 'backup',
-                    'action': self.on_backup,
-                    'accels': (None,)
-                },
-                {
-                    'name': 'preview',
-                    'action': self.on_preview,
-                    'accels': ('<Control><Shift>p',)
-                },
-                {
-                    'name': 'print',
-                    'action': self.on_print,
-                    'accels': ('<Control>p',)
-                },
+                {"name": "print", "action": self.on_print, "accels": ("<Control>p",)},
                 # {
                 #     'name': 'search',
                 #     'action': self.search_activated,
                 #     'accels': ('<Control>k',)
                 # },
                 {
-                    'name': 'zoom_in',
-                    'action': self.on_zoom_in,
-                    'accels': ('<Control>equal', '<Control>plus')
+                    "name": "zoom_in",
+                    "action": self.on_zoom_in,
+                    "accels": ("<Control>equal", "<Control>plus"),
                 },
                 {
-                    'name': 'zoom_out',
-                    'action': self.on_zoom_out,
-                    'accels': ('<Control>minus',)
+                    "name": "zoom_out",
+                    "action": self.on_zoom_out,
+                    "accels": ("<Control>minus",),
                 },
                 {
-                    'name': 'zoom_default',
-                    'action': self.on_zoom_default,
-                    'accels': ('<Control>0',)
+                    "name": "zoom_default",
+                    "action": self.on_zoom_default,
+                    "accels": ("<Control>0",),
                 },
                 {
-                    'name': 'search_text',
-                    'action': self.search_activated,
-                    'accels': ('<Control>f',)
+                    "name": "search_text",
+                    "action": self.search_activated,
+                    "accels": ("<Control>f",),
                 },
                 {
-                    'name': 'search_text_next',
-                    'action': self.on_text_search_forward,
-                    'accels': ('<Control>g',)
+                    "name": "search_text_next",
+                    "action": self.on_text_search_forward,
+                    "accels": ("<Control>g",),
                 },
                 {
-                    'name': 'search_text_prev',
-                    'action': self.on_text_search_backward,
-                    'accels': ('<Control><Shift>g',)
+                    "name": "search_text_prev",
+                    "action": self.on_text_search_backward,
+                    "accels": ("<Control><Shift>g",),
                 },
                 {
-                    'name': 'toggle_archived',
-                    'action': self.on_toggle_archive,
-                    'accels': (None,)
+                    "name": "toggle_archived",
+                    "action": self.on_toggle_archive,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'show_extended_stats',
-                    'action': self.on_show_extended_stats,
-                    'accels': (None,)
+                    "name": "show_extended_stats",
+                    "action": self.on_show_extended_stats,
+                    "accels": (None,),
                 },
-            ]
+            ],
         }
 
         for action_group_key, actions in action_items.items():
@@ -300,7 +294,7 @@ class NorkaWindow(Adw.ApplicationWindow):
                         item['name'], None, item['state']
                     )
                 else:
-                    action = Gio.SimpleAction(name=item['name'])
+                    action = Gio.SimpleAction.new(name=item['name'], parameter_type=item.get('parameter_type'))
 
                 if 'action' in item:
                     action.connect('activate', item['action'])
@@ -379,6 +373,19 @@ class NorkaWindow(Adw.ApplicationWindow):
 
             self.check_grid_items()
 
+    def on_document_open(self, _action, parameter):
+        """
+        Handle `document.open` action.
+
+        parameter: `Glib.VariantType('s')` - use `.get_string()` to get document Id.
+        """
+        doc_id = parameter.get_string()
+        if not doc_id:
+            return None
+
+        self.document_open(doc_id)
+        return None
+
     def on_document_item_activated(self, sender: Gtk.Widget) -> None:
         """Activate currently selected document in grid and open it in editor.
 
@@ -427,6 +434,9 @@ class NorkaWindow(Adw.ApplicationWindow):
         popover = RenamePopover(self.header.add_folder_button, '')
         popover.connect('activate', self.on_folder_rename_activated)
         popover.popup()
+
+    def document_open(self, doc_id: str):
+        print(f'TODO: Add new Editor Tab for Document:{doc_id}')
 
     def on_document_create_activated(self,
                                      sender: Gtk.Widget = None,

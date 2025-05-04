@@ -30,6 +30,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from gi.repository import GLib
+from gi.repository.GObject import GObject
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
@@ -37,13 +38,15 @@ from norka.models.folder import Folder
 from norka.services.logger import Logger
 
 
-class Storage:
+class Storage(GObject):
     """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
     """
+    __gtype_name__ = 'StorageService'
 
     def __init__(self, storage_path: str):
+        super().__init__()
         self.conn = None
         self.version = None
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)

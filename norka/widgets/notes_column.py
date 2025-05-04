@@ -21,14 +21,34 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from gi.repository import Adw, Gtk
-
+from gi.repository import Gtk, Adw
 from norka.define import RESOURCE_PREFIX
+from norka.widgets.notes_tree import  NotesTree
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/notes_column.ui")
 class NotesColumn(Gtk.Box):
     __gtype_name__ = 'NotesColumn'
 
+    notes_tree: NotesTree = Gtk.Template.Child()
+    view_switcher: Adw.InlineViewSwitcher = Gtk.Template.Child()
+    columns_stack: Adw.ViewStack = Gtk.Template.Child()
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        # Reload child widget content when widget is shown
+        self.columns_stack.connect('notify::visible-child-name', self._on_visible_view_changed)
+
+        self.notes_tree.load_tree()
+
+    def _on_visible_view_changed(self, sender, data):
+        visible_page = self.columns_stack.get_visible_child_name()
+        match visible_page:
+            case 'tree_view':
+                child: NotesTree = self.columns_stack.get_visible_child()
+                child.load_tree()
+            case 'structure_view':
+                # child: NotesTree = self.columns_stack.get_visible_child()
+                # child.load_tree()
+                print('structure_view')

@@ -27,13 +27,13 @@ import sys
 from gettext import gettext as _
 from typing import List, Optional
 
-from gi.repository import Gtk, Gio, Gdk, GLib, Adw
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw,GObject
 from gi.events import GLibEventLoopPolicy
+
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
 from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
-from norka.widgets.about_dialog import AboutDialog
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
@@ -43,6 +43,7 @@ class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
     gtk_settings: Gtk.Settings
+    storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
