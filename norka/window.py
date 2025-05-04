@@ -26,7 +26,7 @@ from gettext import gettext as _
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 
-from norka.define import APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
+from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX,)
 from norka.gobject_worker import GObjectWorker
 from norka.models.document import Document
 from norka.services.backup import BackupService
@@ -39,39 +39,32 @@ from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsWindow
-from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
-from norka.widgets.welcome_page import WelcomePage
+from norka.widgets.content_page import ContentPage
+from norka.widgets.notes_sidebar import NotesSidebar
 
 
-@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/main_window.ui")
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    screens: Adw.ViewStack = Gtk.Template.Child()
-    welcome_page: WelcomePage = Gtk.Template.Child()
+    sidebar: NotesSidebar = Gtk.Template.Child()
+    content_page: ContentPage = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
 
         self.set_default_icon_name(APP_ID)
-            # Pixbuf.new_from_resource_at_scale(
-            #     f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
-            #     128, True))
         self.settings = settings
         self.storage = storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.current_size = (786, 520)
         self.set_default_size(*self.settings.get_value('window-size'))
-
-        # self.connect('configure-event', self.on_configure_event)
-        # self.connect('destroy', self.on_window_delete_event)
         self.connect('close_request', self.on_window_delete_event)
 
         # Export clients
@@ -79,37 +72,30 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.writeas_client = Writeas()
         self.uri_to_open = None
 
-        # Make a header
-        self.header = Header(self.settings)
-        # self.set_titlebar(self.header)
-        self.header.show()
-
         # Init screens
-
-        # self.welcome_grid.connect('activated', self.on_welcome_activated)
-        self.welcome_page.connect('document-import', self.on_document_import)
-
-        self.document_grid = DocumentGrid(self.settings, storage=self.storage)
-        self.document_grid.connect('path-changed', self.on_path_changed)
-        self.document_grid.connect('document-create', self.on_document_create_activated)
-        self.document_grid.connect('document-import', self.on_document_import)
-        self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
-        self.document_grid.connect('document-activated', self.on_document_item_activated)
-
-        self.editor = Editor(self.storage, self.settings)
-        self.editor.connect('document-changed', self.on_document_changed)
-        self.editor.connect('update-document-stats', self.update_document_stats)
-        self.editor.connect('loading', self.editor_loading)
+        # self.welcome_page.connect('document-import', self.on_document_import)
+        #
+        # self.document_grid = DocumentGrid(self.settings, storage=self.storage)
+        # self.document_grid.connect('path-changed', self.on_path_changed)
+        # self.document_grid.connect('document-create', self.on_document_create_activated)
+        # self.document_grid.connect('document-import', self.on_document_import)
+        # self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
+        # self.document_grid.connect('document-activated', self.on_document_item_activated)
+        #
+        # self.editor = Editor(self.storage, self.settings)
+        # self.editor.connect('document-changed', self.on_document_changed)
+        # self.editor.connect('update-document-stats', self.update_document_stats)
+        # self.editor.connect('loading', self.editor_loading)
 
         # self.screens.add_named(self.welcome_page, 'welcome-page')
-        self.screens.add_named(self.document_grid, 'document-grid')
-        self.screens.add_named(self.editor, 'editor-grid')
+        # self.screens.add_named(self.document_grid, 'document-grid')
+        # self.screens.add_named(self.editor, 'editor-grid')
 
-        self.toast = Adw.ToastOverlay()
-
-        self.overlay = Gtk.Overlay()
-        self.overlay.set_child(self.screens)
-        self.overlay.add_overlay(self.toast)
+        # self.toast = Adw.ToastOverlay()
+        #
+        # self.overlay = Gtk.Overlay()
+        # self.overlay.set_child(self.screens)
+        # self.overlay.add_overlay(self.toast)
 
         # self.content_box.append(self.header)
         # self.content_box.append(self.overlay)
@@ -119,16 +105,16 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         # If here's at least one document in storage
         # then show documents grid
-        self.check_grid_items()
+        # self.check_grid_items()
 
         # Pull the Settings
-        self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
+        # self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
         self.autosave = self.settings.get_boolean('autosave')
-        self.set_autoindent(self.settings.get_boolean('autoindent'))
-        self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
-        self.set_indent_width(self.settings.get_int('indent-width'))
-        self.set_style_scheme(self.settings.get_string('stylescheme'))
-        self.editor.update_font(self.settings.get_string('font'))
+        # self.set_autoindent(self.settings.get_boolean('autoindent'))
+        # self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
+        # self.set_indent_width(self.settings.get_int('indent-width'))
+        # self.set_style_scheme(self.settings.get_string('stylescheme'))
+        # self.editor.update_font(self.settings.get_string('font'))
 
     @property
     def is_document_editing(self) -> bool:
@@ -368,7 +354,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         if state:
             self.screens.set_visible_child_name('welcome-page')
         else:
-            self.screens.set_visible_child_name('document-grid')
+            self.screens.set_visible_child_name('content-page')
 
     def on_document_close_activated(self,
                                     sender: Gtk.Widget,
@@ -379,7 +365,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         # Should work only in editor mode.
         if self.screens.get_visible_child_name() == 'editor-grid':
-            self.screens.set_visible_child_name('document-grid')
+            self.screens.set_visible_child_name('content-page')
             self.editor.unload_document(save=self.autosave)
             if self.extended_stats_dialog:
                 self.extended_stats_dialog.close()
@@ -934,7 +920,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.toast.send_notification()
 
     def search_activated(self, sender, event=None):
-        if self.screens.get_visible_child_name() == 'document-grid':
+        if self.screens.get_visible_child_name() == 'content-page':
             self.on_document_search_activated(sender, event)
         elif self.screens.get_visible_child_name() == 'editor-grid':
             self.on_text_search_activated(sender, event)

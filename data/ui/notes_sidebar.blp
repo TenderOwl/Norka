@@ -1,0 +1,97 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NotesSidebar: Adw.NavigationPage {
+  Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar header {
+      [start]
+      Button add_button {
+        action-name: "document.create";
+        icon-name: "document-new-symbolic";
+      }
+
+      [start]
+      Button add_folder_button {
+        action-name: "folder.create";
+        icon-name: "folder-new-symbolic";
+      }
+
+      [start]
+      Button import_button {
+        action-name: "document.import";
+        icon-name: "document-open-symbolic";
+      }
+
+      [end]
+      MenuButton grid_menu_button {
+        icon-name: "open-menu-symbolic";
+        menu-model: appmenu;
+      }
+
+      Adw.Spinner loader_spinner {
+        visible: false;
+      }
+
+      [end]
+      Button search_button {
+        action-name: "document.search_text";
+        icon-name: "folder-saved-search-symbolic";
+      }
+
+      // }
+    }
+  }
+}
+
+menu appmenu {
+  section {
+    item {
+      label: _("Find Note");
+      action: "document.search_text";
+    }
+
+    item {
+      label: _("Show Archived");
+      action: "window.toggle_archived";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+  }
+
+  section {
+    item {
+      label: _("Markup Shortcuts");
+      action: "app.format_shortcuts";
+    }
+
+    item {
+      label: _("Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("About");
+      action: "app.about";
+    }
+  }
+
+  section {
+    item {
+      label: _("Make _Backup");
+      action: "document.backup";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Quit");
+      action: "app.quit";
+    }
+  }
+}

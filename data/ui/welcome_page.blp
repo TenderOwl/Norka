@@ -2,34 +2,46 @@ using Gtk 4.0;
 using Adw 1;
 
 template $WelcomePage: Adw.Bin {
-  Adw.StatusPage {
-    title: _("No Documents Yet");
-    description: _("Create or import and start writing.");
-    icon-name: "com.github.tenderowl.norka";
+  Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+    }
 
-    Adw.Clamp {
-      maximum-size: 360;
+    Adw.StatusPage {
+      title: _("No Documents Yet");
+      description: _("Create or import and start writing.");
+      icon-name: "com.github.tenderowl.norka";
 
-      Box {
-        orientation: vertical;
-        spacing: 12;
+      Adw.Clamp {
+        maximum-size: 360;
 
-        Gtk.Button create_btn {
-          action-name: "document.create";
-          tooltip-text: _("Create an Empty Note");
-          Adw.ButtonContent {
-            icon-name: "document-new-symbolic";
-            label: _("Create a Note");
+        Box {
+          orientation: vertical;
+          spacing: 12;
+
+          Gtk.Button create_btn {
+            action-name: "document.create";
+            tooltip-text: _("Create an Empty Note");
+
+            Adw.ButtonContent {
+              icon-name: "document-new-symbolic";
+              label: _("Create a Note");
+            }
+
+            styles [
+              "suggested-action",
+            ]
           }
-          styles ["suggested-action"]
-        }
 
-        Button import_btn {
-          action-name: "document.import";
-          tooltip-text: _("Import Notes");
-          Adw.ButtonContent {
-            label: _("Import Notes");
-            icon-name: "folder-open-symbolic";
+          Button import_btn {
+            action-name: "document.import";
+            tooltip-text: _("Import Notes");
+
+            Adw.ButtonContent {
+              label: _("Import Notes");
+              icon-name: "folder-open-symbolic";
+            }
           }
         }
       }
