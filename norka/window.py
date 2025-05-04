@@ -71,7 +71,8 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.set_default_size(*self.settings.get_value('window-size'))
 
         # self.connect('configure-event', self.on_configure_event)
-        self.connect('destroy', self.on_window_delete_event)
+        # self.connect('destroy', self.on_window_delete_event)
+        self.connect('close_request', self.on_window_delete_event)
 
         # Export clients
         self.medium_client = Medium()
@@ -338,21 +339,11 @@ class NorkaWindow(Adw.ApplicationWindow):
                 print('Ask for action!')
 
             if not self.is_maximized():
-                self.settings.set_value("window-size",
-                                        GLib.Variant("ai", self.current_size))
-                self.settings.set_value(
-                    "window-position", GLib.Variant("ai",
-                                                    self.current_position))
+                size = self.get_default_size()
+                self.settings.set_value("window-size", GLib.Variant("ai", size))
 
         except Exception as e:
             Logger.error(e)
-
-    # def on_configure_event(self, window, event: Gdk.EventConfigure):
-    #     if self._configure_timeout_id:
-    #         GLib.source_remove(self._configure_timeout_id)
-    #
-    #     self.current_size = window.get_size()
-    #     self.current_position = window.get_position()
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
