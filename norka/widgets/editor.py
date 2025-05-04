@@ -421,13 +421,13 @@ class Editor(Gtk.Box):
             found, self.search_iter = self.search_for_iter_backward(self.search_iter)
 
         if found:
-            self.search_bar.search_entry.remove_class('error')
+            self.search_bar.search_entry.remove_css_class('error')
             self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
         else:
             self.search_iter = self.buffer.get_start_iter()
             found, end_iter = self.search_for_iter(self.search_iter)
             if found:
-                self.search_bar.search_entry.remove_class('error')
+                self.search_bar.search_entry.remove_css_class('error')
                 self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             else:
                 self.search_iter.set_offset(-1)

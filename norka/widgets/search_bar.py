@@ -82,6 +82,6 @@ class SearchBar(Gtk.FlowBox):
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST)
     def stop_search(self):
-        self.search_entry.remove_class('error')
+        self.search_entry.remove_css_class('error')
         self.search_entry.props.primary_icon_name = "edit-find-symbolic"
         self.search_entry.set_text('')
