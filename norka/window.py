@@ -44,7 +44,7 @@ from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
-from norka.widgets.welcome import Welcome
+from norka.widgets.welcome_page import WelcomePage
 
 
 @Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
@@ -52,6 +52,7 @@ class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
     screens: Adw.ViewStack = Gtk.Template.Child()
+    welcome_page: WelcomePage = Gtk.Template.Child()
 
     def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
         super().__init__(**kwargs)
@@ -83,9 +84,9 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.header.show()
 
         # Init screens
-        self.welcome_grid = Welcome()
+
         # self.welcome_grid.connect('activated', self.on_welcome_activated)
-        self.welcome_grid.connect('document-import', self.on_document_import)
+        self.welcome_page.connect('document-import', self.on_document_import)
 
         self.document_grid = DocumentGrid(self.settings, storage=self.storage)
         self.document_grid.connect('path-changed', self.on_path_changed)
@@ -99,7 +100,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.connect('update-document-stats', self.update_document_stats)
         self.editor.connect('loading', self.editor_loading)
 
-        self.screens.add_named(self.welcome_grid, 'welcome-grid')
+        # self.screens.add_named(self.welcome_page, 'welcome-page')
         self.screens.add_named(self.document_grid, 'document-grid')
         self.screens.add_named(self.editor, 'editor-grid')
 
@@ -374,7 +375,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def toggle_welcome(self, state=True):
         if state:
-            self.screens.set_visible_child_name('welcome-grid')
+            self.screens.set_visible_child_name('welcome-page')
         else:
             self.screens.set_visible_child_name('document-grid')
 

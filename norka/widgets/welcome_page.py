@@ -25,10 +25,12 @@ from gettext import gettext as _
 
 from gi.repository import Gtk, GObject, Adw
 
+from norka.define import RESOURCE_PREFIX
 
 
-class Welcome(Gtk.Box):
-    __gtype_name__ = 'NorkaWelcome'
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/welcome_page.ui")
+class WelcomePage(Adw.Bin):
+    __gtype_name__ = 'WelcomePage'
 
     __gsignals__ = {
         'document-import': (GObject.SIGNAL_RUN_FIRST, None, (str,)),
@@ -36,29 +38,6 @@ class Welcome(Gtk.Box):
 
     def __init__(self):
         super().__init__()
-
-        status_page = Adw.StatusPage(title=_('No documents yet'),
-                         description=_('Create or import and start writing'),
-                         icon_name='com.github.tenderowl.norka')
-
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        create_btn = Gtk.Button(label=_('New document'), action_name='document.create',
-                                tooltip_text=_('Create empty document'),)
-        create_btn.set_icon_name('document-new-symbolic')
-        create_btn.add_css_class('flat')
-        box.append(create_btn)
-
-        import_btn = Gtk.Button(label=_('Import document'), action_name='document.import',
-                                tooltip_text=_('Import document'),)
-        import_btn.set_icon_name('folder-open-symbolic')
-        import_btn.add_css_class('flat')
-        box.append(import_btn)
-
-        clamp = Adw.Clamp(maximum_size=360)
-        clamp.set_child(box)
-        status_page.set_child(clamp)
-
-        self.append(status_page)
 
         # Enable drag-drop
         # enforce_target = Gtk.TargetEntry.new('text/plain', Gtk.TargetFlags.OTHER_APP, TARGET_ENTRY_TEXT)
