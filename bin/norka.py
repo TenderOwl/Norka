@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# norka.in
+# norka.py
 #
 # Copyright 2020-2021 Andrey Maksimov
 #

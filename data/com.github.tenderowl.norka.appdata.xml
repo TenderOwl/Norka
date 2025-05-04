@@ -20,7 +20,7 @@
             <li>Don't like the default theme - choose differently.</li>
         </ul>
     </description>
-    <update_contact>andrey_AT_tenderowl.com</update_contact>
+    <update_contact>andrey@tenderowl.com</update_contact>
 
     <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
     <translation type="gettext">com.github.tenderowl.norka</translation>

@@ -203,8 +203,11 @@ class Application(Adw.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
-        about_dialog.present()
+        about_dialog = Adw.AboutDialog.new_from_appdata(
+            resource_path=f"{RESOURCE_PREFIX}/appdata/{APP_ID}.appdata.xml",
+            release_notes_version=self.version
+        )
+        about_dialog.present(self.window)
 
     def color_scheme_changed(self, _old, _new):
         dark_mode = self.settings.get_boolean('prefer-dark-theme')

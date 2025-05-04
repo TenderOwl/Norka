@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-	<gresource prefix="/com/github/tenderowl/norka/">
-		<file compressed="true">css/application.css</file>
-		<file preprocess="xml-stripblanks">ui/app_menu.xml</file>
-		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
-		<file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
-		<file preprocess="xml-stripblanks">ui/main_window.ui</file>
-		<file preprocess="xml-stripblanks">ui/welcome_page.ui</file>
-		<file preprocess="xml-stripblanks">ui/preview_window.ui</file>
-		<file preprocess="xml-stripblanks">ui/headerbar.ui</file>
-		<file preprocess="xml-stripblanks">ui/stats.ui</file>
-		<file preprocess="xml-stripblanks">ui/format_shortcuts_window.ui</file>
-		<file preprocess="xml-stripblanks">ui/preferences_window.ui</file>
-		<file>icons/com.github.tenderowl.norka.svg</file>
-		<file>icons/folder.svg</file>
-		<file>icons/folder-open.svg</file>
-		<file>icons/text.svg</file>
-		<file>icons/text-html.svg</file>
-		<file>icons/text-markdown.svg</file>
-		<file>icons/application-msword.svg</file>
-		<file>icons/application-pdf.svg</file>
-	</gresource>
+    <gresource prefix="/com/github/tenderowl/norka/">
+        <file compressed="true">css/application.css</file>
+        <file preprocess="xml-stripblanks">ui/app_menu.xml</file>
+        <file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
+        <file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
+        <file preprocess="xml-stripblanks">ui/main_window.ui</file>
+        <file preprocess="xml-stripblanks">ui/welcome_page.ui</file>
+        <file preprocess="xml-stripblanks">ui/preview_window.ui</file>
+        <file preprocess="xml-stripblanks">ui/headerbar.ui</file>
+        <file preprocess="xml-stripblanks">ui/stats.ui</file>
+        <file preprocess="xml-stripblanks">ui/format_shortcuts_window.ui</file>
+        <file preprocess="xml-stripblanks">ui/preferences_window.ui</file>
+        <file>icons/com.github.tenderowl.norka.svg</file>
+        <file>icons/folder.svg</file>
+        <file>icons/folder-open.svg</file>
+        <file>icons/text.svg</file>
+        <file>icons/text-html.svg</file>
+        <file>icons/text-markdown.svg</file>
+        <file>icons/application-msword.svg</file>
+        <file>icons/application-pdf.svg</file>
+    </gresource>
+    <gresource prefix="/com/github/tenderowl/norka/appdata/">
+        <file preprocess="xml-stripblanks">com.github.tenderowl.norka.appdata.xml</file>
+    </gresource>
 </gresources>

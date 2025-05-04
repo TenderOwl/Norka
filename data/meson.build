@@ -49,7 +49,7 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: appid + '.appdata.xml.in',
+  input: appid + '.appdata.xml',
   output: appid  + '.appdata.xml',
   po_dir: '../po',
   install: true,
@@ -83,7 +83,7 @@ color_schemes = ['norka-dark', 'norka-sepia', 'norka']
 foreach i : color_schemes
     install_data(
         join_paths('schemes', i + '.xml'),
-       install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
+       install_dir: join_paths(get_option('datadir'), 'sourceview-5', 'styles')
     )
 endforeach
 
