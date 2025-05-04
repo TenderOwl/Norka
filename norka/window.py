@@ -469,7 +469,7 @@ class NorkaWindow(Adw.ApplicationWindow):
             title=title, folder_path=self.document_grid.current_folder_path)
         self.screens.set_visible_child_name('editor-grid')
         self.header.toggle_document_mode()
-        self.header.update_title(title=self.editor.document.title)
+        # self.header.update_title(title=self.editor.document.title)
 
     def on_document_save_activated(self,
                                    sender: Gtk.Widget = None,
@@ -1134,10 +1134,11 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
-        if is_loading:
-            self.header.loader_spinner.start()
-        else:
-            self.header.loader_spinner.stop()
+        # if is_loading:
+        #     self.header.loader_spinner.start()
+        # else:
+        #     self.header.loader_spinner.stop()
+        self.header.show_spinner(is_loading)
 
     def on_print(self, sender, event=None):
         doc = self.document_grid.selected_document or self.editor.document

@@ -124,6 +124,7 @@ class DocumentGrid(Gtk.Box):
         main_box.append(scrolled)
 
         self.append(main_box)
+        self.reload_items(self, self.current_path)
 
     @property
     def current_folder_path(self):

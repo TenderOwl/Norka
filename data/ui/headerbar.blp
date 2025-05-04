@@ -103,7 +103,10 @@ Stack header_box {
   transition-duration: 50;
   transition-type: crossfade;
 
-  Adw.HeaderBar grid_header {
+  StackPage {
+    name: "grid_header";
+
+  child: Adw.HeaderBar grid_header {
     name: "grid_header";
 
     title-widget: Box {
@@ -114,7 +117,7 @@ Stack header_box {
       vexpand: false;
       orientation: vertical;
 
-      Label {
+      Label title_label {
         visible: true;
         can-focus: false;
         label: _("Norka");
@@ -172,9 +175,14 @@ Stack header_box {
     styles [
       "norka-header",
     ]
+  };
   }
 
-  Adw.HeaderBar editor_header {
+  StackPage {
+    name: "editor_header";
+
+
+  child: Adw.HeaderBar editor_header {
     name: "editor_header";
 
     title-widget:
@@ -290,6 +298,7 @@ Stack header_box {
         "flat",
       ]
     }
+  };
   }
 }
 

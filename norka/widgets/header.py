@@ -162,12 +162,12 @@ class Header(Gtk.Box):
 
     def show_spinner(self, state: bool = False) -> None:
         # Gonna fix this double spinners
-        if state:
-            self.loader_spinner.start()
-            self.editor_spinner.start()
-        else:
-            self.editor_spinner.stop()
-            self.loader_spinner.stop()
+        # if state:
+        #     self.loader_spinner.start()
+        #     self.editor_spinner.start()
+        # else:
+        #     self.editor_spinner.stop()
+        #     self.loader_spinner.stop()
         self.loader_spinner.set_visible(state)
         self.editor_spinner.set_visible(state)
 

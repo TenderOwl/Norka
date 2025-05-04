@@ -112,10 +112,10 @@ class Preview(Adw.Window):
         self.web.load_html(html)
 
     def show_spinner(self, state: bool = False) -> None:
-        if state:
-            self.spinner.start()
-        else:
-            self.spinner.stop()
+        # if state:
+        #     self.spinner.set_visible(state)
+        # else:
+        #     self.spinner.stop()
         self.spinner.set_visible(state)
 
     def show_preview(self, sender=None, event=None):

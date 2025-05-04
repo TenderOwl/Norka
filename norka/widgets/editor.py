@@ -198,12 +198,12 @@ class Editor(Gtk.Box):
 
         self.document = self.storage.get(doc_id)
 
-        self.buffer.begin_not_undoable_action()
+        # self.buffer.begin_not_undoable_action()
         self.buffer.set_text(self.document.content)
         self.buffer.set_modified(False)
         self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.view.set_editable(True)
 
         self.view.grab_focus()
@@ -235,7 +235,7 @@ class Editor(Gtk.Box):
         self.search_bar.stop_search()
 
     def load_file(self, path: str) -> bool:
-        self.buffer.begin_not_undoable_action()
+        # self.buffer.begin_not_undoable_action()
         try:
             txt = open(path).read()
         except Exception as e:
@@ -243,7 +243,7 @@ class Editor(Gtk.Box):
             return False
 
         self.buffer.set_text(txt)
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
@@ -402,7 +402,7 @@ class Editor(Gtk.Box):
 
         # Can't search anything in an inexistent buffer and/or without anything to search.
         if any([not self.buffer, not self.get_text(), not text]):
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             return False
 
         self.search_context.set_highlight(True)
@@ -422,18 +422,18 @@ class Editor(Gtk.Box):
 
         if found:
             self.search_bar.search_entry.remove_css_class('error')
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
         else:
             self.search_iter = self.buffer.get_start_iter()
             found, end_iter = self.search_for_iter(self.search_iter)
             if found:
                 self.search_bar.search_entry.remove_css_class('error')
-                self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+                # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             else:
                 self.search_iter.set_offset(-1)
                 self.buffer.select_range(self.search_iter, self.search_iter)
                 self.search_bar.search_entry.add_css_class('error')
-                self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+#                 self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
                 return False
 
         return True
