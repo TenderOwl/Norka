@@ -41,4 +41,4 @@ TARGET_ENTRY_REORDER = 2
 
 # DB Structure version
 STORAGE_NAME = 'storage.db'
-DB_VERSION = 2
+DB_VERSION = 3

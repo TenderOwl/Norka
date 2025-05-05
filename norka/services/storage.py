@@ -51,7 +51,7 @@ def adapt_datetime_epoch(val):
 
 sqlite3.register_adapter(datetime.date, adapt_date_iso)
 sqlite3.register_adapter(datetime, adapt_datetime_iso)
-sqlite3.register_adapter(datetime, adapt_datetime_epoch)
+# sqlite3.register_adapter(datetime, adapt_datetime_epoch)
 
 def convert_date(val):
     """Convert ISO 8601 date to datetime.date object."""
@@ -153,6 +153,9 @@ class Storage(GObject.GObject):
         if not version or version[0] < 2:
             self.v2_upgrade()
 
+        if not version or version[0] < 3:
+            self.v3_upgrade()
+
     def close(self):
         self.conn.close()
 
@@ -213,6 +216,80 @@ class Storage(GObject.GObject):
                 logger.info('Upgrading storage to version: {}', version)
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `path` TEXT default '/'""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
+                logger.info(f'Successfully upgraded to v{version}')
+                self.version = version
+                return True
+            except Exception:
+                logger.error(traceback.format_exc())
+                return False
+
+    def v3_upgrade(self) -> bool:
+        """Upgrades database to version 3.
+
+        Change fields:
+            - created: change from ISO-string to timestamp
+            - modified: change from ISO-string to timestamp
+
+        :return: True if upgrade was successful, otherwise False
+        """
+        version = 3
+        with self.conn:
+            try:
+                logger.info('Upgrading storage to version: {}', version)
+                self.conn.executescript("""
+                    BEGIN;
+
+                    -- UPDATE TABLE "documents" ------------------------------------
+                    CREATE TABLE "__vs_temp_table"(
+                        "id"        Integer PRIMARY KEY AUTOINCREMENT,
+                        "title"     Text NOT NULL,
+                        "content"   Text,
+                        "archived"  Integer NOT NULL DEFAULT 0,
+                        "created"   DateTime,
+                        "modified"  DateTime,
+                        "tags"      Text,
+                        "order"     Integer DEFAULT 0,
+                        "path"      Text DEFAULT '/',
+                        "encrypted" Boolean DEFAULT False );
+                    
+                    INSERT INTO __vs_temp_table("id", "title", "content", "archived", "created", "modified", "tags", "order", "path", "encrypted")
+                        SELECT "id", "title", "content", "archived", "created", "modified", "tags", "order", "path", "encrypted" FROM "documents";
+                    
+                    DROP TABLE IF EXISTS "documents";
+                    
+                    PRAGMA legacy_alter_table=1;
+                    ALTER TABLE __vs_temp_table RENAME TO "documents";
+                    PRAGMA legacy_alter_table=0;
+                    -- -------------------------------------------------------------
+                    
+                    COMMIT;
+                """)
+                self.conn.executescript("""
+                    BEGIN;
+                    
+                    -- UPDATE TABLE "folders" --------------------------------------
+                    CREATE TABLE "__vs_temp_table"(
+                        "id"       Integer PRIMARY KEY AUTOINCREMENT,
+                        "path"     Text NOT NULL DEFAULT '/',
+                        "title"    Text NOT NULL,
+                        "archived" Integer NOT NULL DEFAULT 0,
+                        "created"  DateTime,
+                        "modified" DateTime,
+                    CONSTRAINT "uniq_full_path" UNIQUE ( "path", "title" ) );
+                    
+                    INSERT INTO __vs_temp_table("id", "path", "title", "archived", "created", "modified")
+                        SELECT "id", "path", "title", "archived", "created", "modified" FROM "folders";
+                    
+                    DROP TABLE IF EXISTS "folders";
+                    
+                    PRAGMA legacy_alter_table=1;
+                    ALTER TABLE __vs_temp_table RENAME TO "folders";
+                    PRAGMA legacy_alter_table=0;
+                    -- -------------------------------------------------------------
+                    
+                    COMMIT;
+                """)
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
                 logger.info(f'Successfully upgraded to v{version}')
                 self.version = version
