@@ -1,0 +1,35 @@
+using Gtk 4.0;
+using GtkSource 5;
+using Adw 1;
+
+template $Editor : Adw.Bin {
+  name: "editor-container";
+
+  ScrolledWindow scrolled {
+    hexpand: true;
+    name: "scrolled";
+
+    Adw.ClampScrollable editor_clamp {
+      maximum-size: 860;
+
+      GtkSource.View view {
+        name: "sourceview";
+        buffer: GtkSource.Buffer buffer {};
+
+        wrap-mode: word;
+        smart-home-end: after;
+        insert-spaces-instead-of-tabs: true;
+        tab-width: 4;
+        pixels-above-lines: 2;
+        pixels-below-lines: 2;
+        pixels-inside-wrap: 4;
+
+        move-cursor => $on_view_move_cursor();
+
+        EventControllerKey {
+         key-released => $on_key_released();
+        }
+      }
+    }
+  }
+}

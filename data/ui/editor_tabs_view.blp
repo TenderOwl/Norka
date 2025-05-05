@@ -1,0 +1,25 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $EditorTabsView: Adw.Bin {
+  Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      name: "editor-tabs-view-header";
+      Button button_overview {
+        icon-name: "view-grid-symbolic";
+        valign: center;
+      }
+
+      title-widget: Adw.TabBar {
+        view: tab_view;
+        autohide: false;
+        valign: center;
+      };
+    }
+
+    Adw.TabView tab_view {
+    close-page => $_on_close_page();
+    }
+  }
+}

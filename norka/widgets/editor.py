@@ -28,18 +28,16 @@ from typing import Tuple
 
 from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib, Adw
 
-from norka.models.document import Document
-from norka.services.logger import Logger
-from norka.services.markup_formatter import MarkupFormatter
-from norka.services.settings import Settings
-from norka.services.stats_handler import StatsHandler
-from norka.services.storage import Storage
+from norka.define import RESOURCE_PREFIX
+from norka.models import Document
+from norka.services import Logger, MarkupFormatter, Settings, StatsHandler, Storage
 from norka.widgets.image_link_popover import ImageLinkPopover
 from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
 
 
-class Editor(Gtk.Box):
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/editor.ui")
+class Editor(Adw.Bin):
     __gtype_name__ = 'Editor'
 
     __gsignals__ = {
@@ -62,49 +60,53 @@ class Editor(Gtk.Box):
         'document-changed': (GObject.SignalFlags.ACTION, None, (bool,)),
     }
 
-    def __init__(self, storage: Storage, settings: Settings):
+    scrolled: Gtk.ScrolledWindow = Gtk.Template.Child()
+    view: GtkSource.View = Gtk.Template.Child()
+    buffer: GtkSource.Buffer = Gtk.Template.Child()
+
+    def __init__(self, storage: Storage=None, settings: Settings=None):
         super().__init__()
 
         self.document = None
         self.storage = Gtk.Application.get_default().props.storage
         self.settings = Gtk.Application.get_default().props.settings
 
-        self.buffer = GtkSource.Buffer()
-        self.buffer.connect('changed', self.on_buffer_changed)
-        self.manager = GtkSource.LanguageManager()
-        self.language = self.manager.get_language("markdown")
-        self.buffer.set_language(self.language)
-        self.buffer.create_tag('match', background="#66ff00")
+        # self.buffer = GtkSource.Buffer()
+        # self.buffer.connect('changed', self.on_buffer_changed)
+        # self.manager = GtkSource.LanguageManager()
+        # self.language = self.manager.get_language("markdown")
+        # self.buffer.set_language(self.language)
+        # self.buffer.create_tag('match', background="#66ff00")
+        #
+        # self.view = GtkSource.View()
+        # self.view.set_buffer(self.buffer)
+        # self.view.set_wrap_mode(Gtk.WrapMode.WORD)
+        # self.view.set_auto_indent(True)
+        # self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
+        # self.view.set_insert_spaces_instead_of_tabs(True)
+        # self.view.set_tab_width(4)
+        # self.view.props.width_request = 920
+        # self.view.set_halign(Gtk.Align.CENTER)
 
-        self.view = GtkSource.View()
-        self.view.set_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_auto_indent(True)
-        self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
-        self.view.set_insert_spaces_instead_of_tabs(True)
-        self.view.set_tab_width(4)
-        self.view.props.width_request = 920
-        self.view.set_halign(Gtk.Align.CENTER)
+        # self.view.set_pixels_above_lines(2)
+        # self.view.set_pixels_below_lines(2)
+        # self.view.set_pixels_inside_wrap(4)
+        # self.view.set_top_margin(32)
+        # self.view.set_left_margin(32)
+        # self.view.set_right_margin(32)
+        # self.view.set_bottom_margin(32)
+        # # self.view.set_monospace(True)
+        # self.view.add_css_class('norka-editor')
 
-        self.view.set_pixels_above_lines(2)
-        self.view.set_pixels_below_lines(2)
-        self.view.set_pixels_inside_wrap(4)
-        self.view.set_top_margin(32)
-        self.view.set_left_margin(32)
-        self.view.set_right_margin(32)
-        self.view.set_bottom_margin(32)
-        # self.view.set_monospace(True)
-        self.view.add_css_class('norka-editor')
-
-        event_controller = Gtk.EventControllerKey()
-        self.view.add_controller(event_controller)
-        event_controller.connect("key-released", self.on_key_released)
-        self.view.connect('move-cursor', self.on_view_move_cursor)
+        # event_controller = Gtk.EventControllerKey()
+        # self.view.add_controller(event_controller)
+        # event_controller.connect("key-released", self.on_key_released)
+        # self.view.connect('move-cursor', self.on_view_move_cursor)
 
         # Connect markup handler
         self.markup_formatter = MarkupFormatter(self.buffer)
 
-        self.add_css_class('norka-editor-view')
+        # self.add_css_class('norka-editor-view')
         self.connect('insert-bold', self.on_insert_bold)
         self.connect('insert-italic', self.on_insert_italic)
         self.connect('insert-code', self.on_insert_code)
@@ -118,9 +120,9 @@ class Editor(Gtk.Box):
         self.connect('insert-link', self.on_insert_link)
         self.connect('insert-image', self.on_insert_image)
 
-        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled.add_css_class('scrolled-editor')
-        self.scrolled.set_child(self.view)
+        # self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        # self.scrolled.add_css_class('scrolled-editor')
+        # self.scrolled.set_child(self.view)
 
         # SearchBar
         self.search_bar = SearchBar()
@@ -131,22 +133,22 @@ class Editor(Gtk.Box):
         self.search_bar.connect('find-prev', self.do_previous_match)
         self.search_bar.connect('stop-search', self.do_stop_search)
 
-        content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        content_grid.append(self.search_revealer)
-        content_grid.append(self.scrolled)
+        # content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        # content_grid.append(self.search_revealer)
+        # content_grid.append(self.scrolled)
 
-        self.overlay = Gtk.Overlay()
-        self.overlay.set_child(content_grid)
-        self.stats_overlay = Adw.ToastOverlay()
-        self.stats_overlay.set_child(self.overlay)
+        # self.overlay = Gtk.Overlay()
+        # self.overlay.set_child(content_grid)
+        # self.stats_overlay = Adw.ToastOverlay()
+        # self.stats_overlay.set_child(self.overlay)
 
         # Initialize stats calculations and connect `destroy` event
-        self.stats_handler = StatsHandler(buffer=self.buffer)
-        self.stats_overlay.connect('destroy', lambda x: self.stats_handler.on_destroy(self))
-        self.stats_handler.connect('update-document-stats', self.update_stats)
-        self.stats = self.stats_handler.stats
+        # self.stats_handler = StatsHandler(buffer=self.buffer)
+        # self.stats_overlay.connect('destroy', lambda x: self.stats_handler.on_destroy(self))
+        # self.stats_handler.connect('update-document-stats', self.update_stats)
+        # self.stats = self.stats_handler.stats
 
-        self.append(self.stats_overlay)
+        # self.append(self.stats_overlay)
 
         # SpellChecker
         self.font_desc = Pango.FontDescription()
@@ -303,24 +305,33 @@ class Editor(Gtk.Box):
 
         return None
 
+    @Gtk.Template.Callback()
     def on_key_released(self, _sender: Gtk.EventControllerKey, keyval: int, _keycode: int, state:Gdk.ModifierType, _user_data: object = None) -> None:
-        """Handle release event and iterate Markdown list markup
-
-        :param text_view: widget emitted the event
-        :param event: key release event
-        :return:
         """
-        buffer: Gtk.TextBuffer = self.view.get_buffer()
+        Handles the key release event on the text view to apply Markdown formatting.
+
+        If the Enter key is pressed without the Shift modifier, it checks the previous line
+        for Markdown list characters (e.g., numbered or bulleted lists). If a list character
+        is detected, it inserts the appropriate list character on the new line. If the previous
+        line contains an empty list item, it removes the list character instead.
+
+        :param _sender: The event controller key that triggered this callback.
+        :param keyval: The key value of the released key.
+        :param _keycode: The hardware keycode of the released key.
+        :param state: The state of the modifier keys at the time of the key release.
+        :param _user_data: Additional user data, if any.
+        :return: None
+        """
         if keyval == Gdk.KEY_Return and state != Gdk.ModifierType.SHIFT_MASK:
-            buffer.begin_user_action()
-            curr_iter = buffer.get_iter_at_mark(buffer.get_insert())
+            self.buffer.begin_user_action()
+            curr_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
             curr_line = curr_iter.get_line()
             if curr_line > 0:
                 # Get prev line text
                 prev_line = curr_line - 1
-                prev_iter = buffer.get_iter_at_line(prev_line)
-                prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
-                # Check if prev line starts from markdown list chars
+                prev_iter = self.buffer.get_iter_at_line(prev_line)
+                prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
+                # Check if prev line starts from Markdown list chars
                 match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
                 if match:
                     if match.group(3):
@@ -329,19 +340,19 @@ class Editor(Gtk.Box):
                             # ordered list should increment number
                             sign = str(int(sign[:-1]) + 1) + '.'
 
-                        buffer.insert_at_cursor(sign + ' ')
+                        self.buffer.insert_at_cursor(sign + ' ')
                     else:
-                        # If user don't wanna insert new list item then go back and delete prev empty li sign - `-`
-                        mark: Gtk.TextMark = buffer.get_insert()
-                        curr_iter: Gtk.TextIter = buffer.get_iter_at_mark(mark)
+                        # If user don't want to insert new list item then go back and delete prev empty li sign - `-`
+                        mark: Gtk.TextMark = self.buffer.get_insert()
+                        curr_iter: Gtk.TextIter = self.buffer.get_iter_at_mark(mark)
                         curr_iter.backward_line()
                         end_iter = curr_iter.copy()
                         end_iter.forward_to_line_end()
-                        buffer.delete(curr_iter, end_iter)
+                        self.buffer.delete(curr_iter, end_iter)
 
-                        buffer.place_cursor(curr_iter)
+                        self.buffer.place_cursor(curr_iter)
 
-            buffer.end_user_action()
+            self.buffer.end_user_action()
 
     def on_view_move_cursor(self, text_view, step, count, extend_selection):
         cursor_mark = self.buffer.get_insert()

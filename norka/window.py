@@ -51,6 +51,7 @@ from norka.widgets.notes_sidebar import NotesSidebar
 class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
+    split_view: Adw.NavigationSplitView = Gtk.Template.Child()
     sidebar: NotesSidebar = Gtk.Template.Child()
     content_page: ContentPage = Gtk.Template.Child()
 
@@ -438,6 +439,7 @@ class NorkaWindow(Adw.ApplicationWindow):
     def document_open(self, doc_id: str):
         print(f'TODO: Add new Editor Tab for Document:{doc_id}')
         self.content_page.document_open(doc_id)
+        self.split_view.set_show_content(True)
 
     def on_document_create_activated(self,
                                      sender: Gtk.Widget = None,

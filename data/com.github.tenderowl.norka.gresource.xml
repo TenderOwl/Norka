@@ -9,6 +9,7 @@
         <file preprocess="xml-stripblanks">ui/welcome_page.ui</file>
         <file preprocess="xml-stripblanks">ui/content_page.ui</file>
         <file preprocess="xml-stripblanks">ui/editor_tabs_view.ui</file>
+        <file preprocess="xml-stripblanks">ui/editor.ui</file>
         <file preprocess="xml-stripblanks">ui/notes_sidebar.ui</file>
         <file preprocess="xml-stripblanks">ui/notes_column.ui</file>
         <file preprocess="xml-stripblanks">ui/notes_tree.ui</file>
