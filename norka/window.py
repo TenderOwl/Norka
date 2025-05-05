@@ -312,15 +312,14 @@ class NorkaWindow(Adw.ApplicationWindow):
             self.insert_action_group(action_group_key, action_group)
 
     def on_window_delete_event(self, sender: Gtk.Widget = None) -> None:
-        """Save opened document before window is closed.
+        """
+        Handles the delete event of the window by saving the current window size
+        to the settings if the window is not maximized. Logs any exceptions that occur.
 
+        Args:
+            sender (Gtk.Widget, optional): The widget that triggered the event. Defaults to None.
         """
         try:
-            if self.autosave:
-                self.editor.save_document()
-            else:
-                logger.debug('Ask for action!')
-
             if not self.is_maximized():
                 size = self.get_default_size()
                 self.settings.set_value("window-size", GLib.Variant("ai", size))
