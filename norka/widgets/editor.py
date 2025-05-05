@@ -62,7 +62,7 @@ class Editor(Adw.Bin):
 
     scrolled: Gtk.ScrolledWindow = Gtk.Template.Child()
     view: GtkSource.View = Gtk.Template.Child()
-    buffer: GtkSource.Buffer = Gtk.Template.Child()
+    buffer: GtkSource.Buffer
 
     def __init__(self, storage: Storage=None, settings: Settings=None):
         super().__init__()
@@ -71,37 +71,25 @@ class Editor(Adw.Bin):
         self.storage = Gtk.Application.get_default().props.storage
         self.settings = Gtk.Application.get_default().props.settings
 
+        self.settings.connect("changed", self._on_settings_changed)
+
+        self.buffer = GtkSource.Buffer.new_with_language(
+            GtkSource.LanguageManager.get_default().get_language("markdown")
+        )
+        self.set_style_scheme(self.settings.get_string('stylescheme'))
+        self.view.set_buffer(self.buffer)
+
         # self.buffer = GtkSource.Buffer()
         # self.buffer.connect('changed', self.on_buffer_changed)
         # self.manager = GtkSource.LanguageManager()
         # self.language = self.manager.get_language("markdown")
         # self.buffer.set_language(self.language)
         # self.buffer.create_tag('match', background="#66ff00")
-        #
-        # self.view = GtkSource.View()
-        # self.view.set_buffer(self.buffer)
-        # self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        # self.view.set_auto_indent(True)
-        # self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
-        # self.view.set_insert_spaces_instead_of_tabs(True)
-        # self.view.set_tab_width(4)
-        # self.view.props.width_request = 920
-        # self.view.set_halign(Gtk.Align.CENTER)
 
-        # self.view.set_pixels_above_lines(2)
-        # self.view.set_pixels_below_lines(2)
-        # self.view.set_pixels_inside_wrap(4)
-        # self.view.set_top_margin(32)
-        # self.view.set_left_margin(32)
-        # self.view.set_right_margin(32)
-        # self.view.set_bottom_margin(32)
-        # # self.view.set_monospace(True)
-        # self.view.add_css_class('norka-editor')
-
-        # event_controller = Gtk.EventControllerKey()
-        # self.view.add_controller(event_controller)
-        # event_controller.connect("key-released", self.on_key_released)
-        # self.view.connect('move-cursor', self.on_view_move_cursor)
+        event_controller = Gtk.EventControllerKey()
+        self.view.add_controller(event_controller)
+        event_controller.connect("key-released", self.on_key_released)
+        self.view.connect('move-cursor', self.on_view_move_cursor)
 
         # Connect markup handler
         self.markup_formatter = MarkupFormatter(self.buffer)
@@ -166,6 +154,23 @@ class Editor(Adw.Bin):
         self.search_context = GtkSource.SearchContext(buffer=self.buffer,
                                                       settings=self.search_settings)
         self.search_iter = None
+
+    def _on_settings_changed(self, settings, key):
+        print(f"SETTINGS: {key} changed")
+        if key == "spellcheck":
+            self.toggle_spellcheck(settings.get_boolean(key))
+        if key == "spellcheck-language":
+            self.set_spellcheck_language(settings.get_string(key))
+        if key == "stylescheme":
+            self.set_style_scheme(settings.get_string(key))
+        if key == "autoindent":
+            self.set_autoindent(settings.get_boolean("autoindent"))
+        if key == "spaces-instead-of-tabs":
+            self.set_tabs_spaces(settings.get_boolean("spaces-instead-of-tabs"))
+        if key == "indent-width":
+            self.set_indent_width(settings.get_int("indent-width"))
+        if key == "font":
+            self.editor.update_font(settings.get_string("font"))
 
     def on_buffer_changed(self, buffer: Gtk.TextBuffer):
         self.buffer.set_modified(True)
@@ -385,7 +390,10 @@ class Editor(Adw.Bin):
         #     self.spellchecker.set_language(spell_language)
 
     def set_style_scheme(self, scheme_id: str) -> None:
-        scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(scheme_id)
+        manager: GtkSource.StyleSchemeManager = GtkSource.StyleSchemeManager.get_default()
+        scheme = manager.get_scheme(scheme_id)
+        print("TODO: Fix style scheme")
+        print(scheme)
         self.buffer.set_style_scheme(scheme)
 
         # try:

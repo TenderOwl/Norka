@@ -35,6 +35,7 @@ class PreferencesInterfacePage(Adw.PreferencesPage):
 
     theme_toggle: Adw.ToggleGroup = Gtk.Template.Child()
     styles_group: Adw.PreferencesGroup = Gtk.Template.Child()
+    style_chooser: GtkSource.StyleSchemeChooserWidget
 
     _settings: Settings
     _style_manager: Optional[Adw.StyleManager]
@@ -47,7 +48,10 @@ class PreferencesInterfacePage(Adw.PreferencesPage):
 
         self.theme_toggle.set_active_name(self._settings.get_string("theme-mode") or "system")
         self.theme_toggle.connect("notify::active-name", self._on_theme_toggled)
-        self.styles_group.add(GtkSource.StyleSchemeChooserWidget())
+
+        self.style_chooser = GtkSource.StyleSchemeChooserWidget()
+        self.style_chooser.connect("notify::style-scheme", self._on_scheme_changed)
+        self.styles_group.add(self.style_chooser)
 
     def _on_theme_toggled(self, _sender, _data):
         theme_mode = self.theme_toggle.get_active_name()
@@ -62,3 +66,5 @@ class PreferencesInterfacePage(Adw.PreferencesPage):
 
         self._settings.set_string("theme-mode", theme_mode)
 
+    def _on_scheme_changed(self, _sender, _data):
+        self._settings.set_string('stylescheme', self.style_chooser.get_style_scheme().get_id())

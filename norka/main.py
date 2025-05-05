@@ -131,7 +131,7 @@ class Application(Adw.Application):
 
         # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
-        self.settings.connect("changed", self.on_settings_changed)
+        # self.settings.connect("changed", self.on_settings_changed)
 
 
     def do_activate(self):
@@ -193,25 +193,22 @@ class Application(Adw.Application):
 
     def on_settings_changed(self, settings, key):
         Logger.debug('SETTINGS: %s changed', key)
-        if key == "autosave":
-            self.window.autosave = settings.get_boolean(key)
-        if key == "spellcheck":
-            self.window.toggle_spellcheck(settings.get_boolean(key))
-        if key == "spellcheck-language":
-            self.window.set_spellcheck_language(settings.get_string(key))
-        if key == 'stylescheme':
-            self.window.set_style_scheme(settings.get_string(key))
-        if key == 'autoindent':
-            self.window.set_autoindent(settings.get_boolean('autoindent'))
-        if key == 'spaces-instead-of-tabs':
-            self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
-        if key == 'indent-width':
-            self.window.set_indent_width(settings.get_int('indent-width'))
-        if key == 'font':
-            self.window.editor.update_font(settings.get_string('font'))
-        if key == 'prefer-dark-theme':
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = \
-                settings.get_boolean('prefer-dark-theme')
+        # if key == "autosave":
+        #     self.window.autosave = settings.get_boolean(key)
+        # if key == "spellcheck":
+        #     self.window.toggle_spellcheck(settings.get_boolean(key))
+        # if key == "spellcheck-language":
+        #     self.window.set_spellcheck_language(settings.get_string(key))
+        # if key == 'stylescheme':
+        #     self.window.set_style_scheme(settings.get_string(key))
+        # if key == 'autoindent':
+        #     self.window.set_autoindent(settings.get_boolean('autoindent'))
+        # if key == 'spaces-instead-of-tabs':
+        #     self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
+        # if key == 'indent-width':
+        #     self.window.set_indent_width(settings.get_int('indent-width'))
+        # if key == 'font':
+        #     self.window.editor.update_font(settings.get_string('font'))
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
         preferences_dialog = PreferencesDialog()
