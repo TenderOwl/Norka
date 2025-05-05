@@ -670,3 +670,13 @@ class Storage(GObject.GObject):
             folders.append(Folder.new_with_row(row))
 
         return folders
+
+    def get_child_folders(self, folder: Folder) -> List[Folder]:
+        """Returns all folders under given `folder`.
+        """
+        return self.get_folders(folder.absolute_path, desc=True)
+
+    def get_child_docs(self, folder: Folder) -> List[Document]:
+        """Returns all documents under given `folder`.
+        """
+        return self.all(folder.absolute_path)

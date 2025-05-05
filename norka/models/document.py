@@ -73,4 +73,4 @@ class Document(GObject.GObject):
         return os.path.join(self.folder, self.title)
 
     def __repr__(self) -> str:
-        return f"{self.folder}{self.title}({self.document_id})"
+        return f"{self.folder}/{self.title}({self.document_id})"

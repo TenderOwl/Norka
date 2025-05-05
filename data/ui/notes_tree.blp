@@ -13,6 +13,7 @@ template $NotesTree: Box {
 
       model: SingleSelection selection {
         autoselect: false;
+        selection-changed => $_on_selection_changed();
       };
 
       factory: SignalListItemFactory factory {

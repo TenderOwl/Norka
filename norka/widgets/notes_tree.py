@@ -24,6 +24,7 @@
 from typing import Optional
 
 from gi.repository import Gio, Pango, Gtk, GObject, Gdk, GLib
+from loguru import logger
 
 from norka.define import RESOURCE_PREFIX
 from norka.models import AppState, Folder, Document
@@ -38,21 +39,18 @@ class TreeNode(GObject.Object):
         self.is_folder = isinstance(item, Folder)
 
 
-class TreeWidget(Gtk.Box):
+class TreeWidget(Gtk.TreeExpander):
     def __init__(self):
-        super().__init__(
-            spacing=6, margin_start=6, margin_end=12, margin_top=6, margin_bottom=6
-        )
-
-        self.expander = Gtk.TreeExpander()
-
+        super().__init__()
+        self.box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.icon = Gtk.Image()
         self.label: Gtk.Label = Gtk.Label(
             ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START
         )
 
-        self.append(self.expander)
-        self.append(self.label)
+        self.box.append(self.icon)
+        self.box.append(self.label)
+        self.set_child(self.box)
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/notes_tree.ui")
@@ -101,52 +99,20 @@ class NotesTree(Gtk.Box):
         folder: Folder = node.item
         children = Gio.ListStore(item_type=TreeNode)
 
-        # Загрузка подпапок
-        for child_folder in self._storage.get_folders(folder.path):
+        # Load child folders
+        for child_folder in self._storage.get_child_folders(folder):
+            logger.debug('Loading child folder {}', child_folder)
             children.append(TreeNode(child_folder, node.depth + 1))
 
+        # Load child documents
+        for doc in self._storage.get_child_docs(folder):
+            logger.debug('Loading child document {}', doc)
+            children.append(TreeNode(doc, node.depth + 1))
+
+        if children.get_n_items() > 0:
+            return children
+
         return None
-
-    @GObject.Property(type=str)
-    def current_path(self) -> str:
-        """
-        The current path in the notes tree.
-
-        This property represents the current path in the notes tree, which can be
-        used to determine the location of folders or documents being viewed or
-        interacted with. The path is stored as a string.
-        """
-        return self._current_path
-
-    @current_path.setter
-    def current_path(self, value: str):
-        self._current_path = value
-
-    @GObject.Property(type=GObject.TYPE_PYOBJECT)
-    def selected_node(self) -> TreeNode:
-        """
-        The currently selected `TreeNode` in the notes tree.
-
-        This property represents the currently selected `TreeNode` in the notes
-        tree. The selected `TreeNode` can be retrieved using this property, and
-        can be set using the setter method. The setter method will update the
-        selection in the notes tree.
-        """
-        return self._selected_node
-
-    @selected_node.setter
-    def selected_node(self, value: TreeNode) -> None:
-        """
-        Set the currently selected `TreeNode` in the notes tree.
-
-        This method sets the currently selected `TreeNode` in the notes tree. The
-        setter method will update the selection in the notes tree.
-
-        Args:
-            value (`TreeNode`): The `TreeNode` to set as the currently selected
-                `TreeNode` in the notes tree.
-        """
-        self._selected_node = value
 
     def _select_node(self, appstate: AppState, doc_id: str):
         # self.load_tree()
@@ -155,6 +121,24 @@ class NotesTree(Gtk.Box):
             if not row.is_folder and str(row.item.document_id) == doc_id:
                 self.selection.select_item(i, unselect_rest=True)
                 break
+
+    @Gtk.Template.Callback()
+    def _on_selection_changed(self, select: Gtk.SelectionModel, position: int, _n_times: int):
+        if row := select.get_selected_item():
+            self._selected_node = row.get_item()
+            if not self._selected_node.is_folder:
+                self.activate_action(
+                    "document.open",
+                    GLib.Variant.new_string(str(self._selected_node.item.document_id)),
+                )
+            else:
+                self.emit("item-activate", self._selected_node)
+                # self.load_tree(path=self._selected_node.item.absolute_path)
+                self._appstate.current_path = str(self._selected_node.item.path)
+        else:
+            self._selected_node = None
+
+        self._appstate.current_document_id = None
 
     def load_tree(self, path:str = None):
         if path:
@@ -172,45 +156,39 @@ class NotesTree(Gtk.Box):
         for doc in root_docs:
             self.root_store.append(TreeNode(doc))
 
-    # @Gtk.Template.Callback()
-    def _on_list_view_activate(self, sender, _):
-        position = self.selection.get_selected()
-        row: Gtk.TreeListRow = self.tree_model.get_item(position)
-        if row:
-            item: TreeNode = row.get_item()
-            self.emit("item-activate", item)
-
     @Gtk.Template.Callback()
     def _on_item_setup(self, _, list_item: Gtk.ListItem):
-        expander = Gtk.TreeExpander()
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        icon = Gtk.Image()
-        label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START)
-        box.append(icon)
-        box.append(label)
-        expander.set_child(box)
-        controller = Gtk.GestureClick()
-        controller.connect_data('released', self._activate, list_item)
-        expander.add_controller(controller)
-        list_item.set_child(expander)
+        # expander = Gtk.TreeExpander()
+        # box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        # icon = Gtk.Image()
+        # label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START)
+        # box.append(expander)
+        # box.append(icon)
+        # box.append(label)
+        # expander.set_child(box)
+        # controller = Gtk.GestureClick()
+        # controller.connect_data('released', self._activate, list_item)
+        # expander.add_controller(controller)
+        widget: TreeWidget = TreeWidget()
+        list_item.set_child(widget)
 
     @Gtk.Template.Callback()
     def _on_item_bind(self, _: Gtk.ListView, list_item: Gtk.ListItem):
         node = list_item.get_item().get_item()
-        expander = list_item.get_child()
-        box = expander.get_child()
-        icon, label = box.get_first_child(), box.get_last_child()
+        widget: TreeWidget = list_item.get_child()
+        # expander = box.expander
+        # icon, label = box.get_first_child(), box.get_last_child()
 
         # Настройка отступа
-        # expander.set_margin_start(node.depth * 24)
+        widget.set_margin_start(node.depth * 24)
 
         if node.is_folder:
-            expander.set_list_row(list_item.get_item())
-            icon.set_from_icon_name("folder-symbolic")
-            label.set_label(node.item.title)
+            widget.set_list_row(list_item.get_item())
+            widget.icon.set_from_icon_name("folder-symbolic")
+            widget.label.set_label(node.item.title)
         else:
-            icon.set_from_icon_name("x-office-document-symbolic")
-            label.set_label(node.item.title)
+            widget.icon.set_from_icon_name("x-office-document-symbolic")
+            widget.label.set_label(node.item.title)
 
     def _activate(self, click: Gtk.GestureClick, _n_press: int, _x: float, _y: float, list_item) -> None:
         button = click.get_current_button()
