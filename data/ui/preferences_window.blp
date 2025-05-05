@@ -1,42 +1,10 @@
 using Gtk 4.0;
+using Adw 1;
 
-template $PreferencesDialog: $HdyWindow {
-  Box {
-    visible: true;
-    orientation: vertical;
+template $PreferencesDialog: Adw.PreferencesDialog {
+  search-enabled: true;
 
-    $HdyHeaderBar {
-      visible: "True";
-      show-close-button: "True";
-      centering-policy: "strict";
-
-      [title]
-      $HdyViewSwitcherTitle view_switcher_title {
-        stack: "main_stack";
-      }
-    }
-
-    Overlay overlay {
-      visible: true;
-
-      Box main_box {
-        visible: true;
-        orientation: vertical;
-
-        Stack main_stack {
-          visible: true;
-          hexpand: true;
-          margin-start: 16;
-          margin-end: 16;
-          margin-bottom: 18;
-          margin-top: 8;
-        }
-
-        $HdyViewSwitcherBar {
-          stack: "main_stack";
-          reveal: bind view_switcher_title.title-visible;
-        }
-      }
-    }
-  }
+  $PreferencesGeneralPage general_page {}
+  $PreferencesInterfacePage interface_page {}
+  $PreferencesExportPage export_page {}
 }

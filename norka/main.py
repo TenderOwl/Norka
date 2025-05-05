@@ -204,8 +204,8 @@ class Application(Adw.Application):
                 settings.get_boolean('prefer-dark-theme')
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
-        preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
-        preferences_dialog.present()
+        preferences_dialog = PreferencesDialog()
+        preferences_dialog.present(self.window)
 
     def on_quit(self, action, param):
         self.props.active_window.on_window_delete_event()
