@@ -75,7 +75,9 @@ class EditorTabsView(Adw.Bin):
         self.pages[doc_id] = page
 
     def close_active_page(self):
-        NotImplementedError()
+        logger.debug('Closing active page')
+        if page := self.tab_view.get_selected_page():
+            self.tab_view.close_page(page)
 
     @Gtk.Template.Callback()
     def _on_close_page(self, tab_view: Adw.TabView, page: Adw.TabPage):

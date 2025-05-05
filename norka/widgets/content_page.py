@@ -65,3 +65,6 @@ class ContentPage(Adw.NavigationPage):
 
     def document_open(self, doc_id: str):
         self.editor_tabs_view.add_tab(doc_id)
+
+    def document_close_selected(self):
+        self.editor_tabs_view.close_active_page()

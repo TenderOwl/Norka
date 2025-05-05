@@ -353,28 +353,9 @@ class NorkaWindow(Adw.ApplicationWindow):
         else:
             self.screens.set_visible_child_name('content-page')
 
-    def on_document_close_activated(self,
-                                    sender: Gtk.Widget,
-                                    event=None) -> None:
-        """Save and close opened document.
-
-        """
-
-        # Should work only in editor mode.
-        if self.screens.get_visible_child_name() == 'editor-grid':
-            self.screens.set_visible_child_name('content-page')
-            self.editor.unload_document(save=self.autosave)
-            if self.extended_stats_dialog:
-                self.extended_stats_dialog.close()
-                self.extended_stats_dialog = None
-
-            self.document_grid.reload_items(
-                path=self.document_grid.current_folder_path)
-            self.header.toggle_document_mode()
-            self.header.update_title()
-            self.settings.set_int('last-document-id', -1)
-
-            self.check_grid_items()
+    def on_document_close_activated(self, _sender, _event=None) -> None:
+        """Close currently selected document in content page."""
+        self.content_page.document_close_selected()
 
     def on_document_open(self, _action, parameter):
         """
