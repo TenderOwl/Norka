@@ -67,7 +67,7 @@ def convert_timestamp(val):
 
 sqlite3.register_converter("date", convert_date)
 sqlite3.register_converter("datetime", convert_datetime)
-sqlite3.register_converter("timestamp", convert_timestamp)
+sqlite3.register_converter("timestamp", convert_datetime)
 
 
 class Storage(GObject.GObject):
