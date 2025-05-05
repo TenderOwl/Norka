@@ -241,7 +241,7 @@ class Editor(Adw.Bin):
         try:
             txt = open(path).read()
         except Exception as e:
-            Logger.error(e)
+            Logger.error(f'Failed to load file {path}: {e}')
             return False
 
         self.buffer.set_text(txt)
@@ -280,14 +280,18 @@ class Editor(Adw.Bin):
         if self.document.document_id == -1:
             self.document.document_id = self.storage.add(self.document)
 
-        if self.storage.update(self.document.document_id,
-                               {"content": text, 'title': self.document.title}):
+        if self.storage.update(
+            self.document.document_id, {"content": text, "title": self.document.title}
+        ):
             self.document.content = text
             self.buffer.set_modified(False)
-            self.emit('document-changed', False)
-            Logger.debug('Document %s saved', self.document.document_id)
-            self.emit('loading', False)
+            self.emit("document-changed", False)
+            Logger.debug("Document %s saved", self.document.document_id)
+            self.emit("loading", False)
             return True
+
+        Logger.error("Failed to save document %s", self.document.document_id)
+        return False
 
     def get_text(self) -> str:
         return self.buffer.get_text(

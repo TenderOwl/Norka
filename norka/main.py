@@ -30,10 +30,9 @@ from typing import List, Optional
 from gi.repository import Gtk, Gio, Gdk, GLib, Adw,GObject
 from gi.events import GLibEventLoopPolicy
 
+from norka.models import AppState
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
-from norka.services.logger import Logger
-from norka.services.settings import Settings
-from norka.services.storage import Storage
+from norka.services import Logger, Settings, Storage
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
@@ -45,6 +44,7 @@ class Application(Adw.Application):
     gtk_settings: Gtk.Settings
     storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
     settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    appstate: AppState = GObject.Property(type=GObject.TYPE_PYOBJECT)
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,
@@ -55,6 +55,8 @@ class Application(Adw.Application):
                              _('Open new document on start.'))
 
         self.version = version
+
+        self.appstate = AppState()
 
         # Init GSettings
         self.settings = Settings.new()
@@ -97,6 +99,10 @@ class Application(Adw.Application):
         format_shortcuts_action = Gio.SimpleAction.new(name="format_shortcuts", parameter_type=None)
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
+
+    @classmethod
+    def get_default(cls) -> 'Application':
+        return Adw.Application.get_default()
 
     def init_style(self):
         css_provider: Gtk.CssProvider = Gtk.CssProvider()
@@ -169,7 +175,7 @@ class Application(Adw.Application):
             new_arg_value = options['new']
             # print('new document flag')
             if new_arg_value and not self.window.is_document_editing:
-                self.window.on_document_create_activated(title=new_arg_value)
+                self.window._on_document_create_action(title=new_arg_value)
             return 1
         return -1
 

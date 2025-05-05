@@ -21,11 +21,13 @@
 # SOFTWARE.
 #
 # SPDX-License-Identifier: MIT
+from typing import Optional
 
 from gi.repository import Gio, Pango, Gtk, GObject, Gdk, GLib
 
 from norka.define import RESOURCE_PREFIX
-from norka.models import Folder, Document
+from norka.models import AppState, Folder, Document
+from norka.services import Storage
 
 
 class TreeNode(GObject.Object):
@@ -63,7 +65,10 @@ class NotesTree(Gtk.Box):
     }
 
     # Properties
+    _storage: Optional[Storage]
+    _appstate: Optional[AppState]
     _current_path = '/'
+    _selected_node: Optional[TreeNode]
 
     # Child Widgets
     list_view: Gtk.ListView = Gtk.Template.Child()
@@ -74,7 +79,11 @@ class NotesTree(Gtk.Box):
     def __init__(self):
         super().__init__()
 
-        self.storage = Gtk.Application.get_default().props.storage
+        self._appstate = Gtk.Application.get_default().props.appstate
+        self._appstate.connect('document-changed', self._select_node)
+
+        self._storage = Gtk.Application.get_default().props.storage
+        self._storage.connect('items-changed', lambda _x: self.load_tree())
 
         self.root_store = Gio.ListStore(item_type=TreeNode)
         self.tree_model = Gtk.TreeListModel.new(
@@ -93,24 +102,73 @@ class NotesTree(Gtk.Box):
         children = Gio.ListStore(item_type=TreeNode)
 
         # Загрузка подпапок
-        for child_folder in self.storage.get_folders(folder.path):
+        for child_folder in self._storage.get_folders(folder.path):
             children.append(TreeNode(child_folder, node.depth + 1))
 
         return None
 
+    @GObject.Property(type=str)
+    def current_path(self) -> str:
+        """
+        The current path in the notes tree.
+
+        This property represents the current path in the notes tree, which can be
+        used to determine the location of folders or documents being viewed or
+        interacted with. The path is stored as a string.
+        """
+        return self._current_path
+
+    @current_path.setter
+    def current_path(self, value: str):
+        self._current_path = value
+
+    @GObject.Property(type=GObject.TYPE_PYOBJECT)
+    def selected_node(self) -> TreeNode:
+        """
+        The currently selected `TreeNode` in the notes tree.
+
+        This property represents the currently selected `TreeNode` in the notes
+        tree. The selected `TreeNode` can be retrieved using this property, and
+        can be set using the setter method. The setter method will update the
+        selection in the notes tree.
+        """
+        return self._selected_node
+
+    @selected_node.setter
+    def selected_node(self, value: TreeNode) -> None:
+        """
+        Set the currently selected `TreeNode` in the notes tree.
+
+        This method sets the currently selected `TreeNode` in the notes tree. The
+        setter method will update the selection in the notes tree.
+
+        Args:
+            value (`TreeNode`): The `TreeNode` to set as the currently selected
+                `TreeNode` in the notes tree.
+        """
+        self._selected_node = value
+
+    def _select_node(self, appstate: AppState, doc_id: str):
+        # self.load_tree()
+        for i in range(self.root_store.get_n_items()):
+            row = self.root_store.get_item(i)
+            if not row.is_folder and str(row.item.document_id) == doc_id:
+                self.selection.select_item(i, unselect_rest=True)
+                break
+
     def load_tree(self, path:str = None):
         if path:
             self._current_path = path
-        root_folders = self.storage.get_folders(path=self._current_path)
+        root_folders = self._storage.get_folders(path=self._current_path)
+        root_docs = self._storage.all(path=self._current_path)
 
         # Remove old items only if new items available
-        if root_folders:
+        if root_folders or root_docs:
             self.root_store.remove_all()
 
         for folder in root_folders:
             self.root_store.append(TreeNode(folder))
 
-        root_docs = self.storage.all(path=self._current_path)
         for doc in root_docs:
             self.root_store.append(TreeNode(doc))
 

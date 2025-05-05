@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from pydoc import pager
-from typing import Dict
+from typing import Dict, Optional
 
-from gi.repository import Adw, Gtk
+from gi.repository import Adw, Gtk, GLib, GObject
 
-from norka.models import Document
+from norka.models import AppState
 from norka.define import RESOURCE_PREFIX
 from norka.widgets.editor import Editor
 
@@ -38,9 +38,27 @@ class EditorTabsView(Adw.Bin):
     tab_view: Adw.TabView =Gtk.Template.Child()
 
     pages: Dict[str, Adw.TabPage] = {}
+    _appstate: Optional[AppState] = None
 
     def __init__(self):
         super().__init__()
+
+        self._appstate = Gtk.Application.get_default().props.appstate
+
+        self.tab_view.connect("notify::selected-page", self._on_selected_page_changed)
+
+    def _on_selected_page_changed(self, tab_view: Adw.TabView, param: GObject.GParamSpec):
+        page: Adw.TabPage = tab_view.get_selected_page()
+        doc_id = None
+        for _doc_id, _page in self.pages.items():
+            if _page == page:
+                doc_id = _doc_id
+                break
+
+        print(doc_id)
+        if doc_id:
+            self._appstate.current_document_id = doc_id
+
 
     def add_tab(self, doc_id: str):
         if doc_id in self.pages:

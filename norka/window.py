@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,8 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 
 from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX,)
 from norka.gobject_worker import GObjectWorker
-from norka.models.document import Document
-from norka.services.backup import BackupService
-from norka.services.export import Exporter, PDFExporter, Printer
-from norka.services.logger import Logger
-from norka.services.medium import Medium, PublishStatus
-from norka.services.storage import Storage
-from norka.services.writeas import Writeas
+from norka.models import Document
+from norka.services import BackupService, Exporter, PDFExporter, Printer, Logger, Medium, PublishStatus, Storage, Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
@@ -162,8 +157,9 @@ class NorkaWindow(Adw.ApplicationWindow):
                 },
                 {
                     "name": "create",
-                    "action": self.on_document_create_activated,
+                    "action": self._on_document_create_action,
                     "accels": ("<Control>n",),
+                    "parameter_type": GLib.VariantType.new('(ss)'),
                 },
                 {
                     "name": "save",
@@ -437,28 +433,28 @@ class NorkaWindow(Adw.ApplicationWindow):
         popover.popup()
 
     def document_open(self, doc_id: str):
+
         print(f'TODO: Add new Editor Tab for Document:{doc_id}')
         self.content_page.document_open(doc_id)
         self.split_view.set_show_content(True)
 
-    def on_document_create_activated(self,
-                                     sender: Gtk.Widget = None,
-                                     event=None,
-                                     title: str = None) -> None:
-        """Create new document named 'Nameless' :) and activate it in editor.
+    def _on_document_create_action(self,
+                                   action: Gio.SimpleAction, parameter: GLib.Variant) -> None:
 
-        :param sender:
-        :param event:
-        :return:
-        """
-        # If document already loaded to editor we need to close it before create new one
-        if self.editor.document:
-            self.on_document_close_activated(sender, event)
+        title, path = parameter
+        if not title:
+            title = _('New Document')
 
-        self.editor.create_document(
-            title=title, folder_path=self.document_grid.current_folder_path)
-        self.screens.set_visible_child_name('editor-grid')
-        self.header.toggle_document_mode()
+        self.content_page.document_create(title=title, folder_path=path or '/')
+        print(f'Create new document with title: {title} in folder: {path}')
+        # # If document already loaded to editor we need to close it before create new one
+        # if self.editor.document:
+        #     self.on_document_close_activated(sender, event)
+        #
+        # self.editor.create_document(
+        #     title=title, folder_path=self.document_grid.current_folder_path)
+        # self.screens.set_visible_child_name('editor-grid')
+        # self.header.toggle_document_mode()
         # self.header.update_title(title=self.editor.document.title)
 
     def on_document_save_activated(self,

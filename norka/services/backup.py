@@ -54,7 +54,7 @@ class BackupService(GObject.GObject):
             self.settings.set_string("storage-path", storage_path)
 
         self.storage = Storage(storage_path)
-        self.storage.connect()
+        self.storage.open()
 
     def save(self, backup_dir: str) -> Optional[str]:
         if not path.exists(backup_dir):

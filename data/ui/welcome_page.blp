@@ -22,6 +22,7 @@ template $WelcomePage: Adw.Bin {
 
           Gtk.Button create_btn {
             action-name: "document.create";
+            action-target: '("", "")';
             tooltip-text: _("Create an Empty Note");
 
             Adw.ButtonContent {

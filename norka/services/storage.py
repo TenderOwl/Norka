@@ -29,8 +29,7 @@ import traceback
 from datetime import datetime
 from typing import List, Optional
 
-from gi.repository import GLib
-from gi.repository.GObject import GObject
+from gi.repository import GLib, GObject
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
@@ -38,12 +37,16 @@ from norka.models.folder import Folder
 from norka.services.logger import Logger
 
 
-class Storage(GObject):
+class Storage(GObject.GObject):
     """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
     """
     __gtype_name__ = 'StorageService'
+
+    __gsignals__ = {
+        "items-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
 
     def __init__(self, storage_path: str):
         super().__init__()
@@ -52,8 +55,16 @@ class Storage(GObject):
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         self.file_path = storage_path
 
-    def connect(self):
-        """Connect to the database.
+    def open(self):
+
+        """
+        Open SQLite database connection.
+
+        This method opens connection to the database file specified during class
+        initialization. It also enables support for parsing of column names and
+        values with declared types.
+
+        :return: None
         """
         self.conn = sqlite3.connect(self.file_path,
                                     detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
@@ -73,7 +84,7 @@ class Storage(GObject):
 
         Logger.info(f'Storage located at %s', self.file_path)
 
-        self.connect()
+        self.open()
 
         self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS `documents` (
@@ -199,7 +210,7 @@ class Storage(GObject):
 
     def count_all(self, path: str = '/', with_archived: bool = False) -> int:
         """Counts all documents and folders in the given path.
-        
+
         If `with_archived` is True then archived documents and folders will be counted too.
         """
         folders = self.count_folders(path, with_archived)
@@ -222,6 +233,7 @@ class Storage(GObject):
              datetime.now()
              ), )
         self.conn.commit()
+        self.emit("items-changed")
         return cursor.lastrowid
 
     def rename_folder(self, folder: Folder, title: str) -> bool:
@@ -244,6 +256,7 @@ class Storage(GObject):
 
             self.move_folders(old_path, new_path)
             self.move_documents(old_path, new_path)
+            self.emit("items-changed")
 
         except Exception as e:
             Logger.error(e)
@@ -259,6 +272,8 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (f'{path}%',))
             self.conn.commit()
+            self.emit("items-changed")
+
         except Exception as e:
             Logger.error(e)
             return False
@@ -278,6 +293,7 @@ class Storage(GObject):
 
             self.delete_documents(folder.absolute_path)
             self.delete_folders(folder.absolute_path)
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -299,6 +315,7 @@ class Storage(GObject):
              datetime.now()
              ), )
         self.conn.commit()
+        self.emit("items-changed")
         return cursor.lastrowid
 
     def all(self, path: str = '/', with_archived: bool = False, desc: bool = False) -> List[Document]:
@@ -360,6 +377,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (document.title, document.content, document.archived, datetime.now()))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -386,6 +404,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, tuple(fields.values()) + (datetime.now(), doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -402,6 +421,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -417,6 +437,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (f'{path}%',))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -442,6 +463,7 @@ class Storage(GObject):
 
             self.move_folders(old_path, new_path)
             self.move_documents(old_path, new_path)
+            self.emit("items-changed")
 
         except Exception as e:
             Logger.error(e)
@@ -459,6 +481,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (path, doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
             Logger.error(e)
             return False
@@ -483,6 +506,7 @@ class Storage(GObject):
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
             self.conn.commit()
+            self.emit('items-changed')
         except Exception as e:
             Logger.error(e)
             return False
