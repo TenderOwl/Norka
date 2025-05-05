@@ -100,7 +100,7 @@ class Application(Adw.Application):
 
     def init_style(self):
         css_provider: Gtk.CssProvider = Gtk.CssProvider()
-        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
+        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/application.css")
         display: Gdk.Display = Gdk.Display.get_default()
         # style_context: Gtk.StyleContext  = Gtk.StyleContext()
         Gtk.StyleContext.add_provider_for_display(display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)

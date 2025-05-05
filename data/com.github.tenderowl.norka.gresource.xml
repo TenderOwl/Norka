@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
     <gresource prefix="/com/github/tenderowl/norka/">
-        <file compressed="true">css/application.css</file>
+        <file compressed="true">application.css</file>
         <file preprocess="xml-stripblanks">ui/app_menu.xml</file>
         <file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
         <file preprocess="xml-stripblanks">ui/documents_grid_context_menu.ui</file>
