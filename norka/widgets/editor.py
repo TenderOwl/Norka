@@ -345,31 +345,37 @@ class Editor(Adw.Bin):
             self.buffer.begin_user_action()
             curr_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
             curr_line = curr_iter.get_line()
-            if curr_line > 0:
-                # Get prev line text
-                prev_line = curr_line - 1
-                prev_iter = self.buffer.get_iter_at_line(prev_line)
-                prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
-                # Check if prev line starts from Markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
-                if match:
-                    if match.group(3):
-                        sign = match.group(2)
-                        if re.match(r'^[0-9]+.', sign):
-                            # ordered list should increment number
-                            sign = str(int(sign[:-1]) + 1) + '.'
+            if curr_line <= 0:
+                return
 
-                        self.buffer.insert_at_cursor(sign + ' ')
-                    else:
-                        # If user don't want to insert new list item then go back and delete prev empty li sign - `-`
-                        mark: Gtk.TextMark = self.buffer.get_insert()
-                        curr_iter: Gtk.TextIter = self.buffer.get_iter_at_mark(mark)
-                        curr_iter.backward_line()
-                        end_iter = curr_iter.copy()
-                        end_iter.forward_to_line_end()
-                        self.buffer.delete(curr_iter, end_iter)
+            # Get prev line text
+            prev_line = curr_line - 1
+            result, prev_iter = self.buffer.get_iter_at_line(prev_line)
+            prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
+            # Check if prev line starts from Markdown list chars
+            match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
+            if match:
+                if match.group(3):
+                    sign = match.group(2)
+                    if re.match(r'^[0-9]+.', sign):
+                        # ordered list should increment number
+                        sign = str(int(sign[:-1]) + 1) + '.'
 
-                        self.buffer.place_cursor(curr_iter)
+                    self.buffer.insert_at_cursor(sign + ' ')
+                else:
+                    # If user don't want to insert new list item then go back and delete prev empty li sign - `-`
+                    curr_iter.backward_line()
+                    end_iter = curr_iter.copy()
+                    end_iter.forward_to_line_end()
+                    self.buffer.delete(curr_iter, end_iter)
+                    # mark: Gtk.TextMark = self.buffer.get_insert()
+                    # curr_iter: Gtk.TextIter = self.buffer.get_iter_at_mark(mark)
+                    # curr_iter.backward_line()
+                    # end_iter = curr_iter.copy()
+                    # end_iter.forward_to_line_end()
+                    # self.buffer.delete(curr_iter, end_iter)
+                    #
+                    # self.buffer.place_cursor(curr_iter)
 
             self.buffer.end_user_action()
 
@@ -398,12 +404,12 @@ class Editor(Adw.Bin):
         self.buffer.set_style_scheme(scheme)
 
         # try:
-        #     bgcolor = scheme.get_style('text').props.background
+        #     bg_color = scheme.get_style('text').props.background
         # except AttributeError:
-        #     bgcolor = '#fff'
-
+        #     bg_color = '#fff'
+        #
         # css_provider = Gtk.CssProvider()
-        # css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
+        # css_provider.load_from_data(f'.scrolled-editor {{background: {bg_color}}}'.encode('ascii'))
         # self.scrolled.add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def update_font(self, font: str) -> None:
