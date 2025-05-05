@@ -42,9 +42,7 @@
   background-color: var(--view-bg-color);
   padding: calc(var(--window-radius) * 2);
   border-radius: var(--window-radius);
-  font-family: 'Inter', serif;
-  /* font-family: 'IBM Plex Mono', serif; */
-  /* font-family: 'iA Writer Duospace', serif; */
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 treeexpander {

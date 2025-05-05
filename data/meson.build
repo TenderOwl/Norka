@@ -99,8 +99,11 @@ install_subdir(
     join_paths('fonts', 'IBMPlexMono'),
     install_dir :join_paths('share','fonts')
 )
-
 install_subdir(
-    join_paths('fonts', 'iA Writer Duospace'),
-    install_dir : join_paths('share','fonts')
+    join_paths('fonts', 'IBMPlexSans'),
+    install_dir :join_paths('share','fonts')
+)
+install_subdir(
+    join_paths('fonts', 'Inter'),
+    install_dir :join_paths('share','fonts')
 )
