@@ -37,9 +37,9 @@ from norka.widgets.preferences_export_page import PreferencesExportPage
 class PreferencesDialog(Adw.PreferencesDialog):
     __gtype_name__ = 'PreferencesDialog'
 
-    preferences_general_page: PreferencesGeneralPage = Gtk.Template.Child()
-    preferences_interface_page: PreferencesInterfacePage = Gtk.Template.Child()
-    preferences_export_page: PreferencesExportPage = Gtk.Template.Child()
+    general_page: PreferencesGeneralPage = Gtk.Template.Child()
+    interface_page: PreferencesInterfacePage = Gtk.Template.Child()
+    export_page: PreferencesExportPage = Gtk.Template.Child()
 
     _settings: Settings
 

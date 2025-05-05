@@ -29,7 +29,7 @@
 }
 
 #scrolled {
-  border-radius: var(--window-radius);
+  border-radius: calc(var(--window-radius) - (var(--window-radius) / 2));
   background-color: var(--view-bg-color);
 }
 
@@ -47,4 +47,9 @@
 
 treeexpander {
     transition: margin 200ms ease-out;
+}
+
+/* Style scheme previews in Preferences */
+GtkSourceStyleSchemePreview {
+  border-radius: calc(var(--window-radius) * 0.5);
 }

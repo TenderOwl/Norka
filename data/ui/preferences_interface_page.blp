@@ -5,4 +5,30 @@ template $PreferencesInterfacePage: Adw.PreferencesPage {
   name: "interface";
   title: _("Interface");
   icon-name: 'preferences-desktop-appearance-symbolic';
+
+  Adw.PreferencesGroup {
+    title: _("Theme");
+
+    Adw.ToggleGroup theme_toggle {
+
+      Adw.Toggle {
+        name: "system";
+        label: _("System");
+      }
+
+      Adw.Toggle {
+        name: "light";
+        label: _("Light");
+      }
+
+      Adw.Toggle {
+        name: "dark";
+        label: _("Dark");
+      }
+    }
+  }
+
+  Adw.PreferencesGroup styles_group {
+    title: _("Styles");
+  }
 }

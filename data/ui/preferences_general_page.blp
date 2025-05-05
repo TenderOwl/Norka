@@ -21,9 +21,9 @@ template $PreferencesGeneralPage: Adw.PreferencesPage {
       title: _("Spell checking");
     }
 
-    Adw.ComboRow spellcheck_language_chooser {
-      title: _("Language");
-    }
+    // Adw.ComboRow spellcheck_language_chooser {
+    //   title: _("Language");
+    // }
   }
 
   Adw.PreferencesGroup {
@@ -37,9 +37,9 @@ template $PreferencesGeneralPage: Adw.PreferencesPage {
       title: _("Insert spaces instead of tabs");
     }
 
-    // Adw.SpinRow indent_width {
-    //   title: _("Tab width");
-    //   numeric: true;
-    // }
+    Adw.SpinRow indent_width {
+      title: _("Tab width");
+      numeric: true;
+    }
   }
 }

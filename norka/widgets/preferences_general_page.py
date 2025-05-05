@@ -34,25 +34,27 @@ class PreferencesGeneralPage(Adw.PreferencesPage):
     autosave_switch: Adw.SwitchRow = Gtk.Template.Child()
     sort_switch: Adw.SwitchRow = Gtk.Template.Child()
     spellcheck_switch: Adw.SwitchRow = Gtk.Template.Child()
-    spellcheck_language_chooser: Adw.ComboRow = Gtk.Template.Child()
+    # spellcheck_language_chooser: Adw.ComboRow = Gtk.Template.Child()
     autoindent_switch: Adw.SwitchRow = Gtk.Template.Child()
     spaces_tabs_switch: Adw.SwitchRow = Gtk.Template.Child()
     indent_width: Adw.SpinRow = Gtk.Template.Child()
 
     _settings: Settings
+    _langs_available_model = Gio.ListStore(item_type=str)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self._settings = Gtk.Application.get_default().props.settings
 
+        # Limit indent range
+        self.indent_width.set_range(0, 24)
+        # self.spellcheck_language_chooser.set_model(self._langs_available_model)
+
         self._settings.bind("autosave", self.autosave_switch, "active", Gio.SettingsBindFlags.DEFAULT)
         self._settings.bind("sort-desc", self.sort_switch, "active", Gio.SettingsBindFlags.DEFAULT)
         self._settings.bind("spellcheck", self.spellcheck_switch, "active", Gio.SettingsBindFlags.DEFAULT)
-        # self._settings.bind("spellcheck-language", self.spellcheck_language_chooser, "value", Gio.SettingsBindFlags.DEFAULT)
+        # self._settings.bind("spellcheck-language", self.spellcheck_language_chooser, "selected-item", Gio.SettingsBindFlags.DEFAULT)
         self._settings.bind("autoindent", self.autoindent_switch, "active", Gio.SettingsBindFlags.DEFAULT)
         self._settings.bind("spaces-instead-of-tabs", self.spaces_tabs_switch, "active", Gio.SettingsBindFlags.DEFAULT)
         self._settings.bind("indent-width", self.indent_width, "value", Gio.SettingsBindFlags.DEFAULT)
-
-        # Limit indent range
-        self.indent_width.set_range(0, 24)

@@ -42,6 +42,7 @@ class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
     gtk_settings: Gtk.Settings
+    _style_manager: Adw.StyleManager
     storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
     settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
     appstate: AppState = GObject.Property(type=GObject.TYPE_PYOBJECT)
@@ -62,6 +63,7 @@ class Application(Adw.Application):
 
         # Init GSettings
         self.settings = Settings.new()
+        self._style_manager = Adw.StyleManager.get_default()
 
         self.init_style()
         self.window: Optional[NorkaWindow] = None
@@ -113,7 +115,14 @@ class Application(Adw.Application):
         # style_context: Gtk.StyleContext  = Gtk.StyleContext()
         Gtk.StyleContext.add_provider_for_display(display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-        print('here')
+
+        match self.settings.get_string("theme-mode"):
+            case "light":
+                self._style_manager.set_color_scheme(Adw.ColorScheme.FORCE_LIGHT)
+            case "dark":
+                self._style_manager.set_color_scheme(Adw.ColorScheme.FORCE_DARK)
+            case _:
+                self._style_manager.set_color_scheme(Adw.ColorScheme.DEFAULT)
         # if self.settings.get_boolean('prefer-dark-theme'):
         #     Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
 
@@ -123,6 +132,7 @@ class Application(Adw.Application):
         # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
         self.settings.connect("changed", self.on_settings_changed)
+
 
     def do_activate(self):
         """Activates the application.
