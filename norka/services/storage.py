@@ -26,7 +26,7 @@
 import os
 import sqlite3
 import traceback
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 
 from gi.repository import GLib, GObject
@@ -35,6 +35,39 @@ from loguru import logger
 from norka.define import APP_TITLE
 from norka.models.document import Document
 from norka.models.folder import Folder
+
+
+def adapt_date_iso(val):
+    """Adapt datetime.date to ISO 8601 date."""
+    return val.isoformat()
+
+def adapt_datetime_iso(val):
+    """Adapt datetime.datetime to timezone-naive ISO 8601 date."""
+    return val.isoformat()
+
+def adapt_datetime_epoch(val):
+    """Adapt datetime.datetime to Unix timestamp."""
+    return int(val.timestamp())
+
+sqlite3.register_adapter(datetime.date, adapt_date_iso)
+sqlite3.register_adapter(datetime, adapt_datetime_iso)
+sqlite3.register_adapter(datetime, adapt_datetime_epoch)
+
+def convert_date(val):
+    """Convert ISO 8601 date to datetime.date object."""
+    return date.fromisoformat(val.decode())
+
+def convert_datetime(val):
+    """Convert ISO 8601 datetime to datetime.datetime object."""
+    return datetime.fromisoformat(val.decode())
+
+def convert_timestamp(val):
+    """Convert Unix epoch timestamp to datetime.datetime object."""
+    return datetime.fromtimestamp(int(val))
+
+sqlite3.register_converter("date", convert_date)
+sqlite3.register_converter("datetime", convert_datetime)
+sqlite3.register_converter("timestamp", convert_timestamp)
 
 
 class Storage(GObject.GObject):
@@ -50,7 +83,7 @@ class Storage(GObject.GObject):
 
     def __init__(self, storage_path: str):
         super().__init__()
-        self.conn = None
+        self.conn: Optional[sqlite3.Connection] = None
         self.version = None
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         self.file_path = storage_path
@@ -110,14 +143,18 @@ class Storage(GObject.GObject):
                 LIMIT 1
             """)
         version = version_response.fetchone()
-        logger.info('Current storage version: {}', version[0])
-        self.version = version
+        if version:
+            logger.info('Current storage version: {}', version[0])
+            self.version = version
 
         if not version or version[0] < 1:
             self.v1_upgrade()
 
         if not version or version[0] < 2:
             self.v2_upgrade()
+
+    def close(self):
+        self.conn.close()
 
     def v1_upgrade(self) -> bool:
         """Upgrades database to version 1.
@@ -242,7 +279,7 @@ class Storage(GObject.GObject):
         if title == '..':
             return False
 
-        query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
+        query = "UPDATE folders SET title=? WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (title, folder.path, folder.title,))
@@ -267,7 +304,7 @@ class Storage(GObject.GObject):
     def delete_folders(self, path: str) -> bool:
         """Permanently deletes folders under given `path`
         """
-        query = f"DELETE FROM folders WHERE path LIKE ?"
+        query = "DELETE FROM folders WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (f'{path}%',))
@@ -285,7 +322,7 @@ class Storage(GObject.GObject):
 
         :param folder: :class:`Folder` to be deleted.
         """
-        query = f"DELETE FROM folders WHERE path=? AND title=?"
+        query = "DELETE FROM folders WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (folder.path, folder.title,))
@@ -416,7 +453,7 @@ class Storage(GObject.GObject):
 
         Returns True if document was deleted successfully.
         """
-        query = f"DELETE FROM documents WHERE id=?"
+        query = "DELETE FROM documents WHERE id=?"
 
         try:
             self.conn.execute(query, (doc_id,))
@@ -489,7 +526,7 @@ class Storage(GObject.GObject):
         return True
 
     def move_documents(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
+        query = "UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
@@ -501,7 +538,7 @@ class Storage(GObject.GObject):
         return True
 
     def move_folders(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
+        query = "UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
@@ -516,7 +553,7 @@ class Storage(GObject.GObject):
     def find(self, search_text: str) -> List[Document]:
         """Finds documents with given `search_text`.
         """
-        query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
+        query = "SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
         cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
         rows = cursor.fetchall()
