@@ -178,7 +178,6 @@ class NotesTree(Gtk.Box):
         row: Gtk.TreeListRow = self.tree_model.get_item(position)
         if row:
             item: TreeNode = row.get_item()
-            print(item.item)
             self.emit("item-activate", item)
 
     @Gtk.Template.Callback()

@@ -24,6 +24,7 @@
 from typing import Optional
 
 from gi.repository import Adw, Gtk, GtkSource
+from loguru import logger
 
 from norka.define import RESOURCE_PREFIX
 from norka.services import Settings
@@ -55,7 +56,7 @@ class PreferencesInterfacePage(Adw.PreferencesPage):
 
     def _on_theme_toggled(self, _sender, _data):
         theme_mode = self.theme_toggle.get_active_name()
-        print(f'Apply theme: {theme_mode}')
+        logger.debug(f'Apply theme: {theme_mode}')
         match theme_mode:
             case "light":
                 self._style_manager.set_color_scheme(Adw.ColorScheme.FORCE_LIGHT)

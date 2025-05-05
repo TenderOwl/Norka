@@ -25,6 +25,7 @@ from pydoc import pager
 from typing import Dict, Optional
 
 from gi.repository import Adw, Gtk, GLib, GObject
+from loguru import logger
 
 from norka.models import AppState
 from norka.define import RESOURCE_PREFIX
@@ -55,7 +56,7 @@ class EditorTabsView(Adw.Bin):
                 doc_id = _doc_id
                 break
 
-        print(doc_id)
+        logger.debug(doc_id)
         if doc_id:
             self._appstate.current_document_id = doc_id
 
@@ -83,7 +84,7 @@ class EditorTabsView(Adw.Bin):
             if _page == page:
                 _doc_id = doc_id
                 tab_view.close_page_finish(_page, True)
-                print('Found!', doc_id)
+                logger.debug('Removing page for doc {}', doc_id)
                 break
         if _doc_id:
             del self.pages[_doc_id]

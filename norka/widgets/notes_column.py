@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from gi.repository import Gtk, Adw
+from loguru import logger
+
 from norka.define import RESOURCE_PREFIX
 from norka.widgets.notes_tree import  NotesTree
 
@@ -51,4 +53,4 @@ class NotesColumn(Gtk.Box):
             case 'structure_view':
                 # child: NotesTree = self.columns_stack.get_visible_child()
                 # child.load_tree()
-                print('structure_view')
+                logger.debug('structure_view')

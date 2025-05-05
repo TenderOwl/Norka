@@ -29,10 +29,11 @@ from typing import List, Optional
 
 from gi.repository import Gtk, Gio, Gdk, GLib, Adw,GObject
 from gi.events import GLibEventLoopPolicy
+from loguru import logger
 
 from norka.models import AppState
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
-from norka.services import Logger, Settings, Storage
+from norka.services import Settings, Storage
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
@@ -53,8 +54,10 @@ class Application(Adw.Application):
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
         self.add_main_option('new', ord("n"),
-                             GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
+                             GLib.OptionFlags.NONE, GLib.OptionArg.STRING,
                              _('Open new document on start.'))
+        self.add_main_option('verbose', ord('v'), GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, _('Verbose logging.'))
 
         self.version = version
         self.profile = profile
@@ -79,7 +82,7 @@ class Application(Adw.Application):
         try:
             self.storage.init()
         except Exception as e:
-            print('ERROR: %s', e)
+            logger.error('ERROR: %s', e)
             sys.exit(str(e))
 
         quit_action = Gio.SimpleAction.new(name="quit", parameter_type=None)
@@ -141,7 +144,7 @@ class Application(Adw.Application):
         self.gtk_settings = Gtk.Settings.get_default()
 
         # Setup default theme mode
-        print("TODO: Switch to system-wide mode")
+        logger.debug("TODO: Switch to system-wide mode")
         # if self.settings.get_boolean('prefer-dark-theme'):
         #     self.gtk_settings.props.gtk_application_prefer_dark_theme = True
         # else:
@@ -165,7 +168,7 @@ class Application(Adw.Application):
         :param n_files: number of files in command line args
         :param hint: a hint (or “”), but never None
         """
-        print(f'Openin {n_files} files')
+        logger.debug(f'Opening {n_files} files')
         if n_files and not self.window:
             self.do_activate()
 
@@ -183,16 +186,20 @@ class Application(Adw.Application):
     def do_handle_local_options(self, options):
         self.activate()
         options = options.end().unpack()
+        if 'verbose' in options:
+            logger.remove()
+            logger.add(sys.stderr, level='DEBUG')
         if 'new' in options:
             new_arg_value = options['new']
             # print('new document flag')
-            if new_arg_value and not self.window.is_document_editing:
-                self.window._on_document_create_action(title=new_arg_value)
+            if new_arg_value:
+                logger.debug("Opening new document {}", new_arg_value)
+                self.activate_action('document.create', GLib.Variant.new_string(new_arg_value),)
             return 1
         return -1
 
     def on_settings_changed(self, settings, key):
-        Logger.debug('SETTINGS: %s changed', key)
+        logger.debug('SETTINGS: {} changed', key)
         # if key == "autosave":
         #     self.window.autosave = settings.get_boolean(key)
         # if key == "spellcheck":
@@ -228,7 +235,7 @@ class Application(Adw.Application):
 
     def color_scheme_changed(self, _old, _new):
         dark_mode = self.settings.get_boolean('prefer-dark-theme')
-        print("TODO: handle change of color scheme")
+        logger.debug("TODO: handle change of color scheme")
         # if not dark_mode:
         #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
         #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK

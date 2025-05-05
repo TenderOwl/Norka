@@ -27,10 +27,11 @@ from gettext import gettext as _
 from typing import Tuple
 
 from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib, Adw, Spelling, Gio
+from loguru import logger
 
 from norka.define import RESOURCE_PREFIX
 from norka.models import Document
-from norka.services import Logger, MarkupFormatter, Settings, StatsHandler, Storage
+from norka.services import MarkupFormatter, Settings, StatsHandler, Storage
 from norka.widgets.image_link_popover import ImageLinkPopover
 from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
@@ -165,7 +166,7 @@ class Editor(Adw.Bin):
         self.search_iter = None
 
     def _on_settings_changed(self, settings, key):
-        print(f"SETTINGS: {key} changed")
+        logger.debug(f"SETTINGS: {key} changed")
         if key == "spellcheck":
             self.adapter.set_enabled(settings.get_boolean(key))
         if key == "spellcheck-language":
@@ -255,7 +256,7 @@ class Editor(Adw.Bin):
         try:
             txt = open(path).read()
         except Exception as e:
-            Logger.error(f'Failed to load file {path}: {e}')
+            logger.error('Failed to load file {}: {}', path, e)
             return False
 
         self.buffer.set_text(txt)
@@ -300,11 +301,11 @@ class Editor(Adw.Bin):
             self.document.content = text
             self.buffer.set_modified(False)
             self.emit("document-changed", False)
-            Logger.debug("Document %s saved", self.document.document_id)
+            logger.debug("Document {} saved", self.document.document_id)
             self.emit("loading", False)
             return True
 
-        Logger.error("Failed to save document %s", self.document.document_id)
+        logger.error("Failed to save document {}", self.document.document_id)
         return False
 
     def get_text(self) -> str:
@@ -388,21 +389,12 @@ class Editor(Adw.Bin):
             self.search_revealer.set_reveal_child(True)
             self.search_bar.search_entry.grab_focus()
 
-    def set_spellcheck(self, value: bool) -> None:
-        # self.spell_view.set_inline_spell_checking(value)
-        print('TODO: Fix spellcheck')
-
     def set_spellcheck_language(self, language_code: str) -> None:
-        print("TODO: Fix spellcheck")
-        # spell_language = Gspell.Language.lookup(language_code)
-        # if spell_language:
-        #     self.spellchecker.set_language(spell_language)
+        logger.debug("TODO: Fix spellcheck")
 
     def set_style_scheme(self, scheme_id: str) -> None:
         manager: GtkSource.StyleSchemeManager = GtkSource.StyleSchemeManager.get_default()
         scheme = manager.get_scheme(scheme_id)
-        print("TODO: Fix style scheme")
-        print(scheme)
         self.buffer.set_style_scheme(scheme)
 
         # try:

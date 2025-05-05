@@ -21,23 +21,20 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
 from datetime import datetime
 from gettext import gettext as _
 from typing import Optional
-from urllib.parse import urlparse, unquote_plus
 
 import cairo
-from gi.repository import Gtk, GObject, Gdk, Gio
+from gi.repository import Gtk, GObject, Gdk
 from gi.repository.GdkPixbuf import Pixbuf, Colorspace
+from loguru import logger
 
-from norka.define import TARGET_ENTRY_TEXT, TARGET_ENTRY_REORDER, RESOURCE_PREFIX
+from norka.define import RESOURCE_PREFIX
 from norka.models.document import Document
 from norka.models.folder import Folder
-from norka.services.logger import Logger
 from norka.services.settings import Settings
 from norka.services.storage import Storage
-from norka.utils import find_child
 from norka.widgets.folder_create_dialog import FolderCreateDialog
 
 
@@ -156,7 +153,7 @@ class DocumentGrid(Gtk.Box):
     def selected_document(self) -> Optional[Document]:
         """Returns selected :model:`Document` or `None`
         """
-        Logger.debug('DocumentGrid.selected_document')
+        logger.debug('DocumentGrid.selected_document')
         if self.is_folder_selected:
             return None
 
@@ -210,7 +207,7 @@ class DocumentGrid(Gtk.Box):
 
         if not self.show_archived:
             # Load folders first
-            Logger.info(f"reload_items: {self.current_folder_path}")
+            logger.info("reload_items: {}", self.current_folder_path)
             for folder in self.storage.get_folders(path=self.current_folder_path):
                 self.create_folder_model(title=folder.title, path=folder.path)
 
@@ -233,12 +230,12 @@ class DocumentGrid(Gtk.Box):
 
             if document.created:
                 created = datetime.strptime(document.created, "%Y-%m-%d %H:%M:%S.%f")
-                tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
+                tooltip += "\n<span weight='600' size='smaller' alpha='75%'>" \
                            + _('Created') + f": {created.strftime('%x')}</span>"
 
             if document.modified:
                 modified = datetime.strptime(document.modified, "%Y-%m-%d %H:%M:%S.%f")
-                tooltip += f"\n<span weight='600' size='smaller' alpha='75%'>" \
+                tooltip += "\n<span weight='600' size='smaller' alpha='75%'>" \
                            + _('Modified') + f": {modified.strftime('%x')}</span>"
 
             self.model.append([icon,
@@ -469,8 +466,10 @@ class DocumentGrid(Gtk.Box):
         folder_path = dialog.folder_title
         dialog.destroy()
         if result == Gtk.ResponseType.ACCEPT:
-            print(f'Folder "{folder_path}" created')
+            logger.debug('Folder "{}" created', folder_path)
             return self.storage.add_folder(folder_path, path)
+
+        return None
 
     def on_folder_rename_activated(self, sender: Gtk.Widget, title: str) -> None:
         sender.destroy()
@@ -480,4 +479,4 @@ class DocumentGrid(Gtk.Box):
             self.document_grid.reload_items()
 
     def filter_model_by_value(self, model, path, iter):
-        print(f'filter_model_by_value: {model}; {path}; {iter};')
+        logger.debug('filter_model_by_value: {}; {}; {};', model, path, iter)

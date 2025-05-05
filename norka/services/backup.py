@@ -26,6 +26,7 @@ from os import path
 from typing import Optional
 
 from gi.repository import GObject
+from loguru import logger
 
 from norka.define import STORAGE_NAME
 from norka.models.document import Document
@@ -95,5 +96,5 @@ class BackupService(GObject.GObject):
                 fd.writelines(doc.content)
             return True
         except Exception as e:
-            print(e)
+            logger.error(e)
             return False

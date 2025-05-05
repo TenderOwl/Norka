@@ -25,11 +25,12 @@ import os
 from gettext import gettext as _
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Adw
+from loguru import logger
 
 from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX,)
 from norka.gobject_worker import GObjectWorker
 from norka.models import Document
-from norka.services import BackupService, Exporter, PDFExporter, Printer, Logger, Medium, PublishStatus, Storage, Writeas
+from norka.services import BackupService, Exporter, PDFExporter, Printer, Medium, PublishStatus, Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
@@ -69,7 +70,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.uri_to_open = None
 
         # Add CSS class
-        print(f'Profile: {profile}')
+        logger.debug('Profile: {}', profile)
         if profile == 'Devel':
             self.add_css_class('devel')
 
@@ -162,7 +163,7 @@ class NorkaWindow(Adw.ApplicationWindow):
                 },
                 {
                     "name": "create",
-                    "action": self._on_document_create_action,
+                    "action": self.on_document_create_action,
                     "accels": ("<Control>n",),
                     "parameter_type": GLib.VariantType.new('(ss)'),
                 },
@@ -318,14 +319,14 @@ class NorkaWindow(Adw.ApplicationWindow):
             if self.autosave:
                 self.editor.save_document()
             else:
-                print('Ask for action!')
+                logger.debug('Ask for action!')
 
             if not self.is_maximized():
                 size = self.get_default_size()
                 self.settings.set_value("window-size", GLib.Variant("ai", size))
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
@@ -399,11 +400,11 @@ class NorkaWindow(Adw.ApplicationWindow):
         folder = self.document_grid.selected_folder
         if folder:
             self.folder_activate(folder.absolute_path)
-            Logger.debug(f'Activated Folder {folder.absolute_path}')
+            logger.debug('Activated Folder {}', folder.absolute_path)
 
         else:
             doc_id = self.document_grid.selected_document_id
-            Logger.debug(f'Activated Document.Id {doc_id}')
+            logger.debug('Activated Document.Id {}', doc_id)
             self.document_activate(doc_id)
 
     def folder_activate(self, folder_path: str) -> None:
@@ -412,7 +413,7 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
-        Logger.info(f'Document {doc_id} activated')
+        logger.info('Document {} activated', doc_id)
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
         editor.connect('update-document-stats', self.update_document_stats)
@@ -439,19 +440,19 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def document_open(self, doc_id: str):
 
-        print(f'TODO: Add new Editor Tab for Document:{doc_id}')
+        logger.debug('TODO: Add new Editor Tab for Document:{}', doc_id)
         self.content_page.document_open(doc_id)
         self.split_view.set_show_content(True)
 
-    def _on_document_create_action(self,
-                                   action: Gio.SimpleAction, parameter: GLib.Variant) -> None:
+    def on_document_create_action(self,
+                                  action: Gio.SimpleAction, parameter: GLib.Variant) -> None:
 
         title, path = parameter
         if not title:
             title = _('New Document')
 
         self.content_page.document_create(title=title, folder_path=path or '/')
-        print(f'Create new document with title: {title} in folder: {path}')
+        logger.debug('Create new document with title: {} in folder: {}', title, path)
         # # If document already loaded to editor we need to close it before create new one
         # if self.editor.document:
         #     self.on_document_close_activated(sender, event)
@@ -524,11 +525,8 @@ class NorkaWindow(Adw.ApplicationWindow):
                 self.document_grid.reload_items()
             return _doc_id or True
         except Exception as e:
-            print(e)
+            logger.error('Failed to import file {}: {}', file_path, e)
             return False
-        finally:
-            self.check_grid_items()
-            self.header.show_spinner(False)
 
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
@@ -1077,7 +1075,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
-            Logger.debug('Not in edit mode')
+            logger.debug('Not in edit mode')
             return
 
         doc = self.document_grid.selected_document or self.editor.document
@@ -1109,8 +1107,11 @@ class NorkaWindow(Adw.ApplicationWindow):
 
         adjustment = range.get_adjustment()
         percent = adjustment.get_value() / adjustment.get_upper()
-        print(
-            f'Scrolled to: {percent * 100}% / {adjustment.get_lower()} / {adjustment.get_upper()}'
+        logger.debug(
+            'Scrolled to: {}% / {} / {}',
+            percent * 100,
+            adjustment.get_lower(),
+            adjustment.get_upper()
         )
         self.preview.scroll_to(percent)
 
@@ -1141,4 +1142,4 @@ class NorkaWindow(Adw.ApplicationWindow):
         printer.print()
 
     def on_printer_callback(self, printer: Printer) -> None:
-        print('printer callback resulted: ')
+        logger.debug('printer callback resulted: ')

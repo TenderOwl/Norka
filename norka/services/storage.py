@@ -30,11 +30,11 @@ from datetime import datetime
 from typing import List, Optional
 
 from gi.repository import GLib, GObject
+from loguru import logger
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
 from norka.models.folder import Folder
-from norka.services.logger import Logger
 
 
 class Storage(GObject.GObject):
@@ -80,9 +80,9 @@ class Storage(GObject.GObject):
         """
         if not os.path.exists(self.base_path):
             os.mkdir(self.base_path)
-            Logger.info('Storage folder created at %s', self.base_path)
+            logger.info("Storage folder created at {%s}}", self.base_path)
 
-        Logger.info(f'Storage located at %s', self.file_path)
+        logger.info('Storage located at {}', self.file_path)
 
         self.open()
 
@@ -110,7 +110,7 @@ class Storage(GObject.GObject):
                 LIMIT 1
             """)
         version = version_response.fetchone()
-        Logger.info(f'Current storage version: {version}')
+        logger.info('Current storage version: {}', version[0])
         self.version = version
 
         if not version or version[0] < 1:
@@ -133,17 +133,17 @@ class Storage(GObject.GObject):
         version = 1
         with self.conn:
             try:
-                Logger.info(f'Upgrading storage to version: {version}')
+                logger.info('Upgrading storage to version: {}', version)
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `created` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `modified` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `tags` TEXT""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `order` INTEGER DEFAULT 0""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
-                Logger.info(f'Successfully upgraded to v{version}')
+                logger.info('Successfully upgraded to v{}', version)
                 self.version = version
                 return True
             except Exception:
-                Logger.error(traceback.format_exc())
+                logger.error(traceback.format_exc())
                 return False
 
     def v2_upgrade(self) -> bool:
@@ -173,15 +173,15 @@ class Storage(GObject.GObject):
                     )
                 """)
 
-                Logger.info(f'Upgrading storage to version: {version}')
+                logger.info('Upgrading storage to version: {}', version)
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `path` TEXT default '/'""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
-                Logger.info(f'Successfully upgraded to v{version}')
+                logger.info(f'Successfully upgraded to v{version}')
                 self.version = version
                 return True
             except Exception:
-                Logger.error(traceback.format_exc())
+                logger.error(traceback.format_exc())
                 return False
 
     def count_documents(self, path: str = '/', with_archived: bool = False) -> int:
@@ -194,7 +194,7 @@ class Storage(GObject.GObject):
             query += " AND archived=0"
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
-        Logger.debug(f'{row[0]} documents found in {path}')
+        logger.debug('{} documents found in {}', row[0], path)
         return row[0]
 
     def count_folders(self, path: str = '/', with_archived: bool = False) -> int:
@@ -205,7 +205,7 @@ class Storage(GObject.GObject):
         query = 'SELECT COUNT (1) AS count FROM folders WHERE path=?'
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
-        Logger.debug(f'{row[0]} folders found in {path}')
+        logger.debug('{} folders found in {}', row[0], path)
         return row[0]
 
     def count_all(self, path: str = '/', with_archived: bool = False) -> int:
@@ -215,7 +215,7 @@ class Storage(GObject.GObject):
         """
         folders = self.count_folders(path, with_archived)
         documents = self.count_documents(path, with_archived)
-        Logger.debug(f'{folders} folders + {documents} documents found in {path}')
+        logger.debug('{} folders + {} documents found in {}', folders, documents, path)
         return folders + documents
 
     def add_folder(self, title: str, path: str = '/') -> Optional[int]:
@@ -259,7 +259,7 @@ class Storage(GObject.GObject):
             self.emit("items-changed")
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -275,7 +275,7 @@ class Storage(GObject.GObject):
             self.emit("items-changed")
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -295,7 +295,7 @@ class Storage(GObject.GObject):
             self.delete_folders(folder.absolute_path)
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -379,7 +379,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -406,7 +406,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -423,7 +423,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -439,7 +439,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -466,7 +466,7 @@ class Storage(GObject.GObject):
             self.emit("items-changed")
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -483,7 +483,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -495,7 +495,7 @@ class Storage(GObject.GObject):
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
             self.conn.commit()
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -508,7 +508,7 @@ class Storage(GObject.GObject):
             self.conn.commit()
             self.emit('items-changed')
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True

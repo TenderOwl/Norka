@@ -12,6 +12,7 @@
         "--socket=wayland",
         "--socket=cups"
     ],
+    "x-run-args": ["-v"],
     "cleanup" : [
         "/include",
         "/lib/pkgconfig",
