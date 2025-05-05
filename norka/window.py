@@ -437,6 +437,7 @@ class NorkaWindow(Adw.ApplicationWindow):
 
     def document_open(self, doc_id: str):
         print(f'TODO: Add new Editor Tab for Document:{doc_id}')
+        self.content_page.document_open(doc_id)
 
     def on_document_create_activated(self,
                                      sender: Gtk.Widget = None,

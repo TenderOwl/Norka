@@ -44,6 +44,7 @@ class Application(Adw.Application):
 
     gtk_settings: Gtk.Settings
     storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
 
     def __init__(self, version: str = None):
         super().__init__(application_id=APP_ID,

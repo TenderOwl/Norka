@@ -102,6 +102,11 @@ class NotesTree(Gtk.Box):
         if path:
             self._current_path = path
         root_folders = self.storage.get_folders(path=self._current_path)
+
+        # Remove old items only if new items available
+        if root_folders:
+            self.root_store.remove_all()
+
         for folder in root_folders:
             self.root_store.append(TreeNode(folder))
 

@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -66,8 +66,8 @@ class Editor(Gtk.Box):
         super().__init__()
 
         self.document = None
-        self.storage = storage
-        self.settings = settings
+        self.storage = Gtk.Application.get_default().props.storage
+        self.settings = Gtk.Application.get_default().props.settings
 
         self.buffer = GtkSource.Buffer()
         self.buffer.connect('changed', self.on_buffer_changed)
@@ -470,7 +470,7 @@ class Editor(Gtk.Box):
         self.buffer.place_cursor(start_iter)
         self.buffer.select_range(start_iter, end_iter)
 
-    def get_cursor_coods(self) -> Gdk.Rectangle:
+    def get_cursor_coords(self) -> Gdk.Rectangle:
 
         buffer = self.view.get_buffer()
         mark = buffer.get_insert()
@@ -530,7 +530,7 @@ class Editor(Gtk.Box):
         self.markup_formatter.toggle_line(self.view, '>')
 
     def on_insert_link(self, widget, data=None):
-        rect = self.get_cursor_coods()
+        rect = self.get_cursor_coords()
         popover = LinkPopover(self.view)
         popover.set_pointing_to(rect)
         popover.set_link(self.get_selected_text())
@@ -539,7 +539,7 @@ class Editor(Gtk.Box):
         popover.popup()
 
     def on_insert_image(self, widget, data=None):
-        rect = self.get_cursor_coods()
+        rect = self.get_cursor_coords()
         popover = ImageLinkPopover(self.view)
         popover.set_pointing_to(rect)
         popover.set_link(self.get_selected_text())

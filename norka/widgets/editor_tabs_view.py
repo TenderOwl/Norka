@@ -21,24 +21,53 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from pydoc import pager
+from typing import Dict
 
 from gi.repository import Adw, Gtk
 
+from norka.models import Document
 from norka.define import RESOURCE_PREFIX
-from norka.widgets.welcome_page import WelcomePage
-from norka.widgets.editor_tabs_view import EditorTabsView
+from norka.widgets.editor import Editor
 
 
-@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/content_page.ui")
-class ContentPage(Adw.NavigationPage):
-    __gtype_name__ = 'ContentPage'
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/editor_tabs_view.ui")
+class EditorTabsView(Adw.Bin):
+    __gtype_name__ = 'EditorTabsView'
 
-    screens: Adw.ViewStack = Gtk.Template.Child()
-    welcome_page: WelcomePage = Gtk.Template.Child()
-    editor_tabs_view: EditorTabsView = Gtk.Template.Child()
+    tab_view: Adw.TabView =Gtk.Template.Child()
+
+    pages: Dict[str, Adw.TabPage] = {}
 
     def __init__(self):
         super().__init__()
 
-    def document_open(self, doc_id: str):
-        self.editor_tabs_view.add_tab(doc_id)
+    def add_tab(self, doc_id: str):
+        if doc_id in self.pages:
+            page = self.pages[doc_id]
+            self.tab_view.set_selected_page(page)
+            return
+
+        editor = Editor()
+        page: Adw.TabPage = self.tab_view.add_page(editor)
+        editor.load_document(int(doc_id))
+        page.set_title(editor.document.title)
+        self.tab_view.set_selected_page(page)
+        self.pages[doc_id] = page
+
+    def close_active_page(self):
+        NotImplementedError()
+
+    @Gtk.Template.Callback()
+    def _on_close_page(self, tab_view: Adw.TabView, page: Adw.TabPage):
+        _doc_id = None
+        for doc_id, _page in self.pages.items():
+            if _page == page:
+                _doc_id = doc_id
+                tab_view.close_page_finish(_page, True)
+                print('Found!', doc_id)
+                break
+        if _doc_id:
+            del self.pages[_doc_id]
+
+        return True
