@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ import os
 
 import markdown2
 from gi.repository import Gtk, WebKit, GObject
-from htmldocx import HtmlToDocx
+from html4docx import HtmlToDocx
 
 from norka.models.document import Document
 
