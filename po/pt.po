@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.tenderowl.norka VERSION\n"
 "POT-Creation-Date: 2021-01-22 15:53+MSK\n"
-"PO-Revision-Date: 2020-09-02 12:54+0100\n"
-"Last-Translator: André Barata <andretiagob@protonmail.com>\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-02-01 13:01+0000\n"
+"Last-Translator: Bruno Fragoso <darth_signa@hotmail.com>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/frog/norka/pt/"
+">\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10-dev\n"
 "Generated-By: pygettext.py 1.5\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
 
 #: ../norka/define.py:29
 msgid "continuous text editor"
@@ -52,11 +53,11 @@ msgstr "Saiba mais sobre o Norka"
 
 #: ../norka/widgets/document_grid.py:95
 msgid "Created"
-msgstr ""
+msgstr "Criado"
 
 #: ../norka/widgets/document_grid.py:100
 msgid "Modified"
-msgstr ""
+msgstr "Modificado"
 
 #: ../norka/widgets/export_dialog.py:30
 msgid "Plain text"
@@ -72,7 +73,7 @@ msgstr "HTML"
 
 #: ../norka/widgets/format_shortcuts_dialog.py:37
 msgid "Markup Help"
-msgstr ""
+msgstr "Ajuda na Marcação"
 
 #: ../norka/widgets/header.py:43
 msgid "Norka"
@@ -108,28 +109,28 @@ msgstr "Menu"
 
 #: ../norka/widgets/image_link_popover.py:41
 msgid "Image link to insert:"
-msgstr ""
+msgstr "Link da imagem a inserir:"
 
 #: ../norka/widgets/image_link_popover.py:43
 #: ../norka/widgets/link_popover.py:43
 msgid "https://tenderowl.com"
-msgstr ""
+msgstr "https://tenderowl.com"
 
 #: ../norka/widgets/image_link_popover.py:46
 msgid "Choose"
-msgstr ""
+msgstr "Escolhe"
 
 #: ../norka/widgets/image_link_popover.py:76
 msgid "Select image to insert"
-msgstr ""
+msgstr "Selecionar imagem a inserir"
 
 #: ../norka/widgets/image_link_popover.py:82
 msgid "Images"
-msgstr ""
+msgstr "Imagens"
 
 #: ../norka/widgets/link_popover.py:41
 msgid "Link to insert:"
-msgstr ""
+msgstr "Link a inserir:"
 
 #: ../norka/widgets/menu_export.py:38
 msgid "Text"
@@ -194,7 +195,7 @@ msgstr "Sobre"
 
 #: ../norka/widgets/menu_popover.py:63 ../norka/widgets/preview.py:54
 msgid "Preview"
-msgstr ""
+msgstr "Pré-visualização"
 
 #: ../norka/widgets/menu_popover.py:66
 msgid "Shortcuts"
@@ -202,7 +203,7 @@ msgstr "Atalhos"
 
 #: ../norka/widgets/menu_popover.py:69
 msgid "Markup Shortcuts"
-msgstr ""
+msgstr "Atalhos de Marcação"
 
 #: ../norka/widgets/menu_popover.py:72
 msgid "Quit"
@@ -250,11 +251,11 @@ msgstr "Largura da Guia:"
 
 #: ../norka/widgets/preferences_dialog.py:114
 msgid "Appearance"
-msgstr ""
+msgstr "Aparência"
 
 #: ../norka/widgets/preferences_dialog.py:115
 msgid "Prefer dark theme:"
-msgstr ""
+msgstr "Modo escuro preferido:"
 
 #: ../norka/widgets/preferences_dialog.py:117
 msgid "Styles"
@@ -323,11 +324,11 @@ msgstr "Ligado como {}."
 
 #: ../norka/widgets/preview.py:79
 msgid "Nothing to preview"
-msgstr ""
+msgstr "Nada para pré-visualizar"
 
 #: ../norka/widgets/preview.py:80
 msgid "To render preview open a document"
-msgstr ""
+msgstr "Abra um documento para pré-visualizar"
 
 #: ../norka/widgets/quick_find_dialog.py:40
 msgid "Quick Find"
@@ -429,11 +430,11 @@ msgstr "Desarquivar"
 
 #: ../data/ui/documents_grid_context_menu.ui:201
 msgid "Medium.com"
-msgstr ""
+msgstr "Medium.com"
 
 #: ../data/ui/documents_grid_context_menu.ui:215
 msgid "Writeas"
-msgstr ""
+msgstr "Escrever como"
 
 #: ../data/ui/shortcuts.ui:14
 msgctxt "shortcut window"
@@ -483,12 +484,12 @@ msgstr "Procurar anterior"
 #: ../data/ui/shortcuts.ui:83
 msgctxt "shortcut window"
 msgid "Preview"
-msgstr ""
+msgstr "Pré-visualizar"
 
 #: ../data/ui/shortcuts.ui:87
 msgctxt "shortcut window"
 msgid "Open Preview window"
-msgstr ""
+msgstr "Abrir janela de pré-visualização"
 
 #: ../data/ui/shortcuts.ui:96
 msgctxt "shortcut window"
