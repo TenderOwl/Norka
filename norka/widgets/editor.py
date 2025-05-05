@@ -26,7 +26,7 @@ import re
 from gettext import gettext as _
 from typing import Tuple
 
-from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib, Adw
+from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib, Adw, Spelling, Gio
 
 from norka.define import RESOURCE_PREFIX
 from norka.models import Document
@@ -63,6 +63,8 @@ class Editor(Adw.Bin):
     scrolled: Gtk.ScrolledWindow = Gtk.Template.Child()
     view: GtkSource.View = Gtk.Template.Child()
     buffer: GtkSource.Buffer
+    checker: Spelling.Checker
+    adapter: Spelling.TextBufferAdapter
 
     def __init__(self, storage: Storage=None, settings: Settings=None):
         super().__init__()
@@ -78,6 +80,22 @@ class Editor(Adw.Bin):
         )
         self.set_style_scheme(self.settings.get_string('stylescheme'))
         self.view.set_buffer(self.buffer)
+
+        # Init Spelling library
+        self.checker = Spelling.Checker.get_default()
+        self.adapter = Spelling.TextBufferAdapter.new(self.buffer, self.checker)
+        extra_menu = self.adapter.get_menu_model()
+
+        self.view.set_extra_menu(extra_menu)
+        self.view.insert_action_group("spelling", self.adapter)
+
+        # Init state from settings
+        self.adapter.set_enabled(self.settings.get_boolean('spellcheck'))
+        self.adapter.set_language(self.settings.get_string('spellcheck-language'))
+        # And bind to settings
+        self.settings.bind("spellcheck", self.adapter, "enabled", Gio.SettingsBindFlags.DEFAULT)
+        self.settings.bind("spellcheck-language", self.adapter, "language", Gio.SettingsBindFlags.DEFAULT)
+
 
         # self.buffer = GtkSource.Buffer()
         # self.buffer.connect('changed', self.on_buffer_changed)
@@ -140,15 +158,6 @@ class Editor(Adw.Bin):
 
         # SpellChecker
         self.font_desc = Pango.FontDescription()
-        # self.spellchecker = Gspell.Checker()
-        # self.spell_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(self.view.get_buffer())
-        # self.spell_buffer.set_spell_checker(self.spellchecker)
-        # spell_language = Gspell.Language.lookup(self.settings.get_string('spellcheck-language'))
-        # if spell_language:
-        #     self.spellchecker.set_language(spell_language)
-        #
-        # self.spell_view = Gspell.TextView.get_from_gtk_text_view(self.view)
-        # self.spell_view.set_enable_language_menu(False)
 
         self.search_settings = GtkSource.SearchSettings(wrap_around=True)
         self.search_context = GtkSource.SearchContext(buffer=self.buffer,
@@ -158,7 +167,7 @@ class Editor(Adw.Bin):
     def _on_settings_changed(self, settings, key):
         print(f"SETTINGS: {key} changed")
         if key == "spellcheck":
-            self.toggle_spellcheck(settings.get_boolean(key))
+            self.adapter.set_enabled(settings.get_boolean(key))
         if key == "spellcheck-language":
             self.set_spellcheck_language(settings.get_string(key))
         if key == "stylescheme":

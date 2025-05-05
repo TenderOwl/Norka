@@ -24,6 +24,23 @@
         "*.a"
     ],
     "modules" : [
+    	{
+    	    "name": "spelling",
+    	    "builddir": true,
+    	    "buildsystem": "meson",
+    	    "sources": [
+    	    	{
+    	    	    "type": "git",
+    	    	    "url": "https://gitlab.gnome.org/GNOME/libspelling.git",
+    	    	    "tag": "0.4.8"
+    	    	}
+    	    ],
+    	    "config-opts": [
+                "-Ddocs=false",
+                "-Dvapi=false",
+                "-Dsysprof=false"
+            ]
+    	},
         "python3-modules.json",
         {
             "name" : "norka",
