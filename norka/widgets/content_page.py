@@ -27,6 +27,7 @@ from gi.repository import Adw, Gtk
 from norka.define import RESOURCE_PREFIX
 from norka.widgets.welcome_page import WelcomePage
 from norka.widgets.editor_tabs_view import EditorTabsView
+from norka.services import Storage
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/content_page.ui")
@@ -37,8 +38,18 @@ class ContentPage(Adw.NavigationPage):
     welcome_page: WelcomePage = Gtk.Template.Child()
     editor_tabs_view: EditorTabsView = Gtk.Template.Child()
 
+    storage: Storage
+
     def __init__(self):
         super().__init__()
+
+        self.storage = Gtk.Application.get_default().props.storage
+
+        # Set default page to welcome page if there are no documents
+        if self.storage.count_all() == 0:
+            self.screens.set_visible_child_name('welcome-page')
+        else:
+            self.screens.set_visible_child_name('content-page')
 
     def document_open(self, doc_id: str):
         self.editor_tabs_view.add_tab(doc_id)

@@ -3,12 +3,12 @@ using Adw 1;
 
 template $ContentPage: Adw.NavigationPage {
   Adw.ViewStack screens {
-    // Adw.ViewStackPage {
-    //   name: "welcome-page";
-    //   title: _("Norka");
+    Adw.ViewStackPage {
+      name: "welcome-page";
+      title: _("Norka");
 
-    //   child: $WelcomePage welcome_page {};
-    // }
+      child: $WelcomePage welcome_page {};
+    }
 
     Adw.ViewStackPage {
       name: "content-page";
