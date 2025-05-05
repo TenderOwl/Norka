@@ -31,7 +31,7 @@ RESOURCE_PREFIX = "/com/github/tenderowl/norka"
 
 DEBUG = False
 
-FONT_SIZE_FAMILY = 'iA Writer Duospace'
+FONT_SIZE_FAMILY = 'IBM Plex Sans'
 FONT_SIZE_DEFAULT = 11
 FONT_SIZE_MAX = 72
 FONT_SIZE_MIN = 7

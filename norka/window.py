@@ -50,12 +50,12 @@ class NorkaWindow(Adw.ApplicationWindow):
     sidebar: NotesSidebar = Gtk.Template.Child()
     content_page: ContentPage = Gtk.Template.Child()
 
-    def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, application: Gtk.Application, profile: str = None, **kwargs):
+        super().__init__(application=application, **kwargs)
 
         self.set_default_icon_name(APP_ID)
-        self.settings = settings
-        self.storage = storage
+        self.settings = application.props.settings
+        self.storage = application.props.storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
@@ -67,6 +67,11 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.medium_client = Medium()
         self.writeas_client = Writeas()
         self.uri_to_open = None
+
+        # Add CSS class
+        print(f'Profile: {profile}')
+        if profile == 'Devel':
+            self.add_css_class('devel')
 
         # Init screens
         # self.welcome_page.connect('document-import', self.on_document_import)

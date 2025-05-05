@@ -45,8 +45,9 @@ class Application(Adw.Application):
     storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
     settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
     appstate: AppState = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    profile: Optional[str] = None
 
-    def __init__(self, version: str = None):
+    def __init__(self, version: str = None, profile: str = None):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
@@ -55,6 +56,7 @@ class Application(Adw.Application):
                              _('Open new document on start.'))
 
         self.version = version
+        self.profile = profile
 
         self.appstate = AppState()
 
@@ -143,7 +145,7 @@ class Application(Adw.Application):
 
         self.window = self.props.active_window
         if not self.window:
-            self.window = NorkaWindow(application=self, settings=self.settings, storage=self.storage)
+            self.window = NorkaWindow(application=self, profile=self.profile)
         self.window.present()
 
     def do_open(self, files: List[Gio.File], n_files: int, hint: str):
@@ -236,9 +238,9 @@ class Application(Adw.Application):
         dialog.show()
 
 
-def main(version: str = None):
+def main(version: str = None, profile: str = None):
     asyncio.set_event_loop_policy(GLibEventLoopPolicy())
-    app = Application(version=version)
+    app = Application(version=version, profile=profile)
     app.run(sys.argv)
 
 
