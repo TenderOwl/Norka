@@ -40,7 +40,6 @@ class PreferencesGeneralPage(Adw.PreferencesPage):
     indent_width: Adw.SpinRow = Gtk.Template.Child()
 
     _settings: Settings
-    _langs_available_model = Gio.ListStore(item_type=str)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
