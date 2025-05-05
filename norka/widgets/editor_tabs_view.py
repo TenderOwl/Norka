@@ -85,6 +85,10 @@ class EditorTabsView(Adw.Bin):
         for doc_id, _page in self.pages.items():
             if _page == page:
                 _doc_id = doc_id
+
+                editor: Editor = _page.get_child()
+                editor.save_document()
+
                 tab_view.close_page_finish(_page, True)
                 logger.debug('Removing page for doc {}', doc_id)
                 break
