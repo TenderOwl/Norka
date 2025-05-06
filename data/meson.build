@@ -1,7 +1,33 @@
 message('Compiling resources')
 
+blueprints = custom_target('blueprints',
+  input: files(
+    'ui/documents_grid_context_menu.blp',
+    'ui/shortcuts.blp',
+    'ui/format_shortcuts_window.blp',
+    'ui/headerbar.blp',
+    'ui/main_window.blp',
+    'ui/welcome_page.blp',
+    'ui/content_page.blp',
+    'ui/editor_tabs_view.blp',
+    'ui/editor.blp',
+    'ui/notes_sidebar.blp',
+    'ui/notes_column.blp',
+    'ui/notes_tree.blp',
+    'ui/preferences_window.blp',
+    'ui/preferences_general_page.blp',
+    'ui/preferences_interface_page.blp',
+    'ui/preferences_export_page.blp',
+    'ui/preview_window.blp',
+    'ui/stats.blp',
+  ),
+  output: '.',
+  command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
+)
+
 gnome.compile_resources(appid,
   appid + '.gresource.xml',
+  dependencies: blueprints,
   gresource_bundle: true,
   install: true,
   install_dir: pkgdatadir,
@@ -32,7 +58,7 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: appid + '.appdata.xml.in',
+  input: appid + '.appdata.xml',
   output: appid  + '.appdata.xml',
   po_dir: '../po',
   install: true,
@@ -66,7 +92,7 @@ color_schemes = ['norka-dark', 'norka-sepia', 'norka']
 foreach i : color_schemes
     install_data(
         join_paths('schemes', i + '.xml'),
-       install_dir: join_paths(get_option('datadir'), 'gtksourceview-4', 'styles')
+       install_dir: join_paths(get_option('datadir'), 'gtksourceview-5', 'styles')
     )
 endforeach
 
@@ -76,8 +102,7 @@ install_subdir(
     join_paths('fonts', 'IBMPlexMono'),
     install_dir :join_paths('share','fonts')
 )
-
 install_subdir(
-    join_paths('fonts', 'iA Writer Duospace'),
-    install_dir : join_paths('share','fonts')
+    join_paths('fonts', 'IBMPlexSans'),
+    install_dir :join_paths('share','fonts')
 )

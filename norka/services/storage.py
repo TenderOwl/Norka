@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,31 +26,78 @@
 import os
 import sqlite3
 import traceback
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 
-from gi.repository import GLib
+from gi.repository import GLib, GObject
+from loguru import logger
 
 from norka.define import APP_TITLE
 from norka.models.document import Document
 from norka.models.folder import Folder
-from norka.services.logger import Logger
 
 
-class Storage(object):
+def adapt_date_iso(val):
+    """Adapt datetime.date to ISO 8601 date."""
+    return val.isoformat()
+
+def adapt_datetime_iso(val):
+    """Adapt datetime.datetime to timezone-naive ISO 8601 date."""
+    return val.isoformat()
+
+def adapt_datetime_epoch(val):
+    """Adapt datetime.datetime to Unix timestamp."""
+    return int(val.timestamp())
+
+sqlite3.register_adapter(datetime.date, adapt_date_iso)
+sqlite3.register_adapter(datetime, adapt_datetime_iso)
+# sqlite3.register_adapter(datetime, adapt_datetime_epoch)
+
+def convert_date(val):
+    """Convert ISO 8601 date to datetime.date object."""
+    return date.fromisoformat(val.decode())
+
+def convert_datetime(val):
+    """Convert ISO 8601 datetime to datetime.datetime object."""
+    return datetime.fromisoformat(val.decode())
+
+def convert_timestamp(val):
+    """Convert Unix epoch timestamp to datetime.datetime object."""
+    return datetime.fromtimestamp(int(val))
+
+sqlite3.register_converter("date", convert_date)
+sqlite3.register_converter("datetime", convert_datetime)
+sqlite3.register_converter("timestamp", convert_datetime)
+
+
+class Storage(GObject.GObject):
     """Class intended to handle data storage operations.
 
     Current implementation uses SQLite3 database.
     """
+    __gtype_name__ = 'StorageService'
+
+    __gsignals__ = {
+        "items-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
 
     def __init__(self, storage_path: str):
-        self.conn = None
+        super().__init__()
+        self.conn: Optional[sqlite3.Connection] = None
         self.version = None
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
         self.file_path = storage_path
 
-    def connect(self):
-        """Connect to the database.
+    def open(self):
+
+        """
+        Open SQLite database connection.
+
+        This method opens connection to the database file specified during class
+        initialization. It also enables support for parsing of column names and
+        values with declared types.
+
+        :return: None
         """
         self.conn = sqlite3.connect(self.file_path,
                                     detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
@@ -66,11 +113,11 @@ class Storage(object):
         """
         if not os.path.exists(self.base_path):
             os.mkdir(self.base_path)
-            Logger.info('Storage folder created at %s', self.base_path)
+            logger.info("Storage folder created at {%s}}", self.base_path)
 
-        Logger.info(f'Storage located at %s', self.file_path)
+        logger.info('Storage located at {}', self.file_path)
 
-        self.connect()
+        self.open()
 
         self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS `documents` (
@@ -96,14 +143,21 @@ class Storage(object):
                 LIMIT 1
             """)
         version = version_response.fetchone()
-        Logger.info(f'Current storage version: {version}')
-        self.version = version
+        if version:
+            logger.info('Current storage version: {}', version[0])
+            self.version = version
 
         if not version or version[0] < 1:
             self.v1_upgrade()
 
         if not version or version[0] < 2:
             self.v2_upgrade()
+
+        if not version or version[0] < 3:
+            self.v3_upgrade()
+
+    def close(self):
+        self.conn.close()
 
     def v1_upgrade(self) -> bool:
         """Upgrades database to version 1.
@@ -119,17 +173,17 @@ class Storage(object):
         version = 1
         with self.conn:
             try:
-                Logger.info(f'Upgrading storage to version: {version}')
+                logger.info('Upgrading storage to version: {}', version)
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `created` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `modified` timestamp""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `tags` TEXT""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `order` INTEGER DEFAULT 0""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
-                Logger.info(f'Successfully upgraded to v{version}')
+                logger.info('Successfully upgraded to v{}', version)
                 self.version = version
                 return True
             except Exception:
-                Logger.error(traceback.format_exc())
+                logger.error(traceback.format_exc())
                 return False
 
     def v2_upgrade(self) -> bool:
@@ -159,15 +213,89 @@ class Storage(object):
                     )
                 """)
 
-                Logger.info(f'Upgrading storage to version: {version}')
+                logger.info('Upgrading storage to version: {}', version)
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `path` TEXT default '/'""")
                 self.conn.execute("""ALTER TABLE `documents` ADD COLUMN `encrypted` Boolean default False""")
                 self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
-                Logger.info(f'Successfully upgraded to v{version}')
+                logger.info(f'Successfully upgraded to v{version}')
                 self.version = version
                 return True
             except Exception:
-                Logger.error(traceback.format_exc())
+                logger.error(traceback.format_exc())
+                return False
+
+    def v3_upgrade(self) -> bool:
+        """Upgrades database to version 3.
+
+        Change fields:
+            - created: change from ISO-string to timestamp
+            - modified: change from ISO-string to timestamp
+
+        :return: True if upgrade was successful, otherwise False
+        """
+        version = 3
+        with self.conn:
+            try:
+                logger.info('Upgrading storage to version: {}', version)
+                self.conn.executescript("""
+                    BEGIN;
+
+                    -- UPDATE TABLE "documents" ------------------------------------
+                    CREATE TABLE "__vs_temp_table"(
+                        "id"        Integer PRIMARY KEY AUTOINCREMENT,
+                        "title"     Text NOT NULL,
+                        "content"   Text,
+                        "archived"  Integer NOT NULL DEFAULT 0,
+                        "created"   DateTime,
+                        "modified"  DateTime,
+                        "tags"      Text,
+                        "order"     Integer DEFAULT 0,
+                        "path"      Text DEFAULT '/',
+                        "encrypted" Boolean DEFAULT False );
+                    
+                    INSERT INTO __vs_temp_table("id", "title", "content", "archived", "created", "modified", "tags", "order", "path", "encrypted")
+                        SELECT "id", "title", "content", "archived", "created", "modified", "tags", "order", "path", "encrypted" FROM "documents";
+                    
+                    DROP TABLE IF EXISTS "documents";
+                    
+                    PRAGMA legacy_alter_table=1;
+                    ALTER TABLE __vs_temp_table RENAME TO "documents";
+                    PRAGMA legacy_alter_table=0;
+                    -- -------------------------------------------------------------
+                    
+                    COMMIT;
+                """)
+                self.conn.executescript("""
+                    BEGIN;
+                    
+                    -- UPDATE TABLE "folders" --------------------------------------
+                    CREATE TABLE "__vs_temp_table"(
+                        "id"       Integer PRIMARY KEY AUTOINCREMENT,
+                        "path"     Text NOT NULL DEFAULT '/',
+                        "title"    Text NOT NULL,
+                        "archived" Integer NOT NULL DEFAULT 0,
+                        "created"  DateTime,
+                        "modified" DateTime,
+                    CONSTRAINT "uniq_full_path" UNIQUE ( "path", "title" ) );
+                    
+                    INSERT INTO __vs_temp_table("id", "path", "title", "archived", "created", "modified")
+                        SELECT "id", "path", "title", "archived", "created", "modified" FROM "folders";
+                    
+                    DROP TABLE IF EXISTS "folders";
+                    
+                    PRAGMA legacy_alter_table=1;
+                    ALTER TABLE __vs_temp_table RENAME TO "folders";
+                    PRAGMA legacy_alter_table=0;
+                    -- -------------------------------------------------------------
+                    
+                    COMMIT;
+                """)
+                self.conn.execute("""INSERT INTO `version` VALUES (?, ?)""", (version, datetime.now(),))
+                logger.info(f'Successfully upgraded to v{version}')
+                self.version = version
+                return True
+            except Exception:
+                logger.error(traceback.format_exc())
                 return False
 
     def count_documents(self, path: str = '/', with_archived: bool = False) -> int:
@@ -180,7 +308,7 @@ class Storage(object):
             query += " AND archived=0"
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
-        Logger.debug(f'{row[0]} documents found in {path}')
+        logger.debug('{} documents found in {}', row[0], path)
         return row[0]
 
     def count_folders(self, path: str = '/', with_archived: bool = False) -> int:
@@ -191,17 +319,17 @@ class Storage(object):
         query = 'SELECT COUNT (1) AS count FROM folders WHERE path=?'
         cursor = self.conn.cursor().execute(query, (path,))
         row = cursor.fetchone()
-        Logger.debug(f'{row[0]} folders found in {path}')
+        logger.debug('{} folders found in {}', row[0], path)
         return row[0]
 
     def count_all(self, path: str = '/', with_archived: bool = False) -> int:
         """Counts all documents and folders in the given path.
-        
+
         If `with_archived` is True then archived documents and folders will be counted too.
         """
         folders = self.count_folders(path, with_archived)
         documents = self.count_documents(path, with_archived)
-        Logger.debug(f'{folders} folders + {documents} documents found in {path}')
+        logger.debug('{} folders + {} documents found in {}', folders, documents, path)
         return folders + documents
 
     def add_folder(self, title: str, path: str = '/') -> Optional[int]:
@@ -219,6 +347,7 @@ class Storage(object):
              datetime.now()
              ), )
         self.conn.commit()
+        self.emit("items-changed")
         return cursor.lastrowid
 
     def rename_folder(self, folder: Folder, title: str) -> bool:
@@ -227,7 +356,7 @@ class Storage(object):
         if title == '..':
             return False
 
-        query = f"UPDATE folders SET title=? WHERE path=? AND title=?"
+        query = "UPDATE folders SET title=? WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (title, folder.path, folder.title,))
@@ -241,9 +370,10 @@ class Storage(object):
 
             self.move_folders(old_path, new_path)
             self.move_documents(old_path, new_path)
+            self.emit("items-changed")
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -251,13 +381,15 @@ class Storage(object):
     def delete_folders(self, path: str) -> bool:
         """Permanently deletes folders under given `path`
         """
-        query = f"DELETE FROM folders WHERE path LIKE ?"
+        query = "DELETE FROM folders WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (f'{path}%',))
             self.conn.commit()
+            self.emit("items-changed")
+
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -267,7 +399,7 @@ class Storage(object):
 
         :param folder: :class:`Folder` to be deleted.
         """
-        query = f"DELETE FROM folders WHERE path=? AND title=?"
+        query = "DELETE FROM folders WHERE path=? AND title=?"
 
         try:
             self.conn.execute(query, (folder.path, folder.title,))
@@ -275,8 +407,9 @@ class Storage(object):
 
             self.delete_documents(folder.absolute_path)
             self.delete_folders(folder.absolute_path)
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -296,6 +429,7 @@ class Storage(object):
              datetime.now()
              ), )
         self.conn.commit()
+        self.emit("items-changed")
         return cursor.lastrowid
 
     def all(self, path: str = '/', with_archived: bool = False, desc: bool = False) -> List[Document]:
@@ -357,8 +491,9 @@ class Storage(object):
         try:
             self.conn.execute(query, (document.title, document.content, document.archived, datetime.now()))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -383,8 +518,9 @@ class Storage(object):
         try:
             self.conn.execute(query, tuple(fields.values()) + (datetime.now(), doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -394,13 +530,14 @@ class Storage(object):
 
         Returns True if document was deleted successfully.
         """
-        query = f"DELETE FROM documents WHERE id=?"
+        query = "DELETE FROM documents WHERE id=?"
 
         try:
             self.conn.execute(query, (doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -414,8 +551,9 @@ class Storage(object):
         try:
             self.conn.execute(query, (f'{path}%',))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -439,9 +577,10 @@ class Storage(object):
 
             self.move_folders(old_path, new_path)
             self.move_documents(old_path, new_path)
+            self.emit("items-changed")
 
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -456,32 +595,34 @@ class Storage(object):
         try:
             self.conn.execute(query, (path, doc_id,))
             self.conn.commit()
+            self.emit("items-changed")
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
 
     def move_documents(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
+        query = "UPDATE documents SET path=REPLACE(path, ?, ?) WHERE path lIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
             self.conn.commit()
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
 
     def move_folders(self, old_path: str, new_path: str) -> bool:
-        query = f"UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
+        query = "UPDATE folders SET path=REPLACE(path, ?, ?) WHERE path LIKE ?"
 
         try:
             self.conn.execute(query, (old_path, new_path, f"{old_path}%",))
             self.conn.commit()
+            self.emit('items-changed')
         except Exception as e:
-            Logger.error(e)
+            logger.error(e)
             return False
 
         return True
@@ -489,7 +630,7 @@ class Storage(object):
     def find(self, search_text: str) -> List[Document]:
         """Finds documents with given `search_text`.
         """
-        query = f"SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
+        query = "SELECT * FROM documents WHERE lower(title) LIKE ? ORDER BY archived ASC"
 
         cursor = self.conn.cursor().execute(query, (f'%{search_text.lower()}%',))
         rows = cursor.fetchall()
@@ -529,3 +670,13 @@ class Storage(object):
             folders.append(Folder.new_with_row(row))
 
         return folders
+
+    def get_child_folders(self, folder: Folder) -> List[Folder]:
+        """Returns all folders under given `folder`.
+        """
+        return self.get_folders(folder.absolute_path, desc=True)
+
+    def get_child_docs(self, folder: Folder) -> List[Document]:
+        """Returns all documents under given `folder`.
+        """
+        return self.all(folder.absolute_path)

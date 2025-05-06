@@ -20,7 +20,7 @@
             <li>Don't like the default theme - choose differently.</li>
         </ul>
     </description>
-    <update_contact>andrey_AT_tenderowl.com</update_contact>
+    <update_contact>andrey@tenderowl.com</update_contact>
 
     <launchable type="desktop-id">com.github.tenderowl.norka.desktop</launchable>
     <translation type="gettext">com.github.tenderowl.norka</translation>
@@ -47,6 +47,13 @@
     </screenshots>
 
     <releases>
+        <release date="2025-06-01" version="2.0.0">
+            <description translate="no">
+                <p>Norka 2.0 🎉️!
+                </p>
+                <p>Download the new version right now and try it yourself!</p>
+            </description>
+        </release>
         <release date="2023-06-06" version="1.1.0">
             <description translate="no">
                 <p>Hooray 🎉️! A new version of the Norka text editor has been released, in which you will find many

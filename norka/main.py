@@ -21,46 +21,55 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import asyncio
 import os
 import sys
 from gettext import gettext as _
-from typing import List
+from typing import List, Optional
 
-from gi.repository import Gtk, Gio, Gdk, Granite, GLib, Handy
+from gi.repository import Gtk, Gio, Gdk, GLib, Adw,GObject
+from gi.events import GLibEventLoopPolicy
+from loguru import logger
 
+from norka.models import AppState
 from norka.define import APP_ID, RESOURCE_PREFIX, STORAGE_NAME, APP_TITLE
-from norka.services.logger import Logger
-from norka.services.settings import Settings
-from norka.services.storage import Storage
-from norka.widgets.about_dialog import AboutDialog
+from norka.services import Settings, Storage
 from norka.widgets.format_shortcuts_dialog import FormatShortcutsWindow
 from norka.widgets.preferences_dialog import PreferencesDialog
 from norka.window import NorkaWindow
 
 
-class Application(Gtk.Application):
+class Application(Adw.Application):
     __gtype_name__ = 'NorkaApplication'
 
-    granite_settings: Granite.Settings
     gtk_settings: Gtk.Settings
+    _style_manager: Adw.StyleManager
+    storage: Storage = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    settings: Settings = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    appstate: AppState = GObject.Property(type=GObject.TYPE_PYOBJECT)
+    profile: Optional[str] = None
 
-    def __init__(self, version: str = None):
+    def __init__(self, version: str = None, profile: str = None):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.HANDLES_OPEN | Gio.ApplicationFlags.NON_UNIQUE)
 
-        Handy.init()
-
         self.add_main_option('new', ord("n"),
-                             GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
+                             GLib.OptionFlags.NONE, GLib.OptionArg.STRING,
                              _('Open new document on start.'))
+        self.add_main_option('verbose', ord('v'), GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, _('Verbose logging.'))
 
         self.version = version
+        self.profile = profile
+
+        self.appstate = AppState()
 
         # Init GSettings
         self.settings = Settings.new()
+        self._style_manager = Adw.StyleManager.get_default()
 
         self.init_style()
-        self.window: NorkaWindow = None
+        self.window: Optional[NorkaWindow] = None
 
         # Init storage location and SQL structure
         self.base_path = os.path.join(GLib.get_user_data_dir(), APP_TITLE)
@@ -73,7 +82,8 @@ class Application(Gtk.Application):
         try:
             self.storage.init()
         except Exception as e:
-            sys.exit(e)
+            logger.error('ERROR: %s', e)
+            sys.exit(str(e))
 
         quit_action = Gio.SimpleAction.new(name="quit", parameter_type=None)
         quit_action.connect("activate", self.on_quit)
@@ -97,46 +107,58 @@ class Application(Gtk.Application):
         format_shortcuts_action.connect("activate", self.on_format_shortcuts)
         self.add_action(format_shortcuts_action)
 
-    def init_style(self):
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/css/application.css")
-        screen = Gdk.Screen.get_default()
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(
-            screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    @classmethod
+    def get_default(cls) -> 'Application':
+        return Adw.Application.get_default()
 
-        if self.settings.get_boolean('prefer-dark-theme'):
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
+    def init_style(self):
+        css_provider: Gtk.CssProvider = Gtk.CssProvider()
+        css_provider.load_from_resource(f"{RESOURCE_PREFIX}/application.css")
+        display: Gdk.Display = Gdk.Display.get_default()
+        # style_context: Gtk.StyleContext  = Gtk.StyleContext()
+        Gtk.StyleContext.add_provider_for_display(display, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
+
+        match self.settings.get_string("theme-mode"):
+            case "light":
+                self._style_manager.set_color_scheme(Adw.ColorScheme.FORCE_LIGHT)
+            case "dark":
+                self._style_manager.set_color_scheme(Adw.ColorScheme.FORCE_DARK)
+            case _:
+                self._style_manager.set_color_scheme(Adw.ColorScheme.DEFAULT)
+        # if self.settings.get_boolean('prefer-dark-theme'):
+        #     Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = True
 
     def do_startup(self):
-        Gtk.Application.do_startup(self)
+        Adw.Application.do_startup(self)
 
         # builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/app_menu.xml")
         # self.set_app_menu(builder.get_object('app-menu'))
-        self.settings.connect("changed", self.on_settings_changed)
+        # self.settings.connect("changed", self.on_settings_changed)
+
 
     def do_activate(self):
         """Activates the application.
 
         """
-        self.granite_settings = Granite.Settings.get_default()
         self.gtk_settings = Gtk.Settings.get_default()
 
         # Setup default theme mode
-        if self.settings.get_boolean('prefer-dark-theme'):
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = True
-        else:
-            # Then, we check if the user's preference is for the dark style and set it if it is
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        logger.debug("TODO: Switch to system-wide mode")
+        # if self.settings.get_boolean('prefer-dark-theme'):
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = True
+        # else:
+        #     # Then, we check if the user's preference is for the dark style and set it if it is
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+        #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
         # Finally, we listen to changes in Granite.Settings and update our app if the user changes their preference
-        self.granite_settings.connect("notify::prefers-color-scheme",
-                                      self.color_scheme_changed)
+        # self.granite_settings.connect("notify::prefers-color-scheme",
+        #                               self.color_scheme_changed)
 
         self.window = self.props.active_window
         if not self.window:
-            self.window = NorkaWindow(application=self, settings=self.settings, storage=self.storage)
+            self.window = NorkaWindow(application=self, profile=self.profile)
         self.window.present()
 
     def do_open(self, files: List[Gio.File], n_files: int, hint: str):
@@ -146,7 +168,7 @@ class Application(Gtk.Application):
         :param n_files: number of files in command line args
         :param hint: a hint (or “”), but never None
         """
-        print(f'Openin {n_files} files')
+        logger.debug(f'Opening {n_files} files')
         if n_files and not self.window:
             self.do_activate()
 
@@ -164,40 +186,40 @@ class Application(Gtk.Application):
     def do_handle_local_options(self, options):
         self.activate()
         options = options.end().unpack()
+        if 'verbose' in options:
+            logger.remove()
+            logger.add(sys.stderr, level='DEBUG')
         if 'new' in options:
             new_arg_value = options['new']
             # print('new document flag')
-            if new_arg_value and not self.window.is_document_editing:
-                self.window.on_document_create_activated(title=new_arg_value)
+            if new_arg_value:
+                logger.debug("Opening new document {}", new_arg_value)
+                self.activate_action('document.create', GLib.Variant.new_string(new_arg_value),)
             return 1
         return -1
 
     def on_settings_changed(self, settings, key):
-        Logger.debug(f'SETTINGS: %s changed', key)
-        if key == "autosave":
-            self.window.autosave = settings.get_boolean(key)
-        if key == "spellcheck":
-            self.window.toggle_spellcheck(settings.get_boolean(key))
-        if key == "spellcheck-language":
-            self.window.set_spellcheck_language(settings.get_string(key))
-        if key == 'stylescheme':
-            self.window.set_style_scheme(settings.get_string(key))
-        if key == 'autoindent':
-            self.window.set_autoindent(settings.get_boolean('autoindent'))
-        if key == 'spaces-instead-of-tabs':
-            self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
-        if key == 'indent-width':
-            self.window.set_indent_width(settings.get_int('indent-width'))
-        if key == 'font':
-            self.window.editor.update_font(settings.get_string('font'))
-        if key == 'prefer-dark-theme':
-            Gtk.Settings.get_default().props.gtk_application_prefer_dark_theme = \
-                settings.get_boolean('prefer-dark-theme')
+        logger.debug('SETTINGS: {} changed', key)
+        # if key == "autosave":
+        #     self.window.autosave = settings.get_boolean(key)
+        # if key == "spellcheck":
+        #     self.window.toggle_spellcheck(settings.get_boolean(key))
+        # if key == "spellcheck-language":
+        #     self.window.set_spellcheck_language(settings.get_string(key))
+        # if key == 'stylescheme':
+        #     self.window.set_style_scheme(settings.get_string(key))
+        # if key == 'autoindent':
+        #     self.window.set_autoindent(settings.get_boolean('autoindent'))
+        # if key == 'spaces-instead-of-tabs':
+        #     self.window.set_tabs_spaces(settings.get_boolean('spaces-instead-of-tabs'))
+        # if key == 'indent-width':
+        #     self.window.set_indent_width(settings.get_int('indent-width'))
+        # if key == 'font':
+        #     self.window.editor.update_font(settings.get_string('font'))
 
     def on_preferences(self, sender: Gtk.Widget = None, event=None) -> None:
-        preferences_dialog = PreferencesDialog(transient_for=self.window, settings=self.settings)
-        preferences_dialog.show_all()
-        preferences_dialog.present()
+        preferences_dialog = PreferencesDialog()
+        preferences_dialog.present(self.window)
 
     def on_quit(self, action, param):
         self.props.active_window.on_window_delete_event()
@@ -205,14 +227,18 @@ class Application(Gtk.Application):
         self.quit()
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(version=self.version, transient_for=self.window, modal=True, )
-        about_dialog.present()
+        about_dialog = Adw.AboutDialog.new_from_appdata(
+            resource_path=f"{RESOURCE_PREFIX}/appdata/{APP_ID}.appdata.xml",
+            release_notes_version=self.version
+        )
+        about_dialog.present(self.window)
 
     def color_scheme_changed(self, _old, _new):
         dark_mode = self.settings.get_boolean('prefer-dark-theme')
-        if not dark_mode:
-            self.gtk_settings.props.gtk_application_prefer_dark_theme = \
-                self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
+        logger.debug("TODO: handle change of color scheme")
+        # if not dark_mode:
+        #     self.gtk_settings.props.gtk_application_prefer_dark_theme = \
+        #         self.granite_settings.props.prefers_color_scheme == Granite.SettingsColorScheme.DARK
 
     def on_shortcuts(self, action, param):
         builder = Gtk.Builder.new_from_resource(f"{RESOURCE_PREFIX}/ui/shortcuts.ui")
@@ -226,8 +252,9 @@ class Application(Gtk.Application):
         dialog.show()
 
 
-def main(version: str = None):
-    app = Application(version=version)
+def main(version: str = None, profile: str = None):
+    asyncio.set_event_loop_policy(GLibEventLoopPolicy())
+    app = Application(version=version, profile=profile)
     app.run(sys.argv)
 
 

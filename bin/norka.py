@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# norka.in
+# norka.py
 #
 # Copyright 2020-2021 Andrey Maksimov
 #
@@ -34,28 +34,27 @@ import signal
 import gettext
 import locale
 
-
 VERSION = '@VERSION@'
-pkgdatadir = '@PKGDATA_DIR@'
-localedir = '@LOCALE_DIR@'
-project_name = '@PROJECT_NAME@'
-appid = '@appid@'
+PKGDATADIR = '@PKGDATA_DIR@'
+LOCALEDIR = '@LOCALE_DIR@'
+PROJECT_NAME = '@PROJECT_NAME@'
+PROFILE = '@PROFILE@'
+APP_ID = '@APP_ID@'
 
 sys.path.insert(1, '@PYTHON_DIR@')
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-locale.textdomain(project_name)
-locale.bindtextdomain(project_name, localedir)
-gettext.textdomain(project_name)
-gettext.bindtextdomain(project_name, localedir)
+locale.textdomain(PROJECT_NAME)
+locale.bindtextdomain(PROJECT_NAME, LOCALEDIR)
+gettext.textdomain(PROJECT_NAME)
+gettext.bindtextdomain(PROJECT_NAME, LOCALEDIR)
 
 
 if __name__ == '__main__':
     import gi
-
     from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, appid + '.gresource'))
-    Gio.Resource._register(resource)
+    resource = Gio.Resource.load(os.path.join(PKGDATADIR, APP_ID + '.gresource'))
+    Gio.resources_register(resource)
 
     from norka import main
-    sys.exit(main.main(VERSION))
+    sys.exit(main.main(VERSION, PROFILE))

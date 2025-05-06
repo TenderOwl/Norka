@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2021 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,138 +22,140 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from gettext import gettext as _
-from typing import List
 
-from gi.repository import Gtk, Granite, GtkSource, Gdk, Gspell, Handy
+from gi.repository import Gtk, GtkSource, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.gobject_worker import GObjectWorker
-from norka.services.medium import Medium
-from norka.services.writeas import Writeas
+from norka.services import Medium, Writeas, Settings
+from norka.widgets.preferences_general_page import PreferencesGeneralPage
+from norka.widgets.preferences_interface_page import PreferencesInterfacePage
+from norka.widgets.preferences_export_page import PreferencesExportPage
 
 
 @Gtk.Template(resource_path=f'{RESOURCE_PREFIX}/ui/preferences_window.ui')
-class PreferencesDialog(Handy.Window):
+class PreferencesDialog(Adw.PreferencesDialog):
     __gtype_name__ = 'PreferencesDialog'
 
-    overlay: Gtk.Overlay = Gtk.Template.Child()
-    main_stack: Gtk.Stack = Gtk.Template.Child()
+    general_page: PreferencesGeneralPage = Gtk.Template.Child()
+    interface_page: PreferencesInterfacePage = Gtk.Template.Child()
+    export_page: PreferencesExportPage = Gtk.Template.Child()
 
-    def __init__(self, transient_for, settings):
-        super().__init__(transient_for=transient_for, modal=True)
+    _settings: Settings
 
-        self.settings = settings
+    def __init__(self):
+        super().__init__()
 
-        self.set_title(_('Preferences'))
+        self._settings = Gtk.Application.get_default().props.settings
 
-        langs_available: List[Gspell.Language] = Gspell.language_get_available()
-        langs_available_model = Gtk.ListStore(str, str)
-        for lang in langs_available:
-            langs_available_model.append((lang.get_code(), lang.get_name()))
-
-        self.toast = Granite.WidgetsToast(title=_("Toast"), margin=0)
-
-        indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
-        indent_width.set_value(self.settings.get_int('indent-width'))
-        indent_width.connect('value-changed', self.on_indent_width)
-
-        self.sort_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.sort_switch.set_state(self.settings.get_boolean('sort-desc'))
-        self.sort_switch.connect("state-set", self.on_sort_desc)
-
-        self.spellcheck_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.spellcheck_switch.set_state(self.settings.get_boolean('spellcheck'))
-        self.spellcheck_switch.connect("state-set", self.on_spellcheck)
-
-        self.spellcheck_language_chooser = Gtk.ComboBox()
-        self.spellcheck_language_chooser.set_model(langs_available_model)
-        self.spellcheck_language_chooser.set_id_column(0)
-        self.spellcheck_language_chooser.set_entry_text_column(1)
-        renderer_text = Gtk.CellRendererText()
-        self.spellcheck_language_chooser.pack_start(renderer_text, True)
-        self.spellcheck_language_chooser.add_attribute(renderer_text, "text", 1)
-        self.spellcheck_language_chooser.set_active_id(self.settings.get_string('spellcheck-language'))
-        self.spellcheck_language_chooser.connect('changed', self.on_spellcheck_language)
-
-        self.autosave_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.autosave_switch.set_state(self.settings.get_boolean('autosave'))
-        self.autosave_switch.connect("state-set", self.on_autosave)
-
-        self.autoindent_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.autoindent_switch.set_state(self.settings.get_boolean('autoindent'))
-        self.autoindent_switch.connect("state-set", self.on_autoindent)
-
-        self.spaces_tabs_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.spaces_tabs_switch.set_state(self.settings.get_boolean('spaces-instead-of-tabs'))
-        self.spaces_tabs_switch.connect("state-set", self.on_spaces_tabs)
-
-        general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
-
-        general_label = Gtk.Label(label=_("General"), halign=Gtk.Align.START)
-        general_label.get_style_context().add_class('title-4')
-        general_grid.attach(general_label, 0, 0, 3, 1)
-        general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
-        general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
-        general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
-        general_grid.attach(self.sort_switch, 2, 2, 1, 1)
-        general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
-        general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
-        general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
-        general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
-
-        tabs_label = Gtk.Label(label=_("Tabs"), halign=Gtk.Align.START)
-        tabs_label.get_style_context().add_class('title-4')
-        general_grid.attach(tabs_label, 0, 5, 3, 1)
-        general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
-        general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
-        general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
-                            1)
-        general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
-        general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
-        general_grid.attach(indent_width, 2, 8, 2, 1)
-
-        # Interface grid
-        interface_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
-        scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-
-        self.dark_theme_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
-        self.dark_theme_switch.set_state(self.settings.get_boolean('prefer-dark-theme'))
-        self.dark_theme_switch.connect("state-set", self.on_dark_theme)
-
-        style_chooser = GtkSource.StyleSchemeChooserWidget(hexpand=True, vexpand=True)
-        style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
-        scrolled.add(style_chooser)
-
-        scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(
-            self.settings.get_string('stylescheme')
-        )
-        if not scheme:
-            scheme = GtkSource.StyleSchemeManager().get_scheme("classic")
-
-        style_chooser.set_style_scheme(scheme)
-
-        appearance_label = Gtk.Label(label=_("Appearance"), halign=Gtk.Align.START)
-        appearance_label.get_style_context().add_class('title-4')
-        interface_grid.attach(appearance_label, 0, 0, 3, 1)
-        interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
-        interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
-        interface_grid.attach(Granite.HeaderLabel(_("Styles")), 0, 2, 3, 1)
-        interface_grid.attach(scrolled, 0, 3, 3, 1)
-
-        # Export grid
-        export_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
-
-        self.render_medium(export_grid)
-        self.render_writeas(export_grid)
-
-        # Main Stack
-        self.main_stack.add_titled(general_grid, "behavior", _("Behavior"))
-        self.main_stack.add_titled(interface_grid, "interface", _("Interface"))
-        self.main_stack.add_titled(export_grid, "export", _("Export"))
-
-        self.overlay.add_overlay(self.toast)
-
-        self.show_all()
+        # self.set_title(_('Preferences'))
+        #
+        # # langs_available: List[Gspell.Language] = Gspell.language_get_available()
+        # # langs_available_model = Gtk.ListStore(str, str)
+        # # for lang in langs_available:
+        # #     langs_available_model.append((lang.get_code(), lang.get_name()))
+        # #
+        # # self.toast = Granite.WidgetsToast(title=_("Toast"), margin=0)
+        #
+        # indent_width = Gtk.SpinButton.new_with_range(1, 24, 1)
+        # indent_width.set_value(self._settings.get_int('indent-width'))
+        # indent_width.connect('value-changed', self.on_indent_width)
+        #
+        # self.sort_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.sort_switch.set_state(self._settings.get_boolean('sort-desc'))
+        # self.sort_switch.connect("state-set", self.on_sort_desc)
+        #
+        # self.spellcheck_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.spellcheck_switch.set_state(self._settings.get_boolean('spellcheck'))
+        # self.spellcheck_switch.connect("state-set", self.on_spellcheck)
+        #
+        # self.spellcheck_language_chooser = Gtk.ComboBox()
+        # # self.spellcheck_language_chooser.set_model(langs_available_model)
+        # self.spellcheck_language_chooser.set_id_column(0)
+        # self.spellcheck_language_chooser.set_entry_text_column(1)
+        # renderer_text = Gtk.CellRendererText()
+        # self.spellcheck_language_chooser.pack_start(renderer_text, True)
+        # self.spellcheck_language_chooser.add_attribute(renderer_text, "text", 1)
+        # self.spellcheck_language_chooser.set_active_id(self._settings.get_string('spellcheck-language'))
+        # self.spellcheck_language_chooser.connect('changed', self.on_spellcheck_language)
+        #
+        # self.autosave_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.autosave_switch.set_state(self._settings.get_boolean('autosave'))
+        # self.autosave_switch.connect("state-set", self.on_autosave)
+        #
+        # self.autoindent_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.autoindent_switch.set_state(self._settings.get_boolean('autoindent'))
+        # self.autoindent_switch.connect("state-set", self.on_autoindent)
+        #
+        # self.spaces_tabs_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.spaces_tabs_switch.set_state(self._settings.get_boolean('spaces-instead-of-tabs'))
+        # self.spaces_tabs_switch.connect("state-set", self.on_spaces_tabs)
+        #
+        # general_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
+        #
+        # general_label = Gtk.Label(label=_("General"), halign=Gtk.Align.START)
+        # general_label.add_css_class('title-4')
+        # general_grid.attach(general_label, 0, 0, 3, 1)
+        # general_grid.attach(Gtk.Label(_("Save files when changed:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        # general_grid.attach(self.autosave_switch, 2, 1, 1, 1)
+        # general_grid.attach(Gtk.Label(_("Sort documents backwards:"), hexpand=True, halign=Gtk.Align.END), 0, 2, 2, 1)
+        # general_grid.attach(self.sort_switch, 2, 2, 1, 1)
+        # general_grid.attach(Gtk.Label(_("Spell checking:"), hexpand=True, halign=Gtk.Align.END), 0, 3, 2, 1)
+        # general_grid.attach(self.spellcheck_switch, 2, 3, 1, 1)
+        # general_grid.attach(Gtk.Label(_("Language:"), hexpand=True, halign=Gtk.Align.END), 0, 4, 2, 1)
+        # general_grid.attach(self.spellcheck_language_chooser, 2, 4, 1, 1)
+        #
+        # tabs_label = Gtk.Label(label=_("Tabs"), halign=Gtk.Align.START)
+        # tabs_label.add_css_class('title-4')
+        # general_grid.attach(tabs_label, 0, 5, 3, 1)
+        # general_grid.attach(Gtk.Label(_("Automatic indentation:"), hexpand=True, halign=Gtk.Align.END), 0, 6, 2, 1)
+        # general_grid.attach(self.autoindent_switch, 2, 6, 1, 1)
+        # general_grid.attach(Gtk.Label(_("Insert spaces instead of tabs:"), hexpand=True, halign=Gtk.Align.END), 0, 7, 2,
+        #                     1)
+        # general_grid.attach(self.spaces_tabs_switch, 2, 7, 1, 1)
+        # general_grid.attach(Gtk.Label(_("Tab width:"), hexpand=True, halign=Gtk.Align.END), 0, 8, 2, 1)
+        # general_grid.attach(indent_width, 2, 8, 2, 1)
+        #
+        # # Interface grid
+        # interface_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
+        # scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        #
+        # self.dark_theme_switch = Gtk.Switch(halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
+        # self.dark_theme_switch.set_state(self._settings.get_boolean('prefer-dark-theme'))
+        # self.dark_theme_switch.connect("state-set", self.on_dark_theme)
+        #
+        # style_chooser = GtkSource.StyleSchemeChooserWidget(hexpand=True, vexpand=True)
+        # style_chooser.connect('notify::style-scheme', self.on_scheme_changed)
+        # scrolled.set_child(style_chooser)
+        #
+        # scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(
+        #     self._settings.get_string('stylescheme')
+        # )
+        # if not scheme:
+        #     scheme = GtkSource.StyleSchemeManager().get_scheme("classic")
+        #
+        # style_chooser.set_style_scheme(scheme)
+        #
+        # appearance_label = Gtk.Label(label=_("Appearance"), halign=Gtk.Align.START)
+        # appearance_label.add_css_class('title-4')
+        # interface_grid.attach(appearance_label, 0, 0, 3, 1)
+        # interface_grid.attach(Gtk.Label(_("Prefer dark theme:"), hexpand=True, halign=Gtk.Align.END), 0, 1, 2, 1)
+        # interface_grid.attach(self.dark_theme_switch, 2, 1, 1, 1)
+        # interface_grid.attach(Gtk.Label(_("Styles")), 0, 2, 3, 1)
+        # interface_grid.attach(scrolled, 0, 3, 3, 1)
+        #
+        # # Export grid
+        # export_grid = Gtk.Grid(column_spacing=8, row_spacing=8)
+        #
+        # self.render_medium(export_grid)
+        # self.render_writeas(export_grid)
+        #
+        # # Main Stack
+        # self.main_stack.add_titled(general_grid, "behavior", _("Behavior"))
+        # self.main_stack.add_titled(interface_grid, "interface", _("Interface"))
+        # self.main_stack.add_titled(export_grid, "export", _("Export"))
+        #
+        # self.overlay.add_overlay(self.toast)
 
     def render_medium(self, content_grid):
         self.medium_token = Gtk.Entry(hexpand=True, placeholder_text=_("Token"))
@@ -164,7 +166,7 @@ class PreferencesDialog(Handy.Window):
         self.medium_link.set_label(_("Create Integration token and copy it here"))
 
         medium_label = Gtk.Label(label="Medium.com", halign=Gtk.Align.START)
-        medium_label.get_style_context().add_class('title-4')
+        medium_label.add_css_class('title-4')
         content_grid.attach(medium_label, 0, 0, 3, 1)
         content_grid.attach(Gtk.Label(_("Personal Token:"), halign=Gtk.Align.END), 0, 1, 1, 1)
         content_grid.attach(self.medium_token, 1, 1, 2, 1)
@@ -183,7 +185,7 @@ class PreferencesDialog(Handy.Window):
         self.writeas_logout_button.connect("clicked", self.on_writeas_logout)
 
         writeas_label = Gtk.Label(label="Write.as", halign=Gtk.Align.START)
-        writeas_label.get_style_context().add_class('title-4')
+        writeas_label.add_css_class('title-4')
         content_grid.attach(writeas_label, 0, 3, 3, 1)
 
         self.writeas_login_revealer = Gtk.Revealer()

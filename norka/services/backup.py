@@ -26,6 +26,7 @@ from os import path
 from typing import Optional
 
 from gi.repository import GObject
+from loguru import logger
 
 from norka.define import STORAGE_NAME
 from norka.models.document import Document
@@ -54,7 +55,7 @@ class BackupService(GObject.GObject):
             self.settings.set_string("storage-path", storage_path)
 
         self.storage = Storage(storage_path)
-        self.storage.connect()
+        self.storage.open()
 
     def save(self, backup_dir: str) -> Optional[str]:
         if not path.exists(backup_dir):
@@ -95,5 +96,5 @@ class BackupService(GObject.GObject):
                 fd.writelines(doc.content)
             return True
         except Exception as e:
-            print(e)
+            logger.error(e)
             return False

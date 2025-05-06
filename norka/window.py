@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,125 +24,99 @@
 import os
 from gettext import gettext as _
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Granite, Handy
-from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository import Gtk, Gio, GLib, Gdk, Adw
+from loguru import logger
 
-from norka.define import FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX
+from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX,)
 from norka.gobject_worker import GObjectWorker
-from norka.models.document import Document
-from norka.services import distro
-from norka.services.backup import BackupService
-from norka.services.export import Exporter, PDFExporter, Printer
-from norka.services.logger import Logger
-from norka.services.medium import Medium, PublishStatus
-from norka.services.storage import Storage
-from norka.services.writeas import Writeas
+from norka.models import Document
+from norka.services import BackupService, Exporter, PDFExporter, Printer, Medium, PublishStatus, Writeas
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsWindow
-from norka.widgets.header import Header
 from norka.widgets.message_dialog import MessageDialog
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
-from norka.widgets.welcome import Welcome
+from norka.widgets.content_page import ContentPage
+from norka.widgets.notes_sidebar import NotesSidebar
 
 
-@Gtk.Template(resource_path=(f"{RESOURCE_PREFIX}/ui/main_window.ui"))
-class NorkaWindow(Handy.ApplicationWindow):
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/main_window.ui")
+class NorkaWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'NorkaWindow'
 
-    content_box = Gtk.Template.Child()
+    split_view: Adw.NavigationSplitView = Gtk.Template.Child()
+    sidebar: NotesSidebar = Gtk.Template.Child()
+    content_page: ContentPage = Gtk.Template.Child()
 
-    def __init__(self, settings: Gio.Settings, storage: Storage, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, application: Gtk.Application, profile: str = None, **kwargs):
+        super().__init__(application=application, **kwargs)
 
-        self.set_default_icon(
-            Pixbuf.new_from_resource_at_scale(
-                f'{RESOURCE_PREFIX}/icons/com.github.tenderowl.norka.svg', 128,
-                128, True))
-        self.settings = settings
-        self.storage = storage
+        self.set_default_icon_name(APP_ID)
+        self.settings = application.props.settings
+        self.storage = application.props.storage
         self._configure_timeout_id = None
         self.preview = None
         self.extended_stats_dialog = None
 
-        self.apply_styling()
-
-        self.current_size = (786, 520)
-        self.resize(*self.settings.get_value('window-size'))
-
-        hints = Gdk.Geometry()
-        hints.min_width = 554
-        hints.min_height = 435
-        self.set_geometry_hints(None, hints, Gdk.WindowHints.MIN_SIZE)
-        self.connect('configure-event', self.on_configure_event)
-        self.connect('destroy', self.on_window_delete_event)
+        self.set_default_size(*self.settings.get_value('window-size'))
+        self.connect('close_request', self.on_window_delete_event)
 
         # Export clients
         self.medium_client = Medium()
         self.writeas_client = Writeas()
         self.uri_to_open = None
 
-        # Make a header
-        self.header = Header(self.settings)
-        # self.set_titlebar(self.header)
-        self.header.show()
+        # Add CSS class
+        logger.debug('Profile: {}', profile)
+        if profile == 'Devel':
+            self.add_css_class('devel')
 
         # Init screens
-        self.welcome_grid = Welcome()
-        # self.welcome_grid.connect('activated', self.on_welcome_activated)
-        self.welcome_grid.connect('document-import', self.on_document_import)
+        # self.welcome_page.connect('document-import', self.on_document_import)
+        #
+        # self.document_grid = DocumentGrid(self.settings, storage=self.storage)
+        # self.document_grid.connect('path-changed', self.on_path_changed)
+        # self.document_grid.connect('document-create', self.on_document_create_activated)
+        # self.document_grid.connect('document-import', self.on_document_import)
+        # self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
+        # self.document_grid.connect('document-activated', self.on_document_item_activated)
+        #
+        # self.editor = Editor(self.storage, self.settings)
+        # self.editor.connect('document-changed', self.on_document_changed)
+        # self.editor.connect('update-document-stats', self.update_document_stats)
+        # self.editor.connect('loading', self.editor_loading)
 
-        self.document_grid = DocumentGrid(self.settings, storage=self.storage)
-        self.document_grid.connect('path-changed', self.on_path_changed)
-        self.document_grid.connect('document-create', self.on_document_create_activated)
-        self.document_grid.connect('document-import', self.on_document_import)
-        self.document_grid.connect('rename-folder', self.on_folder_rename_activated)
-        self.document_grid.connect('document-activated', self.on_document_item_activated)
+        # self.screens.add_named(self.welcome_page, 'welcome-page')
+        # self.screens.add_named(self.document_grid, 'document-grid')
+        # self.screens.add_named(self.editor, 'editor-grid')
 
-        self.editor = Editor(self.storage, self.settings)
-        self.editor.connect('document-changed', self.on_document_changed)
-        self.editor.connect('update-document-stats', self.update_document_stats)
-        self.editor.connect('loading', self.editor_loading)
+        # self.toast = Adw.ToastOverlay()
+        #
+        # self.overlay = Gtk.Overlay()
+        # self.overlay.set_child(self.screens)
+        # self.overlay.add_overlay(self.toast)
 
-        self.screens = Gtk.Stack()
-        self.screens.set_transition_duration(400)
-        self.screens.set_transition_type(
-            Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
-
-        self.screens.add_named(self.welcome_grid, 'welcome-grid')
-        self.screens.add_named(self.document_grid, 'document-grid')
-        self.screens.add_named(self.editor, 'editor-grid')
-
-        self.screens.show_all()
-
-        self.toast = Granite.WidgetsToast(margin=0)
-
-        self.overlay = Gtk.Overlay()
-        self.overlay.add_overlay(self.screens)
-        self.overlay.add_overlay(self.toast)
-        self.overlay.show_all()
-
-        self.content_box.pack_start(self.header, False, False, 0)
-        self.content_box.pack_end(self.overlay, True, True, 0)
+        # self.content_box.append(self.header)
+        # self.content_box.append(self.overlay)
 
         # Init actions
         self.init_actions()
 
         # If here's at least one document in storage
         # then show documents grid
-        self.check_grid_items()
+        # self.check_grid_items()
 
         # Pull the Settings
-        self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
+        # self.toggle_spellcheck(self.settings.get_boolean('spellcheck'))
         self.autosave = self.settings.get_boolean('autosave')
-        self.set_autoindent(self.settings.get_boolean('autoindent'))
-        self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
-        self.set_indent_width(self.settings.get_int('indent-width'))
-        self.set_style_scheme(self.settings.get_string('stylescheme'))
-        self.editor.update_font(self.settings.get_string('font'))
+        # self.set_autoindent(self.settings.get_boolean('autoindent'))
+        # self.set_tabs_spaces(self.settings.get_boolean('spaces-instead-of-tabs'))
+        # self.set_indent_width(self.settings.get_int('indent-width'))
+        # self.set_style_scheme(self.settings.get_string('stylescheme'))
+        # self.editor.update_font(self.settings.get_string('font'))
 
     @property
     def is_document_editing(self) -> bool:
@@ -150,173 +124,168 @@ class NorkaWindow(Handy.ApplicationWindow):
         """
         return self.screens.get_visible_child_name() == 'editor-grid'
 
-    def apply_styling(self):
-        """Apply elementary OS header styling only for elementary OS
-        """
-        if distro.id() == 'elementary':
-            Granite.widgets_utils_set_color_primary(
-                self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            self.get_style_context().add_class('elementary')
+    # def apply_styling(self):
+    #     """Apply elementary OS header styling only for elementary OS
+    #     """
+    #     if distro.id() == 'elementary':
+    #         Granite.widgets_utils_set_color_primary(
+    #             self, Gdk.RGBA(red=0.29, green=0.50, blue=0.64, alpha=1.0),
+    #             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    #         self.add_class('elementary')
 
     def init_actions(self) -> None:
         """Initialize app-wide actions.
 
         """
         action_items = {
-            'window': [
+            "window": [
                 {
-                    'name': 'toggle_archived',
+                    "name": "toggle_archived",
                     # 'action': self.on_action_toggle,
-                    'accels': ('<Control>H',),
-                    'state': GLib.Variant.new_boolean(False),
-                    'change_state': self.on_toggle_archive
+                    "accels": ("<Control>H",),
+                    "state": GLib.Variant.new_boolean(False),
+                    "change_state": self.on_toggle_archive,
                 },
             ],
-            'folder': [
+            "folder": [
                 {
-                    'name': 'create',
-                    'action': self.on_folder_create,
-                    'accels': ('<Control><Shift>n',)
+                    "name": "create",
+                    "action": self.on_folder_create,
+                    "accels": ("<Control><Shift>n",),
                 },
             ],
-            'document': [
+            "document": [
                 {
-                    'name': 'create',
-                    'action': self.on_document_create_activated,
-                    'accels': ('<Control>n',)
+                    "name": "open",
+                    "action": self.on_document_open,
+                    "accels": (None,),
+                    "parameter_type": GLib.VariantType.new('s')
                 },
                 {
-                    'name': 'save',
-                    'action': self.on_document_save_activated,
-                    'accels': ('<Control>s',)
+                    "name": "create",
+                    "action": self.on_document_create_action,
+                    "accels": ("<Control>n",),
+                    "parameter_type": GLib.VariantType.new('(ss)'),
                 },
                 {
-                    'name': 'close',
-                    'action': self.on_document_close_activated,
-                    'accels': ('<Control>w',)
+                    "name": "save",
+                    "action": self.on_document_save_activated,
+                    "accels": ("<Control>s",),
                 },
                 {
-                    'name': 'rename',
-                    'action': self.on_document_rename,
-                    'accels': ('F2',)
+                    "name": "close",
+                    "action": self.on_document_close_activated,
+                    "accels": ("<Control>w",),
                 },
                 {
-                    'name': 'archive',
-                    'action': self.on_document_archive_activated,
-                    'accels': (None,)
+                    "name": "rename",
+                    "action": self.on_document_rename,
+                    "accels": ("F2",),
                 },
                 {
-                    'name': 'unarchive',
-                    'action': self.on_document_unarchive_activated,
-                    'accels': (None,)
+                    "name": "archive",
+                    "action": self.on_document_archive_activated,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'delete',
-                    'action': self.on_document_delete_activated,
-                    'accels': ('<Shift>Delete',)
+                    "name": "unarchive",
+                    "action": self.on_document_unarchive_activated,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'import',
-                    'action': self.on_document_import_activated,
-                    'accels': ('<Control>o',)
+                    "name": "delete",
+                    "action": self.on_document_delete_activated,
+                    "accels": ("<Shift>Delete",),
                 },
                 {
-                    'name': 'export',
-                    'action': self.on_export_plaintext,
-                    'accels': (None,)
+                    "name": "import",
+                    "action": self.on_document_import_activated,
+                    "accels": ("<Control>o",),
                 },
                 {
-                    'name': 'export-markdown',
-                    'action': self.on_export_markdown,
-                    'accels': ('<Control><Shift>s',)
+                    "name": "export",
+                    "action": self.on_export_plaintext,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-html',
-                    'action': self.on_export_html,
-                    'accels': (None,)
+                    "name": "export-markdown",
+                    "action": self.on_export_markdown,
+                    "accels": ("<Control><Shift>s",),
                 },
                 {
-                    'name': 'export-pdf',
-                    'action': self.on_export_pdf,
-                    'accels': (None,)
+                    "name": "export-html",
+                    "action": self.on_export_html,
+                    "accels": (None,),
+                },
+                {"name": "export-pdf", "action": self.on_export_pdf, "accels": (None,)},
+                {
+                    "name": "export-docx",
+                    "action": self.on_export_docx,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-docx',
-                    'action': self.on_export_docx,
-                    'accels': (None,)
+                    "name": "export-medium",
+                    "action": self.on_export_medium,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'export-medium',
-                    'action': self.on_export_medium,
-                    'accels': (None,)
+                    "name": "export-writeas",
+                    "action": self.on_export_writeas,
+                    "accels": (None,),
                 },
+                {"name": "backup", "action": self.on_backup, "accels": (None,)},
                 {
-                    'name': 'export-writeas',
-                    'action': self.on_export_writeas,
-                    'accels': (None,)
+                    "name": "preview",
+                    "action": self.on_preview,
+                    "accels": ("<Control><Shift>p",),
                 },
-                {
-                    'name': 'backup',
-                    'action': self.on_backup,
-                    'accels': (None,)
-                },
-                {
-                    'name': 'preview',
-                    'action': self.on_preview,
-                    'accels': ('<Control><Shift>p',)
-                },
-                {
-                    'name': 'print',
-                    'action': self.on_print,
-                    'accels': ('<Control>p',)
-                },
+                {"name": "print", "action": self.on_print, "accels": ("<Control>p",)},
                 # {
                 #     'name': 'search',
                 #     'action': self.search_activated,
                 #     'accels': ('<Control>k',)
                 # },
                 {
-                    'name': 'zoom_in',
-                    'action': self.on_zoom_in,
-                    'accels': ('<Control>equal', '<Control>plus')
+                    "name": "zoom_in",
+                    "action": self.on_zoom_in,
+                    "accels": ("<Control>equal", "<Control>plus"),
                 },
                 {
-                    'name': 'zoom_out',
-                    'action': self.on_zoom_out,
-                    'accels': ('<Control>minus',)
+                    "name": "zoom_out",
+                    "action": self.on_zoom_out,
+                    "accels": ("<Control>minus",),
                 },
                 {
-                    'name': 'zoom_default',
-                    'action': self.on_zoom_default,
-                    'accels': ('<Control>0',)
+                    "name": "zoom_default",
+                    "action": self.on_zoom_default,
+                    "accels": ("<Control>0",),
                 },
                 {
-                    'name': 'search_text',
-                    'action': self.search_activated,
-                    'accels': ('<Control>f',)
+                    "name": "search_text",
+                    "action": self.search_activated,
+                    "accels": ("<Control>f",),
                 },
                 {
-                    'name': 'search_text_next',
-                    'action': self.on_text_search_forward,
-                    'accels': ('<Control>g',)
+                    "name": "search_text_next",
+                    "action": self.on_text_search_forward,
+                    "accels": ("<Control>g",),
                 },
                 {
-                    'name': 'search_text_prev',
-                    'action': self.on_text_search_backward,
-                    'accels': ('<Control><Shift>g',)
+                    "name": "search_text_prev",
+                    "action": self.on_text_search_backward,
+                    "accels": ("<Control><Shift>g",),
                 },
                 {
-                    'name': 'toggle_archived',
-                    'action': self.on_toggle_archive,
-                    'accels': (None,)
+                    "name": "toggle_archived",
+                    "action": self.on_toggle_archive,
+                    "accels": (None,),
                 },
                 {
-                    'name': 'show_extended_stats',
-                    'action': self.on_show_extended_stats,
-                    'accels': (None,)
+                    "name": "show_extended_stats",
+                    "action": self.on_show_extended_stats,
+                    "accels": (None,),
                 },
-            ]
+            ],
         }
 
         for action_group_key, actions in action_items.items():
@@ -328,7 +297,7 @@ class NorkaWindow(Handy.ApplicationWindow):
                         item['name'], None, item['state']
                     )
                 else:
-                    action = Gio.SimpleAction(name=item['name'])
+                    action = Gio.SimpleAction.new(name=item['name'], parameter_type=item.get('parameter_type'))
 
                 if 'action' in item:
                     action.connect('activate', item['action'])
@@ -343,31 +312,20 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.insert_action_group(action_group_key, action_group)
 
     def on_window_delete_event(self, sender: Gtk.Widget = None) -> None:
-        """Save opened document before window is closed.
+        """
+        Handles the delete event of the window by saving the current window size
+        to the settings if the window is not maximized. Logs any exceptions that occur.
 
+        Args:
+            sender (Gtk.Widget, optional): The widget that triggered the event. Defaults to None.
         """
         try:
-            if self.autosave:
-                self.editor.save_document()
-            else:
-                print('Ask for action!')
-
             if not self.is_maximized():
-                self.settings.set_value("window-size",
-                                        GLib.Variant("ai", self.current_size))
-                self.settings.set_value(
-                    "window-position", GLib.Variant("ai",
-                                                    self.current_position))
+                size = self.get_default_size()
+                self.settings.set_value("window-size", GLib.Variant("ai", size))
 
         except Exception as e:
-            Logger.error(e)
-
-    def on_configure_event(self, window, event: Gdk.EventConfigure):
-        if self._configure_timeout_id:
-            GLib.source_remove(self._configure_timeout_id)
-
-        self.current_size = window.get_size()
-        self.current_position = window.get_position()
+            logger.error(e)
 
     def check_grid_items(self) -> None:
         """Check for documents count in storage and switch between screens
@@ -390,32 +348,26 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def toggle_welcome(self, state=True):
         if state:
-            self.screens.set_visible_child_name('welcome-grid')
+            self.screens.set_visible_child_name('welcome-page')
         else:
-            self.screens.set_visible_child_name('document-grid')
+            self.screens.set_visible_child_name('content-page')
 
-    def on_document_close_activated(self,
-                                    sender: Gtk.Widget,
-                                    event=None) -> None:
-        """Save and close opened document.
+    def on_document_close_activated(self, _sender, _event=None) -> None:
+        """Close currently selected document in content page."""
+        self.content_page.document_close_selected()
 
+    def on_document_open(self, _action, parameter):
         """
+        Handle `document.open` action.
 
-        # Should work only in editor mode.
-        if self.screens.get_visible_child_name() == 'editor-grid':
-            self.screens.set_visible_child_name('document-grid')
-            self.editor.unload_document(save=self.autosave)
-            if self.extended_stats_dialog:
-                self.extended_stats_dialog.close()
-                self.extended_stats_dialog = None
+        parameter: `Glib.VariantType('s')` - use `.get_string()` to get document Id.
+        """
+        doc_id = parameter.get_string()
+        if not doc_id:
+            return None
 
-            self.document_grid.reload_items(
-                path=self.document_grid.current_folder_path)
-            self.header.toggle_document_mode()
-            self.header.update_title()
-            self.settings.set_int('last-document-id', -1)
-
-            self.check_grid_items()
+        self.document_open(doc_id)
+        return None
 
     def on_document_item_activated(self, sender: Gtk.Widget) -> None:
         """Activate currently selected document in grid and open it in editor.
@@ -428,11 +380,11 @@ class NorkaWindow(Handy.ApplicationWindow):
         folder = self.document_grid.selected_folder
         if folder:
             self.folder_activate(folder.absolute_path)
-            Logger.debug(f'Activated Folder {folder.absolute_path}')
+            logger.debug('Activated Folder {}', folder.absolute_path)
 
         else:
             doc_id = self.document_grid.selected_document_id
-            Logger.debug(f'Activated Document.Id {doc_id}')
+            logger.debug('Activated Document.Id {}', doc_id)
             self.document_activate(doc_id)
 
     def folder_activate(self, folder_path: str) -> None:
@@ -441,7 +393,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.document_grid.reload_items(path=folder_path)
 
     def document_activate(self, doc_id):
-        Logger.info(f'Document {doc_id} activated')
+        logger.info('Document {} activated', doc_id)
         editor = self.screens.get_child_by_name('editor-grid')
         editor.load_document(doc_id)
         editor.connect('update-document-stats', self.update_document_stats)
@@ -466,25 +418,30 @@ class NorkaWindow(Handy.ApplicationWindow):
         popover.connect('activate', self.on_folder_rename_activated)
         popover.popup()
 
-    def on_document_create_activated(self,
-                                     sender: Gtk.Widget = None,
-                                     event=None,
-                                     title: str = None) -> None:
-        """Create new document named 'Nameless' :) and activate it in editor.
+    def document_open(self, doc_id: str):
 
-        :param sender:
-        :param event:
-        :return:
-        """
-        # If document already loaded to editor we need to close it before create new one
-        if self.editor.document:
-            self.on_document_close_activated(sender, event)
+        logger.debug('TODO: Add new Editor Tab for Document:{}', doc_id)
+        self.content_page.document_open(doc_id)
+        self.split_view.set_show_content(True)
 
-        self.editor.create_document(
-            title=title, folder_path=self.document_grid.current_folder_path)
-        self.screens.set_visible_child_name('editor-grid')
-        self.header.toggle_document_mode()
-        self.header.update_title(title=self.editor.document.title)
+    def on_document_create_action(self,
+                                  action: Gio.SimpleAction, parameter: GLib.Variant) -> None:
+
+        title, path = parameter
+        if not title:
+            title = _('New Document')
+
+        self.content_page.document_create(title=title, folder_path=path or '/')
+        logger.debug('Create new document with title: {} in folder: {}', title, path)
+        # # If document already loaded to editor we need to close it before create new one
+        # if self.editor.document:
+        #     self.on_document_close_activated(sender, event)
+        #
+        # self.editor.create_document(
+        #     title=title, folder_path=self.document_grid.current_folder_path)
+        # self.screens.set_visible_child_name('editor-grid')
+        # self.header.toggle_document_mode()
+        # self.header.update_title(title=self.editor.document.title)
 
     def on_document_save_activated(self,
                                    sender: Gtk.Widget = None,
@@ -548,11 +505,8 @@ class NorkaWindow(Handy.ApplicationWindow):
                 self.document_grid.reload_items()
             return _doc_id or True
         except Exception as e:
-            print(e)
+            logger.error('Failed to import file {}: {}', file_path, e)
             return False
-        finally:
-            self.check_grid_items()
-            self.header.show_spinner(False)
 
     def on_folder_create_activated(self, sender: Gtk.Widget, title: str):
         sender.destroy()
@@ -958,7 +912,7 @@ class NorkaWindow(Handy.ApplicationWindow):
         self.toast.send_notification()
 
     def search_activated(self, sender, event=None):
-        if self.screens.get_visible_child_name() == 'document-grid':
+        if self.screens.get_visible_child_name() == 'content-page':
             self.on_document_search_activated(sender, event)
         elif self.screens.get_visible_child_name() == 'editor-grid':
             self.on_text_search_activated(sender, event)
@@ -1101,7 +1055,7 @@ class NorkaWindow(Handy.ApplicationWindow):
 
     def on_preview(self, sender, event):
         if not self.is_document_editing:
-            Logger.debug('Not in edit mode')
+            logger.debug('Not in edit mode')
             return
 
         doc = self.document_grid.selected_document or self.editor.document
@@ -1120,7 +1074,7 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.editor.connect('document-load', self.preview.show_preview)
             self.editor.connect('document-close', self.preview.show_empty_page)
             self.preview.connect('destroy', self.on_preview_close)
-            self.preview.show_all()
+
         else:
             self.preview.present()
 
@@ -1133,8 +1087,11 @@ class NorkaWindow(Handy.ApplicationWindow):
 
         adjustment = range.get_adjustment()
         percent = adjustment.get_value() / adjustment.get_upper()
-        print(
-            f'Scrolled to: {percent * 100}% / {adjustment.get_lower()} / {adjustment.get_upper()}'
+        logger.debug(
+            'Scrolled to: {}% / {} / {}',
+            percent * 100,
+            adjustment.get_lower(),
+            adjustment.get_upper()
         )
         self.preview.scroll_to(percent)
 
@@ -1149,10 +1106,11 @@ class NorkaWindow(Handy.ApplicationWindow):
             self.extended_stats_dialog.update_stats(stats)
 
     def editor_loading(self, editor: Editor, is_loading: bool) -> None:
-        if is_loading:
-            self.header.loader_spinner.start()
-        else:
-            self.header.loader_spinner.stop()
+        # if is_loading:
+        #     self.header.loader_spinner.start()
+        # else:
+        #     self.header.loader_spinner.stop()
+        self.header.show_spinner(is_loading)
 
     def on_print(self, sender, event=None):
         doc = self.document_grid.selected_document or self.editor.document
@@ -1164,4 +1122,4 @@ class NorkaWindow(Handy.ApplicationWindow):
         printer.print()
 
     def on_printer_callback(self, printer: Printer) -> None:
-        print('printer callback resulted: ')
+        logger.debug('printer callback resulted: ')

@@ -24,7 +24,7 @@
 
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk
 
 
 class FolderCreateDialog(Gtk.MessageDialog):
@@ -53,7 +53,7 @@ class FolderCreateDialog(Gtk.MessageDialog):
         self.add_button(_("Cancel"), Gtk.ResponseType.CANCEL)
 
         suggested_button = self.add_button(_("Create"), Gtk.ResponseType.ACCEPT)
-        suggested_button.get_style_context().add_class('suggested-action')
+        suggested_button.add_css_class('suggested-action')
 
     @property
     def folder_title(self):

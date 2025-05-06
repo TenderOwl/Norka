@@ -26,8 +26,7 @@ import re
 from contextlib import contextmanager
 
 from gi.repository import Gtk
-
-from norka.services.logger import Logger
+from loguru import logger
 
 
 @contextmanager
@@ -184,7 +183,7 @@ class MarkupFormatter:
             origin: str = self.buffer.get_text(start, end, True)
             markup = (size * '#') + ' '
 
-            Logger.info(f'origin: {origin}')
+            logger.info('origin: {}', origin)
 
             pattern = re.compile(r'^(#{1,6})\s')
             match = pattern.match(origin)

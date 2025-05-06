@@ -1,0 +1,24 @@
+using Gtk 4.0;
+
+template $FormatShortcutsWindow: $HdyWindow {
+  can-focus: "False";
+
+  styles [
+    "csd",
+  ]
+
+  Box content_box {
+    visible: true;
+    orientation: vertical;
+
+    $HdyHeaderBar header_bar {
+      visible: "true";
+      title: _("Formatting");
+      show-close-button: "true";
+
+      styles [
+        "csd",
+      ]
+    }
+  }
+}
