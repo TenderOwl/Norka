@@ -158,19 +158,7 @@ class NotesTree(Gtk.Box):
 
     @Gtk.Template.Callback()
     def _on_item_setup(self, _, list_item: Gtk.ListItem):
-        # expander = Gtk.TreeExpander()
-        # box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        # icon = Gtk.Image()
-        # label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END, halign=Gtk.Align.START)
-        # box.append(expander)
-        # box.append(icon)
-        # box.append(label)
-        # expander.set_child(box)
-        # controller = Gtk.GestureClick()
-        # controller.connect_data('released', self._activate, list_item)
-        # expander.add_controller(controller)
-        widget: TreeWidget = TreeWidget()
-        list_item.set_child(widget)
+        list_item.set_child(TreeWidget())
 
     @Gtk.Template.Callback()
     def _on_item_bind(self, _: Gtk.ListView, list_item: Gtk.ListItem):
@@ -180,15 +168,17 @@ class NotesTree(Gtk.Box):
         # icon, label = box.get_first_child(), box.get_last_child()
 
         # Настройка отступа
-        widget.set_margin_start(node.depth * 24)
+        widget.set_margin_start(node.depth * 20)
 
         if node.is_folder:
             widget.set_list_row(list_item.get_item())
             widget.icon.set_from_icon_name("folder-symbolic")
             widget.label.set_label(node.item.title)
         else:
+            widget.icon.set_margin_start(20)
             widget.icon.set_from_icon_name("x-office-document-symbolic")
             widget.label.set_label(node.item.title)
+
 
     def _activate(self, click: Gtk.GestureClick, _n_press: int, _x: float, _y: float, list_item) -> None:
         button = click.get_current_button()
