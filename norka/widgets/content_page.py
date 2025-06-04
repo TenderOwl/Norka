@@ -46,10 +46,7 @@ class ContentPage(Adw.NavigationPage):
 
         self.storage = Gtk.Application.get_default().props.storage
 
-        # Set default page to welcome page if there are no documents
-        match self.storage.count_all():
-            case(0): self.show_welcome()
-            case(_): self.show_content()
+        self.update_active_page()
 
     def show_welcome(self):
         self.screens.set_visible_child_name('welcome-page')
@@ -65,6 +62,15 @@ class ContentPage(Adw.NavigationPage):
 
     def document_open(self, doc_id: str):
         self.editor_tabs_view.add_tab(doc_id)
+        self.update_active_page()
 
     def document_close_selected(self):
         self.editor_tabs_view.close_active_page()
+        self.update_active_page()
+
+    def update_active_page(self):
+        match len(self.editor_tabs_view.pages):
+            case (0):
+                self.show_welcome()
+            case (_):
+                self.show_content()
