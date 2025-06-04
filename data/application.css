@@ -38,7 +38,7 @@
 }
 
 #sourceview {
-  /* color: var(--view-fg-color); */
+  color: var(--view-fg-color);
   background-color: var(--view-bg-color);
   padding: calc(var(--window-radius) * 2);
   border-radius: var(--window-radius);
