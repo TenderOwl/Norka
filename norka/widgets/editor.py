@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020-2022 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,19 @@ import re
 from gettext import gettext as _
 from typing import Tuple
 
-from gi.repository import Gtk, GtkSource, Gdk, Gspell, Pango, Granite, GObject, GLib
+from gi.repository import Gtk, GtkSource, Gdk, Pango, GObject, GLib, Adw, Spelling, Gio
+from loguru import logger
 
-from norka.models.document import Document
-from norka.services.logger import Logger
-from norka.services.markup_formatter import MarkupFormatter
-from norka.services.settings import Settings
-from norka.services.stats_handler import StatsHandler
-from norka.services.storage import Storage
+from norka.define import RESOURCE_PREFIX
+from norka.models import Document
+from norka.services import MarkupFormatter, Settings, StatsHandler, Storage
 from norka.widgets.image_link_popover import ImageLinkPopover
 from norka.widgets.link_popover import LinkPopover
 from norka.widgets.search_bar import SearchBar
 
 
-class Editor(Gtk.Grid):
+@Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/editor.ui")
+class Editor(Adw.Bin):
     __gtype_name__ = 'Editor'
 
     __gsignals__ = {
@@ -62,47 +61,59 @@ class Editor(Gtk.Grid):
         'document-changed': (GObject.SignalFlags.ACTION, None, (bool,)),
     }
 
-    def __init__(self, storage: Storage, settings: Settings):
+    scrolled: Gtk.ScrolledWindow = Gtk.Template.Child()
+    view: GtkSource.View = Gtk.Template.Child()
+    buffer: GtkSource.Buffer
+    checker: Spelling.Checker
+    adapter: Spelling.TextBufferAdapter
+
+    def __init__(self, storage: Storage=None, settings: Settings=None):
         super().__init__()
 
         self.document = None
-        self.storage = storage
-        self.settings = settings
+        self.storage = Gtk.Application.get_default().props.storage
+        self.settings = Gtk.Application.get_default().props.settings
 
-        self.buffer = GtkSource.Buffer()
-        self.buffer.connect('changed', self.on_buffer_changed)
-        self.manager = GtkSource.LanguageManager()
-        self.language = self.manager.get_language("markdown")
-        self.buffer.set_language(self.language)
-        self.buffer.create_tag('match', background="#66ff00")
+        self.settings.connect("changed", self._on_settings_changed)
 
-        self.view = GtkSource.View()
+        self.buffer = GtkSource.Buffer.new_with_language(
+            GtkSource.LanguageManager.get_default().get_language("markdown")
+        )
+        self.set_style_scheme(self.settings.get_string('stylescheme'))
         self.view.set_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_auto_indent(True)
-        self.view.set_smart_home_end(GtkSource.SmartHomeEndType.AFTER)
-        self.view.set_insert_spaces_instead_of_tabs(True)
-        self.view.set_tab_width(4)
-        self.view.props.width_request = 920
-        self.view.set_halign(Gtk.Align.CENTER)
 
-        self.view.set_pixels_above_lines(2)
-        self.view.set_pixels_below_lines(2)
-        self.view.set_pixels_inside_wrap(4)
-        self.view.set_top_margin(32)
-        self.view.set_left_margin(32)
-        self.view.set_right_margin(32)
-        self.view.set_bottom_margin(32)
-        # self.view.set_monospace(True)
-        self.view.get_style_context().add_class('norka-editor')
+        # Init Spelling library
+        self.checker = Spelling.Checker.get_default()
+        self.adapter = Spelling.TextBufferAdapter.new(self.buffer, self.checker)
+        extra_menu = self.adapter.get_menu_model()
 
-        self.view.connect('key-release-event', self.on_key_release_event)
+        self.view.set_extra_menu(extra_menu)
+        self.view.insert_action_group("spelling", self.adapter)
+
+        # Init state from settings
+        self.adapter.set_enabled(self.settings.get_boolean('spellcheck'))
+        self.adapter.set_language(self.settings.get_string('spellcheck-language'))
+        # And bind to settings
+        self.settings.bind("spellcheck", self.adapter, "enabled", Gio.SettingsBindFlags.DEFAULT)
+        self.settings.bind("spellcheck-language", self.adapter, "language", Gio.SettingsBindFlags.DEFAULT)
+
+
+        # self.buffer = GtkSource.Buffer()
+        # self.buffer.connect('changed', self.on_buffer_changed)
+        # self.manager = GtkSource.LanguageManager()
+        # self.language = self.manager.get_language("markdown")
+        # self.buffer.set_language(self.language)
+        # self.buffer.create_tag('match', background="#66ff00")
+
+        event_controller = Gtk.EventControllerKey()
+        self.view.add_controller(event_controller)
+        event_controller.connect("key-released", self.on_key_released)
         self.view.connect('move-cursor', self.on_view_move_cursor)
 
         # Connect markup handler
         self.markup_formatter = MarkupFormatter(self.buffer)
 
-        self.get_style_context().add_class('norka-editor-view')
+        # self.add_css_class('norka-editor-view')
         self.connect('insert-bold', self.on_insert_bold)
         self.connect('insert-italic', self.on_insert_italic)
         self.connect('insert-code', self.on_insert_code)
@@ -116,52 +127,60 @@ class Editor(Gtk.Grid):
         self.connect('insert-link', self.on_insert_link)
         self.connect('insert-image', self.on_insert_image)
 
-        self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled.get_style_context().add_class('scrolled-editor')
-        self.scrolled.add(self.view)
+        # self.scrolled = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        # self.scrolled.add_css_class('scrolled-editor')
+        # self.scrolled.set_child(self.view)
 
         # SearchBar
         self.search_bar = SearchBar()
         self.search_revealer = Gtk.Revealer()
-        self.search_revealer.add(self.search_bar)
+        self.search_revealer.set_child(self.search_bar)
         self.search_bar.connect('find-changed', self.do_next_match)
         self.search_bar.connect('find-next', self.do_next_match)
         self.search_bar.connect('find-prev', self.do_previous_match)
         self.search_bar.connect('stop-search', self.do_stop_search)
 
-        content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        content_grid.pack_start(self.search_revealer, False, True, 0)
-        content_grid.pack_start(self.scrolled, True, True, 0)
-        content_grid.show_all()
+        # content_grid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        # content_grid.append(self.search_revealer)
+        # content_grid.append(self.scrolled)
 
-        self.overlay = Gtk.Overlay()
-        self.overlay.add(content_grid)
-        self.stats_overlay = Granite.WidgetsOverlayBar.new(self.overlay)
+        # self.overlay = Gtk.Overlay()
+        # self.overlay.set_child(content_grid)
+        # self.stats_overlay = Adw.ToastOverlay()
+        # self.stats_overlay.set_child(self.overlay)
 
         # Initialize stats calculations and connect `destroy` event
-        self.stats_handler = StatsHandler(buffer=self.buffer)
-        self.stats_overlay.connect('destroy', lambda x: self.stats_handler.on_destroy(self))
-        self.stats_handler.connect('update-document-stats', self.update_stats)
-        self.stats = self.stats_handler.stats
+        # self.stats_handler = StatsHandler(buffer=self.buffer)
+        # self.stats_overlay.connect('destroy', lambda x: self.stats_handler.on_destroy(self))
+        # self.stats_handler.connect('update-document-stats', self.update_stats)
+        # self.stats = self.stats_handler.stats
 
-        self.add(self.overlay)
+        # self.append(self.stats_overlay)
 
         # SpellChecker
         self.font_desc = Pango.FontDescription()
-        self.spellchecker = Gspell.Checker()
-        self.spell_buffer = Gspell.TextBuffer.get_from_gtk_text_buffer(self.view.get_buffer())
-        self.spell_buffer.set_spell_checker(self.spellchecker)
-        spell_language = Gspell.Language.lookup(self.settings.get_string('spellcheck-language'))
-        if spell_language:
-            self.spellchecker.set_language(spell_language)
-
-        self.spell_view = Gspell.TextView.get_from_gtk_text_view(self.view)
-        self.spell_view.set_enable_language_menu(False)
 
         self.search_settings = GtkSource.SearchSettings(wrap_around=True)
         self.search_context = GtkSource.SearchContext(buffer=self.buffer,
                                                       settings=self.search_settings)
         self.search_iter = None
+
+    def _on_settings_changed(self, settings, key):
+        logger.debug(f"SETTINGS: {key} changed")
+        if key == "spellcheck":
+            self.adapter.set_enabled(settings.get_boolean(key))
+        if key == "spellcheck-language":
+            self.set_spellcheck_language(settings.get_string(key))
+        if key == "stylescheme":
+            self.set_style_scheme(settings.get_string(key))
+        if key == "autoindent":
+            self.set_autoindent(settings.get_boolean("autoindent"))
+        if key == "spaces-instead-of-tabs":
+            self.set_tabs_spaces(settings.get_boolean("spaces-instead-of-tabs"))
+        if key == "indent-width":
+            self.set_indent_width(settings.get_int("indent-width"))
+        if key == "font":
+            self.editor.update_font(settings.get_string("font"))
 
     def on_buffer_changed(self, buffer: Gtk.TextBuffer):
         self.buffer.set_modified(True)
@@ -196,12 +215,12 @@ class Editor(Gtk.Grid):
 
         self.document = self.storage.get(doc_id)
 
-        self.buffer.begin_not_undoable_action()
+        # self.buffer.begin_not_undoable_action()
         self.buffer.set_text(self.document.content)
         self.buffer.set_modified(False)
         self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.view.set_editable(True)
 
         self.view.grab_focus()
@@ -233,15 +252,15 @@ class Editor(Gtk.Grid):
         self.search_bar.stop_search()
 
     def load_file(self, path: str) -> bool:
-        self.buffer.begin_not_undoable_action()
+        # self.buffer.begin_not_undoable_action()
         try:
             txt = open(path).read()
         except Exception as e:
-            Logger.error(e)
+            logger.error('Failed to load file {}: {}', path, e)
             return False
 
         self.buffer.set_text(txt)
-        self.buffer.end_not_undoable_action()
+        # self.buffer.end_not_undoable_action()
         self.buffer.set_modified(False)
         self.emit('document-changed', False)
         self.buffer.place_cursor(self.buffer.get_start_iter())
@@ -276,14 +295,18 @@ class Editor(Gtk.Grid):
         if self.document.document_id == -1:
             self.document.document_id = self.storage.add(self.document)
 
-        if self.storage.update(self.document.document_id,
-                               {"content": text, 'title': self.document.title}):
+        if self.storage.update(
+            self.document.document_id, {"content": text, "title": self.document.title}
+        ):
             self.document.content = text
             self.buffer.set_modified(False)
-            self.emit('document-changed', False)
-            Logger.debug('Document %s saved', self.document.document_id)
-            self.emit('loading', False)
+            self.emit("document-changed", False)
+            logger.debug("Document {} saved", self.document.document_id)
+            self.emit("loading", False)
             return True
+
+        logger.error("Failed to save document {}", self.document.document_id)
+        return False
 
     def get_text(self) -> str:
         return self.buffer.get_text(
@@ -292,52 +315,69 @@ class Editor(Gtk.Grid):
             True
         ).strip()
 
-    def get_selected_text(self) -> str:
+    def get_selected_text(self) -> str | None:
         buffer = self.view.get_buffer()
 
         if buffer.get_has_selection():
             (start, end) = buffer.get_selection_bounds()
             return buffer.get_text(start, end, True)
 
-    def on_key_release_event(self, text_view: GtkSource.View, event: Gdk.EventKey) -> None:
-        """Handle release event and iterate Markdown list markup
+        return None
 
-        :param text_view: widget emitted the event
-        :param event: key release event
-        :return:
+    @Gtk.Template.Callback()
+    def on_key_released(self, _sender: Gtk.EventControllerKey, keyval: int, _keycode: int, state:Gdk.ModifierType, _user_data: object = None) -> None:
         """
-        buffer: Gtk.TextBuffer = text_view.get_buffer()
-        if event.keyval == Gdk.KEY_Return and event.get_state() != Gdk.ModifierType.SHIFT_MASK:
-            buffer.begin_user_action()
-            curr_iter = buffer.get_iter_at_mark(buffer.get_insert())
+        Handles the key release event on the text view to apply Markdown formatting.
+
+        If the Enter key is pressed without the Shift modifier, it checks the previous line
+        for Markdown list characters (e.g., numbered or bulleted lists). If a list character
+        is detected, it inserts the appropriate list character on the new line. If the previous
+        line contains an empty list item, it removes the list character instead.
+
+        :param _sender: The event controller key that triggered this callback.
+        :param keyval: The key value of the released key.
+        :param _keycode: The hardware keycode of the released key.
+        :param state: The state of the modifier keys at the time of the key release.
+        :param _user_data: Additional user data, if any.
+        :return: None
+        """
+        if keyval == Gdk.KEY_Return and state != Gdk.ModifierType.SHIFT_MASK:
+            self.buffer.begin_user_action()
+            curr_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
             curr_line = curr_iter.get_line()
-            if curr_line > 0:
-                # Get prev line text
-                prev_line = curr_line - 1
-                prev_iter = buffer.get_iter_at_line(prev_line)
-                prev_line_text = buffer.get_text(prev_iter, curr_iter, False)
-                # Check if prev line starts from markdown list chars
-                match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
-                if match:
-                    if match.group(3):
-                        sign = match.group(2)
-                        if re.match(r'^[0-9]+.', sign):
-                            # ordered list should increment number
-                            sign = str(int(sign[:-1]) + 1) + '.'
+            if curr_line <= 0:
+                return
 
-                        buffer.insert_at_cursor(sign + ' ')
-                    else:
-                        # If user don't wanna insert new list item then go back and delete prev empty li sign - `-`
-                        mark: Gtk.TextMark = buffer.get_insert()
-                        curr_iter: Gtk.TextIter = buffer.get_iter_at_mark(mark)
-                        curr_iter.backward_line()
-                        end_iter = curr_iter.copy()
-                        end_iter.forward_to_line_end()
-                        buffer.delete(curr_iter, end_iter)
+            # Get prev line text
+            prev_line = curr_line - 1
+            result, prev_iter = self.buffer.get_iter_at_line(prev_line)
+            prev_line_text = self.buffer.get_text(prev_iter, curr_iter, False)
+            # Check if prev line starts from Markdown list chars
+            match = re.search(r"^(\s){,4}([0-9]\.|-|\*|\+)\s(.*)$", prev_line_text)
+            if match:
+                if match.group(3):
+                    sign = match.group(2)
+                    if re.match(r'^[0-9]+.', sign):
+                        # ordered list should increment number
+                        sign = str(int(sign[:-1]) + 1) + '.'
 
-                        buffer.place_cursor(curr_iter)
+                    self.buffer.insert_at_cursor(sign + ' ')
+                else:
+                    # If user don't want to insert new list item then go back and delete prev empty li sign - `-`
+                    curr_iter.backward_line()
+                    end_iter = curr_iter.copy()
+                    end_iter.forward_to_line_end()
+                    self.buffer.delete(curr_iter, end_iter)
+                    # mark: Gtk.TextMark = self.buffer.get_insert()
+                    # curr_iter: Gtk.TextIter = self.buffer.get_iter_at_mark(mark)
+                    # curr_iter.backward_line()
+                    # end_iter = curr_iter.copy()
+                    # end_iter.forward_to_line_end()
+                    # self.buffer.delete(curr_iter, end_iter)
+                    #
+                    # self.buffer.place_cursor(curr_iter)
 
-            buffer.end_user_action()
+            self.buffer.end_user_action()
 
     def on_view_move_cursor(self, text_view, step, count, extend_selection):
         cursor_mark = self.buffer.get_insert()
@@ -355,32 +395,27 @@ class Editor(Gtk.Grid):
             self.search_revealer.set_reveal_child(True)
             self.search_bar.search_entry.grab_focus()
 
-    def set_spellcheck(self, value: bool) -> None:
-        self.spell_view.set_inline_spell_checking(value)
-
     def set_spellcheck_language(self, language_code: str) -> None:
-        spell_language = Gspell.Language.lookup(language_code)
-        if spell_language:
-            self.spellchecker.set_language(spell_language)
+        logger.debug("TODO: Fix spellcheck")
 
     def set_style_scheme(self, scheme_id: str) -> None:
-        scheme = GtkSource.StyleSchemeManager.get_default().get_scheme(scheme_id)
+        manager: GtkSource.StyleSchemeManager = GtkSource.StyleSchemeManager.get_default()
+        scheme = manager.get_scheme(scheme_id)
         self.buffer.set_style_scheme(scheme)
 
-        try:
-            bgcolor = scheme.get_style('text').props.background
-        except AttributeError:
-            bgcolor = '#fff'
-
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_data(f'.scrolled-editor {{background: {bgcolor}}}'.encode('ascii'))
-        self.scrolled.get_style_context().add_provider(css_provider,
-                                                       Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        # try:
+        #     bg_color = scheme.get_style('text').props.background
+        # except AttributeError:
+        #     bg_color = '#fff'
+        #
+        # css_provider = Gtk.CssProvider()
+        # css_provider.load_from_data(f'.scrolled-editor {{background: {bg_color}}}'.encode('ascii'))
+        # self.scrolled.add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
     def update_font(self, font: str) -> None:
         # pass
         self.font_desc = Pango.FontDescription.from_string(font)
-        self.view.override_font(self.font_desc)
+        # self.view.override_property()
 
     def update_stats(self, stats_handler: StatsHandler):
         self.stats = stats_handler.stats
@@ -397,7 +432,7 @@ class Editor(Gtk.Grid):
 
         # Can't search anything in an inexistent buffer and/or without anything to search.
         if any([not self.buffer, not self.get_text(), not text]):
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             return False
 
         self.search_context.set_highlight(True)
@@ -416,19 +451,19 @@ class Editor(Gtk.Grid):
             found, self.search_iter = self.search_for_iter_backward(self.search_iter)
 
         if found:
-            self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-            self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+            self.search_bar.search_entry.remove_css_class('error')
+            # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
         else:
             self.search_iter = self.buffer.get_start_iter()
             found, end_iter = self.search_for_iter(self.search_iter)
             if found:
-                self.search_bar.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
+                self.search_bar.search_entry.remove_css_class('error')
+                # self.search_bar.search_entry.props.primary_icon_name = "edit-find-symbolic"
             else:
                 self.search_iter.set_offset(-1)
                 self.buffer.select_range(self.search_iter, self.search_iter)
-                self.search_bar.search_entry.get_style_context().add_class(Gtk.STYLE_CLASS_ERROR)
-                self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
+                self.search_bar.search_entry.add_css_class('error')
+#                 self.search_bar.search_entry.props.primary_icon_name = "dialog-error-symbolic"
                 return False
 
         return True
@@ -465,7 +500,7 @@ class Editor(Gtk.Grid):
         self.buffer.place_cursor(start_iter)
         self.buffer.select_range(start_iter, end_iter)
 
-    def get_cursor_coods(self) -> Gdk.Rectangle:
+    def get_cursor_coords(self) -> Gdk.Rectangle:
 
         buffer = self.view.get_buffer()
         mark = buffer.get_insert()
@@ -525,7 +560,7 @@ class Editor(Gtk.Grid):
         self.markup_formatter.toggle_line(self.view, '>')
 
     def on_insert_link(self, widget, data=None):
-        rect = self.get_cursor_coods()
+        rect = self.get_cursor_coords()
         popover = LinkPopover(self.view)
         popover.set_pointing_to(rect)
         popover.set_link(self.get_selected_text())
@@ -534,7 +569,7 @@ class Editor(Gtk.Grid):
         popover.popup()
 
     def on_insert_image(self, widget, data=None):
-        rect = self.get_cursor_coods()
+        rect = self.get_cursor_coords()
         popover = ImageLinkPopover(self.view)
         popover.set_pointing_to(rect)
         popover.set_link(self.get_selected_text())

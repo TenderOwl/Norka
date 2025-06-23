@@ -1,0 +1,20 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ContentPage: Adw.NavigationPage {
+  Adw.ViewStack screens {
+    Adw.ViewStackPage {
+      name: "welcome-page";
+      title: _("Norka");
+
+      child: $WelcomePage welcome_page {};
+    }
+
+    Adw.ViewStackPage {
+      name: "content-page";
+      title: _("Content");
+
+      child: $EditorTabsView editor_tabs_view {};
+    }
+  }
+}

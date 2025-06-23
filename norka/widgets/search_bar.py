@@ -40,33 +40,33 @@ class SearchBar(Gtk.FlowBox):
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         self.set_column_spacing(6)
         self.set_max_children_per_line(1)
-        self.get_style_context().add_class('search-bar')
+        self.add_css_class('search-bar')
 
         self.search_entry = Gtk.SearchEntry(hexpand=True, placeholder_text=_("Find"))
         self.search_entry.connect('changed', self.on_find_changed)
         self.search_entry.connect('activate', self.on_find_next)
         self.search_entry.connect('stop_search', self.on_stop_search)
 
-        tool_arrow_down = Gtk.Button.new_from_icon_name("go-down-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+        tool_arrow_down = Gtk.Button.new_from_icon_name("go-down-symbolic")
         tool_arrow_down.connect('clicked', self.on_find_next)
 
-        tool_arrow_up = Gtk.Button.new_from_icon_name("go-up-symbolic", Gtk.IconSize.SMALL_TOOLBAR)
+        tool_arrow_up = Gtk.Button.new_from_icon_name("go-up-symbolic")
         tool_arrow_up.connect('clicked', self.on_find_prev)
 
-        tool_close = Gtk.Button.new_from_icon_name('window-close-symbolic', Gtk.IconSize.SMALL_TOOLBAR)
+        tool_close = Gtk.Button.new_from_icon_name('window-close-symbolic')
         tool_close.connect('clicked', self.on_stop_search)
 
-        search_grid = Gtk.Grid(margin=3)
-        search_grid.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
-        search_grid.add(self.search_entry)
-        search_grid.add(tool_arrow_down)
-        search_grid.add(tool_arrow_up)
-        search_grid.add(tool_close)
+        search_grid = Gtk.Box(spacing=3)
+        search_grid.add_css_class('linked')
+        search_grid.append(self.search_entry)
+        search_grid.append(tool_arrow_down)
+        search_grid.append(tool_arrow_up)
+        search_grid.append(tool_close)
 
         search_flow_box_child = Gtk.FlowBoxChild(can_focus=False)
-        search_flow_box_child.add(search_grid)
+        search_flow_box_child.set_child(search_grid)
 
-        self.add(search_flow_box_child)
+        self.append(search_flow_box_child)
 
     def on_find_changed(self, sender, event=None):
         self.emit('find-changed', self.search_entry.get_text())
@@ -82,6 +82,6 @@ class SearchBar(Gtk.FlowBox):
 
     @GObject.Signal(flags=GObject.SignalFlags.RUN_LAST)
     def stop_search(self):
-        self.search_entry.get_style_context().remove_class(Gtk.STYLE_CLASS_ERROR)
-        self.search_entry.props.primary_icon_name = "edit-find-symbolic"
+        self.search_entry.remove_css_class('error')
+        # self.search_entry.props.primary_icon_name = "edit-find-symbolic"
         self.search_entry.set_text('')

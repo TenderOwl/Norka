@@ -24,7 +24,7 @@
 from datetime import datetime
 from gettext import gettext as _
 
-from gi.repository import Gtk, Granite, Handy
+from gi.repository import Gtk, Adw
 
 from norka.define import RESOURCE_PREFIX
 from norka.models.document import Document
@@ -32,7 +32,7 @@ from norka.services.stats_handler import DocumentStats
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/stats.ui")
-class ExtendedStatsWindow(Handy.Window):
+class ExtendedStatsWindow(Adw.Window):
     __gtype_name__ = 'ExtendedStatsWindow'
 
     _document: Document = None
@@ -58,7 +58,6 @@ class ExtendedStatsWindow(Handy.Window):
         self.export_markdown.connect('clicked', window.on_export_markdown)
         self.export_html.connect('clicked', window.on_export_html)
 
-        self.show_all()
 
     @property
     def document(self):

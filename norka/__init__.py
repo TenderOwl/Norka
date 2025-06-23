@@ -1,8 +1,7 @@
 import gi
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-gi.require_version('Gspell', '1')
-gi.require_version('GtkSource', '4')
-gi.require_version('Handy', '1')
-gi.require_version("WebKit2", "4.1")
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+gi.require_version('GtkSource', '5')
+gi.require_version("Spelling", "1")
+gi.require_version("WebKit", "6.0")

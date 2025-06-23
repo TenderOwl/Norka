@@ -60,16 +60,15 @@ class RenamePopover(Gtk.Popover):
         self.rename_button = Gtk.Button(label=_("Rename"))
         self.rename_button.connect('clicked', self.apply_activated)
         self.rename_button.set_sensitive(False)
-        self.rename_button.get_style_context().add_class("destructive-action")
+        self.rename_button.add_css_class("destructive-action")
         grid.attach(self.rename_button, 1, 1, 1, 1)
 
-        self.add(grid)
-        self.show_all()
+        self.set_child(grid)
 
-    def text_changed(self, editable) -> None:
+    def text_changed(self, _editable) -> None:
         self.rename_button.set_sensitive(self.origin_title != self.entry.get_text())
 
-    def apply_activated(self, widget: Gtk.Widget):
+    def apply_activated(self, _widget: Gtk.Widget):
         text = self.entry.get_text().strip()
         if self.origin_title != text:
             self.emit('activate', text)

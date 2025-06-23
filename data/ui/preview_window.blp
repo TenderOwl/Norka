@@ -1,0 +1,27 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreviewWindow: Adw.Window {
+  Overlay header_overlay {
+    Adw.Leaflet content_deck {
+      can-unfold: true;
+      vexpand: true;
+    }
+  }
+}
+
+Revealer header_revealer {
+  visible: true;
+  can-focus: false;
+  valign: start;
+  reveal-child: true;
+
+  Adw.HeaderBar header_bar {
+    name: "headerbar_revealer";
+
+    Adw.Spinner spinner {
+      visible: true;
+      can-focus: false;
+    }
+  }
+}

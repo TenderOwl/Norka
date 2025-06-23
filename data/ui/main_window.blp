@@ -1,0 +1,30 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NorkaWindow: Adw.ApplicationWindow {
+  default-width: 1200;
+  default-height: 800;
+  width-request: 360;
+  height-request: 300;
+
+  Adw.Breakpoint {
+    condition ("max-width: 600px")
+    setters {
+      split_view.collapsed: true;
+    }
+  }
+
+  Adw.NavigationSplitView split_view {
+    [sidebar]
+    $NotesSidebar sidebar {
+      name: "sidebar";
+      title: _("Notes");
+    }
+
+    [content]
+    $ContentPage content_page {
+      name: "content";
+      title: _("Content");
+    }
+  }
+}

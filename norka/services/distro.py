@@ -37,6 +37,7 @@ import logging
 import argparse
 import subprocess
 
+from loguru import logger
 
 _UNIXCONFDIR = os.environ.get('UNIXCONFDIR', '/etc')
 _OS_RELEASE_BASENAME = 'os-release'
@@ -1211,10 +1212,6 @@ _distro = LinuxDistribution()
 
 
 def main():
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(logging.StreamHandler(sys.stdout))
-
     parser = argparse.ArgumentParser(description="OS distro info tool")
     parser.add_argument(
         '--json',
@@ -1242,11 +1239,11 @@ def main():
     if args.json:
         logger.info(json.dumps(dist.info(), indent=4, sort_keys=True))
     else:
-        logger.info('Name: %s', dist.name(pretty=True))
+        logger.info('Name: {}', dist.name(pretty=True))
         distribution_version = dist.version(pretty=True)
-        logger.info('Version: %s', distribution_version)
+        logger.info("Version: {}", distribution_version)
         distribution_codename = dist.codename()
-        logger.info('Codename: %s', distribution_codename)
+        logger.info("Codename: {}", distribution_codename)
 
 
 if __name__ == '__main__':

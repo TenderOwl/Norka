@@ -1,0 +1,10 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreferencesDialog: Adw.PreferencesDialog {
+  search-enabled: true;
+
+  $PreferencesGeneralPage general_page {}
+  $PreferencesInterfacePage interface_page {}
+  $PreferencesExportPage export_page {}
+}

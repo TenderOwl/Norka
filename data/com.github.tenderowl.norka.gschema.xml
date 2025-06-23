@@ -64,6 +64,11 @@
             <summary>Prefer dark theme</summary>
             <description>Whether the application prefers to use a dark theme</description>
         </key>
+        <key name="theme-mode" type="s">
+            <default>"system"</default>
+            <summary>Theme Mode</summary>
+            <description>Whether the application prefers to use a dark, light or system theme</description>
+        </key>
         <key name="stylescheme" type="s">
             <default>"norka"</default>
             <summary>Editor style scheme</summary>

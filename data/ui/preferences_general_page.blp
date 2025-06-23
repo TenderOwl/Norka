@@ -1,0 +1,45 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PreferencesGeneralPage: Adw.PreferencesPage {
+  name: "behavior";
+  title: _("Behavior");
+  icon-name: 'preferences-system-symbolic';
+
+  Adw.PreferencesGroup {
+    title: _("General");
+
+    Adw.SwitchRow autosave_switch {
+      title: _("Save files when changed");
+    }
+
+    Adw.SwitchRow sort_switch {
+      title: _("Sort documents backwards");
+    }
+
+    Adw.SwitchRow spellcheck_switch {
+      title: _("Spell checking");
+    }
+
+    // Adw.ComboRow spellcheck_language_chooser {
+    //   title: _("Language");
+    // }
+  }
+
+  Adw.PreferencesGroup {
+    title: _("Tabs");
+
+    Adw.SwitchRow autoindent_switch {
+      title: _("Automatic indentation");
+    }
+
+    Adw.SwitchRow spaces_tabs_switch {
+      title: _("Insert spaces instead of tabs");
+    }
+
+    Adw.SpinRow indent_width {
+      title: _("Tab width");
+      numeric: true;
+    }
+  }
+}

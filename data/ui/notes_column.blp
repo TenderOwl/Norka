@@ -1,0 +1,40 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NotesColumn : Gtk.Box {
+  orientation: vertical;
+  vexpand: true;
+
+  Adw.ViewStack columns_stack {
+    enable-transitions: true;
+    vexpand: true;
+
+    Adw.ViewStackPage {
+      title: _("Tree");
+      icon-name: "view-list-bullet-symbolic";
+      name: "tree_view";
+
+      child: $NotesTree notes_tree {};
+    }
+
+    Adw.ViewStackPage {
+      title: _("Structure");
+      icon-name: "accessories-dictionary-symbolic";
+      name: "structure_view";
+
+      child: Adw.StatusPage {
+        title: _("Structure");
+      };
+    }
+  }
+
+  Adw.InlineViewSwitcher view_switcher {
+    stack: columns_stack;
+    display-mode: both;
+    homogeneous: true;
+    margin-end: 8;
+    margin-top: 8;
+    margin-start: 8;
+    margin-bottom: 8;
+  }
+}

@@ -1,5 +1,5 @@
 configure_file(
-  input: meson.project_name() + '.in',
+  input: meson.project_name() + '.py',
   output: meson.project_name(),
   configuration: conf,
   install: true,

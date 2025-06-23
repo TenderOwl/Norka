@@ -25,6 +25,7 @@
 from enum import Enum
 
 import requests
+from loguru import logger
 
 from norka.models.document import Document
 
@@ -39,6 +40,7 @@ class Medium:
     BASE_API_URL = 'https://api.medium.com/v1'
 
     def __init__(self, access_token: str = None):
+        self.access_token = None
         self.session = requests.Session()
         self.set_token(access_token)
 
@@ -54,8 +56,10 @@ class Medium:
             response = self.session.get(self.api_route('/me'))
             if response.status_code == 200:
                 return response.json().get('data')
+            return None
         except Exception as e:
-            print(e)
+            logger.error(e)
+            return None
 
     def create_post(self, user_id: str, document: Document, publish_status: PublishStatus = None):
         response = self.session.post(

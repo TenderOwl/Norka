@@ -1,6 +1,8 @@
 import os.path
 from unittest import TestCase
 
+from loguru import logger
+
 from norka.define import STORAGE_NAME, DB_VERSION
 from norka.models.document import Document
 from norka.models.folder import Folder
@@ -11,14 +13,15 @@ class StorageTests(TestCase):
 
     def setUp(self) -> None:
         self.storage_name = 'test-' + STORAGE_NAME
-        print(f'Initializind {self.storage_name}')
+        logger.info(f'Initializind {self.storage_name}')
 
         storage_path = os.path.join('test-' + STORAGE_NAME)
         self.storage = Storage(storage_path)
         self.storage.init()
 
     def tearDown(self) -> None:
-        print(f'Unlinking {self.storage.file_path}')
+        self.storage.close()
+        logger.info(f'Unlinking {self.storage.file_path}')
         os.remove(self.storage.file_path)
 
     def _create_document(self, path: str = "/"):

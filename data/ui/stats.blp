@@ -1,0 +1,248 @@
+using Gtk 4.0;
+
+Image export-html-icon {
+  visible: true;
+  can-focus: false;
+  resource: "/com/github/tenderowl/norka/icons/text-html.svg";
+}
+
+Image export-markdown-icon {
+  visible: true;
+  can-focus: false;
+  resource: "/com/github/tenderowl/norka/icons/text-markdown.svg";
+}
+
+Image export-text-icon {
+  visible: true;
+  can-focus: false;
+  resource: "/com/github/tenderowl/norka/icons/text.svg";
+}
+
+template $ExtendedStatsWindow: $HdyWindow {
+  can-focus: "False";
+
+  styles [
+    "csd",
+  ]
+
+  Box {
+    orientation: vertical;
+
+    $HdyHeaderBar header_bar {
+      visible: "true";
+      title: _("Stats");
+      show-close-button: "true";
+
+      styles [
+        "csd",
+      ]
+    }
+
+    Box main_box {
+      visible: true;
+      orientation: vertical;
+      margin-start: 8;
+      margin-end: 8;
+      margin-top: 8;
+      margin-bottom: 8;
+
+      Label title_label {
+        visible: true;
+        can-focus: false;
+        halign: start;
+        label: _("Document");
+        ellipsize: end;
+
+        styles [
+          "title-1",
+        ]
+      }
+
+      Separator {
+        visible: true;
+        can-focus: false;
+        margin-top: 14;
+        margin-bottom: 14;
+      }
+
+      Grid {
+        visible: true;
+        can-focus: false;
+        margin-start: 6;
+        margin-end: 6;
+        row-spacing: 6;
+        column-spacing: 6;
+        column-homogeneous: true;
+
+        Label read_time_label {
+          visible: true;
+          can-focus: false;
+          halign: start;
+          margin-top: 14;
+          label: _("0m 0s");
+
+          styles [
+            "title-4",
+            "accent",
+          ]
+        }
+
+        Label paragraphs_count_label {
+          halign: start;
+          margin-start: 14;
+          margin-top: 14;
+          label: _("0");
+
+          styles [
+            "title-4",
+            "accent",
+          ]
+        }
+
+        Label {
+          halign: start;
+          label: _("READ TIME");
+
+          styles [
+            "stat_label",
+          ]
+        }
+
+        Label {
+          halign: start;
+          margin-start: 14;
+          label: _("PARAGRAPHS");
+
+          styles [
+            "stat_label",
+          ]
+        }
+
+        Label {
+          halign: start;
+          label: _("CHARACTERS");
+
+          styles [
+            "stat_label",
+          ]
+        }
+
+        Label {
+          halign: start;
+          margin-start: 14;
+          label: _("WORDS");
+
+          styles [
+            "stat_label",
+          ]
+        }
+
+        Label characters_count_label {
+          halign: start;
+          margin-top: 8;
+          label: _("0");
+
+          styles [
+            "title-4",
+            "accent",
+          ]
+        }
+
+        Label words_count_label {
+          halign: start;
+          margin-start: 14;
+          margin-top: 8;
+          label: _("0");
+
+          styles [
+            "title-4",
+            "accent",
+          ]
+        }
+      }
+
+      Separator {
+        margin-top: 14;
+        margin-bottom: 14;
+      }
+
+      Label created_date_label {
+        halign: start;
+        margin-start: 6;
+        margin-end: 6;
+
+        styles [
+          "title-4",
+          "accent",
+        ]
+      }
+
+      Label {
+        halign: start;
+        margin-start: 6;
+        margin-end: 6;
+        margin-top: 6;
+        margin-bottom: 6;
+        label: _("CREATION DATE");
+
+        styles [
+          "stat_label",
+        ]
+      }
+
+      Label modified_date_label {
+        halign: start;
+        margin-start: 6;
+        margin-end: 6;
+        margin-top: 14;
+
+        styles [
+          "title-4",
+          "accent",
+        ]
+      }
+
+      Label {
+        halign: start;
+        margin-start: 6;
+        margin-end: 6;
+        margin-top: 6;
+        margin-bottom: 6;
+        label: _("MODIFICATION DATE");
+
+        styles [
+          "stat_label",
+        ]
+      }
+
+      Separator {
+        margin-top: 14;
+        margin-bottom: 14;
+      }
+
+      Grid {
+        hexpand: true;
+        vexpand: false;
+        row-homogeneous: true;
+        column-homogeneous: true;
+
+        Button export_text {
+          label: _("Text");
+          tooltip-text: _("Export document to plain text file\n                                        ");
+          icon-name: "export-text-icon";
+        }
+
+        Button export_markdown {
+          label: _("Markdown");
+          icon-name: "export-markdown-icon";
+        }
+
+        Button export_html {
+          label: _("HTML");
+          tooltip-text: _("Export document to HTML");
+          icon-name: "export-html-icon";
+        }
+      }
+    }
+  }
+}

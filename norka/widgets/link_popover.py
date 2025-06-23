@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020 Andrey Maksimov <meamka@ya.ru>
+# Copyright (c) 2020-2025 Andrey Maksimov <meamka@ya.ru>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ class LinkPopover(Gtk.Popover):
         self.set_relative_to(relative_to)
         self.set_position(Gtk.PositionType.BOTTOM)
 
-        link_label = Gtk.Label(_('Link to insert:'), halign=Gtk.Align.START, hexpand=True)
+        link_label = Gtk.Label(label=_('Link to insert:'), halign=Gtk.Align.START, hexpand=True)
 
         self.link_entry = Gtk.Entry(placeholder_text=_('https://tenderowl.com'))
         self.link_entry.connect('activate', self.on_activate)
@@ -53,9 +53,8 @@ class LinkPopover(Gtk.Popover):
         box.add(link_label)
         box.add(self.link_entry)
 
-        self.add(box)
+        self.set_child(box)
 
-        self.show_all()
 
     def set_link(self, link: str = None):
         self.link_entry.set_text(link or '')

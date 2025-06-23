@@ -1,0 +1,64 @@
+{
+    "app-id" : "com.github.tenderowl.norka",
+    "runtime" : "org.gnome.Platform",
+    "sdk" : "org.gnome.Sdk",
+    "runtime-version" : "48",
+    "command" : "norka",
+    "finish-args" : [
+        "--filesystem=xdg-documents",
+        "--share=ipc",
+        "--share=network",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--socket=cups"
+    ],
+    "x-run-args": ["-v"],
+    "cleanup" : [
+        "/include",
+        "/lib/pkgconfig",
+        "/man",
+        "/share/doc",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "*.la",
+        "*.a"
+    ],
+    "modules" : [
+    	{
+    	    "name": "spelling",
+    	    "builddir": true,
+    	    "buildsystem": "meson",
+    	    "sources": [
+    	    	{
+    	    	    "type": "git",
+    	    	    "url": "https://gitlab.gnome.org/GNOME/libspelling.git",
+    	    	    "tag": "0.4.8"
+    	    	}
+    	    ],
+    	    "config-opts": [
+                "-Ddocs=false",
+                "-Dvapi=false",
+                "-Dsysprof=false"
+            ]
+    	},
+        "python3-modules.json",
+        {
+            "name" : "norka",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "dir",
+                    "path": ".."
+                }
+            ],
+            "config-opts": [
+                "-Dprofile=development"
+            ]
+        }
+    ],
+    "build-options" : {
+        "env" : {        }
+    }
+}

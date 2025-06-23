@@ -47,4 +47,4 @@ class MessageDialog(Gtk.MessageDialog):
         self.add_button(_('Delete'), Gtk.ResponseType.APPLY)
 
         self.set_default_response(Gtk.ResponseType.CANCEL)
-        self.get_widget_for_response(Gtk.ResponseType.APPLY).get_style_context().add_class("destructive-action")
+        self.get_widget_for_response(Gtk.ResponseType.APPLY).add_css_class("destructive-action")

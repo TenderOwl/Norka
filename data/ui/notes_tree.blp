@@ -1,0 +1,31 @@
+using Gtk 4.0;
+
+template $NotesTree: Box {
+  orientation: vertical;
+
+  ScrolledWindow {
+    vexpand: true;
+
+    ListView list_view {
+      single-click-activate: false;
+      show-separators: false;
+      enable-rubberband: false;
+
+      model: SingleSelection selection {
+        autoselect: false;
+        selection-changed => $_on_selection_changed();
+      };
+
+      factory: SignalListItemFactory factory {
+        setup => $_on_item_setup();
+        bind => $_on_item_bind();
+      };
+
+      // activate => $_on_list_view_activate();
+      // header-factory: SignalListItemFactory header_factory {};
+      styles [
+        "navigation-sidebar",
+      ]
+    }
+  }
+}
