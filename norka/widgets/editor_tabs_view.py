@@ -21,14 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from pydoc import pager
 from typing import Dict, Optional
 
-from gi.repository import Adw, Gtk, GLib, GObject
+from gi.repository import Adw, Gtk, GObject
 from loguru import logger
 
-from norka.models import AppState
 from norka.define import RESOURCE_PREFIX
+from norka.models import AppState
 from norka.widgets.editor import Editor
 
 
@@ -36,7 +35,7 @@ from norka.widgets.editor import Editor
 class EditorTabsView(Adw.Bin):
     __gtype_name__ = 'EditorTabsView'
 
-    tab_view: Adw.TabView =Gtk.Template.Child()
+    tab_view: Adw.TabView = Gtk.Template.Child()
 
     pages: Dict[str, Adw.TabPage] = {}
     _appstate: Optional[AppState] = None
@@ -60,7 +59,6 @@ class EditorTabsView(Adw.Bin):
         if doc_id:
             self._appstate.current_document_id = doc_id
 
-
     def add_tab(self, doc_id: str):
         if doc_id in self.pages:
             page = self.pages[doc_id]
@@ -78,6 +76,12 @@ class EditorTabsView(Adw.Bin):
         logger.debug('Closing active page')
         if page := self.tab_view.get_selected_page():
             self.tab_view.close_page(page)
+
+    def save_current_page(self):
+        logger.debug('Saving current page')
+        if page := self.tab_view.get_selected_page():
+            editor: Editor = page.get_child()
+            editor.save_document()
 
     @Gtk.Template.Callback()
     def _on_close_page(self, tab_view: Adw.TabView, page: Adw.TabPage):

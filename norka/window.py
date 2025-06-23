@@ -167,11 +167,11 @@ class NorkaWindow(Adw.ApplicationWindow):
                     "accels": ("<Control>n",),
                     "parameter_type": GLib.VariantType.new('(ss)'),
                 },
-                {
-                    "name": "save",
-                    "action": self.on_document_save_activated,
-                    "accels": ("<Control>s",),
-                },
+                # {
+                #     "name": "save",
+                #     "action": self.on_document_save_activated,
+                #     "accels": ("<Control>s",),
+                # },
                 {
                     "name": "close",
                     "action": self.on_document_close_activated,
@@ -443,16 +443,6 @@ class NorkaWindow(Adw.ApplicationWindow):
         # self.header.toggle_document_mode()
         # self.header.update_title(title=self.editor.document.title)
 
-    def on_document_save_activated(self,
-                                   sender: Gtk.Widget = None,
-                                   event=None) -> None:
-        """Save opened document to storage.
-
-        :param sender:
-        :param event:
-        :return:
-        """
-        self.editor.save_document()
 
     def on_document_import_activated(self, sender, event):
         dialog: Gtk.FileDialog = Gtk.FileDialog()

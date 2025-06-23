@@ -24,11 +24,11 @@
 
 from gi.repository import Adw, Gtk
 
-from norka.models import AppState, Document
 from norka.define import RESOURCE_PREFIX
-from norka.widgets.welcome_page import WelcomePage
-from norka.widgets.editor_tabs_view import EditorTabsView
+from norka.models import Document
 from norka.services import Storage
+from norka.widgets.editor_tabs_view import EditorTabsView
+from norka.widgets.welcome_page import WelcomePage
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/content_page.ui")
@@ -48,6 +48,10 @@ class ContentPage(Adw.NavigationPage):
 
         self.update_active_page()
 
+        self.install_action('document.save', None, self._on_document_save_activate)
+
+        Gtk.Application.get_default().set_accels_for_action('document.save', ['<Ctrl>s'])
+
     def show_welcome(self):
         self.screens.set_visible_child_name('welcome-page')
 
@@ -58,7 +62,6 @@ class ContentPage(Adw.NavigationPage):
         doc = Document(title=title, folder=folder_path)
         self.editor_tabs_view.add_tab(str(self.storage.add(doc, folder_path)))
         self.show_content()
-
 
     def document_open(self, doc_id: str):
         self.editor_tabs_view.add_tab(doc_id)
@@ -74,3 +77,6 @@ class ContentPage(Adw.NavigationPage):
                 self.show_welcome()
             case (_):
                 self.show_content()
+
+    def _on_document_save_activate(self, _action, _args):
+        self.editor_tabs_view.save_current_page()
