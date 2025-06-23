@@ -27,20 +27,20 @@ from gettext import gettext as _
 from gi.repository import Gtk, Gio, GLib, Gdk, Adw
 from loguru import logger
 
-from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX,)
+from norka.define import (APP_ID, FONT_SIZE_MIN, FONT_SIZE_MAX, FONT_SIZE_FAMILY, FONT_SIZE_DEFAULT, RESOURCE_PREFIX, )
 from norka.gobject_worker import GObjectWorker
 from norka.models import Document
 from norka.services import BackupService, Exporter, PDFExporter, Printer, Medium, PublishStatus, Writeas
+from norka.widgets.content_page import ContentPage
 from norka.widgets.document_grid import DocumentGrid
 from norka.widgets.editor import Editor
 from norka.widgets.export_dialog import ExportFileDialog, ExportFormat
 from norka.widgets.extended_stats_dialog import ExtendedStatsWindow
 from norka.widgets.message_dialog import MessageDialog
+from norka.widgets.notes_sidebar import NotesSidebar
 from norka.widgets.preview import Preview
 from norka.widgets.quick_find_dialog import QuickFindDialog
 from norka.widgets.rename_popover import RenamePopover
-from norka.widgets.content_page import ContentPage
-from norka.widgets.notes_sidebar import NotesSidebar
 
 
 @Gtk.Template(resource_path=f"{RESOURCE_PREFIX}/ui/main_window.ui")
@@ -455,20 +455,23 @@ class NorkaWindow(Adw.ApplicationWindow):
         self.editor.save_document()
 
     def on_document_import_activated(self, sender, event):
-        dialog = Gtk.FileChooserNative.new(_("Import files into Norka"), self,
-                                           Gtk.FileChooserAction.OPEN)
+        dialog: Gtk.FileDialog = Gtk.FileDialog()
+        dialog.set_title(_("Import files into Norka"))
 
         filter_markdown = Gtk.FileFilter()
         filter_markdown.set_name(_("Text Files"))
         filter_markdown.add_mime_type("text/plain")
-        dialog.add_filter(filter_markdown)
-        dialog_result = dialog.run()
+        dialog.set_default_filter(filter_markdown)
+        dialog.open_multiple_text_files(self, None, self._on_document_import_finish)
 
-        if dialog_result == Gtk.ResponseType.ACCEPT:
-            file_path = dialog.get_filename()
-            self.import_document(file_path)
+    def _on_document_import_finish(self, dialog: Gtk.FileDialog, result: Gio.AsyncResult) -> None:
+        files, encoding  = dialog.open_multiple_text_files_finish(result)
 
-        dialog.destroy()
+        if not files:
+            return
+
+        for file in files:
+            self.on_document_import(None, file)
 
     def on_document_changed(self, editor: Editor, is_changed: bool = False):
         # Show Save button when autosaving disabled
